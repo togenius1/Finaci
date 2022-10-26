@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {Alert, Pressable, StyleSheet, Text, View} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DocumentPicker from 'react-native-document-picker';
 import {prefetchConfiguration} from 'react-native-app-auth';
@@ -14,8 +14,9 @@ import {
   fetchCreateFolder,
   fetchFindFolder,
 } from '../../../util/fetchData';
-import {decryption} from '../../../util/decrypt';
-import {encryption} from '../../../util/encrypt';
+import {decryption} from '../../../util/decryption';
+import {encryption} from '../../../util/encryption';
+import {generateKeyPair} from '../../../util/crypto';
 
 interface AuthStateType {
   hasLoggedInOnce: boolean;
@@ -34,6 +35,9 @@ const hour = minute_15 * 4;
 const day = hour * 24;
 const SevenDays = day * 7;
 const month = day * 30;
+
+export const PRIVATE_KEY = 'PRIVATE_KEY';
+export const PUBLIC_KEY = 'PUBLIC_KEY';
 
 const Export = () => {
   const timerRef = useRef<number>(0);
@@ -89,7 +93,8 @@ const Export = () => {
 
   // Backup
   const backupHandler = async data => {
-    // const db = await getJsonObject();
+    await updateKeyPair();
+
     const db = data;
     const encryptedData = await encryption(db);
 
@@ -102,7 +107,7 @@ const Export = () => {
       dd = `0${dd}`;
     }
     const fileName = `finner-${dd}${mm}${yy}${time}.bak`;
-    console.log(encryptedData);
+    // console.log(encryptedData);
 
     const today = new Date();
     const expireAccessToken = new Date(authState.accessTokenExpirationDate);
@@ -112,6 +117,24 @@ const Export = () => {
       await handleRefresh();
     }
     await findFolderAndInsertFile(encryptedData);
+  };
+
+  // SET data to Local DB
+  const restoreHandler = async () => {
+    const pickedFile = await handleDocumentSelection();
+
+    const uri = pickedFile?.uri;
+    const encryptedData = await RNFS.readFile(uri, 'base64')
+      .then(result => {
+        console.log('result: ', result);
+        return result;
+      })
+      .catch(err => {
+        console.log(err.message, err.code);
+      });
+    const decrypted = await decryption(encryptedData);
+    // console.log('decrypted: ', decrypted);
+    return decrypted;
   };
 
   // Create folder
@@ -130,7 +153,6 @@ const Export = () => {
 
   // Fin any folders in the local storage.
   async function findFolderAndInsertFile(obj) {
-    console.log('Find Folder and Insert FIle');
     let folderId: string | null;
     folderId = await AsyncStorage.getItem('@folderbackup_key');
     const folderInDrive = await FindFolderInGoogleDrive();
@@ -147,25 +169,6 @@ const Export = () => {
     }
   }
 
-  // SET data to Local DB
-  const restoreHandler = async () => {
-    const pickedFile = await handleDocumentSelection();
-
-    const uri = pickedFile?.uri;
-    const encryptedData = await RNFS.readFile(uri, 'base64')
-      .then(result => {
-        console.log('result: ', result);
-        return result;
-      })
-      .catch(err => {
-        console.log(err.message, err.code);
-      });
-    console.log('picked data: ', encryptedData);
-    const decrypted = await decryption(encryptedData);
-    console.log('decrypted: ', decrypted);
-    return decrypted;
-  };
-
   // Select file from Storage
   const handleDocumentSelection = async () => {
     try {
@@ -177,6 +180,14 @@ const Export = () => {
     } catch (err) {
       console.warn(err);
     }
+  };
+
+  const updateKeyPair = async () => {
+    // generate private/public key
+    const {publicKey, secretKey} = generateKeyPair();
+    // save private key to Async storage
+    await AsyncStorage.setItem(PRIVATE_KEY, secretKey.toString());
+    await AsyncStorage.setItem(PUBLIC_KEY, publicKey.toString());
   };
 
   /**
@@ -209,14 +220,9 @@ const Export = () => {
       </View>
 
       <View style={styles.exportsContainer}>
-        <Pressable
-          style={({pressed}) => pressed && styles.pressed}
-          onPress={() => {}}>
-          <Text style={{fontSize: 18, fontWeight: 'bold', color: 'black'}}>
-            Export <Text style={{fontSize: 12}}>(Raw data)</Text>
-          </Text>
-        </Pressable>
-
+        <Text style={{fontSize: 18, fontWeight: 'bold', color: 'black'}}>
+          Export <Text style={{fontSize: 12}}>(Raw data)</Text>
+        </Text>
         <Pressable
           style={({pressed}) => pressed && styles.pressed}
           onPress={() => exportHandler(jsonData)}>
@@ -230,14 +236,9 @@ const Export = () => {
       </View>
 
       <View style={styles.exportsContainer}>
-        <Pressable
-          style={({pressed}) => pressed && styles.pressed}
-          onPress={() => {}}>
-          <Text style={{fontSize: 18, fontWeight: 'bold', color: 'black'}}>
-            Backup <Text style={{fontSize: 12}}>(google drive)</Text>
-          </Text>
-        </Pressable>
-
+        <Text style={{fontSize: 18, fontWeight: 'bold', color: 'black'}}>
+          Backup <Text style={{fontSize: 12}}>(google drive)</Text>
+        </Text>
         <Pressable
           style={({pressed}) => pressed && styles.pressed}
           onPress={() => backupHandler(jsonData)}>

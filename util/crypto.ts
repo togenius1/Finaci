@@ -23,6 +23,7 @@ export const PRNG = (x, n) => {
 const newNonce = () => randomBytes(box.nonceLength);
 export const generateKeyPair = () => box.keyPair();
 
+// ENCRYPT
 export const encrypt = (secretOrSharedKey, json, key) => {
   const nonce = newNonce();
   const messageUint8 = encodeUTF8(JSON.stringify(json));
@@ -38,18 +39,20 @@ export const encrypt = (secretOrSharedKey, json, key) => {
   return base64FullMessage;
 };
 
+// DECRYPT
 export const decrypt = (secretOrSharedKey, messageWithNonce, key) => {
   const messageWithNonceAsUint8Array = decodeBase64(messageWithNonce);
   const nonce = messageWithNonceAsUint8Array.slice(0, box.nonceLength);
   const message = messageWithNonceAsUint8Array.slice(
     box.nonceLength,
-    messageWithNonce.length,
+    messageWithNonce?.length,
   );
 
   const decrypted = key
     ? box.open(message, nonce, key, secretOrSharedKey)
     : box.open.after(message, nonce, secretOrSharedKey);
 
+  console.log('decrypted: ', decrypted);
   if (!decrypted) {
     throw new Error('Could not decrypt message');
   }
@@ -70,12 +73,12 @@ export const getMySecretKey = async () => {
       [
         {
           text: 'Open setting',
-          onPress: () => navigation.navigate('Settings'),
+          // onPress: () => navigation.navigate('Settings'),
         },
       ],
     );
     return;
   }
 
-  return stringToUint8Array(NativeModules);
+  return stringToUint8Array(keyString);
 };

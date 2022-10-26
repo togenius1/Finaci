@@ -24,7 +24,7 @@
     "d3-shape": "^3.1.0",
     "moment": "^2.29.4",
     "react": "18.1.0",
-    "react-native": "0.70.3",
+    "react-native": "0.70.4",
     "react-native-app-auth": "^6.4.3",
     "react-native-document-picker": "^8.1.2",
     "react-native-fs": "^2.20.0",

@@ -3,6 +3,7 @@ import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
+import {setPRNG} from 'tweetnacl';
 
 import OverviewScreen from './screens/OverviewScreen';
 import AddExpensesScreen from './screens/AddExpensesScreen';
@@ -19,6 +20,9 @@ import ProfileScreen from './screens/ProfileScreen';
 import DrawerContent from './screens/drawer/DrawerContent';
 import ReportsScreen from './screens/ReportsScreen';
 import AccountsItem from './screens/AccountsItem';
+import {PRNG} from './util/crypto';
+
+setPRNG(PRNG);
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Drawer = createDrawerNavigator<RootStackParamList>();

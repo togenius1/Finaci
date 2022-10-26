@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import RNFS from 'react-native-fs';
 import DocumentPicker from 'react-native-document-picker';
 
-import {decryption} from './decrypt';
+import {decryption} from './decryption';
 
 // Save data to local storage
 export const saveDataToStorage = async obj => {
