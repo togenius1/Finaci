@@ -142,7 +142,7 @@ android {
         versionName "1.0"
         buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
         manifestPlaceholders = [
-      appAuthRedirectScheme: 'io.identityserver.demo'
+      appAuthRedirectScheme: 'com.finner'
     ]
 
         if (isNewArchitectureEnabled()) {
