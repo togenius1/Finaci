@@ -148,36 +148,36 @@ const Export = () => {
   }
 
   // SET data to Local DB
-  const restoreHandler = async () => {
-    const pickedFile = await handleDocumentSelection();
+  // const restoreHandler = async () => {
+  //   const pickedFile = await handleDocumentSelection();
 
-    const uri = pickedFile?.uri;
-    const data = await RNFS.readFile(uri, 'base64')
-      .then(result => {
-        // console.log('result: ', result);
-        return result;
-      })
-      .catch(err => {
-        console.log(err.message, err.code);
-      });
-    console.log('encrypted: ', data);
-    const decrypted = await decryption(data);
-    console.log('decrypted: ', decrypted);
-    return data;
-  };
+  //   const uri = pickedFile?.uri;
+  //   const data = await RNFS.readFile(uri, 'base64')
+  //     .then(result => {
+  //       // console.log('result: ', result);
+  //       return result;
+  //     })
+  //     .catch(err => {
+  //       console.log(err.message, err.code);
+  //     });
+  //   console.log('encrypted: ', data);
+  //   const decrypted = await decryption(data);
+  //   console.log('decrypted: ', decrypted);
+  //   return data;
+  // };
 
   // Select file from Storage
-  const handleDocumentSelection = async () => {
-    try {
-      const response = await DocumentPicker.pickSingle({
-        presentationStyle: 'fullScreen',
-      });
-      console.log('response: ', response);
-      return response;
-    } catch (err) {
-      console.warn(err);
-    }
-  };
+  // const handleDocumentSelection = async () => {
+  //   try {
+  //     const response = await DocumentPicker.pickSingle({
+  //       presentationStyle: 'fullScreen',
+  //     });
+  //     console.log('response: ', response);
+  //     return response;
+  //   } catch (err) {
+  //     console.warn(err);
+  //   }
+  // };
 
   /**
    Add Icons
@@ -249,7 +249,8 @@ const Export = () => {
 
         <Pressable
           style={({pressed}) => pressed && styles.pressed}
-          onPress={() => restoreHandler()}>
+          // onPress={() => restoreHandler()}
+          onPress={() => {}}>
           <View style={{marginTop: 20}}>
             <Text style={{fontSize: 18}}>Restore</Text>
             <Text style={{fontSize: 14}}>Restore your data from cloud</Text>
