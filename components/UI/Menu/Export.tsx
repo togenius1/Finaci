@@ -82,38 +82,6 @@ const Export = () => {
     await refreshAuthorize(authState, setAuthState);
   }, [authState]);
 
-  // Create folder
-  async function createFolder() {
-    const folderObj = await fetchCreateFolder(auth.current, jsonData);
-    return folderObj;
-  }
-
-  // Find Folder in the google drive.
-  async function FindFolderInGoogleDrive() {
-    setIsLoading(true);
-    const folders = await fetchFindFolder(auth.current);
-    setIsLoading(false);
-    return folders;
-  }
-
-  // Fin any folders in the local storage.
-  async function findFolderAndInsertFile(obj: {}) {
-    let folderId: string | null;
-    folderId = await AsyncStorage.getItem('@folderbackup_key');
-    const folderInDrive = await FindFolderInGoogleDrive();
-
-    const foundFolderId = folderInDrive.files?.find(
-      fd => fd.id === folderId,
-    )?.id;
-
-    if (folderId === null || foundFolderId === undefined) {
-      const folderObj = await createFolder();
-      await AsyncStorage.setItem('@folderbackup_key', folderObj?.id);
-    } else {
-      await fetchCreateFile(auth.current, obj, folderId);
-    }
-  }
-
   // Export data
   const exportHandler = data => {
     xport(data);
@@ -145,6 +113,39 @@ const Export = () => {
     }
     await findFolderAndInsertFile(encryptedData);
   };
+
+  // Create folder
+  async function createFolder() {
+    const folderObj = await fetchCreateFolder(auth.current, jsonData);
+    return folderObj;
+  }
+
+  // Find Folder in the google drive.
+  async function FindFolderInGoogleDrive() {
+    setIsLoading(true);
+    const folders = await fetchFindFolder(auth.current);
+    setIsLoading(false);
+    return folders;
+  }
+
+  // Fin any folders in the local storage.
+  async function findFolderAndInsertFile(obj) {
+    console.log('Find Folder and Insert FIle');
+    let folderId: string | null;
+    folderId = await AsyncStorage.getItem('@folderbackup_key');
+    const folderInDrive = await FindFolderInGoogleDrive();
+
+    const foundFolderId = folderInDrive.files?.find(
+      fd => fd.id === folderId,
+    )?.id;
+
+    if (folderId === null || foundFolderId === undefined) {
+      const folderObj = await createFolder();
+      await AsyncStorage.setItem('@folderbackup_key', folderObj?.id);
+    } else {
+      await fetchCreateFile(auth.current, obj, folderId);
+    }
+  }
 
   // SET data to Local DB
   const restoreHandler = async () => {

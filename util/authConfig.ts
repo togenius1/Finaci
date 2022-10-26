@@ -12,7 +12,7 @@ const clientId =
 export const configs = {
   auth0: {
     issuer: 'https://accounts.google.com',
-    clientId: clientId,
+    clientId: '532601104816-26amjvgj3agnpqqm69f1mvcr8rpuk0ot.apps.googleusercontent.com',
     redirectUrl: 'com.finner:/oauth2redirect/google',
     additionalParameters: {},
     scopes: [
