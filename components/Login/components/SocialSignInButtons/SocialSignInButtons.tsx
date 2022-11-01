@@ -22,7 +22,7 @@ export default function SocialSignInButtons(props) {
   const onSignUpPress = () => {
     console.log('onSignUpPress');
   };
-
+//--------
   return (
     <>
       <CustomButton
