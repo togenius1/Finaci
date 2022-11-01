@@ -4,6 +4,7 @@ import {Amplify, Auth, Hub} from 'aws-amplify';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
+import {setPRNG} from 'tweetnacl';
 
 import OverviewScreen from './screens/OverviewScreen';
 import AddExpensesScreen from './screens/AddExpensesScreen';
@@ -27,8 +28,11 @@ import ConfirmEmailScreen from './components/Login/screens/ConfirmEmailScreen/Co
 import NewPasswordScreen from './components/Login/screens/NewPasswordScreen/NewPasswordScreen';
 import ForgotPasswordScreen from './components/Login/screens/ForgotPasswordScreen/ForgotPasswordScreen';
 import awsconfig from './src/aws-exports';
+import {PRNG} from './util/crypto';
 
 Amplify.configure(awsconfig);
+
+setPRNG(PRNG);
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Drawer = createDrawerNavigator<RootStackParamList>();

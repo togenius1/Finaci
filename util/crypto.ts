@@ -1,8 +1,8 @@
 import {Alert} from 'react-native';
-import {box, randomBytes} from 'tweetnacl';
-import {randomBytes as randomByte} from 'react-native-randombytes';
-import {decode as decodeUTF8, encode as encodeUTF8} from '@stablelib/utf8';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {box, randomBytes} from 'tweetnacl';
+import {v4 as randomByte} from 'uuid';
+import {decode as decodeUTF8, encode as encodeUTF8} from '@stablelib/utf8';
 
 import {
   decode as decodeBase64,
@@ -10,6 +10,7 @@ import {
 } from '@stablelib/base64';
 
 export const PRIVATE_KEY = 'PRIVATE_KEY';
+export const PUBLIC_KEY = 'PUBLIC_KEY';
 
 export const PRNG = (x, n) => {
   // ... copy n random bytes into x ...
@@ -23,7 +24,12 @@ export const PRNG = (x, n) => {
 const newNonce = () => randomBytes(box.nonceLength);
 export const generateKeyPair = () => box.keyPair();
 
-export const encrypt = (secretOrSharedKey, json, key) => {
+// ENCRYPTION
+export const encrypt = (
+  secretOrSharedKey: Uint8Array,
+  json: any,
+  key?: Uint8Array,
+) => {
   const nonce = newNonce();
   const messageUint8 = encodeUTF8(JSON.stringify(json));
   const encrypted = key
@@ -38,12 +44,17 @@ export const encrypt = (secretOrSharedKey, json, key) => {
   return base64FullMessage;
 };
 
-export const decrypt = (secretOrSharedKey, messageWithNonce, key) => {
+// DECRYPTION
+export const decrypt = (
+  secretOrSharedKey: Uint8Array,
+  messageWithNonce: string,
+  key?: Uint8Array,
+) => {
   const messageWithNonceAsUint8Array = decodeBase64(messageWithNonce);
   const nonce = messageWithNonceAsUint8Array.slice(0, box.nonceLength);
   const message = messageWithNonceAsUint8Array.slice(
     box.nonceLength,
-    messageWithNonce.length,
+    messageWithNonce?.length,
   );
 
   const decrypted = key
@@ -70,12 +81,12 @@ export const getMySecretKey = async () => {
       [
         {
           text: 'Open setting',
-          onPress: () => navigation.navigate('Settings'),
+          // onPress: () => navigation.navigate('Settings'),
         },
       ],
     );
     return;
   }
 
-  return stringToUint8Array(NativeModules);
+  return stringToUint8Array(keyString);
 };

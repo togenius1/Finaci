@@ -1,5 +1,9 @@
 // Create folder
-export async function fetchCreateFolder(auth: string | null, data: {}) {
+export async function fetchCreateFolder(
+  auth: string | null,
+  data: {},
+  fileName: string,
+) {
   const folderObj = await fetch('https://www.googleapis.com/drive/v3/files', {
     method: 'POST',
     headers: {
@@ -14,7 +18,7 @@ export async function fetchCreateFolder(auth: string | null, data: {}) {
   })
     .then(response => response.json())
     .then(async folderData => {
-      await fetchCreateFile(auth, data, folderData?.id);
+      await fetchCreateFile(auth, data, folderData?.id, fileName);
       return folderData;
     })
     .catch(error => console.error('Error:', error));
@@ -48,6 +52,7 @@ export async function copyFileToFolder(
   url: string,
   auth: string,
   folderId: string,
+  fileName: string,
 ) {
   fetch(`${url}/copy`, {
     method: 'POST', // Change file name
@@ -58,7 +63,7 @@ export async function copyFileToFolder(
       // uploadType: `resumable`,
     },
     body: JSON.stringify({
-      name: `NewFileName2.txt`,
+      name: fileName,
       parents: [folderId],
     }),
   })
@@ -81,6 +86,7 @@ export async function fetchCreateFile(
   auth: string | null,
   data: {},
   folderId: string,
+  fileName: string,
 ) {
   await fetch(`https://www.googleapis.com/upload/drive/v3/files`, {
     method: 'POST',
@@ -102,6 +108,7 @@ export async function fetchCreateFile(
         `https://www.googleapis.com/drive/v3/files/${res?.id}`,
         auth,
         folderId,
+        fileName,
       );
     })
     .catch(error => {

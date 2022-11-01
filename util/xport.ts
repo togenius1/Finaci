@@ -1,9 +1,7 @@
-import {Alert} from 'react-native';
 import {writeFile} from 'react-native-fs';
 import XLSX from 'xlsx';
 import Share from 'react-native-share';
 
-// Export
 export const xport = data => {
   var ws = XLSX.utils.json_to_sheet(data);
   var wb = XLSX.utils.book_new();
@@ -11,10 +9,10 @@ export const xport = data => {
 
   const wbout = XLSX.write(wb, {type: 'binary', bookType: 'xlsx'});
   var RNFS = require('react-native-fs');
-  var file = RNFS.DocumentDirectoryPath + '/Export.xlsx';
+  var file = RNFS.DocumentDirectoryPath + '/First.xlsx';
   writeFile(file, wbout, 'ascii')
-    .then(() => {
-      // console.log('FILE WRITTEN!\n' + file);
+    .then(r => {
+      console.log('FILE WRITTEN!\n' + file);
       customShare(file);
     })
     .catch(err => {
@@ -22,9 +20,16 @@ export const xport = data => {
     });
 };
 
-export const customShare = async (url: string) => {
+const customShare = async url => {
+  console.log(url);
   const shareOptions = {
     url: `file://${url}`,
   };
-  await Share.open(shareOptions);
+
+  try {
+    const ShareResponse = await Share.open(shareOptions);
+    console.log(ShareResponse);
+  } catch (error) {
+    console.log('Error ==>', error);
+  }
 };

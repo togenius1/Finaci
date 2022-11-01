@@ -55,6 +55,13 @@ const Export = () => {
   }, []);
 
   useEffect(() => {
+    timerRef.current = setInterval(() => {
+      console.log('timer running');
+    }, SevenDays);
+    () => clearInterval(timerRef.current);
+  }, []);
+
+  useEffect(() => {
     authHandler();
   }, [authState]);
 
@@ -63,13 +70,6 @@ const Export = () => {
     const authh = `Bearer ${accessToken}`;
     auth.current = authh;
   };
-
-  useEffect(() => {
-    timerRef.current = setInterval(() => {
-      console.log('timer running');
-    }, SevenDays);
-    () => clearInterval(timerRef.current);
-  }, []);
 
   const handleAuthorize = useCallback(
     async provider => {
@@ -88,10 +88,8 @@ const Export = () => {
   };
 
   // Backup
-  const backupHandler = async data => {
-    // const db = await getJsonObject();
-    const db = data;
-    const encryptedData = await encryption(db);
+  const backupHandler = async obj => {
+    const encrypted = await encryption(obj);
 
     const d = new Date();
     const mm = d.getMonth() + 1;
@@ -102,7 +100,6 @@ const Export = () => {
       dd = `0${dd}`;
     }
     const fileName = `finner-${dd}${mm}${yy}${time}.bak`;
-    console.log(encryptedData);
 
     const today = new Date();
     const expireAccessToken = new Date(authState.accessTokenExpirationDate);
@@ -111,12 +108,30 @@ const Export = () => {
     } else {
       await handleRefresh();
     }
-    await findFolderAndInsertFile(encryptedData);
+    await findFolderAndInsertFile(encrypted, fileName);
+  };
+
+  // Restore data from google drive
+  const restoreHandler = async () => {
+    const pickedFile = await handleDocumentSelection();
+
+    const uri = pickedFile?.uri;
+    const encryptedData = await RNFS.readFile(uri, 'ascii')
+      .then(result => {
+        return result;
+      })
+      .catch(err => {
+        console.log(err.message, err.code);
+      });
+
+    const decrypted = await decryption(String(encryptedData));
+    console.log('decrypted: ', decrypted);
+    return decrypted;
   };
 
   // Create folder
-  async function createFolder() {
-    const folderObj = await fetchCreateFolder(auth.current, jsonData);
+  async function createFolder(fileName: string) {
+    const folderObj = await fetchCreateFolder(auth.current, jsonData, fileName);
     return folderObj;
   }
 
@@ -129,8 +144,7 @@ const Export = () => {
   }
 
   // Fin any folders in the local storage.
-  async function findFolderAndInsertFile(obj) {
-    console.log('Find Folder and Insert FIle');
+  async function findFolderAndInsertFile(obj, fileName: string) {
     let folderId: string | null;
     folderId = await AsyncStorage.getItem('@folderbackup_key');
     const folderInDrive = await FindFolderInGoogleDrive();
@@ -140,31 +154,12 @@ const Export = () => {
     )?.id;
 
     if (folderId === null || foundFolderId === undefined) {
-      const folderObj = await createFolder();
+      const folderObj = await createFolder(fileName);
       await AsyncStorage.setItem('@folderbackup_key', folderObj?.id);
     } else {
-      await fetchCreateFile(auth.current, obj, folderId);
+      await fetchCreateFile(auth.current, obj, folderId, fileName);
     }
   }
-
-  // SET data to Local DB
-  const restoreHandler = async () => {
-    const pickedFile = await handleDocumentSelection();
-
-    const uri = pickedFile?.uri;
-    const data = await RNFS.readFile(uri, 'base64')
-      .then(result => {
-        // console.log('result: ', result);
-        return result;
-      })
-      .catch(err => {
-        console.log(err.message, err.code);
-      });
-    console.log('encrypted: ', data);
-    const decrypted = await decryption(data);
-    console.log('decrypted: ', decrypted);
-    return data;
-  };
 
   // Select file from Storage
   const handleDocumentSelection = async () => {

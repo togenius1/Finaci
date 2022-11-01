@@ -1,5 +1,4 @@
 package com.finner;
-
 import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
@@ -13,6 +12,7 @@ import com.finner.newarchitecture.MainApplicationReactNativeHost;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import com.rnfs.RNFSPackage;
+
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -29,6 +29,7 @@ public class MainApplication extends Application implements ReactApplication {
           List<ReactPackage> packages = new PackageList(this).getPackages();
           // Packages that cannot be autolinked yet can be added manually here, for example:
           // packages.add(new MyReactNativePackage());
+          // packages.add(new RNFSPackage());
           return packages;
         }
 
