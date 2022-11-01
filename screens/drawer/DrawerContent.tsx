@@ -121,16 +121,18 @@ const DrawerContent = (props: Props) => {
             }}>
             <View style={{flexDirection: 'row'}}>
               <Ionicons name="happy-outline" size={22} color={colors.user} />
-              <Text style={styles.logoutText}>Nunggu</Text>
+              <Text style={styles.profile}>Nunggu</Text>
             </View>
           </Pressable>
+        </View>
 
+        <View style={styles.logoutContainer}>
           <Pressable
             style={({pressed}) => pressed && styles.pressed}
             onPress={() => Auth.signOut()}>
             <View style={{flexDirection: 'row'}}>
               <Ionicons name="log-out" size={22} color={colors.user} />
-              <Text style={styles.logoutText}>Sign Out</Text>
+              <Text style={styles.logoutText}>Log out</Text>
             </View>
           </Pressable>
         </View>
@@ -150,7 +152,7 @@ const styles = StyleSheet.create({
   OverviewContainer: {
     // flex: 1,
     marginTop: 40,
-    marginLeft: 10,
+    marginLeft: 20,
     borderBottomWidth: 1,
     borderBottomColor: '#c2c2c2',
     // backgroundColor: '#c8edc8',
@@ -161,7 +163,7 @@ const styles = StyleSheet.create({
   },
   expenseIncomeContainer: {
     // flex: 1,
-    marginLeft: 10,
+    marginLeft: 20,
     borderBottomWidth: 1,
     borderBottomColor: '#c2c2c2',
     marginTop: 20,
@@ -185,7 +187,7 @@ const styles = StyleSheet.create({
   reportContainer: {
     // paddingVertical: 200,
     marginTop: 50,
-    marginLeft: 10,
+    marginLeft: 20,
     // marginBottom: 100,
     // borderBottomWidth: 1,
     // borderBottomColor: '#c2c2c2',
@@ -196,7 +198,7 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   settingContainer: {
-    marginLeft: 10,
+    marginLeft: 20,
     marginTop: 180,
     // marginBottom: 100,
     // backgroundColor: '#86b0dd',
@@ -204,6 +206,15 @@ const styles = StyleSheet.create({
   settingText: {
     fontSize: 14,
     marginLeft: 20,
+  },
+  profile: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginLeft: 20,
+  },
+  logoutContainer: {
+    marginLeft: 20,
+    marginTop: 50,
   },
   logoutText: {
     fontSize: 14,

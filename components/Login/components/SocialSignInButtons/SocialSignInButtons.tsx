@@ -15,14 +15,6 @@ export default function SocialSignInButtons(props) {
     Auth.federatedSignIn();
   };
 
-  const onSignInApple = () => {
-    console.log('onSignInApple');
-  };
-
-  const onSignUpPress = () => {
-    console.log('onSignUpPress');
-  };
-//--------
   return (
     <>
       <CustomButton
@@ -36,12 +28,6 @@ export default function SocialSignInButtons(props) {
         bgColor="#FAE9EA"
         fgColor="#DD4D44"
         onPress={onSignInGoogle}
-      />
-      <CustomButton
-        text="Sign In with Apple"
-        bgColor="#e3e3e3"
-        fgColor="#363636"
-        onPress={onSignInApple}
       />
     </>
   );
