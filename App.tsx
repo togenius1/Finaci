@@ -118,7 +118,6 @@ const App = (props: Props) => {
 
   useEffect(() => {
     checkUser();
-    // Auth.signOut();
   }, []);
 
   useEffect(() => {

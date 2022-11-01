@@ -129,7 +129,7 @@ const DrawerContent = (props: Props) => {
             style={({pressed}) => pressed && styles.pressed}
             onPress={() => Auth.signOut()}>
             <View style={{flexDirection: 'row'}}>
-              <Ionicons name="happy-outline" size={22} color={colors.user} />
+              <Ionicons name="log-out" size={22} color={colors.user} />
               <Text style={styles.logoutText}>Sign Out</Text>
             </View>
           </Pressable>

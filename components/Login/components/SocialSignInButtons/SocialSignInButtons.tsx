@@ -6,12 +6,12 @@ import CustomButton from '../CustomButton/CustomButton';
 
 export default function SocialSignInButtons(props) {
   const onSignInFacebook = () => {
-    console.log('onSignInFacebook');
+    // console.log('onSignInFacebook');
     Auth.federatedSignIn();
   };
 
   const onSignInGoogle = () => {
-    console.log('onSignInGoogle');
+    // console.log('onSignInGoogle');
     Auth.federatedSignIn();
   };
 
