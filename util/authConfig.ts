@@ -6,13 +6,13 @@ import {Platform} from 'react-native';
 
 const clientId =
   Platform.OS === 'ios'
-    ? '532601104816-8cgkfmf3mr7ola576jn76shackn33vb6.apps.googleusercontent.com'
-    : '532601104816-pgbojlhe40el78o4ds60h584di169hum.apps.googleusercontent.com';
+    ? '532601104816-l9qg5p1m1hfcthih1gvhrq4av7nil22t.apps.googleusercontent.com'
+    : '532601104816-26amjvgj3agnpqqm69f1mvcr8rpuk0ot.apps.googleusercontent.com';
 
 const redirectUrl =
   Platform.OS === 'ios'
-    ? 'org.reactjs.native.example.FileSystem:/oauth2redirect/google'
-    : 'com.filesystem:/oauth2redirect/google';
+    ? 'org.reactjs.native.example.Finner:/oauth2redirect/google'
+    : 'com.finner:/oauth2redirect/google';
 
 export const configs = {
   auth0: {

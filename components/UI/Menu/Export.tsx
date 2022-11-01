@@ -16,6 +16,7 @@ import {
 } from '../../../util/fetchData';
 import {decryption} from '../../../util/decrypt';
 import {encryption} from '../../../util/encrypt';
+import {generateKeyPair, PRIVATE_KEY, PUBLIC_KEY} from '../../../util/crypto';
 
 interface AuthStateType {
   hasLoggedInOnce: boolean;
@@ -174,10 +175,19 @@ const Export = () => {
     }
   };
 
-  /**
-   Add Icons
-   Rearrange Icons to 3 x 3
-   */
+  // SET key
+  // Save PRIVATE_KEY to Cloud
+  const updateKeyPair = async () => {
+    const {publicKey} = generateKeyPair();
+    const privateK = await AsyncStorage.getItem(PRIVATE_KEY);
+    // save private key to Async storage
+    console.log('privateK: ', privateK);
+    if (privateK === null || privateK === undefined) {
+      const {secretKey} = generateKeyPair();
+      await AsyncStorage.setItem(PRIVATE_KEY, secretKey.toString());
+    }
+    await AsyncStorage.setItem(PUBLIC_KEY, publicKey.toString());
+  };
 
   return (
     <View style={styles.container}>
@@ -248,6 +258,15 @@ const Export = () => {
           <View style={{marginTop: 20}}>
             <Text style={{fontSize: 18}}>Restore</Text>
             <Text style={{fontSize: 14}}>Restore your data from cloud</Text>
+          </View>
+        </Pressable>
+
+        <Pressable
+          style={({pressed}) => pressed && styles.pressed}
+          onPress={updateKeyPair}>
+          <View style={{marginTop: 20}}>
+            <Text style={{fontSize: 18}}>updateKeyPair</Text>
+            <Text style={{fontSize: 14}}>update key pair</Text>
           </View>
         </Pressable>
       </View>
