@@ -11,6 +11,7 @@
     <key>CFBundleURLSchemes</key>
     <array>
       <string>org.reactjs.native.example.Finner</string>
+      <string>finner</string>
     </array>
   </dict>
 </array>

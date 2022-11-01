@@ -4,6 +4,7 @@ import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer';
 import {useNavigation} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {Auth} from 'aws-amplify';
 
 type Props = {};
 
@@ -121,6 +122,15 @@ const DrawerContent = (props: Props) => {
             <View style={{flexDirection: 'row'}}>
               <Ionicons name="happy-outline" size={22} color={colors.user} />
               <Text style={styles.logoutText}>Nunggu</Text>
+            </View>
+          </Pressable>
+
+          <Pressable
+            style={({pressed}) => pressed && styles.pressed}
+            onPress={() => Auth.signOut()}>
+            <View style={{flexDirection: 'row'}}>
+              <Ionicons name="happy-outline" size={22} color={colors.user} />
+              <Text style={styles.logoutText}>Sign Out</Text>
             </View>
           </Pressable>
         </View>

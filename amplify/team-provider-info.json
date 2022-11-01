@@ -1,0 +1,20 @@
+{
+  "staging": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-finner-staging-22033-authRole",
+      "UnauthRoleArn": "arn:aws:iam::106155996924:role/amplify-finner-staging-22033-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::106155996924:role/amplify-finner-staging-22033-authRole",
+      "Region": "ap-southeast-1",
+      "DeploymentBucketName": "amplify-finner-staging-22033-deployment",
+      "UnauthRoleName": "amplify-finner-staging-22033-unauthRole",
+      "StackName": "amplify-finner-staging-22033",
+      "StackId": "arn:aws:cloudformation:ap-southeast-1:106155996924:stack/amplify-finner-staging-22033/c3d36250-598b-11ed-a645-02a728e7bd20",
+      "AmplifyAppId": "dd2mpv79xjeux"
+    },
+    "categories": {
+      "auth": {
+        "Finner": {}
+      }
+    }
+  }
+}

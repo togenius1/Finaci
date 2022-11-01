@@ -1,5 +1,6 @@
-import {StatusBar} from 'react-native';
-import React from 'react';
+import {ActivityIndicator, StatusBar, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Amplify, Auth, Hub} from 'aws-amplify';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
@@ -19,6 +20,15 @@ import ProfileScreen from './screens/ProfileScreen';
 import DrawerContent from './screens/drawer/DrawerContent';
 import ReportsScreen from './screens/ReportsScreen';
 import AccountsItem from './screens/AccountsItem';
+
+import SignInScreen from './components/Login/screens/SignInScreen/SignInScreen';
+import SignUpScreen from './components/Login/screens/SignUpScreen/SignUpScreen';
+import ConfirmEmailScreen from './components/Login/screens/ConfirmEmailScreen/ConfirmEmailScreen';
+import NewPasswordScreen from './components/Login/screens/NewPasswordScreen/NewPasswordScreen';
+import ForgotPasswordScreen from './components/Login/screens/ForgotPasswordScreen/ForgotPasswordScreen';
+import awsconfig from './src/aws-exports';
+
+Amplify.configure(awsconfig);
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Drawer = createDrawerNavigator<RootStackParamList>();
@@ -89,6 +99,7 @@ function MenuDrawer() {
 }
 
 const App = (props: Props) => {
+  const [user, setUser] = useState(undefined);
   // const dispatch = useAppDispatch();
   // // const dataLoaded = useAppSelector(store => store);
 
@@ -96,34 +107,79 @@ const App = (props: Props) => {
   //   dispatch(fetchExpensesData());
   // }, []);
 
+  const checkUser = async () => {
+    try {
+      const authUser = await Auth.currentAuthenticatedUser({bypassCache: true});
+      setUser(authUser);
+    } catch (e) {
+      setUser(null);
+    }
+  };
+
+  useEffect(() => {
+    checkUser();
+    // Auth.signOut();
+  }, []);
+
+  useEffect(() => {
+    const listener = data => {
+      if (data.payload.event === 'signIn' || data.payload.event === 'signOut') {
+        checkUser();
+      }
+    };
+    Hub.listen('auth', listener);
+    return () => Hub.remove('auth', listener);
+  }, []);
+
+  if (user === undefined) {
+    return (
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <ActivityIndicator />
+      </View>
+    );
+  }
+
   return (
     <>
       <StatusBar barStyle="light-content" />
       <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={{
-            headerStyle: {backgroundColor: GlobalStyles.colors.primary500},
-            headerTintColor: 'black',
-          }}>
-          <Stack.Screen
-            name="Menu"
-            component={MenuDrawer}
-            options={{
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
-            name="AddExpenses"
-            component={AddExpensesScreen}
-            options={{
-              title: 'Amount',
-            }}
-          />
-          <Stack.Screen name="AddDetails" component={AddDetailsScreen} />
-          {/* <Stack.Screen name="Category" component={CategoryScreen} /> */}
-          {/* <Stack.Screen name="Note" component={NoteScreen} /> */}
-          <Stack.Screen name="AccountsItem" component={AccountsItem} />
-        </Stack.Navigator>
+        {user ? (
+          <Stack.Navigator
+            screenOptions={{
+              headerStyle: {backgroundColor: GlobalStyles.colors.primary500},
+              headerTintColor: 'black',
+            }}>
+            <Stack.Screen
+              name="Menu"
+              component={MenuDrawer}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="AddExpenses"
+              component={AddExpensesScreen}
+              options={{
+                title: 'Amount',
+              }}
+            />
+            <Stack.Screen name="AddDetails" component={AddDetailsScreen} />
+            {/* <Stack.Screen name="Category" component={CategoryScreen} /> */}
+            {/* <Stack.Screen name="Note" component={NoteScreen} /> */}
+            <Stack.Screen name="AccountsItem" component={AccountsItem} />
+          </Stack.Navigator>
+        ) : (
+          <Stack.Navigator>
+            <Stack.Screen name="SignIn" component={SignInScreen} />
+            <Stack.Screen name="SignUp" component={SignUpScreen} />
+            <Stack.Screen name="ConfirmEmail" component={ConfirmEmailScreen} />
+            <Stack.Screen
+              name="ForgotPassword"
+              component={ForgotPasswordScreen}
+            />
+            <Stack.Screen name="NewPassword" component={NewPasswordScreen} />
+          </Stack.Navigator>
+        )}
       </NavigationContainer>
     </>
   );
