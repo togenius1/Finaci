@@ -40,7 +40,7 @@ const Backup = (props: Props) => {
   const [authState, setAuthState] = useState<AuthStateType>(defaultAuthState);
   const [isLoading, setIsLoading] = useState<boolean | undefined>(false);
   const auth = useRef<string | null>('');
-  const timerRef = useRef<number>(0);
+  const timerRef = useRef();
   const [jsonData, setJsonData] = useState({});
 
   useEffect(() => {
@@ -58,7 +58,7 @@ const Backup = (props: Props) => {
   useEffect(() => {
     timerRef.current = setInterval(() => {
       console.log('timer running');
-    }, SevenDays);
+    }, minute_5);
     () => clearInterval(timerRef.current);
   }, []);
 

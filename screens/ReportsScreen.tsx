@@ -10,7 +10,6 @@ type Props = {};
 const ReportsScreen = (props: Props) => {
   return (
     <View style={styles.container}>
-      <Text>ReportsScreen</Text>
       <Report />
       <Export />
       <Backup />
