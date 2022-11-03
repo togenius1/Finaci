@@ -33,12 +33,12 @@ export const AccountCategory = [
   {id: 'acc4', title: 'Food', budget: '5500', date: new Date('2022-09-01')},
   {id: 'acc5', title: 'Leisure', budget: '2000', date: new Date('2022-09-14')},
   {
-    id: 'acc7',
+    id: 'acc6',
     title: 'Education',
     budget: '3600',
     date: new Date('2022-09-16'),
   },
-  {id: 'acc8', title: 'Other', budget: '5600', date: new Date('2022-09-17')},
+  {id: 'acc7', title: 'Other', budget: '5600', date: new Date('2022-09-17')},
 ];
 
 export const TransferCategory = [

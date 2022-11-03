@@ -95,7 +95,7 @@ const Backup = (props: Props) => {
     if (dd < 10) {
       dd = `0${dd}`;
     }
-    const fileName = `finner-${dd}${mm}${yy}${time}.bak`;
+    const fileName = `Finner_backup${dd}${mm}${yy}${time}.bak`;
 
     const today = new Date();
     const expireAccessToken = new Date(authState.accessTokenExpirationDate);

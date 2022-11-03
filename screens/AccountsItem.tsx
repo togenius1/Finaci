@@ -222,7 +222,7 @@ function AccountsItem({navigation, route}: Props) {
   const incomeOfAccount = selectedDurationIncomeData?.filter(
     income => income?.accountId === accountId,
   );
-  console.log(incomeOfAccount);
+
   // sum total
   const totalIncomeByAccount = sumTotalFunc(incomeOfAccount);
   const totalExpenseByAccount = sumTotalFunc(expenseOfAccount);

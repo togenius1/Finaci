@@ -27,7 +27,7 @@ import {useNavigation} from '@react-navigation/native';
 
 type Props = {};
 
-const {width, height} = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 
 function HeaderSummary({total, totalIncome, totalExpenses}) {
   return (

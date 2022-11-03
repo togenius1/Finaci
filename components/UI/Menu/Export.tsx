@@ -1,18 +1,50 @@
 import React, {useEffect, useState} from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
+import moment from 'moment';
 
+import {
+  AccountCategory,
+  CashCategory,
+  ExpenseCategory,
+} from '../../../dummy/categoryItems';
 import {EXPENSES} from '../../../dummy/dummy';
 import {xport} from '../../../util/xport';
 
 const Export = () => {
-  const [jsonData, setJsonData] = useState({});
+  const [jsonData, setJsonData] = useState();
+  const [newJson, setNewJson] = useState();
 
   useEffect(() => {
     setJsonData(EXPENSES);
   }, []);
 
-  // Export data
-  const exportHandler = data => {
+  useEffect(() => {
+    createNewObject();
+  }, [jsonData]);
+
+  // Export format.
+  const createNewObject = () => {
+    const obj = jsonData?.map((json, index) => {
+      let accountObj;
+      const expenseObj = ExpenseCategory.find(cate => cate.id === json.cateId);
+      accountObj = CashCategory.find(cate => cate.id === json.accountId);
+      if (accountObj === undefined) {
+        accountObj = AccountCategory.find(cate => cate.id === json.accountId);
+      }
+      return {
+        No: index + 1,
+        Account: accountObj?.title,
+        Amount: json.amount,
+        Category: expenseObj?.title,
+        Date: moment(json?.date).format('YYYY-MM-DD'),
+        Note: json?.note,
+      };
+    });
+    setNewJson(obj);
+  };
+
+  // Export
+  const exportHandler = (data: {}) => {
     xport(data);
   };
 
@@ -28,7 +60,7 @@ const Export = () => {
 
       <Pressable
         style={({pressed}) => pressed && styles.pressed}
-        onPress={() => exportHandler(jsonData)}>
+        onPress={() => exportHandler(newJson)}>
         <View style={{marginTop: 20}}>
           <Text style={{fontSize: 18}}>Excel (.xls)</Text>
           <Text style={{fontSize: 14}}>
