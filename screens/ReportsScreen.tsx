@@ -5,9 +5,9 @@ import Export from '../components/UI/Menu/Export';
 import Backup from '../components/UI/Menu/Backup';
 import Report from '../components/UI/Menu/Report';
 
-type Props = {};
 
-const ReportsScreen = (props: Props) => {
+
+const ReportsScreen = () => {
   return (
     <View style={styles.container}>
       <Report />

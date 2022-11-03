@@ -12,7 +12,7 @@ export async function fetchCreateFolder(
       // uploadType: 'resumable',
     },
     body: JSON.stringify({
-      name: 'aaaFolder',
+      name: 'Finner',
       mimeType: 'application/vnd.google-apps.folder',
     }),
   })
