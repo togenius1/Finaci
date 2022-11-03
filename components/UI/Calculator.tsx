@@ -195,6 +195,7 @@ const Calculator = ({nextScreen, transaction}: Props) => {
     navigation.navigate(nextScreen, {
       amount: calculatedValue,
       transaction: transaction,
+      fromCalculator: true,
     });
     clearToGo();
   }

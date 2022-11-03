@@ -27,7 +27,7 @@ const {width, height} = Dimensions.get('window');
 
 const AddDetailsScreen = ({route, navigation}: Props) => {
   const amount = route.params?.amount;
-  const type = route.params?.transaction?.type;
+  const type = type === undefined ? 'expense' : route.params?.transaction?.type;
   const categoryTitle = route.params?.transaction?.categoryTitle;
   const accountTitle = route.params?.transaction?.account;
   const d = route.params?.transaction?.date;
@@ -45,6 +45,12 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
   const [cateData, setCateData] = useState();
 
   const dispatch = useAppDispatch();
+
+  // set initial date: from Calculator route or from Account route
+  const initialDate =
+    createdDate !== undefined
+      ? moment(createdDate).format('YYYY-MM-DD')
+      : textDate;
 
   const selectedExpenseRedux = useAppSelector(store => store);
   const selectedExpense = selectedExpenseRedux.transfers;
@@ -137,13 +143,14 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
         categoryTitle={categoryTitle}
         note={note.note}
         accountTitle={accountTitle}
-        createdDate={createdDate}
+        // createdDate={createdDate}
         account={account}
         textDate={textDate}
         setTextDate={setTextDate}
         setCategoryPressed={setCategoryPressed}
         setNotePressed={setNotePressed}
         setAccountPressed={setAccountPressed}
+        initialDate={initialDate}
       />
 
       {categoryPressed && (
@@ -153,6 +160,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
           data={cateData}
         />
       )}
+
       {notePressed && (
         <Note setNotePressed={setNotePressed} setNote={setNote} note={note} />
       )}

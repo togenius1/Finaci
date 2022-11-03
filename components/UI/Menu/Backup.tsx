@@ -2,8 +2,8 @@ import {Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {prefetchConfiguration} from 'react-native-app-auth';
-import RNFS from 'react-native-fs';
 import DocumentPicker from 'react-native-document-picker';
+import RNFS from 'react-native-fs';
 
 import {generateKeyPair, PRIVATE_KEY, PUBLIC_KEY} from '../../../util/crypto';
 import {configs, defaultAuthState} from '../../../util/authConfig';
@@ -16,8 +16,6 @@ import {
   fetchFindFolder,
 } from '../../../util/fetchData';
 import {authorization, refreshAuthorize} from '../../../util/auth';
-
-type Props = {};
 
 interface AuthStateType {
   hasLoggedInOnce: boolean;
@@ -36,7 +34,7 @@ const day = hour * 24;
 const SevenDays = day * 7;
 const month = day * 30;
 
-const Backup = (props: Props) => {
+const Backup = () => {
   const [authState, setAuthState] = useState<AuthStateType>(defaultAuthState);
   const [isLoading, setIsLoading] = useState<boolean | undefined>(false);
   const auth = useRef<string | null>('');
@@ -58,7 +56,7 @@ const Backup = (props: Props) => {
   useEffect(() => {
     timerRef.current = setInterval(() => {
       console.log('timer running');
-    }, minute_5);
+    }, SevenDays);
     () => clearInterval(timerRef.current);
   }, []);
 

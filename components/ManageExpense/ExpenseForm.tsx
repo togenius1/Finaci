@@ -6,7 +6,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import moment from 'moment';
 
@@ -22,7 +22,6 @@ type Props = {
 };
 
 const {width, height} = Dimensions.get('window');
-const initialDate = new Date(moment().format('YYYY-MM-DD'));
 
 function ExpenseForm({
   type,
@@ -32,13 +31,13 @@ function ExpenseForm({
   categoryTitle,
   note,
   accountTitle,
-  createdDate,
   account,
   textDate,
   setTextDate,
   setCategoryPressed,
   setNotePressed,
   setAccountPressed,
+  initialDate,
 }: Props) {
   const navigation = useNavigation();
 
@@ -46,6 +45,10 @@ function ExpenseForm({
   const [DATE, setDATE] = useState(initialDate);
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    setTextDate(initialDate);
+  }, []);
 
   function onChange(event, selectedDate) {
     const currentDate = selectedDate || DATE;
@@ -67,7 +70,6 @@ function ExpenseForm({
   }
 
   const handleConfirm = date => {
-    // console.warn('A date has been picked: ', date);
     setTextDate(moment(date).format('YYYY-MM-DD'));
     setDATE(date);
     hideDatePicker();
@@ -150,9 +152,7 @@ function ExpenseForm({
           }
           onPress={showDatePicker}>
           <View style={styles.textContainer}>
-            <Text style={{fontSize: 22}}>
-              {createdDate ? createdDate : textDate}
-            </Text>
+            <Text style={{fontSize: 22}}>{textDate}</Text>
           </View>
         </Pressable>
 

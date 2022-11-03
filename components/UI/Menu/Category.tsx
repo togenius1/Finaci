@@ -65,7 +65,7 @@ const Category = ({
 
   function searchFilterHandler(text) {
     if (text) {
-      const newData = data.filter(item => {
+      const newData = data?.filter(item => {
         const itemData = item.title
           ? item.title.toUpperCase()
           : ''.toUpperCase();

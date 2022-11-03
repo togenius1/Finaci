@@ -17,7 +17,7 @@ const transactionData = [
   {id: 3, type: 'transfer', selected: false},
 ];
 
-const {width, height} = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 const initTransaction = {id: 1, selected: false, title: 'expense'};
 
 function Tab({item, onPress}) {
