@@ -1,5 +1,12 @@
-import {ActivityIndicator, StatusBar, View} from 'react-native';
+import {
+  ActivityIndicator,
+  SafeAreaView,
+  StatusBar,
+  useColorScheme,
+  View,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {Amplify, Auth, Hub} from 'aws-amplify';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
