@@ -1,25 +1,25 @@
 export const ExpenseCategory = [
-  {id: 'ec1', title: 'Food & Drinks'},
-  {id: 'ec2', title: 'Transport'},
-  {id: 'ec3', title: 'Home & Utilities'},
-  {id: 'ec4', title: 'Leisure'},
-  {id: 'ec5', title: 'Charity'},
-  {id: 'ec6', title: 'Clothing & Footwear'},
-  {id: 'ec7', title: 'Education'},
-  {id: 'ec8', title: 'Gifts'},
-  {id: 'ec9', title: 'Health & Personal Care'},
-  {id: 'ec10', title: 'Loans'},
-  {id: 'ec11', title: 'Sports'},
-  {id: 'ec12', title: 'Taxes'},
-  {id: 'ec13', title: 'Other'},
+  {id: 'ec1', title: 'Food & Drinks', date: new Date('2022-10-01')},
+  {id: 'ec2', title: 'Transport', date: new Date('2022-10-01')},
+  {id: 'ec3', title: 'Home & Utilities', date: new Date('2022-10-01')},
+  {id: 'ec4', title: 'Leisure', date: new Date('2022-10-01')},
+  {id: 'ec5', title: 'Charity', date: new Date('2022-10-01')},
+  {id: 'ec6', title: 'Clothing & Footwear', date: new Date('2022-10-01')},
+  {id: 'ec7', title: 'Education', date: new Date('2022-10-01')},
+  {id: 'ec8', title: 'Gifts', date: new Date('2022-10-01')},
+  {id: 'ec9', title: 'Health & Personal Care', date: new Date('2022-10-01')},
+  {id: 'ec10', title: 'Loans', date: new Date('2022-10-01')},
+  {id: 'ec11', title: 'Sports', date: new Date('2022-10-01')},
+  {id: 'ec12', title: 'Taxes', date: new Date('2022-10-01')},
+  {id: 'ec13', title: 'Other', date: new Date('2022-10-01')},
 ];
 
 export const IncomeCategory = [
-  {id: 'ic1', title: 'Salary', date: new Date('2022-09-01')},
-  {id: 'ic2', title: 'Allowance', date: new Date('2022-09-15')},
-  {id: 'ic3', title: 'Selling', date: new Date('2022-09-17')},
-  {id: 'ic4', title: 'Commission', date: new Date('2022-09-18')},
-  {id: 'ic5', title: 'Other', date: new Date('2022-09-19')},
+  {id: 'ic1', title: 'Salary', date: new Date('2022-10-01')},
+  {id: 'ic2', title: 'Allowance', date: new Date('2022-11-15')},
+  {id: 'ic3', title: 'Selling', date: new Date('2022-10-17')},
+  {id: 'ic4', title: 'Commission', date: new Date('2022-10-18')},
+  {id: 'ic5', title: 'Other', date: new Date('2022-10-19')},
 ];
 
 export const CashCategory = [
