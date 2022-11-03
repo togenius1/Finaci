@@ -27,6 +27,7 @@ import SignUpScreen from './components/Login/screens/SignUpScreen/SignUpScreen';
 import ConfirmEmailScreen from './components/Login/screens/ConfirmEmailScreen/ConfirmEmailScreen';
 import NewPasswordScreen from './components/Login/screens/NewPasswordScreen/NewPasswordScreen';
 import ForgotPasswordScreen from './components/Login/screens/ForgotPasswordScreen/ForgotPasswordScreen';
+import {RootStackParamListLogin} from './components/Login/LoginTypes';
 import awsconfig from './src/aws-exports';
 import {PRNG} from './util/crypto';
 
@@ -34,6 +35,7 @@ Amplify.configure(awsconfig);
 
 setPRNG(PRNG);
 
+const StackLogin = createNativeStackNavigator<RootStackParamListLogin>();
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Drawer = createDrawerNavigator<RootStackParamList>();
 
@@ -49,7 +51,7 @@ function MenuDrawer() {
         },
       })}
       drawerContent={props => <DrawerContent {...props} />}>
-      {/* <Drawer.Screen
+      <Drawer.Screen
         name="Overview"
         component={OverviewScreen}
         options={({navigation}) => ({
@@ -76,7 +78,7 @@ function MenuDrawer() {
         options={({navigation}) => ({
           title: 'Budgets',
         })}
-      /> */}
+      />
       <Drawer.Screen
         name="Reports"
         component={ReportsScreen}
@@ -102,7 +104,7 @@ function MenuDrawer() {
   );
 }
 
-const App = (props: Props) => {
+const App = () => {
   const [user, setUser] = useState(undefined);
   // const dispatch = useAppDispatch();
   // // const dataLoaded = useAppSelector(store => store);
@@ -172,16 +174,22 @@ const App = (props: Props) => {
             <Stack.Screen name="AccountsItem" component={AccountsItem} />
           </Stack.Navigator>
         ) : (
-          <Stack.Navigator>
-            <Stack.Screen name="SignIn" component={SignInScreen} />
-            <Stack.Screen name="SignUp" component={SignUpScreen} />
-            <Stack.Screen name="ConfirmEmail" component={ConfirmEmailScreen} />
-            <Stack.Screen
+          <StackLogin.Navigator>
+            <StackLogin.Screen name="SignIn" component={SignInScreen} />
+            <StackLogin.Screen name="SignUp" component={SignUpScreen} />
+            <StackLogin.Screen
+              name="ConfirmEmail"
+              component={ConfirmEmailScreen}
+            />
+            <StackLogin.Screen
               name="ForgotPassword"
               component={ForgotPasswordScreen}
             />
-            <Stack.Screen name="NewPassword" component={NewPasswordScreen} />
-          </Stack.Navigator>
+            <StackLogin.Screen
+              name="NewPassword"
+              component={NewPasswordScreen}
+            />
+          </StackLogin.Navigator>
         )}
       </NavigationContainer>
     </>

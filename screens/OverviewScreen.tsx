@@ -110,6 +110,7 @@ function HeaderRightComponent({
 }) {
   const month = moment.monthsShort(moment(toDate).month());
   const year = moment(toDate).year();
+
   return (
     <View style={styles.headerRightContainer}>
       <Pressable

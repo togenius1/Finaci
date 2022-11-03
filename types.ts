@@ -39,6 +39,7 @@ export type RootStackParamList = {
   };
   ManageExpenses: undefined;
   Settings: undefined;
+  AccountsItem: undefined;
 };
 
 //------------------------------------------------------------------------
