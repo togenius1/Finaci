@@ -21,9 +21,10 @@ import Spending from './tab/Spending';
 
 type Props = {};
 
-const {width, height} = Dimensions.get('window');
-// const initialDate = new Date(moment().format('YYYY-MM-DD'));
-const initFromDate = `${moment().year()}-0${moment().month() + 1}-01`;
+const {width} = Dimensions.get('window');
+const initFromDate = moment(
+  `${moment().year()}-0${moment().month() + 1}-01`,
+).format('YYYY-MM-DD');
 const initToDate = moment().format('YYYY-MM-DD');
 
 const TopTab = createMaterialTopTabNavigator();
