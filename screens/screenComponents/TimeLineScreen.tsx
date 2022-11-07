@@ -10,7 +10,11 @@ import TimeLine from '../../components/Graph/TimeLine';
 // import {useAppDispatch, useAppSelector} from '../../hooks';
 import {sumEachAccountId, sumTotalBudget, sumTotalFunc} from '../../util/math';
 
-type Props = {};
+type Props = {
+  data: any[];
+  fromDate: string;
+  toDate: string;
+};
 
 const {width} = Dimensions.get('window');
 

@@ -18,31 +18,36 @@ import IconButton from '../components/UI/iconButton';
 import TransactionOutput from '../components/Output/TransactionOutput';
 import MonthYearList from '../components/Menu/MonthYearList';
 import {TransactionNavigationProp} from '../types';
+import {ExpenseType} from '../models/expense';
+import {CategoryType} from '../models/category';
+import {IncomeType} from '../models/income';
 
 type Props = {
   navigation: TransactionNavigationProp;
 };
 
-const {width, height} = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 
 const TransactionsScreen = ({navigation}: Props) => {
-  const [expenseCateData, setExpenseCateData] = useState();
-  const [expenseData, setExpenseData] = useState();
-  const [incomeData, setIncomeData] = useState();
-  const [fromDate, setFromDate] = useState();
-  const [toDate, setToDate] = useState();
+  const [expenseCateData, setExpenseCateData] = useState<CategoryType>();
+  const [expenseData, setExpenseData] = useState<ExpenseType>();
+  const [incomeData, setIncomeData] = useState<IncomeType>();
+  const [fromDate, setFromDate] = useState<string | null>();
+  const [toDate, setToDate] = useState<string | null>();
   const [monthlyPressed, setMonthlyPressed] = useState<boolean>(true);
   const [showMonthYearListMenu, setShowMonthYearListMenu] =
     useState<boolean>(false);
   const [weeklyPressed, setWeeklyPressed] = useState<boolean>(false);
   const [dailyPressed, setDailyPressed] = useState<boolean>(false);
   const [customPressed, setCustomPressed] = useState<boolean>(false);
-  const [duration, setDuration] = useState(moment().year());
+  const [duration, setDuration] = useState<string | null>(
+    String(moment().year()),
+  );
   const [month, setMonth] = useState();
-  const [year, setYear] = useState<string>(moment().year());
+  const [year, setYear] = useState<string | null>(String(moment().year()));
   const [isDatePickerVisible, setDatePickerVisibility] =
     useState<boolean>(false);
-  const [mode, setMode] = useState('date');
+  const [mode, setMode] = useState<string | null>('date');
   const [fromDateClicked, setFromDateClicked] = useState<boolean>(false);
   const [toDateClicked, setToDateClicked] = useState<boolean>(false);
 

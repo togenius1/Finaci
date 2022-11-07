@@ -1,4 +1,4 @@
-class Expense {
+export default class Expense {
   constructor(id, cateId, accountId, amount, note, date) {
     this.id = id;
     this.cateId = cateId;
@@ -9,4 +9,13 @@ class Expense {
   }
 }
 
-export default Expense;
+// export default Expense;
+
+export interface ExpenseType {
+  id: string;
+  cateId: string;
+  accountId: string;
+  amount: number;
+  note: string;
+  date: Date;
+}

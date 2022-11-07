@@ -7,25 +7,27 @@ import {
   Pressable,
   Dimensions,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
 import {v4 as uuidv4} from 'uuid';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import {useAppDispatch} from '../../hooks';
 import {categoryActions} from '../../store/category-slice';
+import {CategoryType} from '../../models/category';
 
-type Props = {};
+type Dispatcher<S> = Dispatch<SetStateAction<S>>;
+
+type Props = {
+  setCategoryPressed: Dispatcher<boolean>;
+  setCategory: Dispatcher<CategoryType>;
+  data: any[];
+};
 
 const {width, height} = Dimensions.get('window');
 
-const Category = ({
-  setCategoryPressed,
-  setCategory,
-  data,
-  categoryTitle,
-}: Props) => {
-  const [categoryText, setCategoryText] = useState<string>('');
-  const [filterData, setFilterData] = useState<object | null>();
+const Category = ({setCategoryPressed, setCategory, data}: Props) => {
+  const [categoryText, setCategoryText] = useState<string | null>('');
+  const [filterData, setFilterData] = useState<any[]>();
 
   const dispatch = useAppDispatch();
 

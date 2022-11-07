@@ -16,6 +16,7 @@ import {
   fetchFindFolder,
 } from '../../util/fetchData';
 import {authorization, refreshAuthorize} from '../../util/auth';
+import {ExpenseType} from '../../models/expense';
 
 interface AuthStateType {
   hasLoggedInOnce: boolean;
@@ -39,7 +40,7 @@ const Backup = () => {
   const [isLoading, setIsLoading] = useState<boolean | undefined>(false);
   const auth = useRef<string | null>('');
   const timerRef = useRef();
-  const [jsonData, setJsonData] = useState({});
+  const [jsonData, setJsonData] = useState<ExpenseType>();
 
   useEffect(() => {
     setJsonData(EXPENSES);

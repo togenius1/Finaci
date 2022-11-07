@@ -1,4 +1,4 @@
-class Income {
+export default class Income {
   constructor(id, cateId, accountId, amount, note, date) {
     this.id = id;
     this.cateId = cateId;
@@ -9,4 +9,11 @@ class Income {
   }
 }
 
-export default Income;
+export interface IncomeType {
+  id: string;
+  cateId: string;
+  accountId: string;
+  amount: number;
+  note: string;
+  date: Date;
+}

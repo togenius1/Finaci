@@ -6,6 +6,7 @@ import {
   FlatList,
   Pressable,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
@@ -27,6 +28,9 @@ import {
 } from '../util/math';
 import MonthYearList from '../components/Menu/MonthYearList';
 import {AccountsItemNavigationType, AccountsItemRouteProp} from '../types';
+import {ExpenseType} from '../models/expense';
+import {AccountType, CashType} from '../models/account';
+import {IncomeType} from '../models/income';
 
 type Props = {
   navigation: AccountsItemNavigationType;
@@ -35,7 +39,11 @@ type Props = {
 
 const {width} = Dimensions.get('window');
 
-const initFromDate = `${moment().year()}-0${moment().month() + 1}-01`;
+let month = moment().month() + 1;
+if (month < 10) {
+  month = +`0${month}`;
+}
+const initFromDate = `${moment().year()}-${month}-01`;
 const initToDate = moment().format('YYYY-MM-DD');
 
 function MenuHandler({monthlyClickedHandler, customClickedHandler}) {
@@ -68,6 +76,16 @@ function MenuHandler({monthlyClickedHandler, customClickedHandler}) {
   );
 }
 
+interface HeaderRightComponentType {
+  fromDate: string | null;
+  toDate: string | null;
+  showCustomDate: boolean;
+  fromDateClickedHandler: () => void;
+  toDateClickedHandler: () => void;
+  rightMenuClickedHandler: () => void;
+  showMonthYearListMenuHandler: () => void;
+}
+
 function HeaderRightComponent({
   fromDate,
   toDate,
@@ -76,7 +94,7 @@ function HeaderRightComponent({
   toDateClickedHandler,
   rightMenuClickedHandler,
   showMonthYearListMenuHandler,
-}) {
+}: HeaderRightComponentType) {
   const m = new Date(toDate).getMonth();
   const month = moment.monthsShort(m);
   const year = moment(toDate).year();
@@ -143,35 +161,36 @@ function HeaderRightComponent({
 }
 
 function AccountsItem({navigation, route}: Props) {
-  const [expensesData, setExpensesData] = useState();
-  const [accountsData, setAccountsData] = useState();
-  const [cashData, setCashData] = useState();
-  const [incomesData, setIncomesData] = useState();
-  const [mode, setMode] = useState('date');
+  const [expensesData, setExpensesData] = useState<ExpenseType>();
+  const [accountsData, setAccountsData] = useState<AccountType>();
+  const [cashData, setCashData] = useState<CashType>();
+  const [incomesData, setIncomesData] = useState<IncomeType>();
+  const [mode, setMode] = useState<string | null>('date');
   const [fromDate, setFromDate] = useState<string | null>(initFromDate);
   const [toDate, setToDate] = useState<string | null>(initToDate);
-  const [year, setYear] = useState(moment().year());
-  const [month, setMonth] = useState<number>(moment().month() + 1);
+  const [year, setYear] = useState<string | null>(String(moment().year()));
+  // const [month, setMonth] = useState<number | undefined>(moment().month() + 1);
   const [showMonthYearListMenu, setShowMonthYearListMenu] =
     useState<boolean>(false);
   const [rightMenuClicked, setRightMenuClicked] = useState<boolean>(false);
   const [toDateClicked, setToDateClicked] = useState<boolean>(false);
   const [isDatePickerVisible, setDatePickerVisibility] =
     useState<boolean>(false);
-  const [fromDateClicked, setFromDateClicked] = useState(false);
-  const [showCustomDate, setShowCustomDate] = useState(false);
+  const [fromDateClicked, setFromDateClicked] = useState<boolean>(false);
+  const [showCustomDate, setShowCustomDate] = useState<boolean>(false);
 
   useEffect(() => {
     setExpensesData(EXPENSES);
     setIncomesData(INCOME);
     setAccountsData(AccountCategory);
     setCashData(CashCategory);
-    onMonthYearSelectedHandler(moment().month());
+    onMonthYearSelectedHandler(String(moment().month()));
   }, []);
 
   useEffect(() => {
     navigation.setOptions({
-      title: showCustomDate ? '' : route?.params?.account,
+      title: Platform.OS === 'android' ? route?.params?.account : '',
+      headerBackTitle: route?.params?.account,
       headerRight: () => (
         <HeaderRightComponent
           fromDate={fromDate}
@@ -270,7 +289,7 @@ function AccountsItem({navigation, route}: Props) {
   });
 
   // Set Month Year
-  function onMonthYearSelectedHandler(time) {
+  function onMonthYearSelectedHandler(time: string): void {
     let fromdate;
     let todate;
     // let month;
@@ -291,16 +310,16 @@ function AccountsItem({navigation, route}: Props) {
     setShowMonthYearListMenu(false);
   }
 
-  function showMonthYearListMenuHandler() {
+  function showMonthYearListMenuHandler(): void {
     setShowMonthYearListMenu(show => !show);
   }
 
-  function customClickedHandler() {
+  function customClickedHandler(): void {
     setShowCustomDate(true);
     setRightMenuClicked(false);
   }
 
-  function monthlyClickedHandler() {
+  function monthlyClickedHandler(): void {
     setFromDate(initFromDate);
     setToDate(initToDate);
 
@@ -308,26 +327,26 @@ function AccountsItem({navigation, route}: Props) {
     setRightMenuClicked(false);
   }
 
-  function rightMenuClickedHandler() {
+  function rightMenuClickedHandler(): void {
     setRightMenuClicked(clicked => !clicked);
   }
 
-  function fromDateClickedHandler() {
+  function fromDateClickedHandler(): void {
     showDatePicker();
     setFromDateClicked(true);
   }
 
-  function toDateClickedHandler() {
+  function toDateClickedHandler(): void {
     showDatePicker();
     setToDateClicked(true);
   }
 
   // DatePicker Function
-  const showDatePicker = () => {
+  const showDatePicker = (): void => {
     setDatePickerVisibility(true);
   };
 
-  function hideDatePicker() {
+  function hideDatePicker(): void {
     setDatePickerVisibility(false);
   }
 
@@ -346,7 +365,7 @@ function AccountsItem({navigation, route}: Props) {
   //   }
   // }
 
-  const onConfirm = date => {
+  const onConfirm = (date: string) => {
     const fromdate = moment(date).format('YYYY-MM-DD');
     const todate = moment(date).format('YYYY-MM-DD');
     if (fromDateClicked) {

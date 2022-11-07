@@ -18,6 +18,7 @@ import {
   IncomeCategory,
   TransferCategory,
 } from '../dummy/categoryItems';
+import { CategoryType } from '../models/category';
 
 type Props = {
   navigation: AddDetailsNavigationType;
@@ -34,16 +35,18 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
   const d = route.params?.transaction?.date;
   const createdDate = moment(d).format('YYYY-MM-DD');
 
-  const [textDate, setTextDate] = useState(moment().format('YYYY-MM-DD'));
-  const [categoryPressed, setCategoryPressed] = useState(false);
+  const [textDate, setTextDate] = useState<string | null>(
+    String(moment().format('YYYY-MM-DD')),
+  );
+  const [categoryPressed, setCategoryPressed] = useState<boolean>(false);
   const [category, setCategory] = useState();
-  const [accountPressed, setAccountPressed] = useState(false);
+  const [accountPressed, setAccountPressed] = useState<boolean>(false);
   const [account, setAccount] = useState();
-  const [notePressed, setNotePressed] = useState(false);
+  const [notePressed, setNotePressed] = useState<boolean>(false);
   const [note, setNote] = useState<Note>({
     note: '',
   });
-  const [cateData, setCateData] = useState();
+  const [cateData, setCateData] = useState<CategoryType>();
 
   const dispatch = useAppDispatch();
 

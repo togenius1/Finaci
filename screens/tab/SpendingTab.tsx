@@ -7,11 +7,15 @@ import {EXPENSES} from '../../dummy/dummy';
 import BarchartTab from '../screenComponents/BarChartTab';
 import IconButton from '../../components/UI/iconButton';
 import {sumByCustomDate, sumByDate} from '../../util/math';
+import {SpendingTabRouteProp} from '../../types';
+import {ExpenseType} from '../../models/expense';
 
-type Props = {};
+type Props = {
+  route: SpendingTabRouteProp;
+};
 
-const Spending = ({route}: Props) => {
-  const [expenseData, setExpenseData] = useState();
+const SpendingTab = ({route}: Props) => {
+  const [expenseData, setExpenseData] = useState<ExpenseType>();
 
   const navigation = useNavigation();
 
@@ -50,7 +54,7 @@ const Spending = ({route}: Props) => {
   );
 };
 
-export default Spending;
+export default SpendingTab;
 
 const styles = StyleSheet.create({
   container: {

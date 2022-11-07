@@ -9,9 +9,12 @@ import BarChart from '../../components/Graph/BarChart';
 import {useAppDispatch, useAppSelector} from '../../hooks';
 import {sumByDate, sumEachAccountId} from '../../util/math';
 
-type Props = {};
+type Props = {
+  data: any[];
+  fromDate: string;
+};
 
-const BarchartTab = ({data, fromDate, toDate}: Props) => {
+const BarchartTab = ({data, fromDate}: Props) => {
   // sum expense in the same day --> to barchart
   const sumByDateObj = sumByDate(data, 'expense', moment(fromDate));
 

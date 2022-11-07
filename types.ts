@@ -23,6 +23,18 @@ export type RootStackParamList = {
     category?: string;
     account?: string;
   };
+  ExpenseTab: {
+    fromDate: string;
+    toDate: string;
+  };
+  IncomeTab: {
+    fromDate: string;
+    toDate: string;
+  };
+  SpendingTab: {
+    fromDate: string;
+    toDate: string;
+  };
 };
 
 //------------------------------------------------------------------------
@@ -69,6 +81,21 @@ export type AccountNavigationType = NativeStackNavigationProp<
   'Accounts'
 >;
 
+export type ExpenseTabNavigationType = NativeStackNavigationProp<
+  RootStackParamList,
+  'ExpenseTab'
+>;
+
+export type IncomeTabTabNavigationType = NativeStackNavigationProp<
+  RootStackParamList,
+  'IncomeTab'
+>;
+
+export type SpendingTabTabNavigationType = NativeStackNavigationProp<
+  RootStackParamList,
+  'SpendingTab'
+>;
+
 //------------------------------------------------------------------------
 //---------------------------Route Type------------------------------------
 
@@ -83,3 +110,9 @@ export type AccountsItemRouteProp = RouteProp<
   RootStackParamList,
   'AccountsItem'
 >;
+
+export type ExpenseTabRouteProp = RouteProp<RootStackParamList, 'ExpenseTab'>;
+
+export type IncomeTabRouteProp = RouteProp<RootStackParamList, 'IncomeTab'>;
+
+export type SpendingTabRouteProp = RouteProp<RootStackParamList, 'SpendingTab'>;

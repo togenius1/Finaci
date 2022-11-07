@@ -11,13 +11,13 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import moment from 'moment';
 
-import Expense from './tab/Expense';
-import Income from './tab/Income';
+import Expense from './tab/ExpenseTab';
+import Income from './tab/IncomeTab';
 import MonthYearList from '../components/Menu/MonthYearList';
 // import BarChartScreen from './screenComponents/BarChartTab';
 // import BarchartTab from './screenComponents/BarChartTab';
 // import {EXPENSES} from '../dummy/dummy';
-import Spending from './tab/Spending';
+import Spending from './tab/SpendingTab';
 import {OverviewNavigationProp} from '../types';
 
 type Props = {
@@ -177,17 +177,19 @@ function HeaderRightComponent({
 }
 
 const OverviewScreen = ({navigation}: Props) => {
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-  const [mode, setMode] = useState('date');
-  const [fromDate, setFromDate] = useState(initFromDate);
-  const [toDate, setToDate] = useState(initToDate);
-  const [fromDateClicked, setFromDateClicked] = useState(false);
-  const [toDateClicked, setToDateClicked] = useState(false);
-  const [rightMenuClicked, setRightMenuClicked] = useState(false);
+  const [isDatePickerVisible, setDatePickerVisibility] =
+    useState<boolean>(false);
+  const [mode, setMode] = useState<string | null>('date');
+  const [fromDate, setFromDate] = useState<string | null>(initFromDate);
+  const [toDate, setToDate] = useState<string | null>(initToDate);
+  const [fromDateClicked, setFromDateClicked] = useState<boolean>(false);
+  const [toDateClicked, setToDateClicked] = useState<boolean>(false);
+  const [rightMenuClicked, setRightMenuClicked] = useState<boolean>(false);
   const [showCustomDate, setShowCustomDate] = useState(false);
-  const [focusedTabIndex, setFocusedTabIndex] = useState(0);
-  const [showMonthYearListMenu, setShowMonthYearListMenu] = useState(false);
-  const [year, setYear] = useState(moment().year());
+  const [focusedTabIndex, setFocusedTabIndex] = useState<number | undefined>(0);
+  const [showMonthYearListMenu, setShowMonthYearListMenu] =
+    useState<boolean>(false);
+  const [year, setYear] = useState<string | null>(String(moment().year()));
   // const [duration, setDuration] = useState(moment().year());
   // const [month, setMonth] = useState();
 

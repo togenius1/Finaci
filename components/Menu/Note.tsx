@@ -1,15 +1,28 @@
-import {Dimensions, Pressable, StyleSheet, TextInput, View} from 'react-native';
-import React from 'react';
+import {
+  Dimensions,
+  GestureResponderEvent,
+  Pressable,
+  StyleSheet,
+  TextInput,
+  View,
+} from 'react-native';
+import React, {Dispatch, SetStateAction} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import Button from '../UI/Button';
 // import {NoteNavigationType, NoteRouteProp} from '../types';
 
-type Props = {};
-
 type Note = {
   note: string;
   [key: string]: any;
+};
+
+type Dispatcher<S> = Dispatch<SetStateAction<S>>;
+
+type Props = {
+  setNotePressed: (event: GestureResponderEvent) => void;
+  setNote: Dispatcher<Note>;
+  note: Note;
 };
 
 const {width, height} = Dimensions.get('window');

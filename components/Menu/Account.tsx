@@ -6,7 +6,7 @@ import {
   Pressable,
   Dimensions,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {v4 as uuidv4} from 'uuid';
 
@@ -14,24 +14,23 @@ import {AccountCategory} from '../../dummy/categoryItems';
 import AddAccountForm from '../Form/AddAccountForm';
 import {useAppDispatch} from '../../hooks';
 import {accountActions} from '../../store/account-slice';
+import {CategoryType} from '../../models/category';
+import {AccountType} from '../../models/account';
+
+type Dispatcher<S> = Dispatch<SetStateAction<S>>;
 
 type Props = {
-  setAccount: any;
-  setAccountPressed: any;
+  setAccount: Dispatcher<AccountType>;
+  setAccountPressed: Dispatcher<boolean>;
 };
 
 const {width, height} = Dimensions.get('window');
 
-// const colors = {
-//   cash: 'blue',
-//   account: 'red',
-// };
-
 const Account = ({setAccount, setAccountPressed}: Props) => {
-  const [data, setDate] = useState();
+  const [data, setDate] = useState<AccountType>();
   const [addAccountPressed, setAddAccountPressed] = useState<boolean>(false);
-  const [account, setAccountText] = useState<string>('');
-  const [budget, setBudget] = useState<number>(0);
+  const [account, setAccountText] = useState<string | null>('');
+  const [budget, setBudget] = useState<number | undefined>(0);
 
   const dispatch = useAppDispatch();
 

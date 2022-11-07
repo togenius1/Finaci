@@ -1,8 +1,6 @@
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 
-
-
 const Report = () => {
   return (
     <View style={styles.container}>

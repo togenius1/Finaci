@@ -12,6 +12,8 @@ import {EXPENSES, INCOME} from '../dummy/dummy';
 // import {useNavigation} from '@react-navigation/native';
 import MonthYearList from '../components/Menu/MonthYearList';
 import {StatsNavigationProp} from '../types';
+import {ExpenseType} from '../models/expense';
+import {IncomeType} from '../models/income';
 
 type Props = {
   navigation: StatsNavigationProp;
@@ -61,14 +63,15 @@ function HeaderRightComponent({
 const StatsScreen = ({navigation}: Props) => {
   // const navigation = useNavigation();
 
-  const [expenseData, setExpenseData] = useState();
-  const [incomeData, setIncomeData] = useState();
-  const [showMonthYearListMenu, setShowMonthYearListMenu] = useState(false);
-  const [fromDate, setFromDate] = useState(initFromDate);
-  const [toDate, setToDate] = useState(initToDate);
-  const [indicatorIndex, setIndicatorIndex] = useState(0);
-  const [year, setYear] = useState(moment().year());
-  const [month, setMonth] = useState<number>(moment().month() + 1);
+  const [expenseData, setExpenseData] = useState<ExpenseType>();
+  const [incomeData, setIncomeData] = useState<IncomeType>();
+  const [showMonthYearListMenu, setShowMonthYearListMenu] =
+    useState<boolean>(false);
+  const [fromDate, setFromDate] = useState<string | null>(initFromDate);
+  const [toDate, setToDate] = useState<string | null>(initToDate);
+  const [indicatorIndex, setIndicatorIndex] = useState<number | undefined>(0);
+  const [year, setYear] = useState<string | null>(String(moment().year()));
+  const [month, setMonth] = useState<number | undefined>(moment().month() + 1);
   // const [duration, setDuration] = useState(moment().year());
   const onItemPress = useCallback((itemIndex: number) => {
     setIndicatorIndex(itemIndex);

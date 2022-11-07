@@ -18,6 +18,8 @@ import {accountActions} from '../store/account-slice';
 import {sumTotalBudget, sumTotalFunc} from '../util/math';
 import {AccountNavigationType} from '../types';
 import AddAccountForm from '../components/Form/AddAccountForm';
+import {AccountType, CashType} from '../models/account';
+import {ExpenseType} from '../models/expense';
 
 type Props = {
   navigation: AccountNavigationType;
@@ -31,11 +33,11 @@ const {width} = Dimensions.get('window');
 // };
 
 const AccountsScreen = ({navigation}: Props) => {
-  const [accountData, setAccountData] = useState();
-  const [cashData, setCashData] = useState();
-  const [expenseData, setExpenseData] = useState();
+  const [accountData, setAccountData] = useState<AccountType>();
+  const [cashData, setCashData] = useState<CashType>();
+  const [expenseData, setExpenseData] = useState<ExpenseType>();
   const [addAccountPressed, setAddAccountPressed] = useState<boolean>(false);
-  const [account, setAccountText] = useState<string>('');
+  const [account, setAccountText] = useState<string | null>('');
   const [budget, setBudget] = useState<number>(0);
 
   const dispatch = useAppDispatch();

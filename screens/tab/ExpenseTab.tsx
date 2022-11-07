@@ -2,11 +2,15 @@ import React, {useEffect, useState} from 'react';
 
 import ExpenseOutput from '../../components/Output/ExpenseOutput';
 import {EXPENSES} from '../../dummy/dummy';
+import {ExpenseType} from '../../models/expense';
+import {ExpenseTabRouteProp} from '../../types';
 
-type Props = {};
+type Props = {
+  route: ExpenseTabRouteProp;
+};
 
-const Expense = ({route}: Props) => {
-  const [expensesData, setExpensesData] = useState();
+const ExpenseTab = ({route}: Props) => {
+  const [expensesData, setExpensesData] = useState<ExpenseType>();
 
   const fromDate = route.params?.fromDate;
   const toDate = route.params?.toDate;
@@ -24,4 +28,4 @@ const Expense = ({route}: Props) => {
   );
 };
 
-export default Expense;
+export default ExpenseTab;

@@ -4,11 +4,15 @@ import {useIsFocused} from '@react-navigation/native';
 
 import IncomeOutput from '../../components/Output/IncomeOutput';
 import {INCOME} from '../../dummy/dummy';
+import {IncomeTabRouteProp} from '../../types';
+import {IncomeType} from '../../models/income';
 
-type Props = {};
+type Props = {
+  route: IncomeTabRouteProp;
+};
 
-const Income = ({route}: Props) => {
-  const [incomeData, setIncomeData] = useState();
+const IncomeTab = ({route}: Props) => {
+  const [incomeData, setIncomeData] = useState<IncomeType>();
 
   const isFocused = useIsFocused();
   const fromDate = route.params?.fromDate;
@@ -31,6 +35,6 @@ const Income = ({route}: Props) => {
   );
 };
 
-export default Income;
+export default IncomeTab;
 
 const styles = StyleSheet.create({});
