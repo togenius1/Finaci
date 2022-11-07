@@ -114,7 +114,7 @@ const DrawerContent = (props: Props) => {
             </View>
           </Pressable>
 
-          <Pressable
+          {/* <Pressable
             style={({pressed}) => pressed && styles.pressed}
             onPress={() => {
               navigation.navigate('Profile');
@@ -123,7 +123,7 @@ const DrawerContent = (props: Props) => {
               <Ionicons name="happy-outline" size={22} color={colors.user} />
               <Text style={styles.profile}>Nunggu</Text>
             </View>
-          </Pressable>
+          </Pressable> */}
         </View>
 
         <View style={styles.logoutContainer}>

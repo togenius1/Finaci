@@ -22,15 +22,21 @@ import Spending from './tab/Spending';
 type Props = {};
 
 const {width} = Dimensions.get('window');
-const initFromDate = moment(
-  `${moment().year()}-0${moment().month() + 1}-01`,
-).format('YYYY-MM-DD');
+
+let month = moment().month() + 1;
+if (month < 10) {
+  month = `0${month}`;
+}
+const initFromDateString = `${moment().year()}-${month}-01`;
+const initFromDate = moment(initFromDateString).format('YYYY-MM-DD');
 const initToDate = moment().format('YYYY-MM-DD');
+
+console.log('initFromDate: ', initFromDate);
 
 const TopTab = createMaterialTopTabNavigator();
 // const navigation = useNavigation();
 
-function OverviewTab({setFocusedTabIndex, fromDate, toDate, focusedTabIndex}) {
+function OverviewTab({setFocusedTabIndex, fromDate, toDate}) {
   return (
     <TopTab.Navigator
       screenListeners={{
@@ -39,7 +45,7 @@ function OverviewTab({setFocusedTabIndex, fromDate, toDate, focusedTabIndex}) {
           setFocusedTabIndex(e.data?.state?.index);
         },
       }}
-      screenOptions={({route}) => ({
+      screenOptions={() => ({
         tabBarActiveTintColor: 'red',
         tabBarInactiveTintColor: '#7e7e7e',
         tabBarIndicatorStyle: {backgroundColor: 'red'},

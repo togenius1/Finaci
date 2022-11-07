@@ -1,0 +1,53 @@
+type BackupKey @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  key: String
+}
+
+type Expense @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  cateId: ID
+  accountId: ID
+  amount: Float
+  note: String
+  date: AWSDateTime
+  ExpenseCategory: ExpenseCategory @hasOne
+  AccountCategory: AccountCategory @hasOne
+}
+
+type Income @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  cateId: ID
+  accountId: ID
+  amount: Float
+  note: String
+  date: AWSDateTime
+  IncomeCategory: IncomeCategory @hasOne
+  AccountCategory: AccountCategory @hasOne
+}
+
+type ExpenseCategory @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  title: String
+  date: AWSDateTime
+}
+
+type IncomeCategory @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  title: String
+  date: AWSDateTime
+}
+
+type AccountCategory @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  title: String
+  budget: Float
+  date: AWSDateTime
+}
+
+type CashCategory @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  title: String
+  budget: Float
+  date: AWSDateTime
+}
+ 
