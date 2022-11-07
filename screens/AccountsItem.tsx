@@ -20,14 +20,18 @@ import {
 } from '../dummy/categoryItems';
 import {EXPENSES, INCOME} from '../dummy/dummy';
 import {
-  sortDataByDay,
+  // sortDataByDay,
   sumByCustomDate,
-  sumByDate,
+  // sumByDate,
   sumTotalFunc,
 } from '../util/math';
-import MonthYearList from '../components/UI/Menu/MonthYearList';
+import MonthYearList from '../components/Menu/MonthYearList';
+import {AccountsItemNavigationType, AccountsItemRouteProp} from '../types';
 
-type Props = {};
+type Props = {
+  navigation: AccountsItemNavigationType;
+  route: AccountsItemRouteProp;
+};
 
 const {width} = Dimensions.get('window');
 
@@ -269,7 +273,7 @@ function AccountsItem({navigation, route}: Props) {
   function onMonthYearSelectedHandler(time) {
     let fromdate;
     let todate;
-    let month;
+    // let month;
     const mm = moment().month(time).format('MM');
     const daysInMonth = moment(moment().format(`YYYY-${mm}`)).daysInMonth();
 

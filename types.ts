@@ -1,58 +1,36 @@
 import {RouteProp} from '@react-navigation/native';
 import type {
   NativeStackNavigationProp,
-  NativeStackScreenProps,
+  // NativeStackScreenProps,
 } from '@react-navigation/native-stack';
-
-// export type ExpensesModel = {
-//   id: string | null;
-//   budget: number;
-//   category: string | null;
-//   description: string | null;
-//   amount: number;
-//   date: Date;
-// };
 
 export type RootStackParamList = {
   Overview: undefined;
-  Expenses: undefined;
-  AllExpenses: undefined;
-  ExpenseGraphs: undefined;
+  Transaction: undefined;
+  Stats: undefined;
   Menu: undefined;
-  // Analysis: undefined;
+  ExpenseGraphs: undefined;
+  Accounts: {
+    account: string;
+  };
+  AccountsItem: undefined;
   AddExpenses: {
     amount: string;
   };
+  Settings: undefined;
   AddDetails: {
     amount: string;
     category?: string;
     account?: string;
   };
-  Category: {
-    category: string | null;
-  };
-  Note: {
-    note: string;
-  };
-  Account: {
-    account: string;
-  };
-  ManageExpenses: undefined;
-  Settings: undefined;
-  AccountsItem: undefined;
 };
 
 //------------------------------------------------------------------------
 //---------------------------Screen Type------------------------------------
-export type OverviewPropsType = NativeStackScreenProps<
-  RootStackParamList,
-  'Overview'
->;
-
-export type ManageExpensesPropsType = NativeStackScreenProps<
-  RootStackParamList,
-  'ManageExpenses'
->;
+// export type OverviewPropsType = NativeStackScreenProps<
+//   RootStackParamList,
+//   'Overview'
+// >;
 
 //------------------------------------------------------------------------
 //---------------------------Navigation Type---------------------------------
@@ -61,37 +39,47 @@ export type OverviewNavigationProp = NativeStackNavigationProp<
   'Overview'
 >;
 
-export type ManageExpensesNavigationProp = NativeStackNavigationProp<
+export type TransactionNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
-  'ManageExpenses'
+  'Transaction'
 >;
 
-export type CategoryNavigationType = NativeStackNavigationProp<
+export type StatsNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
-  'Category'
+  'Stats'
 >;
 
-export type NoteNavigationType = NativeStackNavigationProp<
+export type AccountsItemNavigationType = NativeStackNavigationProp<
   RootStackParamList,
-  'Note'
+  'AccountsItem'
+>;
+
+export type SettingsItemNavigationType = NativeStackNavigationProp<
+  RootStackParamList,
+  'Settings'
+>;
+
+export type AddDetailsNavigationType = NativeStackNavigationProp<
+  RootStackParamList,
+  'AddDetails'
 >;
 
 export type AccountNavigationType = NativeStackNavigationProp<
   RootStackParamList,
-  'Account'
+  'Accounts'
 >;
 
 //------------------------------------------------------------------------
 //---------------------------Route Type------------------------------------
-export type ManageExpensesRouteProp = RouteProp<
-  RootStackParamList,
-  'ManageExpenses'
->;
 
 export type AddDetailsRouteProp = RouteProp<RootStackParamList, 'AddDetails'>;
 
 export type AddExpensesRouteProp = RouteProp<RootStackParamList, 'AddExpenses'>;
 
-export type NoteRouteProp = RouteProp<RootStackParamList, 'Note'>;
+export type StatsRouteProp = RouteProp<RootStackParamList, 'Stats'>;
 
-export type AccountRouteProp = RouteProp<RootStackParamList, 'Account'>;
+export type AccountsRouteProp = RouteProp<RootStackParamList, 'Accounts'>;
+export type AccountsItemRouteProp = RouteProp<
+  RootStackParamList,
+  'AccountsItem'
+>;

@@ -1,5 +1,5 @@
 import React from 'react';
-import {TextInput} from 'react-native';
+// import {TextInput} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import {icon} from './icon';

@@ -16,9 +16,12 @@ import {EXPENSES, INCOME} from '../dummy/dummy';
 import {ExpenseCategory} from '../dummy/categoryItems';
 import IconButton from '../components/UI/iconButton';
 import TransactionOutput from '../components/Output/TransactionOutput';
-import MonthYearList from '../components/UI/Menu/MonthYearList';
+import MonthYearList from '../components/Menu/MonthYearList';
+import {TransactionNavigationProp} from '../types';
 
-type Props = {};
+type Props = {
+  navigation: TransactionNavigationProp;
+};
 
 const {width, height} = Dimensions.get('window');
 

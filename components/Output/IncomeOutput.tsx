@@ -3,7 +3,7 @@ import React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {v4 as uuidv4} from 'uuid';
 
-import PieChart from '../UI/Graph/PieChart';
+import PieChart from '../Graph/PieChart';
 import {
   calPctEachCategoryId,
   sumTotalFunc,

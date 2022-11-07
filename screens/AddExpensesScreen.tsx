@@ -3,8 +3,6 @@ import React, {useEffect, useState} from 'react';
 import {Dimensions, Pressable, StyleSheet, Text, View} from 'react-native';
 import Calculator from '../components/UI/Calculator';
 
-type Props = {};
-
 const colors = {
   expense: 'red',
   income: 'green',
@@ -67,7 +65,7 @@ function Tabs({data, handleOnPressHandler}) {
   );
 }
 
-const AddExpensesScreen = ({}: Props) => {
+const AddExpensesScreen = () => {
   const [transaction, setTransaction] = useState(initTransaction);
   const [select, setSelect] = useState(transactionData);
 

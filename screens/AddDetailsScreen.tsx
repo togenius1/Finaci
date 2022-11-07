@@ -3,15 +3,15 @@ import React, {useEffect, useState} from 'react';
 import {v4 as uuidv4} from 'uuid';
 import moment from 'moment';
 
-import {AddDetailsRouteProp} from '../types';
+import {AddDetailsNavigationType, AddDetailsRouteProp} from '../types';
 import ExpenseForm from '../components/ManageExpense/ExpenseForm';
 import {expenseActions} from '../store/expense-slice';
 import {incomeActions} from '../store/income-slice';
 import {transferActions} from '../store/transfer-slice';
 import {useAppDispatch, useAppSelector} from '../hooks';
-import Note from '../components/UI/Menu/Note';
-import Account from '../components/UI/Menu/Account';
-import Category from '../components/UI/Menu/Category';
+import Note from '../components/Menu/Note';
+import Account from '../components/Menu/Account';
+import Category from '../components/Menu/Category';
 import {
   ExpenseCategory,
   AccountCategory,
@@ -20,6 +20,7 @@ import {
 } from '../dummy/categoryItems';
 
 type Props = {
+  navigation: AddDetailsNavigationType;
   route: AddDetailsRouteProp;
 };
 

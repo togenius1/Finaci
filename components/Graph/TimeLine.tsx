@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Dimensions, StyleSheet, View, Text} from 'react-native';
 import {scaleTime} from 'd3-scale';
-import {currencyFormatter} from '../../../util/currencyFormatter';
+import {currencyFormatter} from '../../util/currencyFormatter';
 // import {max, sum} from 'd3-array';
 
 type Props = {};

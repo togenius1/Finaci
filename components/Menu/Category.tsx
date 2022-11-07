@@ -11,8 +11,8 @@ import React, {useEffect, useState} from 'react';
 import {v4 as uuidv4} from 'uuid';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import {useAppDispatch} from '../../../hooks';
-import {categoryActions} from '../../../store/category-slice';
+import {useAppDispatch} from '../../hooks';
+import {categoryActions} from '../../store/category-slice';
 
 type Props = {};
 

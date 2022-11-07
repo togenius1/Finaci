@@ -5,17 +5,17 @@ import {prefetchConfiguration} from 'react-native-app-auth';
 import DocumentPicker from 'react-native-document-picker';
 import RNFS from 'react-native-fs';
 
-import {generateKeyPair, PRIVATE_KEY, PUBLIC_KEY} from '../../../util/crypto';
-import {configs, defaultAuthState} from '../../../util/authConfig';
-import {decryption} from '../../../util/decrypt';
-import {encryption} from '../../../util/encrypt';
-import {EXPENSES} from '../../../dummy/dummy';
+import {generateKeyPair, PRIVATE_KEY, PUBLIC_KEY} from '../../util/crypto';
+import {configs, defaultAuthState} from '../../util/authConfig';
+import {decryption} from '../../util/decrypt';
+import {encryption} from '../../util/encrypt';
+import {EXPENSES} from '../../dummy/dummy';
 import {
   fetchCreateFile,
   fetchCreateFolder,
   fetchFindFolder,
-} from '../../../util/fetchData';
-import {authorization, refreshAuthorize} from '../../../util/auth';
+} from '../../util/fetchData';
+import {authorization, refreshAuthorize} from '../../util/auth';
 
 interface AuthStateType {
   hasLoggedInOnce: boolean;

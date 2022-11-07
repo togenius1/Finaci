@@ -6,9 +6,9 @@ import {
   AccountCategory,
   CashCategory,
   ExpenseCategory,
-} from '../../../dummy/categoryItems';
-import {EXPENSES} from '../../../dummy/dummy';
-import {xport} from '../../../util/xport';
+} from '../../dummy/categoryItems';
+import {EXPENSES} from '../../dummy/dummy';
+import {xport} from '../../util/xport';
 
 const Export = () => {
   const [jsonData, setJsonData] = useState();

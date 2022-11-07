@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-export function getFormattedDate(date: string) {
+export function getFormattedDate(date) {
   return date.toISOString().slice(0, 10);
   // return date.slice(0, 10);
 }

@@ -5,7 +5,7 @@ import {max, sum} from 'd3-array';
 import {v4 as uuidv4} from 'uuid';
 
 import {AccountCategory} from '../../dummy/categoryItems';
-import BarChart from '../../components/UI/Graph/BarChart';
+import BarChart from '../../components/Graph/BarChart';
 import {useAppDispatch, useAppSelector} from '../../hooks';
 import {sumByDate, sumEachAccountId} from '../../util/math';
 

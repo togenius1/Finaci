@@ -1,20 +1,23 @@
-import {Dimensions, Pressable, StyleSheet, Text, View} from 'react-native';
+import {Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
 import moment from 'moment';
 
-import IconButton from '../components/UI/iconButton';
-import BarChartTab from './screenComponents/BarChartTab';
+// import IconButton from '../components/UI/iconButton';
+// import BarChartTab from './screenComponents/BarChartTab';
 import TimeLineTab from './screenComponents/TimeLineScreen';
 import Tabs from '../components/UI/Tabs';
-import LineChart from '../components/UI/Graph/LineChart';
+import LineChart from '../components/Graph/LineChart';
 import {sumByCustomMonth} from '../util/math';
 import {EXPENSES, INCOME} from '../dummy/dummy';
-import {useNavigation} from '@react-navigation/native';
-import MonthYearList from '../components/UI/Menu/MonthYearList';
+// import {useNavigation} from '@react-navigation/native';
+import MonthYearList from '../components/Menu/MonthYearList';
+import {StatsNavigationProp} from '../types';
 
-type Props = {};
+type Props = {
+  navigation: StatsNavigationProp;
+};
 
-const {width, height} = Dimensions.get('window');
+// const {width, height} = Dimensions.get('window');
 
 const dataTabsObject = {
   // barchart: 'BarChart',
@@ -55,8 +58,8 @@ function HeaderRightComponent({
   );
 }
 
-const StatsScreen = ({}: Props) => {
-  const navigation = useNavigation();
+const StatsScreen = ({navigation}: Props) => {
+  // const navigation = useNavigation();
 
   const [expenseData, setExpenseData] = useState();
   const [incomeData, setIncomeData] = useState();
@@ -117,17 +120,17 @@ const StatsScreen = ({}: Props) => {
     return;
   }
 
-  function setFromToDateBudgetHandler() {
-    if (month === moment().month() + 1) {
-      setFromDate(moment().format(`${year}-${`0${month}`}-01`));
-      setToDate(moment().format(`${year}-${`0${month}`}-DD`));
-    } else {
-      const mm = moment().month(month).format('MM');
-      const days = moment(moment().format(`YYYY-${mm}`)).daysInMonth();
-      setFromDate(moment().format(`${year}-${mm}-01`));
-      setToDate(moment().format(`${year}-${mm}-${days}`));
-    }
-  }
+  // function setFromToDateBudgetHandler() {
+  //   if (month === moment().month() + 1) {
+  //     setFromDate(moment().format(`${year}-${`0${month}`}-01`));
+  //     setToDate(moment().format(`${year}-${`0${month}`}-DD`));
+  //   } else {
+  //     const mm = moment().month(month).format('MM');
+  //     const days = moment(moment().format(`YYYY-${mm}`)).daysInMonth();
+  //     setFromDate(moment().format(`${year}-${mm}-01`));
+  //     setToDate(moment().format(`${year}-${mm}-${days}`));
+  //   }
+  // }
 
   function setFromToDateExpenseIncomeHandler() {
     if (year === moment().year()) {

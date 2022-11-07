@@ -1,9 +1,9 @@
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 
-type Props = {};
 
-const Report = (props: Props) => {
+
+const Report = () => {
   return (
     <View style={styles.container}>
       <Text style={{fontSize: 18, fontWeight: 'bold', color: 'black'}}>
@@ -32,7 +32,7 @@ const Report = (props: Props) => {
 export default Report;
 
 const styles = StyleSheet.create({
- container: {
+  container: {
     marginLeft: 20,
     marginTop: 50,
   },

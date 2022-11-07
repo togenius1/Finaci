@@ -1,11 +1,11 @@
 import {Dimensions, Pressable, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import moment from 'moment';
-import {v4 as uuidv4} from 'uuid';
+// import {v4 as uuidv4} from 'uuid';
 
 type Props = {};
 
-const {width, height} = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 
 const monthObj = [
   {id: 1, MY: 'Jan'},

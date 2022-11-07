@@ -10,23 +10,54 @@ import React, {useEffect, useState} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {v4 as uuidv4} from 'uuid';
 
-import {AccountCategory} from '../../../dummy/categoryItems';
+import {AccountCategory} from '../../dummy/categoryItems';
+import AddAccountForm from '../Form/AddAccountForm';
+import {useAppDispatch} from '../../hooks';
+import {accountActions} from '../../store/account-slice';
 
-type Props = {};
+type Props = {
+  setAccount: any;
+  setAccountPressed: any;
+};
 
 const {width, height} = Dimensions.get('window');
 
-const colors = {
-  cash: 'blue',
-  account: 'red',
-};
+// const colors = {
+//   cash: 'blue',
+//   account: 'red',
+// };
 
 const Account = ({setAccount, setAccountPressed}: Props) => {
   const [data, setDate] = useState();
+  const [addAccountPressed, setAddAccountPressed] = useState<boolean>(false);
+  const [account, setAccountText] = useState<string>('');
+  const [budget, setBudget] = useState<number>(0);
+
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     setDate(AccountCategory);
   }, []);
+
+  function addAccountHandler() {
+    setAddAccountPressed(pressed => !pressed);
+  }
+
+  function closeFormHandler() {
+    setAddAccountPressed(false);
+  }
+
+  function saveFormHandler() {
+    dispatch(
+      accountActions.addAccount({
+        id: 'account' + uuidv4(),
+        account: account,
+        budget: budget,
+        date: new Date(),
+      }),
+    );
+    setAddAccountPressed(false);
+  }
 
   const renderItem = ({item}) => {
     return (
@@ -89,12 +120,25 @@ const Account = ({setAccount, setAccountPressed}: Props) => {
         {/* <Text>Add Account</Text> */}
         <Pressable
           style={({pressed}) => pressed && styles.pressed}
-          onPress={() => {}}>
+          onPress={() => addAccountHandler()}>
           <View style={{marginRight: 10, marginBottom: 15}}>
             <Ionicons name="add-circle" size={45} color="#367ed5" />
           </View>
         </Pressable>
       </View>
+
+      {addAccountPressed && (
+        <View style={{left: 15, top: 40}}>
+          <AddAccountForm
+            closeFormHandler={closeFormHandler}
+            saveFormHandler={saveFormHandler}
+            setAccountText={setAccountText}
+            account={account}
+            setBudget={setBudget}
+            budget={budget}
+          />
+        </View>
+      )}
     </View>
   );
 };

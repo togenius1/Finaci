@@ -1,9 +1,9 @@
 import {StyleSheet, View} from 'react-native';
 import React from 'react';
 
-import Export from '../components/UI/Menu/Export';
-import Backup from '../components/UI/Menu/Backup';
-import Report from '../components/UI/Menu/Report';
+import Export from '../components/Menu/Export';
+import Backup from '../components/Menu/Backup';
+import Report from '../components/Menu/Report';
 
 const ReportsScreen = () => {
   return (

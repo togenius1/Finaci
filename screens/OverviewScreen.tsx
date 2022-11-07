@@ -13,25 +13,26 @@ import moment from 'moment';
 
 import Expense from './tab/Expense';
 import Income from './tab/Income';
-import MonthYearList from '../components/UI/Menu/MonthYearList';
-import BarChartScreen from './screenComponents/BarChartTab';
-import BarchartTab from './screenComponents/BarChartTab';
-import {EXPENSES} from '../dummy/dummy';
+import MonthYearList from '../components/Menu/MonthYearList';
+// import BarChartScreen from './screenComponents/BarChartTab';
+// import BarchartTab from './screenComponents/BarChartTab';
+// import {EXPENSES} from '../dummy/dummy';
 import Spending from './tab/Spending';
+import {OverviewNavigationProp} from '../types';
 
-type Props = {};
+type Props = {
+  navigation: OverviewNavigationProp;
+};
 
 const {width} = Dimensions.get('window');
 
 let month = moment().month() + 1;
 if (month < 10) {
-  month = `0${month}`;
+  month = +`0${month}`;
 }
 const initFromDateString = `${moment().year()}-${month}-01`;
 const initFromDate = moment(initFromDateString).format('YYYY-MM-DD');
 const initToDate = moment().format('YYYY-MM-DD');
-
-console.log('initFromDate: ', initFromDate);
 
 const TopTab = createMaterialTopTabNavigator();
 // const navigation = useNavigation();

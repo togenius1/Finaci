@@ -1,15 +1,8 @@
-import {
-  Dimensions,
-  Pressable,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
-import React, {useState} from 'react';
+import {Dimensions, Pressable, StyleSheet, TextInput, View} from 'react-native';
+import React from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import Button from '../Button';
+import Button from '../UI/Button';
 // import {NoteNavigationType, NoteRouteProp} from '../types';
 
 type Props = {};

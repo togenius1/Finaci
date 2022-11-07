@@ -6,7 +6,7 @@ import moment from 'moment';
 
 // import {EXPENSES} from '../../dummy/dummy';
 import {AccountCategory} from '../../dummy/categoryItems';
-import TimeLine from '../../components/UI/Graph/TimeLine';
+import TimeLine from '../../components/Graph/TimeLine';
 // import {useAppDispatch, useAppSelector} from '../../hooks';
 import {sumEachAccountId, sumTotalBudget, sumTotalFunc} from '../../util/math';
 

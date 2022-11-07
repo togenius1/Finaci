@@ -21,7 +21,7 @@ import {
 
 import {currencyFormatter} from '../../util/currencyFormatter';
 import {getDaysInWeek} from '../../util/date';
-import Export from '../UI/Menu/Export';
+import Export from '../Menu/Export';
 import {useAppSelector} from '../../hooks';
 import {useNavigation} from '@react-navigation/native';
 

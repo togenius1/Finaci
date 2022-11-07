@@ -15,7 +15,6 @@ import {GlobalStyles} from './constants/styles';
 import {RootStackParamList} from './types';
 import AccountsScreen from './screens/AccountsScreen';
 import SettingsScreen from './screens/SettingsScreen';
-import ProfileScreen from './screens/ProfileScreen';
 import DrawerContent from './screens/drawer/DrawerContent';
 import ReportsScreen from './screens/ReportsScreen';
 import AccountsItem from './screens/AccountsItem';
@@ -40,7 +39,7 @@ const Drawer = createDrawerNavigator<RootStackParamList>();
 function MenuDrawer() {
   return (
     <Drawer.Navigator
-      screenOptions={({}) => ({
+      screenOptions={() => ({
         headerTintColor: 'black',
         drawerType: 'front',
         drawerStyle: {
@@ -52,42 +51,42 @@ function MenuDrawer() {
       <Drawer.Screen
         name="Overview"
         component={OverviewScreen}
-        options={({navigation}) => ({
+        options={() => ({
           // title: 'Overview',
         })}
       />
       <Drawer.Screen
         name="Transactions"
         component={TransactionsScreen}
-        options={({navigation}) => ({
+        options={() => ({
           title: 'Expenses',
         })}
       />
       <Drawer.Screen
         name="Stats"
         component={StatsScreen}
-        options={({navigation}) => ({
+        options={() => ({
           title: 'Stats',
         })}
       />
       <Drawer.Screen
         name="Accounts"
         component={AccountsScreen}
-        options={({navigation}) => ({
+        options={() => ({
           title: 'Budgets',
         })}
       />
       <Drawer.Screen
         name="Reports"
         component={ReportsScreen}
-        options={({navigation}) => ({
+        options={() => ({
           title: 'Reports',
         })}
       />
       <Drawer.Screen
         name="Settings"
         component={SettingsScreen}
-        options={({navigation}) => ({
+        options={() => ({
           title: 'Settings',
         })}
       />

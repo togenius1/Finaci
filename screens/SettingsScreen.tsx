@@ -1,11 +1,11 @@
 import {Dimensions, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 
-type Props = {};
 
-const {width, height} = Dimensions.get('window');
 
-function Settings(props: Props) {
+const {width} = Dimensions.get('window');
+
+function Settings() {
   return (
     <View style={styles.container}>
       <View style={[styles.currency, styles.box]}>
