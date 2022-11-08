@@ -1,4 +1,4 @@
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {Dimensions, Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {prefetchConfiguration} from 'react-native-app-auth';
@@ -26,6 +26,7 @@ interface AuthStateType {
   refreshToken: string;
 }
 
+const {width} = Dimensions.get('window');
 const sec_1 = 1000;
 const minute_1 = sec_1 * 60;
 const minute_5 = minute_1 * 5;
@@ -83,7 +84,7 @@ const Backup = () => {
   }, [authState]);
 
   // Backup
-  const backupHandler = async (obj: {}) => {
+  const backupHandler = async obj => {
     const encrypted = await encryption(obj);
 
     const d = new Date();
@@ -120,7 +121,7 @@ const Backup = () => {
       });
 
     const decrypted = await decryption(String(encryptedData));
-    console.log('decrypted: ', decrypted);
+    // console.log('decrypted: ', decrypted);
     return decrypted;
   };
 
@@ -129,7 +130,7 @@ const Backup = () => {
     const {publicKey} = generateKeyPair();
     const privateK = await AsyncStorage.getItem(PRIVATE_KEY);
     // save private key to Async storage
-    console.log('privateK: ', privateK);
+    // console.log('privateK: ', privateK);
     if (privateK === null || privateK === undefined) {
       const {secretKey} = generateKeyPair();
       await AsyncStorage.setItem(PRIVATE_KEY, secretKey.toString());
@@ -184,40 +185,40 @@ const Backup = () => {
 
   return (
     <View style={styles.container}>
-      <Pressable
-        style={({pressed}) => pressed && styles.pressed}
-        onPress={() => {}}>
-        <Text style={{fontSize: 18, fontWeight: 'bold', color: 'black'}}>
-          Backup <Text style={{fontSize: 12}}>(google drive)</Text>
-        </Text>
-      </Pressable>
-
-      <Pressable
-        style={({pressed}) => pressed && styles.pressed}
-        onPress={() => backupHandler(jsonData)}>
-        <View style={{marginTop: 20}}>
-          <Text style={{fontSize: 18}}>Backup</Text>
-          <Text style={{fontSize: 14}}>Backup your data to cloud</Text>
+      <View style={styles.inner}>
+        <View>
+          <Text style={{fontSize: 18, fontWeight: 'bold', color: 'black'}}>
+            Backup <Text style={{fontSize: 12}}>(Google drive)</Text>
+          </Text>
         </View>
-      </Pressable>
 
-      <Pressable
-        style={({pressed}) => pressed && styles.pressed}
-        onPress={() => restoreHandler()}>
-        <View style={{marginTop: 20}}>
-          <Text style={{fontSize: 18}}>Restore</Text>
-          <Text style={{fontSize: 14}}>Restore your data from cloud</Text>
-        </View>
-      </Pressable>
+        <Pressable
+          style={({pressed}) => pressed && styles.pressed}
+          onPress={() => backupHandler(jsonData)}>
+          <View style={{marginTop: 20}}>
+            <Text style={{fontSize: 18}}>Backup</Text>
+            <Text style={{fontSize: 14}}>Backup your data to cloud</Text>
+          </View>
+        </Pressable>
 
-      <Pressable
-        style={({pressed}) => pressed && styles.pressed}
-        onPress={updateKeyPair}>
-        <View style={{marginTop: 20}}>
-          <Text style={{fontSize: 18}}>updateKeyPair</Text>
-          <Text style={{fontSize: 14}}>update key pair</Text>
-        </View>
-      </Pressable>
+        <Pressable
+          style={({pressed}) => pressed && styles.pressed}
+          onPress={() => restoreHandler()}>
+          <View style={{marginTop: 20}}>
+            <Text style={{fontSize: 18}}>Restore</Text>
+            <Text style={{fontSize: 14}}>Restore your data from cloud</Text>
+          </View>
+        </Pressable>
+
+        <Pressable
+          style={({pressed}) => pressed && styles.pressed}
+          onPress={updateKeyPair}>
+          <View style={{marginTop: 20}}>
+            <Text style={{fontSize: 18}}>updateKeyPair</Text>
+            <Text style={{fontSize: 14}}>update key pair</Text>
+          </View>
+        </Pressable>
+      </View>
     </View>
   );
 };
@@ -226,8 +227,19 @@ export default Backup;
 
 const styles = StyleSheet.create({
   container: {
-    marginLeft: 20,
+    justifyContent: 'center',
     marginTop: 50,
+    width,
+    height: 220,
+    elevation: 3,
+    shadowColor: '#c6c6c6',
+    shadowOffset: {width: 0, height: 0},
+    shadowOpacity: 0.7,
+    shadowRadius: 3,
+    backgroundColor: 'white',
+  },
+  inner: {
+    marginLeft: 20,
   },
   pressed: {
     opacity: 0.75,

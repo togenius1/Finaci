@@ -37,8 +37,13 @@ type Props = {
   route: AccountsItemRouteProp;
 };
 
-const {width} = Dimensions.get('window');
+interface MenuHandlerType {
+  monthlyClickedHandler: () => void;
+  customClickedHandler: () => void;
+}
 
+// CONSTANT
+const {width} = Dimensions.get('window');
 let month = moment().month() + 1;
 if (month < 10) {
   month = +`0${month}`;
@@ -46,7 +51,11 @@ if (month < 10) {
 const initFromDate = `${moment().year()}-${month}-01`;
 const initToDate = moment().format('YYYY-MM-DD');
 
-function MenuHandler({monthlyClickedHandler, customClickedHandler}) {
+// Menu Function
+function MenuHandler({
+  monthlyClickedHandler,
+  customClickedHandler,
+}: MenuHandlerType) {
   return (
     <View style={styles.listMenu}>
       <Pressable
@@ -169,15 +178,15 @@ function AccountsItem({navigation, route}: Props) {
   const [fromDate, setFromDate] = useState<string | null>(initFromDate);
   const [toDate, setToDate] = useState<string | null>(initToDate);
   const [year, setYear] = useState<string | null>(String(moment().year()));
-  // const [month, setMonth] = useState<number | undefined>(moment().month() + 1);
   const [showMonthYearListMenu, setShowMonthYearListMenu] =
-    useState<boolean>(false);
-  const [rightMenuClicked, setRightMenuClicked] = useState<boolean>(false);
-  const [toDateClicked, setToDateClicked] = useState<boolean>(false);
+    React.useState<boolean>(false);
+  const [rightMenuClicked, setRightMenuClicked] =
+    React.useState<boolean>(false);
+  const [toDateClicked, setToDateClicked] = React.useState<boolean>(false);
   const [isDatePickerVisible, setDatePickerVisibility] =
-    useState<boolean>(false);
-  const [fromDateClicked, setFromDateClicked] = useState<boolean>(false);
-  const [showCustomDate, setShowCustomDate] = useState<boolean>(false);
+    React.useState<boolean>(false);
+  const [fromDateClicked, setFromDateClicked] = React.useState<boolean>(false);
+  const [showCustomDate, setShowCustomDate] = React.useState<boolean>(false);
 
   useEffect(() => {
     setExpensesData(EXPENSES);

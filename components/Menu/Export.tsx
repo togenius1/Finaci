@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {Dimensions, Pressable, StyleSheet, Text, View} from 'react-native';
 import moment from 'moment';
 
 import {
@@ -9,6 +9,8 @@ import {
 } from '../../dummy/categoryItems';
 import {EXPENSES} from '../../dummy/dummy';
 import {xport} from '../../util/xport';
+
+const {width} = Dimensions.get('window');
 
 const Export = () => {
   const [jsonData, setJsonData] = useState();
@@ -50,24 +52,24 @@ const Export = () => {
 
   return (
     <View style={styles.container}>
-      <Pressable
-        style={({pressed}) => pressed && styles.pressed}
-        onPress={() => {}}>
-        <Text style={{fontSize: 18, fontWeight: 'bold', color: 'black'}}>
-          Export <Text style={{fontSize: 12}}>(Raw data)</Text>
-        </Text>
-      </Pressable>
-
-      <Pressable
-        style={({pressed}) => pressed && styles.pressed}
-        onPress={() => exportHandler(newJson)}>
-        <View style={{marginTop: 20}}>
-          <Text style={{fontSize: 18}}>Excel (.xls)</Text>
-          <Text style={{fontSize: 14}}>
-            Export your data via the .xls files
+      <View style={styles.inner}>
+        <View>
+          <Text style={{fontSize: 18, fontWeight: 'bold', color: 'black'}}>
+            Export <Text style={{fontSize: 12}}>(Raw data)</Text>
           </Text>
         </View>
-      </Pressable>
+
+        <Pressable
+          style={({pressed}) => pressed && styles.pressed}
+          onPress={() => exportHandler(newJson)}>
+          <View style={{marginTop: 20}}>
+            <Text style={{fontSize: 18}}>Excel (.xls)</Text>
+            <Text style={{fontSize: 14}}>
+              Export your data via the .xls files
+            </Text>
+          </View>
+        </Pressable>
+      </View>
     </View>
   );
 };
@@ -76,8 +78,19 @@ export default Export;
 
 const styles = StyleSheet.create({
   container: {
-    marginLeft: 20,
+    justifyContent: 'center',
     marginTop: 50,
+    width,
+    height: 100,
+    elevation: 3,
+    shadowColor: '#c6c6c6',
+    shadowOffset: {width: 0, height: 0},
+    shadowOpacity: 0.7,
+    shadowRadius: 3,
+    backgroundColor: 'white',
+  },
+  inner: {
+    marginLeft: 20,
   },
   exportsContainer: {
     marginLeft: 20,

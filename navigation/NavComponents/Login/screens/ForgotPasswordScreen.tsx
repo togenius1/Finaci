@@ -3,8 +3,8 @@ import React from 'react';
 import {useForm} from 'react-hook-form';
 import {Auth} from 'aws-amplify';
 
-import CustomInput from '../../components/CustomInput/CustomInput';
-import CustomButton from '../../components/CustomButton/CustomButton';
+import CustomInput from '../components/CustomInput';
+import CustomButton from '../components/CustomButton';
 
 type Props = {};
 

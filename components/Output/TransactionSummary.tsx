@@ -24,12 +24,41 @@ import {getDaysInWeek} from '../../util/date';
 import Export from '../Menu/Export';
 import {useAppSelector} from '../../hooks';
 import {useNavigation} from '@react-navigation/native';
+import {ExpenseType} from '../../models/expense';
+import {IncomeType} from '../../models/income';
+import {TransactionSummaryNavigationProp} from '../../types';
 
-type Props = {};
+type Props = {
+  expenseData: ExpenseType | undefined;
+  incomeData: IncomeType | undefined;
+  monthlyPressed: boolean;
+  weeklyPressed: boolean;
+  dailyPressed: boolean;
+  customPressed: boolean;
+  fromDate: string | null;
+  toDate: string | null;
+  exportPressed: boolean;
+};
+
+interface HeaderSummaryType {
+  total: number;
+  totalIncome: number;
+  totalExpenses: number;
+}
+
+interface DailyItemType {
+  incomeAmount: number;
+  expenseAmount: number;
+  day: number;
+  dayLabel: string;
+  monthLabel: string;
+  year: number;
+  navigation: TransactionSummaryNavigationProp;
+}
 
 const {width} = Dimensions.get('window');
 
-function HeaderSummary({total, totalIncome, totalExpenses}) {
+function HeaderSummary({total, totalIncome, totalExpenses}: HeaderSummaryType) {
   return (
     <View style={styles.assetsContainer}>
       <View style={styles.assetBox}>
@@ -141,10 +170,10 @@ function WeeklyRenderItem({item}) {
         : '';
   }
 
-  if (startDateOfWeek < 10) {
+  if (Number(startDateOfWeek) < 10) {
     startDateOfWeek = `0${startDateOfWeek}`;
   }
-  if (endDateOfWeek < 10) {
+  if (Number(endDateOfWeek) < 10) {
     endDateOfWeek = `0${endDateOfWeek}`;
   }
 
@@ -198,7 +227,7 @@ const DailyItem = ({
   monthLabel,
   year,
   navigation,
-}) => {
+}: DailyItemType) => {
   return (
     <View style={styles.list}>
       <Pressable
@@ -269,18 +298,18 @@ const TransactionSummary = ({
   // FILTERED DATA (From date ----> To date)
   const selectedDurationExpenseData = expenseData?.filter(
     expense =>
-      new Date(expense.date) >= new Date(fromDate) &&
-      new Date(expense.date) <= new Date(toDate),
+      new Date(expense.date) >= new Date(String(fromDate)) &&
+      new Date(expense.date) <= new Date(String(toDate)),
   );
   const selectedDurationIncomeData = incomeData?.filter(
     income =>
-      new Date(income.date) >= new Date(fromDate) &&
-      new Date(income.date) <= new Date(toDate),
+      new Date(income.date) >= new Date(String(fromDate)) &&
+      new Date(income.date) <= new Date(String(toDate)),
   );
 
   // TOTAL EXPENSE
-  const totalExpenses = sumTotalFunc(selectedDurationExpenseData).toFixed(0);
-  const totalIncome = sumTotalFunc(selectedDurationIncomeData).toFixed(0);
+  const totalExpenses = +sumTotalFunc(selectedDurationExpenseData).toFixed(0);
+  const totalIncome = +sumTotalFunc(selectedDurationIncomeData).toFixed(0);
   const total = totalIncome - totalExpenses;
 
   // Combine data and sum by monthly
@@ -308,10 +337,10 @@ const TransactionSummary = ({
   // const selectedMonth = moment(fromDate).month() + 1;
   let weeklyData = Object.values(
     data3.reduce((acc, cur) => {
-      if (!acc[cur.week]) {
-        acc[cur.week] = {Week: cur.week, Products: [], Date: fromDate};
+      if (!acc[cur?.week]) {
+        acc[cur?.week] = {Week: cur?.week, Products: [], Date: fromDate};
       }
-      acc[cur.week].Products.push(cur);
+      acc[cur?.week].Products.push(cur);
       return acc;
     }, {}),
   );
@@ -326,9 +355,9 @@ const TransactionSummary = ({
   const data = [...sumExpenseByDate, ...sumIncomeByDate];
   let dailyData = Object.values(
     data.reduce((acc, cur) => {
-      if (!acc[cur.day])
-        acc[cur.day] = {Day: cur.day, Date: cur?.date, Products: []};
-      acc[cur.day].Products.push(cur);
+      if (!acc[cur?.day])
+        acc[cur?.day] = {Day: cur?.day, Date: cur?.date, Products: []};
+      acc[cur?.day].Products.push(cur);
       return acc;
     }, {}),
   );
@@ -384,34 +413,6 @@ const TransactionSummary = ({
     }
     return 1; // return 1 here for DESC Order
   });
-  // }
-
-  // daily renderItem
-  function DailyRenderItem({item}) {
-    const expenseAmount = currencyFormatter(item.Products[0]?.amount, {});
-    const incomeAmount = currencyFormatter(item.Products[1]?.amount, {});
-
-    const date = new Date(item.Products[0]?.date);
-    let day = moment(date).date();
-    if (day < 10) {
-      day = `0${day}`;
-    }
-    const dayLabel = moment(date).format('ddd');
-    const monthLabel = moment(date).format('MMM');
-    const year = moment(date).year();
-
-    return (
-      <DailyItem
-        incomeAmount={incomeAmount}
-        expenseAmount={expenseAmount}
-        day={day}
-        dayLabel={dayLabel}
-        monthLabel={monthLabel}
-        year={year}
-        navigation={navigation}
-      />
-    );
-  }
 
   // daily renderItem
   function DailyRenderItem({item}) {

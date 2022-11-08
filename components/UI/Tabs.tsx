@@ -9,9 +9,18 @@ import {
 import React, {createRef, useEffect, useRef, useState} from 'react';
 import {v4 as uuidv4} from 'uuid';
 
-type Props = {};
+type Props = {
+  TabsDataObject: object;
+  onItemPress: () => void;
+  indicatorIndex: number;
+};
 
-const {width, height} = Dimensions.get('window');
+interface IndicatorType {
+  measures: any[];
+  indicatorIndex: number | undefined;
+}
+
+const {width} = Dimensions.get('window');
 
 const Tab = React.forwardRef(({item, onItemPress}, ref) => {
   return (
@@ -25,7 +34,7 @@ const Tab = React.forwardRef(({item, onItemPress}, ref) => {
   );
 });
 
-const Indicator = ({measures, indicatorIndex}) => {
+const Indicator = ({measures, indicatorIndex}: IndicatorType) => {
   return (
     <Animated.View
       style={{

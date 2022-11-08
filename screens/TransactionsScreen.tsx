@@ -43,7 +43,7 @@ const TransactionsScreen = ({navigation}: Props) => {
   const [duration, setDuration] = useState<string | null>(
     String(moment().year()),
   );
-  const [month, setMonth] = useState();
+  const [month, setMonth] = useState<string | null>();
   const [year, setYear] = useState<string | null>(String(moment().year()));
   const [isDatePickerVisible, setDatePickerVisibility] =
     useState<boolean>(false);
@@ -159,7 +159,7 @@ const TransactionsScreen = ({navigation}: Props) => {
     return 1; // return 1 here for DESC Order
   });
 
-  function onMonthYearSelectedHandler(time) {
+  function onMonthYearSelectedHandler(time: number) {
     let fromdate;
     let todate;
     let month;
@@ -170,7 +170,7 @@ const TransactionsScreen = ({navigation}: Props) => {
       fromdate = moment().startOf('year').format(`${time}-01-01`);
       todate = moment().endOf('year').format(`${time}-12-31`);
       month = moment().month() + 1;
-      setYear(moment(fromdate).year());
+      setYear(String(moment(fromdate).year()));
     }
     if (!monthlyPressed) {
       fromdate = moment(new Date(`${year}-${mm}-01`), 'YYYY-MM-DD');
@@ -178,10 +178,10 @@ const TransactionsScreen = ({navigation}: Props) => {
       month = moment(fromdate).month() + 1;
     }
 
-    setFromDate(fromdate);
-    setToDate(todate);
-    setDuration(time);
-    setMonth(month);
+    setFromDate(String(fromdate));
+    setToDate(String(todate));
+    setDuration(String(time));
+    setMonth(String(month));
     setShowMonthYearListMenu(false);
   }
 

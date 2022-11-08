@@ -1,22 +1,15 @@
 import {Dimensions, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 
-
-
 const {width} = Dimensions.get('window');
 
 function Settings() {
   return (
     <View style={styles.container}>
       <View style={[styles.currency, styles.box]}>
-        <Text style={styles.text}>Account</Text>
-      </View>
-      <View style={[styles.currency, styles.box]}>
         <Text style={styles.text}>Currency</Text>
       </View>
-      <View style={[styles.currency, styles.box]}>
-        <Text style={styles.text}>Manage Category</Text>
-      </View>
+
       <View style={[styles.passcode, styles.box]}>
         <Text style={styles.text}>Passcode / fingerprint / Face ID lock</Text>
       </View>

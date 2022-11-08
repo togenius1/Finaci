@@ -11,9 +11,9 @@ import {useForm} from 'react-hook-form';
 import {Auth} from 'aws-amplify';
 
 import Logo from '../../../../assets/images/Logo_1.png';
-import CustomInput from '../../components/CustomInput/CustomInput';
-import CustomButton from '../../components/CustomButton/CustomButton';
-import SocialSignInButtons from '../../components/SocialSignInButtons/SocialSignInButtons';
+import CustomInput from '../components/CustomInput';
+import CustomButton from '../components/CustomButton';
+import SocialSignInButtons from '../components/SocialSignInButtons';
 
 type Props = {};
 

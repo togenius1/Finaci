@@ -1,11 +1,33 @@
 import {Dimensions, StyleSheet, View} from 'react-native';
-import React, {useCallback, useState} from 'react';
+import React, {Dispatch, SetStateAction, useCallback, useState} from 'react';
 import moment from 'moment';
 
 import TransactionSummary from './TransactionSummary';
 import Tabs from '../UI/Tabs';
+import {IncomeType} from '../../models/income';
+import {ExpenseType} from '../../models/expense';
 
-type Props = {};
+type Dispatcher<S> = Dispatch<SetStateAction<S>>;
+
+type Props = {
+  expenseData: ExpenseType | undefined;
+  incomeData: IncomeType | undefined;
+  setDuration: Dispatcher<string | null>;
+  setFromDate: Dispatcher<string | null>;
+  setToDate: Dispatcher<string | null>;
+  setMonthlyPressed: Dispatcher<boolean>;
+  setWeeklyPressed: Dispatcher<boolean>;
+  setDailyPressed: Dispatcher<boolean>;
+  setCustomPressed: Dispatcher<boolean>;
+  fromDate: string;
+  toDate: string;
+  monthlyPressed: boolean;
+  weeklyPressed: boolean;
+  dailyPressed: boolean;
+  customPressed: boolean;
+  year: string;
+  month: string;
+};
 
 const {width, height} = Dimensions.get('window');
 
@@ -27,8 +49,8 @@ const TransactionOutput = ({
   toDate,
   setMonthlyPressed,
   monthlyPressed,
-  weeklyPressed,
   setWeeklyPressed,
+  weeklyPressed,
   dailyPressed,
   setDailyPressed,
   setCustomPressed,
@@ -36,9 +58,9 @@ const TransactionOutput = ({
   year,
   month,
 }: Props) => {
-  const [exportPressed, setExportPressed] = useState(false);
+  const [exportPressed, setExportPressed] = useState<boolean>(false);
   // const [customPressed, setCustomPressed] = useState(false);
-  const [indicatorIndex, setIndicatorIndex] = useState(0);
+  const [indicatorIndex, setIndicatorIndex] = useState<number | undefined>(0);
 
   // const navigation = useNavigation();
 
@@ -90,8 +112,8 @@ const TransactionOutput = ({
     const fromdate = moment(`${year}-${month}-01`, 'YYYY-MM-DD');
     const todate = moment(`${year}-${month}-${daysInMonth}`, 'YYYY-MM-DD');
 
-    setFromDate(fromdate);
-    setToDate(todate);
+    setFromDate(String(fromdate));
+    setToDate(String(todate));
     setDuration(moment.monthsShort(moment(date).month()));
     setMonthlyPressed(false);
     setWeeklyPressed(true);
@@ -101,7 +123,7 @@ const TransactionOutput = ({
   };
 
   const setDailyHandler = () => {
-    if (month < 10) {
+    if (+month < 10) {
       month = `0${month}`;
     }
     const date = moment().format(`${year}-${month}-DD`);
@@ -120,7 +142,7 @@ const TransactionOutput = ({
   };
 
   const setCustomHandler = () => {
-    if (month < 10) {
+    if (+month < 10) {
       month = `0${month}`;
     }
 
@@ -132,8 +154,8 @@ const TransactionOutput = ({
     const fromdate = moment(new Date(`${year}-${month}-01`), 'YYYY-MM-DD');
     const todate = moment(new Date(`${year}-${month}-${today}`), 'YYYY-MM-DD');
 
-    setFromDate(fromdate);
-    setToDate(todate);
+    setFromDate(String(fromdate));
+    setToDate(String(todate));
     setMonthlyPressed(false);
     setWeeklyPressed(false);
     setDailyPressed(false);

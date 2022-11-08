@@ -134,6 +134,7 @@ const AccountsScreen = ({navigation}: Props) => {
           <Text>{total}</Text>
         </View>
       </View>
+
       <View style={styles.accountsContainer}>
         <View style={styles.cash}>
           <Text style={styles.accountTitle}>Cash</Text>
@@ -144,6 +145,7 @@ const AccountsScreen = ({navigation}: Props) => {
             bounces={false}
           />
         </View>
+
         <View style={styles.accountsContainer}>
           <Text style={styles.accountTitle}>Accounts</Text>
           <FlatList
@@ -154,6 +156,7 @@ const AccountsScreen = ({navigation}: Props) => {
           />
         </View>
       </View>
+
       <View style={styles.addButton}>
         <Pressable
           style={({pressed}) => pressed && styles.pressed}

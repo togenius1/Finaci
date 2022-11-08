@@ -1,15 +1,17 @@
 import {RouteProp} from '@react-navigation/native';
 import type {
   NativeStackNavigationProp,
-  // NativeStackScreenProps,
+  NativeStackScreenProps,
 } from '@react-navigation/native-stack';
 
 export type RootStackParamList = {
   Overview: undefined;
-  Transaction: undefined;
+  Transactions: undefined;
   Stats: undefined;
   Menu: undefined;
+  Reports: undefined;
   ExpenseGraphs: undefined;
+  TransactionSummary: undefined;
   Accounts: {
     account: string;
   };
@@ -39,9 +41,9 @@ export type RootStackParamList = {
 
 //------------------------------------------------------------------------
 //---------------------------Screen Type------------------------------------
-// export type OverviewPropsType = NativeStackScreenProps<
+// export type StatsPropsType = NativeStackScreenProps<
 //   RootStackParamList,
-//   'Overview'
+//   'Stats'
 // >;
 
 //------------------------------------------------------------------------
@@ -53,7 +55,12 @@ export type OverviewNavigationProp = NativeStackNavigationProp<
 
 export type TransactionNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
-  'Transaction'
+  'Transactions'
+>;
+
+export type TransactionSummaryNavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  'TransactionSummary'
 >;
 
 export type StatsNavigationProp = NativeStackNavigationProp<

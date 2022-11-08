@@ -2,7 +2,7 @@ import {StyleSheet, View} from 'react-native';
 import React from 'react';
 import {Auth} from 'aws-amplify';
 
-import CustomButton from '../CustomButton/CustomButton';
+import CustomButton from './CustomButton';
 
 export default function SocialSignInButtons(props) {
   const onSignInFacebook = () => {
