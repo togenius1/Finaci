@@ -4,14 +4,9 @@ import { schema } from './schema';
 
 
 
-const { BackupKey, Expense, ExpenseCategory, AccountCategory, Income, IncomeCategory, CashCategory } = initSchema(schema);
+const { User, BackupKey } = initSchema(schema);
 
 export {
-  BackupKey,
-  Expense,
-  ExpenseCategory,
-  AccountCategory,
-  Income,
-  IncomeCategory,
-  CashCategory
+  User,
+  BackupKey
 };

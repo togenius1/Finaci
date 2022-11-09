@@ -22,6 +22,8 @@ const App = () => {
   //   dispatch(fetchExpensesData());
   // }, []);
 
+  // Auth.currentAuthenticatedUser().then(console.log);
+
   const checkUser = async () => {
     try {
       const authUser = await Auth.currentAuthenticatedUser({bypassCache: true});

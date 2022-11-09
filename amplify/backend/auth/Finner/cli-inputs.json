@@ -3,7 +3,7 @@
   "cognitoConfig": {
     "identityPoolName": "testAuthIdentityPool",
     "allowUnauthenticatedIdentities": false,
-    "resourceNameTruncated": "finnere346f0f1",
+    "resourceNameTruncated": "finner8a0c91bc",
     "userPoolName": "Finner",
     "autoVerifiedAttributes": [
       "email"
@@ -25,9 +25,9 @@
     "userpoolClientRefreshTokenValidity": 30,
     "userpoolClientWriteAttributes": [],
     "userpoolClientReadAttributes": [],
-    "userpoolClientLambdaRole": "Finnere346f0f1_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "Finner8a0c91bc_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "e346f0f1",
+    "sharedId": "8a0c91bc",
     "resourceName": "Finner",
     "authSelections": "identityPoolAndUserPool",
     "serviceName": "Cognito",
@@ -52,14 +52,27 @@
       ]
     },
     "breakCircularDependency": true,
-    "dependsOn": [],
-    "hostedUI": true,
-    "hostedUIDomainName": "uhdf5898kv53",
-    "authProvidersUserPool": [
-      "Facebook",
-      "Google"
+    "dependsOn": [
+      {
+        "category": "function",
+        "resourceName": "FinnerPostConfirmation",
+        "triggerProvider": "Cognito",
+        "attributes": [
+          "Arn",
+          "Name"
+        ]
+      }
     ],
-    "hostedUIProviderMeta": "[{\"ProviderName\":\"Facebook\",\"authorize_scopes\":\"public_profile\",\"AttributeMapping\":{\"username\":\"id\"}},{\"ProviderName\":\"Google\",\"authorize_scopes\":\"openid profile\",\"AttributeMapping\":{\"username\":\"sub\"}}]",
-    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"finner://\"],\"LogoutURLs\":[\"finner://\"]}"
+    "triggers": {
+      "PostConfirmation": [
+        "custom"
+      ]
+    },
+    "hostedUI": false,
+    "parentStack": {
+      "Ref": "AWS::StackId"
+    },
+    "authTriggerConnections": "[\n  {\n    \"triggerType\": \"PostConfirmation\",\n    \"lambdaFunctionName\": \"FinnerPostConfirmation\"\n  }\n]",
+    "permissions": []
   }
 }

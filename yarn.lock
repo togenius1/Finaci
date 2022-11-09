@@ -89,6 +89,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@aws-amplify/cli@npm:^10.4.0":
+  version: 10.4.0
+  resolution: "@aws-amplify/cli@npm:10.4.0"
+  dependencies:
+    axios: ^0.26.0
+    rimraf: ^3.0.2
+    tar-stream: ^2.2.0
+  bin:
+    amplify: lib/run.js
+  checksum: 4b6efe7a6974506d0d2e54b88354b8d5164785e9cccf200b6d5b6155a73d4c1d909475cf7dbc3c65dd7c2c4aacbf99cd054efedfc2b3fa697bf58abbd543bd6e
+  languageName: node
+  linkType: hard
+
 "@aws-amplify/core@npm:4.7.11":
   version: 4.7.11
   resolution: "@aws-amplify/core@npm:4.7.11"
@@ -4934,6 +4947,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "Finner@workspace:."
   dependencies:
+    "@aws-amplify/cli": ^10.4.0
     "@babel/core": ^7.12.9
     "@babel/runtime": ^7.12.5
     "@react-native-async-storage/async-storage": ^1.17.10
@@ -5417,7 +5431,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:0.26.0":
+"axios@npm:0.26.0, axios@npm:^0.26.0":
   version: 0.26.0
   resolution: "axios@npm:0.26.0"
   dependencies:
@@ -5651,7 +5665,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bl@npm:^4.1.0":
+"bl@npm:^4.0.3, bl@npm:^4.1.0":
   version: 4.1.0
   resolution: "bl@npm:4.1.0"
   dependencies:
@@ -6777,7 +6791,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"end-of-stream@npm:^1.1.0":
+"end-of-stream@npm:^1.1.0, end-of-stream@npm:^1.4.1":
   version: 1.4.4
   resolution: "end-of-stream@npm:1.4.4"
   dependencies:
@@ -7624,6 +7638,13 @@ __metadata:
   version: 0.5.2
   resolution: "fresh@npm:0.5.2"
   checksum: 13ea8b08f91e669a64e3ba3a20eb79d7ca5379a81f1ff7f4310d54e2320645503cc0c78daedc93dfb6191287295f6479544a649c64d8e41a1c0fb0c221552346
+  languageName: node
+  linkType: hard
+
+"fs-constants@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "fs-constants@npm:1.0.0"
+  checksum: 18f5b718371816155849475ac36c7d0b24d39a11d91348cfcb308b4494824413e03572c403c86d3a260e049465518c4f0d5bd00f0371cdfcad6d4f30a85b350d
   languageName: node
   linkType: hard
 
@@ -11616,7 +11637,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"readable-stream@npm:^3.4.0, readable-stream@npm:^3.6.0":
+"readable-stream@npm:^3.1.1, readable-stream@npm:^3.4.0, readable-stream@npm:^3.6.0":
   version: 3.6.0
   resolution: "readable-stream@npm:3.6.0"
   dependencies:
@@ -12761,6 +12782,19 @@ __metadata:
     string-width: ^4.2.3
     strip-ansi: ^6.0.1
   checksum: 5b07fe462ee03d2e1fac02cbb578efd2e0b55ac07e3d3db2e950aa9570ade5a4a2b8d3c15e9f25c89e4e50b646bc4269934601ee1eef4ca7968ad31960977690
+  languageName: node
+  linkType: hard
+
+"tar-stream@npm:^2.2.0":
+  version: 2.2.0
+  resolution: "tar-stream@npm:2.2.0"
+  dependencies:
+    bl: ^4.0.3
+    end-of-stream: ^1.4.1
+    fs-constants: ^1.0.0
+    inherits: ^2.0.3
+    readable-stream: ^3.1.1
+  checksum: 699831a8b97666ef50021c767f84924cfee21c142c2eb0e79c63254e140e6408d6d55a065a2992548e72b06de39237ef2b802b99e3ece93ca3904a37622a66f3
   languageName: node
   linkType: hard
 
