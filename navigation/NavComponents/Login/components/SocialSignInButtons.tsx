@@ -1,18 +1,19 @@
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet} from 'react-native';
 import React from 'react';
 import {Auth} from 'aws-amplify';
+import {CognitoHostedUIIdentityProvider} from '@aws-amplify/auth';
 
 import CustomButton from './CustomButton';
 
 export default function SocialSignInButtons(props) {
   const onSignInFacebook = () => {
     // console.log('onSignInFacebook');
-    Auth.federatedSignIn();
+    Auth.federatedSignIn({provider: CognitoHostedUIIdentityProvider.Facebook});
   };
 
   const onSignInGoogle = () => {
     // console.log('onSignInGoogle');
-    Auth.federatedSignIn();
+    Auth.federatedSignIn({provider: CognitoHostedUIIdentityProvider.Google});
   };
 
   return (

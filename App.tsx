@@ -22,7 +22,7 @@ const App = () => {
   //   dispatch(fetchExpensesData());
   // }, []);
 
-  // Auth.currentAuthenticatedUser().then(console.log);
+  console.log('authenticatedUser ', authenticatedUser);
 
   const checkUser = async () => {
     try {
