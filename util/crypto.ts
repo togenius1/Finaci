@@ -23,6 +23,8 @@ export const PRNG = (x, n) => {
 
 const newNonce = () => randomBytes(box.nonceLength);
 export const generateKeyPair = () => box.keyPair();
+export const generatePublicKeyFromSecretKey = (privateKey: Uint8Array) =>
+  box.keyPair.fromSecretKey(privateKey);
 
 // ENCRYPTION
 export const encrypt = (
@@ -69,7 +71,7 @@ export const decrypt = (
   return JSON.parse(base64DecryptedMessage);
 };
 
-export const stringToUint8Array = content =>
+export const stringToUint8Array = (content: string) =>
   Uint8Array.from(content.split(',').map(str => parseInt(str)));
 
 export const getMySecretKey = async () => {
