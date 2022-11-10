@@ -1,10 +1,12 @@
 type User @model @auth(rules: [{allow: public}]) {
   id: ID!
-  name: String
+  name: String!
   BackupKey: BackupKey @hasOne
 }
 
 type BackupKey @model @auth(rules: [{allow: public}]) {
   id: ID!
   key: String
+  User: User @belongsTo
 }
+ 

@@ -17,6 +17,8 @@ import {
 } from '../../util/fetchData';
 import {authorization, refreshAuthorize} from '../../util/auth';
 import {ExpenseType} from '../../models/expense';
+import {DataStore} from 'aws-amplify';
+import {User} from '../../src/models';
 
 interface AuthStateType {
   hasLoggedInOnce: boolean;

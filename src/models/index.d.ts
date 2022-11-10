@@ -12,7 +12,7 @@ type BackupKeyMetaData = {
 
 type EagerUser = {
   readonly id: string;
-  readonly name?: string | null;
+  readonly name: string;
   readonly BackupKey?: BackupKey | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
@@ -21,7 +21,7 @@ type EagerUser = {
 
 type LazyUser = {
   readonly id: string;
-  readonly name?: string | null;
+  readonly name: string;
   readonly BackupKey: AsyncItem<BackupKey | undefined>;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
@@ -37,6 +37,7 @@ export declare const User: (new (init: ModelInit<User, UserMetaData>) => User) &
 type EagerBackupKey = {
   readonly id: string;
   readonly key?: string | null;
+  readonly User?: User | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -44,6 +45,7 @@ type EagerBackupKey = {
 type LazyBackupKey = {
   readonly id: string;
   readonly key?: string | null;
+  readonly User: AsyncItem<User | undefined>;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
