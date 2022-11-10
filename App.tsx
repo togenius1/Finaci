@@ -51,13 +51,14 @@ const App = () => {
 
   // Check Key
   useEffect(() => {
-    // checkKey();
+    checkKey();
   }, []);
 
   // Check Key
   const checkKey = async () => {
     let pKeyFromLocal = await AsyncStorage.getItem(PRIVATE_KEY);
-    let pKeyFromCloud = '';
+    let pKeyFromCloud =
+      'c702e52505bb5b7b8d47172c9be8e9f7497f4b8c9b0f0cd01197d9f16009450935f0c081523c486ea0a9bfa99e8bdb146176d76e786a6b6d574bf68baaa58a67';
     // Check if the backup key is in Local Storage and Cloud.
     if (pKeyFromLocal === null && pKeyFromCloud === null) {
       // Generate a new backup key.
