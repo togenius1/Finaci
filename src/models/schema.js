@@ -27,7 +27,7 @@ export const schema = {
                     "attributes": [],
                     "association": {
                         "connectionType": "HAS_ONE",
-                        "associatedWith": "User",
+                        "associatedWith": "id",
                         "targetName": "userBackupKeyId"
                     }
                 },
@@ -97,19 +97,6 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
-                "User": {
-                    "name": "User",
-                    "isArray": false,
-                    "type": {
-                        "model": "User"
-                    },
-                    "isRequired": false,
-                    "attributes": [],
-                    "association": {
-                        "connectionType": "BELONGS_TO",
-                        "targetName": "backupKeyUserId"
-                    }
-                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -156,5 +143,5 @@ export const schema = {
     "enums": {},
     "nonModels": {},
     "codegenVersion": "3.3.1",
-    "version": "bdd99624555fd553ae666005d254cb7a"
+    "version": "b2ed92f7924ed1858b39c769f433bc94"
 };

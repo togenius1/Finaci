@@ -7,6 +7,5 @@ type User @model @auth(rules: [{allow: public}]) {
 type BackupKey @model @auth(rules: [{allow: public}]) {
   id: ID!
   key: String
-  User: User @belongsTo
 }
  
