@@ -17,8 +17,97 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
-                "BackupKey": {
-                    "name": "BackupKey",
+                "groupuserID": {
+                    "name": "groupuserID",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "updatedAt": {
+                    "name": "updatedAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                }
+            },
+            "syncable": true,
+            "pluralName": "Users",
+            "attributes": [
+                {
+                    "type": "model",
+                    "properties": {}
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byGroupUser",
+                        "fields": [
+                            "groupuserID"
+                        ]
+                    }
+                },
+                {
+                    "type": "auth",
+                    "properties": {
+                        "rules": [
+                            {
+                                "allow": "public",
+                                "operations": [
+                                    "create",
+                                    "update",
+                                    "delete",
+                                    "read"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "GroupUser": {
+            "name": "GroupUser",
+            "fields": {
+                "id": {
+                    "name": "id",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "title": {
+                    "name": "title",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "GroupUsers": {
+                    "name": "GroupUsers",
+                    "isArray": true,
+                    "type": {
+                        "model": "User"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": "groupuserID"
+                    }
+                },
+                "GroupBackupKey": {
+                    "name": "GroupBackupKey",
                     "isArray": false,
                     "type": {
                         "model": "BackupKey"
@@ -27,8 +116,8 @@ export const schema = {
                     "attributes": [],
                     "association": {
                         "connectionType": "HAS_ONE",
-                        "associatedWith": "User",
-                        "targetName": "userBackupKeyId"
+                        "associatedWith": "id",
+                        "targetName": "groupUserGroupBackupKeyId"
                     }
                 },
                 "createdAt": {
@@ -47,8 +136,8 @@ export const schema = {
                     "attributes": [],
                     "isReadOnly": true
                 },
-                "userBackupKeyId": {
-                    "name": "userBackupKeyId",
+                "groupUserGroupBackupKeyId": {
+                    "name": "groupUserGroupBackupKeyId",
                     "isArray": false,
                     "type": "ID",
                     "isRequired": false,
@@ -56,7 +145,7 @@ export const schema = {
                 }
             },
             "syncable": true,
-            "pluralName": "Users",
+            "pluralName": "GroupUsers",
             "attributes": [
                 {
                     "type": "model",
@@ -96,19 +185,6 @@ export const schema = {
                     "type": "String",
                     "isRequired": false,
                     "attributes": []
-                },
-                "User": {
-                    "name": "User",
-                    "isArray": false,
-                    "type": {
-                        "model": "User"
-                    },
-                    "isRequired": false,
-                    "attributes": [],
-                    "association": {
-                        "connectionType": "BELONGS_TO",
-                        "targetName": "backupKeyUserId"
-                    }
                 },
                 "createdAt": {
                     "name": "createdAt",
@@ -156,5 +232,5 @@ export const schema = {
     "enums": {},
     "nonModels": {},
     "codegenVersion": "3.3.1",
-    "version": "bdd99624555fd553ae666005d254cb7a"
+    "version": "be1bf3f1619f95b902073d1c40d7a537"
 };

@@ -1,12 +1,18 @@
 type User @model @auth(rules: [{allow: public}]) {
   id: ID!
   name: String!
-  BackupKey: BackupKey @hasOne
+  groupuserID: ID! @index(name: "byGroupUser")
+}
+
+type GroupUser @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  title: String
+  GroupUsers: [User] @hasMany(indexName: "byGroupUser", fields: ["id"])
+  GroupBackupKey: BackupKey @hasOne
 }
 
 type BackupKey @model @auth(rules: [{allow: public}]) {
   id: ID!
   key: String
-  User: User @belongsTo
 }
  
