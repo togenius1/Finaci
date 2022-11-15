@@ -17,12 +17,6 @@ type Props = {
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-// function MenuDrawer() {
-//   return (
-
-//   );
-// }
-
 const FinnerNavigator = ({authenticatedUser}: Props) => {
   return (
     <>

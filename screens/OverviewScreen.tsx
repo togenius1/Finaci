@@ -4,6 +4,7 @@ import {
   Pressable,
   StyleSheet,
   Text,
+  useColorScheme,
   View,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
@@ -19,6 +20,7 @@ import MonthYearList from '../components/Menu/MonthYearList';
 // import {EXPENSES} from '../dummy/dummy';
 import Spending from './tab/SpendingTab';
 import {OverviewNavigationProp} from '../types';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 type Props = {
   navigation: OverviewNavigationProp;

@@ -1,8 +1,7 @@
 import {ActivityIndicator, StatusBar, View} from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Amplify, Auth, DataStore, Hub} from 'aws-amplify';
-
 import {setPRNG} from 'tweetnacl';
 
 import awsconfig from './src/aws-exports';
@@ -15,7 +14,7 @@ import {
   stringToUint8Array,
 } from './util/crypto';
 import FinnerNavigator from './navigation/FinnerNavigator';
-import {BackupKey, GroupUser, User} from './src/models';
+import {BackupKey, User} from './src/models';
 import Button from './components/UI/Button';
 
 Amplify.configure(awsconfig);
@@ -79,31 +78,31 @@ const App = () => {
     const userSub = authenticatedUser?.attributes?.sub;
     const currentUser = (await DataStore.query(User)).filter(
       user => user?.id === userSub,
-    );
-    const userId = currentUser[0]?.id;
-    const userBackupId = currentUser[0]?.userBackupKeyId;
+    )[0];
 
+    let cloudPrivateKey = currentUser?.backupKey;
     let localPrivateKey = await AsyncStorage.getItem(PRIVATE_KEY);
-    let cloudPrivateKey = (await DataStore.query(BackupKey))
-      .filter(bk => bk?.id === userBackupId)
-      .map(bk => bk?.key)[0];
+
+    console.log('cloudPrivateKey: ', cloudPrivateKey);
+    console.log('localPrivateKey: ', localPrivateKey);
 
     // Check if the backup key is in Local Storage and Cloud.
     if (
-      (localPrivateKey === undefined || localPrivateKey === null) &&
-      (cloudPrivateKey === undefined || cloudPrivateKey === null)
+      (localPrivateKey === null || localPrivateKey === undefined) &&
+      (cloudPrivateKey === null || cloudPrivateKey === undefined)
     ) {
       console.log('-------------Generate New Key');
-      await generateNewKey(userId, userBackupId);
+      await generateNewKey(currentUser);
     }
-    // // Check if it doesn't found key on Local Storage.
-    // if (
-    //   (localPrivateKey === undefined || localPrivateKey === null) &&
-    //   (cloudPrivateKey !== undefined || cloudPrivateKey !== null)
-    // ) {
-    //   console.log('---------------Cloud To Local Storage');
-    //   await saveCloudKeyToLocal(String(cloudPrivateKey));
-    // }
+
+    // Check if it doesn't found key on Local Storage.
+    if (
+      (localPrivateKey === undefined || localPrivateKey === null) &&
+      (cloudPrivateKey !== undefined || cloudPrivateKey !== null)
+    ) {
+      console.log('---------------Cloud To Local Storage');
+      await saveCloudKeyToLocal(String(cloudPrivateKey));
+    }
 
     // // Check if it doesn't found key on Cloud.
     // if (
@@ -117,20 +116,12 @@ const App = () => {
     //     String(localPrivateKey),
     //   );
     // }
-
-    console.log('cloud PrivateKey: ', cloudPrivateKey);
-    console.log('local PrivateKey: ', localPrivateKey);
   };
 
   // Generate new key
-  const generateNewKey = async (userId: string, userBackupId: string) => {
-    await AsyncStorage.removeItem(PRIVATE_KEY);
+  const generateNewKey = async currentUser => {
+    // Remove old key
     await AsyncStorage.removeItem(PUBLIC_KEY);
-
-    if (userBackupId !== null || userBackupId !== undefined) {
-      const todelete = await DataStore.query(BackupKey, userBackupId);
-      DataStore.delete(todelete);
-    }
 
     // Generate a new backup key.
     const {publicKey, secretKey} = generateKeyPair();
@@ -139,19 +130,11 @@ const App = () => {
     await AsyncStorage.setItem(PRIVATE_KEY, secretKey.toString());
     await AsyncStorage.setItem(PUBLIC_KEY, publicKey.toString());
 
-    let saveKeyObj: any;
-    // Create a new backup key.
-    saveKeyObj = await DataStore.save(
-      new BackupKey({
-        key: String(secretKey),
-      }),
-    );
-
     // Update a backup key id in User table.
-    const originalUser = await DataStore.query(User, userId);
+    const originalUser = currentUser;
     await DataStore.save(
       User.copyOf(originalUser, updated => {
-        updated.userBackupKeyId = saveKeyObj?.id;
+        updated.backupKey = String(secretKey);
       }),
     );
   };
@@ -159,10 +142,13 @@ const App = () => {
   // Load Key from Cloud
   const saveCloudKeyToLocal = async (cloudPrivateKey: string) => {
     await AsyncStorage.setItem(PRIVATE_KEY, cloudPrivateKey);
-    const publicKey = generatePublicKeyFromSecretKey(
+    const newPublicKey = generatePublicKeyFromSecretKey(
       stringToUint8Array(String(cloudPrivateKey)),
     );
-    await AsyncStorage.setItem(PUBLIC_KEY, publicKey.toString());
+    await AsyncStorage.setItem(PUBLIC_KEY, newPublicKey.toString());
+
+    console.log('Private Key: ', cloudPrivateKey);
+    console.log('PublicKey Key: ', newPublicKey);
   };
 
   const uploadLocalKeyToCloud = async (

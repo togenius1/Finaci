@@ -1,11 +1,6 @@
 type User @model @auth(rules: [{allow: public}]) {
   id: ID!
   name: String
-  BackupKey: BackupKey @hasOne
-}
-
-type BackupKey @model @auth(rules: [{allow: public}]) {
-  id: ID!
-  key: String
+  backupKey: String
 }
  
