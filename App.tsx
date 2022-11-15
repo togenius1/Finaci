@@ -77,28 +77,25 @@ const App = () => {
   // Check Key
   const checkKey = async () => {
     const userSub = authenticatedUser?.attributes?.sub;
-    const currentGroupUser = (await DataStore.query(User)).filter(
+    const currentUser = (await DataStore.query(User)).filter(
       user => user?.id === userSub,
     );
-    const userId = currentGroupUser[0]?.id;
-    const userBackupId = currentGroupUser[0]?.userBackupKeyId;
+    const userId = currentUser[0]?.id;
+    const userBackupId = currentUser[0]?.userBackupKeyId;
 
+    let localPrivateKey = await AsyncStorage.getItem(PRIVATE_KEY);
     let cloudPrivateKey = (await DataStore.query(BackupKey))
       .filter(bk => bk?.id === userBackupId)
       .map(bk => bk?.key)[0];
-    let localPrivateKey = await AsyncStorage.getItem(PRIVATE_KEY);
-
-    console.log('currentGroupUser: ', currentGroupUser);
-    // console.log('userBackupId: ', userBackupId);
 
     // Check if the backup key is in Local Storage and Cloud.
-    // if (
-    //   (localPrivateKey === undefined || localPrivateKey === null) &&
-    //   (cloudPrivateKey === undefined || cloudPrivateKey === null)
-    // ) {
-    //   console.log('-------------Generate New Key');
-    //   await generateNewKey(userId, userBackupId);
-    // }
+    if (
+      (localPrivateKey === undefined || localPrivateKey === null) &&
+      (cloudPrivateKey === undefined || cloudPrivateKey === null)
+    ) {
+      console.log('-------------Generate New Key');
+      await generateNewKey(userId, userBackupId);
+    }
     // // Check if it doesn't found key on Local Storage.
     // if (
     //   (localPrivateKey === undefined || localPrivateKey === null) &&
@@ -120,13 +117,21 @@ const App = () => {
     //     String(localPrivateKey),
     //   );
     // }
+
+    console.log('cloud PrivateKey: ', cloudPrivateKey);
+    console.log('local PrivateKey: ', localPrivateKey);
   };
 
   // Generate new key
-  const generateNewKey = async (
-    userId: string,
-    userBackupId: string | null | undefined,
-  ) => {
+  const generateNewKey = async (userId: string, userBackupId: string) => {
+    await AsyncStorage.removeItem(PRIVATE_KEY);
+    await AsyncStorage.removeItem(PUBLIC_KEY);
+
+    if (userBackupId !== null || userBackupId !== undefined) {
+      const todelete = await DataStore.query(BackupKey, userBackupId);
+      DataStore.delete(todelete);
+    }
+
     // Generate a new backup key.
     const {publicKey, secretKey} = generateKeyPair();
 
@@ -134,26 +139,14 @@ const App = () => {
     await AsyncStorage.setItem(PRIVATE_KEY, secretKey.toString());
     await AsyncStorage.setItem(PUBLIC_KEY, publicKey.toString());
 
-    // Save Key to DB.
-    const originalBackup = await DataStore.query(
-      BackupKey,
-      String(userBackupId),
-    );
-    let saveKeyObj;
+    let saveKeyObj: any;
     // Create a new backup key.
-    if (originalBackup === undefined || originalBackup === null) {
-      saveKeyObj = await DataStore.save(
-        new BackupKey({
-          key: String(secretKey),
-        }),
-      );
-    } else {
-      saveKeyObj = await DataStore.save(
-        BackupKey.copyOf(originalBackup, updated => {
-          updated.key = String(secretKey);
-        }),
-      );
-    }
+    saveKeyObj = await DataStore.save(
+      new BackupKey({
+        key: String(secretKey),
+      }),
+    );
+
     // Update a backup key id in User table.
     const originalUser = await DataStore.query(User, userId);
     await DataStore.save(
