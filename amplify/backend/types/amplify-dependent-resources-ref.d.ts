@@ -1,10 +1,8 @@
 export type AmplifyDependentResourcesAttributes = {
     "auth": {
-        "Finner": {
+        "FinnerApp": {
             "IdentityPoolId": "string",
             "IdentityPoolName": "string",
-            "HostedUIDomain": "string",
-            "OAuthMetadata": "string",
             "UserPoolId": "string",
             "UserPoolArn": "string",
             "UserPoolName": "string",
@@ -13,14 +11,14 @@ export type AmplifyDependentResourcesAttributes = {
         }
     },
     "api": {
-        "Finner": {
+        "FinnerApp": {
             "GraphQLAPIKeyOutput": "string",
             "GraphQLAPIIdOutput": "string",
             "GraphQLAPIEndpointOutput": "string"
         }
     },
     "function": {
-        "FinnerPostConfirmation": {
+        "FinnerAppPostConfirmation": {
             "Name": "string",
             "Arn": "string",
             "LambdaExecutionRole": "string",

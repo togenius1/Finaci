@@ -4,10 +4,9 @@ import { schema } from './schema';
 
 
 
-const { User, GroupUser, BackupKey } = initSchema(schema);
+const { User, BackupKey } = initSchema(schema);
 
 export {
   User,
-  GroupUser,
   BackupKey
 };

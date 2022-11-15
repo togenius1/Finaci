@@ -1,12 +1,12 @@
 {
   "auth": {
-    "Finner": {
+    "FinnerApp": {
       "service": "Cognito",
       "providerPlugin": "awscloudformation",
       "dependsOn": [
         {
           "category": "function",
-          "resourceName": "FinnerPostConfirmation",
+          "resourceName": "FinnerAppPostConfirmation",
           "triggerProvider": "Cognito",
           "attributes": [
             "Arn",
@@ -16,10 +16,7 @@
       ],
       "customAuth": false,
       "frontendAuthConfig": {
-        "socialProviders": [
-          "FACEBOOK",
-          "GOOGLE"
-        ],
+        "socialProviders": [],
         "usernameAttributes": [],
         "signupAttributes": [],
         "passwordProtectionSettings": {
@@ -37,7 +34,7 @@
     }
   },
   "api": {
-    "Finner": {
+    "FinnerApp": {
       "service": "AppSync",
       "providerPlugin": "awscloudformation",
       "dependsOn": [],
@@ -60,7 +57,7 @@
     }
   },
   "function": {
-    "FinnerPostConfirmation": {
+    "FinnerAppPostConfirmation": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"

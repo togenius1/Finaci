@@ -3,8 +3,8 @@
   "cognitoConfig": {
     "identityPoolName": "testAuthIdentityPool",
     "allowUnauthenticatedIdentities": false,
-    "resourceNameTruncated": "finner8a0c91bc",
-    "userPoolName": "Finner",
+    "resourceNameTruncated": "finnerf6de5a20",
+    "userPoolName": "FinnerApp",
     "autoVerifiedAttributes": [
       "email"
     ],
@@ -25,10 +25,10 @@
     "userpoolClientRefreshTokenValidity": 30,
     "userpoolClientWriteAttributes": [],
     "userpoolClientReadAttributes": [],
-    "userpoolClientLambdaRole": "Finner8a0c91bc_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "Finnerf6de5a20_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "8a0c91bc",
-    "resourceName": "Finner",
+    "sharedId": "f6de5a20",
+    "resourceName": "FinnerApp",
     "authSelections": "identityPoolAndUserPool",
     "serviceName": "Cognito",
     "useDefault": "manual",
@@ -55,7 +55,7 @@
     "dependsOn": [
       {
         "category": "function",
-        "resourceName": "FinnerPostConfirmation",
+        "resourceName": "FinnerAppPostConfirmation",
         "triggerProvider": "Cognito",
         "attributes": [
           "Arn",
@@ -68,18 +68,11 @@
         "custom"
       ]
     },
-    "hostedUI": true,
+    "hostedUI": false,
     "parentStack": {
       "Ref": "AWS::StackId"
     },
-    "authTriggerConnections": "[\n  {\n    \"triggerType\": \"PostConfirmation\",\n    \"lambdaFunctionName\": \"FinnerPostConfirmation\"\n  }\n]",
-    "permissions": [],
-    "hostedUIDomainName": "finner7cba0942-7cba0942",
-    "authProvidersUserPool": [
-      "Facebook",
-      "Google"
-    ],
-    "hostedUIProviderMeta": "[{\"ProviderName\":\"Facebook\",\"authorize_scopes\":\"public_profile\",\"AttributeMapping\":{\"username\":\"id\"}},{\"ProviderName\":\"Google\",\"authorize_scopes\":\"openid profile\",\"AttributeMapping\":{\"username\":\"sub\"}}]",
-    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"finner://\"],\"LogoutURLs\":[\"finner://\"]}"
+    "authTriggerConnections": "[\n  {\n    \"triggerType\": \"PostConfirmation\",\n    \"lambdaFunctionName\": \"FinnerAppPostConfirmation\"\n  }\n]",
+    "permissions": []
   }
 }
