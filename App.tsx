@@ -83,26 +83,24 @@ const App = () => {
     let cloudPrivateKey = currentUser?.backupKey;
     let localPrivateKey = await AsyncStorage.getItem(PRIVATE_KEY);
 
-    const publicKey = await AsyncStorage.getItem(PUBLIC_KEY);
+    // await AsyncStorage.removeItem(PRIVATE_KEY);
+    // await AsyncStorage.removeItem(PUBLIC_KEY);
 
-    console.log('cloudPrivateKey: ', cloudPrivateKey);
-    console.log('localPrivateKey: ', localPrivateKey);
-    console.log('publicKey: ', publicKey);
+    removeKey();
 
     // Check if the backup key is in Local Storage and Cloud.
     if (
-      (localPrivateKey === null || cloudPrivateKey === undefined) &&
+      (localPrivateKey === null || localPrivateKey === undefined) &&
       (cloudPrivateKey === null || cloudPrivateKey === undefined)
     ) {
       console.log('-------------Generate New Key');
-      await generateNewKey(currentUser);
+      await generateNewKey(userSub);
     }
 
     // Check if it doesn't found key on Local Storage.
     // if (
     //   (localPrivateKey === undefined || localPrivateKey === null) &&
-    //   cloudPrivateKey !== undefined &&
-    //   cloudPrivateKey !== null
+    //   (cloudPrivateKey !== undefined || cloudPrivateKey !== null)
     // ) {
     //   console.log('---------------Cloud To Local Storage');
     //   await saveCloudKeyToLocal(String(cloudPrivateKey));
@@ -123,7 +121,7 @@ const App = () => {
   };
 
   // Generate new key
-  const generateNewKey = async currentUser => {
+  const generateNewKey = async (userId: string) => {
     // Remove old key
     await AsyncStorage.removeItem(PUBLIC_KEY);
 
@@ -135,7 +133,10 @@ const App = () => {
     await AsyncStorage.setItem(PUBLIC_KEY, publicKey.toString());
 
     // Update a backup key id in User table.
-    const originalUser = currentUser;
+    const originalUser = (await DataStore.query(User)).filter(
+      user => user?.id === userId,
+    );
+    console.log('originalUser: ', originalUser);
     await DataStore.save(
       User.copyOf(originalUser, updated => {
         updated.backupKey = String(secretKey);

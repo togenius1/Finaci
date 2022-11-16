@@ -1,26 +1,29 @@
 {
   "staging": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-finnerapp-staging-23018-authRole",
-      "UnauthRoleArn": "arn:aws:iam::106155996924:role/amplify-finnerapp-staging-23018-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::106155996924:role/amplify-finnerapp-staging-23018-authRole",
+      "AuthRoleName": "amplify-finner-staging-112718-authRole",
+      "UnauthRoleArn": "arn:aws:iam::106155996924:role/amplify-finner-staging-112718-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::106155996924:role/amplify-finner-staging-112718-authRole",
       "Region": "ap-southeast-1",
-      "DeploymentBucketName": "amplify-finnerapp-staging-23018-deployment",
-      "UnauthRoleName": "amplify-finnerapp-staging-23018-unauthRole",
-      "StackName": "amplify-finnerapp-staging-23018",
-      "StackId": "arn:aws:cloudformation:ap-southeast-1:106155996924:stack/amplify-finnerapp-staging-23018/725087c0-648d-11ed-92d8-0a0d0af074ba",
-      "AmplifyAppId": "d2awnwkcyru2ve",
-      "AuthTriggerTemplateURL": "https://s3.amazonaws.com/amplify-finnerapp-staging-23018-deployment/amplify-cfn-templates/auth/auth-trigger-cloudformation-template.json"
+      "DeploymentBucketName": "amplify-finner-staging-112718-deployment",
+      "UnauthRoleName": "amplify-finner-staging-112718-unauthRole",
+      "StackName": "amplify-finner-staging-112718",
+      "StackId": "arn:aws:cloudformation:ap-southeast-1:106155996924:stack/amplify-finner-staging-112718/a15389e0-65a1-11ed-9f7a-022b4a7f521e",
+      "AmplifyAppId": "dl1mr1hjpx7w1",
+      "AuthTriggerTemplateURL": "https://s3.amazonaws.com/amplify-finner-staging-112718-deployment/amplify-cfn-templates/auth/auth-trigger-cloudformation-template.json"
     },
     "categories": {
       "auth": {
-        "FinnerApp": {}
+        "Finner": {}
       },
       "function": {
-        "FinnerAppPostConfirmation": {
-          "deploymentBucketName": "amplify-finnerapp-staging-23018-deployment",
-          "s3Key": "amplify-builds/FinnerAppPostConfirmation-7666352b486c36746244-build.zip"
+        "FinnerPostConfirmation": {
+          "deploymentBucketName": "amplify-finner-staging-112718-deployment",
+          "s3Key": "amplify-builds/FinnerPostConfirmation-4a4265503248336b514b-build.zip"
         }
+      },
+      "api": {
+        "Finner": {}
       }
     }
   }

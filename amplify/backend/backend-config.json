@@ -1,12 +1,12 @@
 {
   "auth": {
-    "FinnerApp": {
+    "Finner": {
       "service": "Cognito",
       "providerPlugin": "awscloudformation",
       "dependsOn": [
         {
           "category": "function",
-          "resourceName": "FinnerAppPostConfirmation",
+          "resourceName": "FinnerPostConfirmation",
           "triggerProvider": "Cognito",
           "attributes": [
             "Arn",
@@ -34,7 +34,7 @@
     }
   },
   "api": {
-    "FinnerApp": {
+    "Finner": {
       "service": "AppSync",
       "providerPlugin": "awscloudformation",
       "dependsOn": [],
@@ -57,7 +57,7 @@
     }
   },
   "function": {
-    "FinnerAppPostConfirmation": {
+    "FinnerPostConfirmation": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
