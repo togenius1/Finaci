@@ -5,7 +5,6 @@ import {prefetchConfiguration} from 'react-native-app-auth';
 import DocumentPicker from 'react-native-document-picker';
 import RNFS from 'react-native-fs';
 
-import {generateKeyPair, PRIVATE_KEY, PUBLIC_KEY} from '../../util/crypto';
 import {configs, defaultAuthState} from '../../util/authConfig';
 import {decryption} from '../../util/decrypt';
 import {encryption} from '../../util/encrypt';
@@ -17,8 +16,6 @@ import {
 } from '../../util/fetchData';
 import {authorization, refreshAuthorize} from '../../util/auth';
 import {ExpenseType} from '../../models/expense';
-import {DataStore} from 'aws-amplify';
-import {User} from '../../src/models';
 
 interface AuthStateType {
   hasLoggedInOnce: boolean;
@@ -127,19 +124,6 @@ const Backup = () => {
     return decrypted;
   };
 
-  // Generate PRIVATE_KEY to Cloud
-  const updateKeyPair = async () => {
-    const {publicKey} = generateKeyPair();
-    const privateK = await AsyncStorage.getItem(PRIVATE_KEY);
-    // save private key to Async storage
-    // console.log('privateK: ', privateK);
-    if (privateK === null || privateK === undefined) {
-      const {secretKey} = generateKeyPair();
-      await AsyncStorage.setItem(PRIVATE_KEY, secretKey.toString());
-    }
-    await AsyncStorage.setItem(PUBLIC_KEY, publicKey.toString());
-  };
-
   // Create folder
   async function createFolder(fileName: string) {
     const folderObj = await fetchCreateFolder(auth.current, jsonData, fileName);
@@ -209,15 +193,6 @@ const Backup = () => {
           <View style={{marginTop: 20}}>
             <Text style={{fontSize: 18}}>Restore</Text>
             <Text style={{fontSize: 14}}>Restore your data from cloud</Text>
-          </View>
-        </Pressable>
-
-        <Pressable
-          style={({pressed}) => pressed && styles.pressed}
-          onPress={updateKeyPair}>
-          <View style={{marginTop: 20}}>
-            <Text style={{fontSize: 18}}>updateKeyPair</Text>
-            <Text style={{fontSize: 14}}>update key pair</Text>
           </View>
         </Pressable>
       </View>

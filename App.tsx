@@ -83,12 +83,15 @@ const App = () => {
     let cloudPrivateKey = currentUser?.backupKey;
     let localPrivateKey = await AsyncStorage.getItem(PRIVATE_KEY);
 
+    const publicKey = await AsyncStorage.getItem(PUBLIC_KEY);
+
     console.log('cloudPrivateKey: ', cloudPrivateKey);
     console.log('localPrivateKey: ', localPrivateKey);
+    console.log('publicKey: ', publicKey);
 
     // Check if the backup key is in Local Storage and Cloud.
     if (
-      (localPrivateKey === null || localPrivateKey === undefined) &&
+      (localPrivateKey === null || cloudPrivateKey === undefined) &&
       (cloudPrivateKey === null || cloudPrivateKey === undefined)
     ) {
       console.log('-------------Generate New Key');
@@ -96,13 +99,14 @@ const App = () => {
     }
 
     // Check if it doesn't found key on Local Storage.
-    if (
-      (localPrivateKey === undefined || localPrivateKey === null) &&
-      (cloudPrivateKey !== undefined || cloudPrivateKey !== null)
-    ) {
-      console.log('---------------Cloud To Local Storage');
-      await saveCloudKeyToLocal(String(cloudPrivateKey));
-    }
+    // if (
+    //   (localPrivateKey === undefined || localPrivateKey === null) &&
+    //   cloudPrivateKey !== undefined &&
+    //   cloudPrivateKey !== null
+    // ) {
+    //   console.log('---------------Cloud To Local Storage');
+    //   await saveCloudKeyToLocal(String(cloudPrivateKey));
+    // }
 
     // // Check if it doesn't found key on Cloud.
     // if (
