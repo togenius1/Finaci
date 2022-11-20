@@ -4,9 +4,10 @@ import {GlobalStyles} from '../../constants/styles';
 
 type Props = {
   children: React.ReactNode;
+  // onPress: () => React.ReactNode;
 };
 
-const Button = ({children, onPress, mode, style, styleBtn}: Props) => {
+const CButton = ({children, onPress, mode, style, styleBtn}: Props) => {
   return (
     <View style={style}>
       <Pressable
@@ -22,7 +23,7 @@ const Button = ({children, onPress, mode, style, styleBtn}: Props) => {
   );
 };
 
-export default Button;
+export default CButton;
 
 const styles = StyleSheet.create({
   button: {

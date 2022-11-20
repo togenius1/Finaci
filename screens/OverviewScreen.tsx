@@ -12,15 +12,14 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import moment from 'moment';
 
+import Spending from './tab/SpendingTab';
 import Expense from './tab/ExpenseTab';
 import Income from './tab/IncomeTab';
 import MonthYearList from '../components/Menu/MonthYearList';
 // import BarChartScreen from './screenComponents/BarChartTab';
 // import BarchartTab from './screenComponents/BarChartTab';
 // import {EXPENSES} from '../dummy/dummy';
-import Spending from './tab/SpendingTab';
 import {OverviewNavigationProp} from '../types';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 type Props = {
   navigation: OverviewNavigationProp;

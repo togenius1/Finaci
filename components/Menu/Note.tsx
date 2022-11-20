@@ -9,7 +9,7 @@ import {
 import React, {Dispatch, SetStateAction} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import Button from '../UI/Button';
+import Button from '../UI/CButton';
 // import {NoteNavigationType, NoteRouteProp} from '../types';
 
 type Note = {

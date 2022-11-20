@@ -1,4 +1,3 @@
-import {Alert} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {box, randomBytes} from 'tweetnacl';
 import {v4 as randomByte} from 'uuid';
@@ -77,16 +76,16 @@ export const stringToUint8Array = (content: string) =>
 export const getMySecretKey = async () => {
   const keyString = await AsyncStorage.getItem(PRIVATE_KEY);
   if (!keyString) {
-    Alert.alert(
-      "You haven't set your keypair yet",
-      'Go to settings, and generate a new keypair',
-      [
-        {
-          text: 'Open setting',
-          // onPress: () => navigation.navigate('Settings'),
-        },
-      ],
-    );
+    // Alert.alert(
+    //   "You haven't set your keypair yet",
+    //   'Go to settings, and generate a new keypair',
+    //   [
+    //     {
+    //       text: 'Open setting',
+    //       // onPress: () => navigation.navigate('Settings'),
+    //     },
+    //   ],
+    // );
     return;
   }
 

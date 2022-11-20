@@ -2,7 +2,7 @@ import {Dimensions, Pressable, StyleSheet, View} from 'react-native';
 import React from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Input from '../ManageExpense/Input';
-import Button from '../UI/Button';
+import Button from '../UI/CButton';
 
 const {width} = Dimensions.get('window');
 

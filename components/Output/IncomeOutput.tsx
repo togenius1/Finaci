@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {Dimensions, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {v4 as uuidv4} from 'uuid';
@@ -14,6 +14,8 @@ import IncomeList from './IncomeList';
 import {IncomeCategory} from '../../dummy/categoryItems';
 
 type Props = {};
+
+const {width, height} = Dimensions.get('window');
 
 const IncomeOutput = ({data, fromDate, toDate}: Props) => {
   let slices = [];
@@ -86,9 +88,9 @@ const styles = StyleSheet.create({
   },
   addButtonContainer: {
     backgroundColor: '#5ca3f6',
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: width * 0.15,
+    height: width * 0.15,
+    borderRadius: (width * 0.2) / 2,
     borderWidth: 0.5,
     borderColor: '#fff',
     justifyContent: 'center',
@@ -99,7 +101,7 @@ const styles = StyleSheet.create({
     elevation: 3,
 
     position: 'absolute',
-    right: 15,
+    right: 20,
     bottom: 30,
   },
 });

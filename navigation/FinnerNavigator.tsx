@@ -12,15 +12,15 @@ import RootNavigator from './RootNavigator';
 import MenuDrawer from './NavComponents/Drawer/MenuDrawer';
 
 type Props = {
-  authenticatedUser: object | null;
+  loggedIn: boolean | undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-const FinnerNavigator = ({authenticatedUser}: Props) => {
+const FinnerNavigator = ({authUser}: Props) => {
   return (
     <>
-      {authenticatedUser ? (
+      {authUser ? (
         <NavigationContainer>
           <Stack.Navigator
             screenOptions={{

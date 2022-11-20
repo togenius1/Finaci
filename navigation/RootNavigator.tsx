@@ -33,4 +33,3 @@ const RootNavigator = (props: Props) => {
 
 export default RootNavigator;
 
-const styles = StyleSheet.create({});

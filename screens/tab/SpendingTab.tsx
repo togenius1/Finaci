@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {Dimensions, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import moment from 'moment';
@@ -13,6 +13,8 @@ import {ExpenseType} from '../../models/expense';
 type Props = {
   route: SpendingTabRouteProp;
 };
+
+const {width, height} = Dimensions.get('window');
 
 const SpendingTab = ({route}: Props) => {
   const [expenseData, setExpenseData] = useState<ExpenseType>();
@@ -62,9 +64,9 @@ const styles = StyleSheet.create({
   },
   addButtonContainer: {
     backgroundColor: '#5ca3f6',
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: width * 0.15,
+    height: width * 0.15,
+    borderRadius: (width * 0.2) / 2,
     borderWidth: 0.5,
     borderColor: '#fff',
     justifyContent: 'center',
@@ -76,7 +78,7 @@ const styles = StyleSheet.create({
 
     position: 'absolute',
     right: 20,
-    bottom: 50,
+    bottom: 30,
   },
   pressed: {
     opacity: 0.75,
