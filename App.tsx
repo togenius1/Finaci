@@ -1,4 +1,4 @@
-import {StatusBar, View} from 'react-native';
+import {Appearance, StatusBar, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {setPRNG} from 'tweetnacl';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -15,7 +15,7 @@ import {
   stringToUint8Array,
 } from './util/crypto';
 import FinnerNavigator from './navigation/FinnerNavigator';
-import {EagerUser, User} from './src/models';
+import {User} from './src/models';
 import CButton from './components/UI/CButton';
 
 Amplify.configure(awsconfig);
@@ -23,10 +23,9 @@ Amplify.configure(awsconfig);
 setPRNG(PRNG);
 
 const App = () => {
-  const [loggedIn, setLoggedIn] = useState<boolean>();
-  const [user, setUser] = useState<EagerUser | undefined>();
+  const [currentUser, setCurrentUser] = useState();
   const [cloudPrivateKey, setCloudPrivateKey] = useState<string | null>();
-  const [localPrivateKey, setLocalPrivateKey] = useState<string | null>();
+  // const [localPrivateKey, setLocalPrivateKey] = useState<string | null>();
 
   // const dispatch = useAppDispatch();
   // // const dataLoaded = useAppSelector(store => store);
@@ -42,6 +41,7 @@ const App = () => {
     const listener = data => {
       if (data.payload.event === 'signIn' || data.payload.event === 'signOut') {
         checkUser();
+        generateNewKey();
       }
     };
     Hub.listen('auth', listener);
@@ -54,51 +54,35 @@ const App = () => {
     checkUser();
   }, []);
 
-  console.log('cloudPrivateKey: ', cloudPrivateKey);
-  console.log('localPrivateKey: ', localPrivateKey);
-  // console.log('loggedIn:------ ', loggedIn);
+  useEffect(() => {
+    // generateNewKey();
+    const subscription = DataStore.observe(User, currentUser?.id).subscribe(
+      msg => {
+        console.log(msg.model, msg.opType, msg.element);
+      },
+    );
+
+    // Call unsubscribe to close the subscription
+    subscription.unsubscribe();
+  }, [currentUser]);
 
   // Check if authenticated user.
   const checkUser = async () => {
     try {
-      const authUser = await Auth.currentAuthenticatedUser({bypassCache: true});
-      // const authUser = await Auth.currentAuthenticatedUser();
+      // const authUser = await Auth.currentAuthenticatedUser({bypassCache: true});
+      const authUser = await Auth.currentAuthenticatedUser();
       const dbUser = await DataStore.query(User, authUser.attributes.sub);
-      setUser(dbUser);
+      setCurrentUser(dbUser);
 
       const cloudPKey = String(dbUser?.backupKey);
-      let localPKey = String(await getMySecretKey());
       setCloudPrivateKey(cloudPKey);
-      setLocalPrivateKey(localPKey);
+      // let localPKey = String(await getMySecretKey());
+      // setLocalPrivateKey(localPKey);
 
-      await backupKeyHandler();
+      // await generateNewKey();
     } catch (e) {
-      setUser(null);
+      // setCurrentUser(null);
     }
-  };
-
-  // Check Key
-  const backupKeyHandler = async () => {
-    // Local Key is empty.
-    if (
-      cloudPrivateKey !== null &&
-      (localPrivateKey === null ||
-        localPrivateKey !== cloudPrivateKey ||
-        localPrivateKey === '0')
-    ) {
-      await saveCloudKeyToLocal();
-      return;
-    }
-
-    // Generate New Key
-    if (
-      cloudPrivateKey === null ||
-      cloudPrivateKey === undefined ||
-      cloudPrivateKey === '0'
-    ) {
-      await generateNewKey();
-    }
-    return;
   };
 
   // Generate new key
@@ -114,10 +98,11 @@ const App = () => {
     await AsyncStorage.setItem(PRIVATE_KEY, secretKey.toString());
     await AsyncStorage.setItem(PUBLIC_KEY, publicKey.toString());
 
-    // Update a backup key id in User table.
-    const originalUser = await DataStore.query(User, String(user?.id));
+    // const originalUser = await DataStore.query(User, user?.id);
+    console.log('secretKey: ', secretKey);
+    console.log('cloud Key: ', cloudPrivateKey);
     await DataStore.save(
-      User.copyOf(originalUser, updated => {
+      User.copyOf(currentUser, updated => {
         updated.backupKey = String(secretKey);
       }),
     );
@@ -155,14 +140,10 @@ const App = () => {
   return (
     <>
       <StatusBar barStyle="light-content" />
-      <FinnerNavigator authUser={user} />
+      <FinnerNavigator authUser={currentUser} />
 
-      {user && (
+      {currentUser && (
         <>
-          <CButton onPress={removeKey} style={{bottom: 30}}>
-            Remove Local Key
-          </CButton>
-
           <CButton onPress={removeCloudKey} style={{bottom: 25}}>
             Remove Cloud Key
           </CButton>

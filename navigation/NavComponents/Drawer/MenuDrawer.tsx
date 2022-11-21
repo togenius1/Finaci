@@ -49,7 +49,7 @@ const MenuDrawer = () => {
         name="Accounts"
         component={AccountsScreen}
         options={() => ({
-          title: 'Budgets',
+          title: 'Accounts',
         })}
       />
       <Drawer.Screen
