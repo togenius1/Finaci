@@ -163,8 +163,12 @@ const TransactionsScreen = ({navigation}: Props) => {
     let fromdate;
     let todate;
     let month;
+
     const mm = moment().month(time).format('MM');
-    const daysInMonth = moment(moment().format(`YYYY-${mm}`)).daysInMonth();
+    const daysInMonth = moment(
+      moment().format(`YYYY-${mm}`),
+      'YYYY-MM',
+    ).daysInMonth();
 
     if (monthlyPressed) {
       fromdate = moment().startOf('year').format(`${time}-01-01`);

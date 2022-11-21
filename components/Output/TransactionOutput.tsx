@@ -87,10 +87,11 @@ const TransactionOutput = ({
   );
 
   const setMonthlyHandler = () => {
-    // const fromdate = moment().format(`${year}-01-01`);
-    // const todate = moment().format(`${year}-12-31`);
-    const fromdate = moment(new Date(`${year}-01-01`), 'YYYY-MM-DD');
-    const todate = moment(new Date(`${year}-12-31`), 'YYYY-MM-DD');
+    // const fromdate = moment(`${year}-01-01`);
+    // const todate = moment(`${year}-12-31`);
+    const fromdate = moment(`${year}-01-01`).format('YYYY-MM-DD');
+    const todate = moment(`${year}-12-31`).format('YYYY-MM-DD');
+    console.log(fromdate, todate);
 
     setFromDate(fromdate);
     setToDate(todate);
@@ -99,18 +100,23 @@ const TransactionOutput = ({
     setDailyPressed(false);
     setCustomPressed(false);
     setExportPressed(false);
-    setDuration(moment(toDate).year());
+    setDuration(String(moment(toDate).year()));
     // setYear(moment(toDate).year());
   };
 
   const setWeeklyHandler = () => {
-    if (month < 10) {
+    if (+month < 10) {
       month = `0${month}`;
     }
     const date = moment().format(`${year}-${month}-DD`);
-    const daysInMonth = moment(moment().format(`YYYY-${month}`)).daysInMonth();
-    const fromdate = moment(`${year}-${month}-01`, 'YYYY-MM-DD');
-    const todate = moment(`${year}-${month}-${daysInMonth}`, 'YYYY-MM-DD');
+    const daysInMonth = moment(
+      moment().format(`YYYY-${month}`),
+      'YYYY-MM',
+    ).daysInMonth();
+    const fromdate = moment(`${year}-${month}-01`).format('YYYY-MM-DD');
+    const todate = moment(`${year}-${month}-${daysInMonth}`).format(
+      'YYYY-MM-DD',
+    );
 
     setFromDate(String(fromdate));
     setToDate(String(todate));
@@ -127,9 +133,14 @@ const TransactionOutput = ({
       month = `0${month}`;
     }
     const date = moment().format(`${year}-${month}-DD`);
-    const daysInMonth = moment(moment().format(`YYYY-${month}`)).daysInMonth();
-    const fromdate = moment(`${year}-${month}-01`, 'YYYY-MM-DD');
-    const todate = moment(`${year}-${month}-${daysInMonth}`, 'YYYY-MM-DD');
+    const daysInMonth = moment(
+      moment().format(`YYYY-${month}`),
+      'YYYY-MM',
+    ).daysInMonth();
+    const fromdate = moment(`${year}-${month}-01`).format('YYYY-MM-DD');
+    const todate = moment(`${year}-${month}-${daysInMonth}`).format(
+      'YYYY-MM-DD',
+    );
 
     setFromDate(fromdate);
     setToDate(todate);

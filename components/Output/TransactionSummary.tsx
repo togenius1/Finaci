@@ -100,9 +100,10 @@ function HeaderSummary({total, totalIncome, totalExpenses}: HeaderSummaryType) {
 
 // Monthly renderItem
 function MonthlyRenderItem({item}) {
-  const monthLabel = moment.monthsShort(item.Products[0].month - 1);
+  const monthLabel = moment.monthsShort(Number(item.Products[0].month) - 1);
   const expenseAmount = currencyFormatter(item.Products[0]?.amount, {});
   const incomeAmount = currencyFormatter(item.Products[1]?.amount, {});
+
   return (
     <View style={styles.list}>
       <View
@@ -138,9 +139,11 @@ function WeeklyRenderItem({item}) {
   const incomeAmount = currencyFormatter(item.Products[1]?.amount, {});
   const weekNum = item.Products[0].week;
 
-  const year = moment(item.Date).year();
-  const month = moment(item.Date).month() + 1;
-  const daysInMonth = moment(item.Date).daysInMonth();
+  const date = new Date(item.Date);
+
+  const year = moment(date).year();
+  const month = moment(date).month() + 1;
+  const daysInMonth = moment(date, 'YYYY-MM-DD').daysInMonth();
   const weeks = getDaysInWeek(year, month, daysInMonth);
 
   let startDateOfWeek;
@@ -288,7 +291,7 @@ const TransactionSummary = ({
   // Parameters
   let _renderItem = '';
   let _renderData = [];
-  const date = moment(fromDate, 'YYYY-MM-DD');
+  const date = moment(fromDate).format('YYYY-MM-DD');
 
   const navigation = useNavigation();
 
@@ -318,10 +321,10 @@ const TransactionSummary = ({
   const data2 = [...sumExpenseByMonth, ...sumIncomeByMonth];
   let monthlyData = Object.values(
     data2.reduce((acc, cur) => {
-      if (!acc[cur.month]) {
-        acc[cur.month] = {Month: cur.month, Date: cur?.date, Products: []};
+      if (!acc[cur?.month]) {
+        acc[cur?.month] = {Month: cur.month, Date: cur?.date, Products: []};
       }
-      acc[cur.month].Products.push(cur);
+      acc[cur?.month].Products.push(cur);
       return acc;
     }, {}),
   );
@@ -403,7 +406,6 @@ const TransactionSummary = ({
     _renderData = customData;
   }
 
-  // if (!monthlyPressed) {
   //sort Data
   _renderData?.sort((a: any, b: any) => {
     const dateA = new Date(a.Date);
@@ -427,7 +429,7 @@ const TransactionSummary = ({
     const dayLabel = moment(date).format('ddd');
     const monthLabel = moment(date).format('MMM');
     const year = moment(date).year();
-
+    console.log(date);
     return (
       <DailyItem
         incomeAmount={incomeAmount}
