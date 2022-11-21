@@ -8,6 +8,7 @@ import AccountsScreen from '../../../screens/AccountsScreen';
 import SettingsScreen from '../../../screens/SettingsScreen';
 import DrawerContent from '../../../screens/drawer/DrawerContent';
 import ReportsScreen from '../../../screens/ReportsScreen';
+import BackupScreen from '../../../screens/BackupScreen';
 import {RootStackParamList} from '../../../types';
 
 const Drawer = createDrawerNavigator<RootStackParamList>();
@@ -57,6 +58,13 @@ const MenuDrawer = () => {
         component={ReportsScreen}
         options={() => ({
           title: 'Reports',
+        })}
+      />
+      <Drawer.Screen
+        name="Backup"
+        component={BackupScreen}
+        options={() => ({
+          title: 'Backup',
         })}
       />
       <Drawer.Screen

@@ -102,6 +102,23 @@ const DrawerContent = (props: Props) => {
           </Pressable>
         </View>
 
+        <View style={styles.reportContainer}>
+          <Pressable
+            style={({pressed}) => pressed && styles.pressed}
+            onPress={() => {
+              navigation.navigate('Backup');
+            }}>
+            <View style={{flexDirection: 'row'}}>
+              <Ionicons
+                name="cloud-upload-outline"
+                size={22}
+                color={colors.budget}
+              />
+              <Text style={styles.reportText}>Backup</Text>
+            </View>
+          </Pressable>
+        </View>
+
         <View style={styles.settingContainer}>
           <Pressable
             style={({pressed}) => pressed && styles.pressed}

@@ -10,7 +10,7 @@ import {name as appName} from './app.json';
 import {store, persistor} from './store';
 
 // Should be removed after React-Native-Reanimated to be updated.
-LogBox.ignoreLogs(['RCTBridge required dispatch_sync to load REAModule']);
+// LogBox.ignoreLogs(['RCTBridge required dispatch_sync to load REAModule']);
 
 const Root = () => (
   <Provider store={store}>

@@ -10,6 +10,7 @@ export type RootStackParamList = {
   Stats: undefined;
   Menu: undefined;
   Reports: undefined;
+  Backup: undefined;
   ExpenseGraphs: undefined;
   TransactionSummary: undefined;
   Accounts: {

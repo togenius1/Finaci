@@ -8,9 +8,9 @@ import Backup from '../components/Menu/Backup';
 const ReportsScreen = () => {
   return (
     <View style={styles.container}>
-      {/* <Report /> */}
+      <Report />
       <Export />
-      <Backup />
+      {/* <Backup /> */}
     </View>
   );
 };

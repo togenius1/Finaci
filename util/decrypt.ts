@@ -12,7 +12,6 @@ import {
 export const decryption = async (obj: string) => {
   const ourSecretKey = await getMySecretKey();
   const ourPublicKey = await AsyncStorage.getItem(PUBLIC_KEY);
-
   if (!ourSecretKey || !ourPublicKey) {
     return;
   }

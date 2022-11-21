@@ -54,23 +54,11 @@ const App = () => {
     checkUser();
   }, []);
 
-  useEffect(() => {
-    // generateNewKey();
-    const subscription = DataStore.observe(User, currentUser?.id).subscribe(
-      msg => {
-        console.log(msg.model, msg.opType, msg.element);
-      },
-    );
-
-    // Call unsubscribe to close the subscription
-    subscription.unsubscribe();
-  }, [currentUser]);
-
   // Check if authenticated user.
   const checkUser = async () => {
     try {
-      // const authUser = await Auth.currentAuthenticatedUser({bypassCache: true});
-      const authUser = await Auth.currentAuthenticatedUser();
+      const authUser = await Auth.currentAuthenticatedUser({bypassCache: true});
+      // const authUser = await Auth.currentAuthenticatedUser();
       const dbUser = await DataStore.query(User, authUser.attributes.sub);
       setCurrentUser(dbUser);
 
@@ -87,9 +75,13 @@ const App = () => {
 
   // Generate new key
   const generateNewKey = async () => {
+    if (cloudPrivateKey !== null || cloudPrivateKey !== undefined) {
+      return;
+    }
     console.log('Generating new key');
     // Remove old key
-    await removeKey();
+    await AsyncStorage.removeItem(PRIVATE_KEY);
+    await AsyncStorage.removeItem(PUBLIC_KEY);
 
     // Generate a new backup key.
     const {publicKey, secretKey} = generateKeyPair();
@@ -111,20 +103,14 @@ const App = () => {
   // Load Key from Cloud
   const saveCloudKeyToLocal = async () => {
     console.log('Cloud Key to Local');
-    await removeKey();
+    await AsyncStorage.removeItem(PRIVATE_KEY);
+    await AsyncStorage.removeItem(PUBLIC_KEY);
 
     await AsyncStorage.setItem(PRIVATE_KEY, String(cloudPrivateKey));
     const newPublicKey = generatePublicKeyFromSecretKey(
       stringToUint8Array(String(cloudPrivateKey)),
     );
     await AsyncStorage.setItem(PUBLIC_KEY, newPublicKey.publicKey.toString());
-  };
-
-  // Remove Key in Local Storage.
-  const removeKey = async () => {
-    // console.log('+++++++++ Removed Local Key ++++++++++');
-    await AsyncStorage.removeItem(PRIVATE_KEY);
-    await AsyncStorage.removeItem(PUBLIC_KEY);
   };
 
   const removeCloudKey = async () => {
@@ -142,13 +128,13 @@ const App = () => {
       <StatusBar barStyle="light-content" />
       <FinnerNavigator authUser={currentUser} />
 
-      {currentUser && (
+      {/* {currentUser && (
         <>
           <CButton onPress={removeCloudKey} style={{bottom: 25}}>
             Remove Cloud Key
           </CButton>
         </>
-      )}
+      )} */}
     </>
   );
 };

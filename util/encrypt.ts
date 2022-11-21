@@ -12,6 +12,7 @@ import {
 export const encryption = async (json: any) => {
   const ourSecretKey = await getMySecretKey();
   const ourPublicKey = await AsyncStorage.getItem(PUBLIC_KEY);
+  // console.log(ourPublicKey);
 
   if (!ourSecretKey || !ourPublicKey) {
     return;
