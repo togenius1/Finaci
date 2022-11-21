@@ -91,7 +91,6 @@ const TransactionOutput = ({
     // const todate = moment(`${year}-12-31`);
     const fromdate = moment(`${year}-01-01`).format('YYYY-MM-DD');
     const todate = moment(`${year}-12-31`).format('YYYY-MM-DD');
-    console.log(fromdate, todate);
 
     setFromDate(fromdate);
     setToDate(todate);

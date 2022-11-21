@@ -34,7 +34,7 @@ const App = () => {
   //   dispatch(fetchExpensesData());
   // }, []);
 
-  // console.log('authenticatedUser ', authenticatedUser);
+
 
   // Listening for Login events.
   useEffect(() => {
