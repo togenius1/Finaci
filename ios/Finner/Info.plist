@@ -16,6 +16,9 @@
   </dict>
 </array>
 
+<key>UIUserInterfaceStyle</key>
+    <string>Light</string>
+
 <key>UIAppFonts</key>
 <array>
   <string>AntDesign.ttf</string>
