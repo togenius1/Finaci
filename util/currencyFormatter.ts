@@ -1,11 +1,11 @@
 const defaultOptions = {
-  symbol: '$',
+  symbol: '', // '$' default dollar sign.
   significantDigits: 2,
   thousandsSeparator: ',',
   decimalSeparator: '.',
 };
 
-export const currencyFormatter = (value, options) => {
+export const currencyFormatter = (value: number, options) => {
   if (typeof value !== 'number') value = 0.0;
   options = {...defaultOptions, ...options};
   value = value.toFixed(options.significantDigits);

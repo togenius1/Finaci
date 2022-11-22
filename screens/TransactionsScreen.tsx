@@ -159,7 +159,7 @@ const TransactionsScreen = ({navigation}: Props) => {
     return 1; // return 1 here for DESC Order
   });
 
-  function onMonthYearSelectedHandler(time: number) {
+  function onMonthYearSelectedHandler(time) {
     let fromdate;
     let todate;
     let month;
@@ -177,8 +177,8 @@ const TransactionsScreen = ({navigation}: Props) => {
       setYear(String(moment(fromdate).year()));
     }
     if (!monthlyPressed) {
-      fromdate = moment(new Date(`${year}-${mm}-01`), 'YYYY-MM-DD');
-      todate = moment(new Date(`${year}-${mm}-${daysInMonth}`), 'YYYY-MM-DD');
+      fromdate = moment(`${year}-${mm}-01`).format('YYYY-MM-DD');
+      todate = moment(`${year}-${mm}-${daysInMonth}`).format('YYYY-MM-DD');
       month = moment(fromdate).month() + 1;
     }
 
@@ -226,7 +226,7 @@ const TransactionsScreen = ({navigation}: Props) => {
     setDatePickerVisibility(false);
   }
 
-  const onConfirm = date => {
+  const onConfirm = (date: string) => {
     const fromDate = moment(date).format('YYYY-MM-DD');
     const todate = moment(date).format('YYYY-MM-DD');
     if (fromDateClicked) {
@@ -247,9 +247,9 @@ const TransactionsScreen = ({navigation}: Props) => {
         incomeData={incomeData}
         setDuration={setDuration}
         setFromDate={setFromDate}
-        fromDate={fromDate}
+        fromDate={String(fromDate)}
         setToDate={setToDate}
-        toDate={toDate}
+        toDate={String(toDate)}
         monthlyPressed={monthlyPressed}
         setMonthlyPressed={setMonthlyPressed}
         weeklyPressed={weeklyPressed}

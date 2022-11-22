@@ -20,6 +20,7 @@ import {AccountNavigationType} from '../types';
 import AddAccountForm from '../components/Form/AddAccountForm';
 import {AccountType, CashType} from '../models/account';
 import {ExpenseType} from '../models/expense';
+import {currencyFormatter} from '../util/currencyFormatter';
 
 type Props = {
   navigation: AccountNavigationType;
@@ -106,7 +107,7 @@ const AccountsScreen = ({navigation}: Props) => {
             </View>
             <View style={{justifyContent: 'center', alignItems: 'center'}}>
               <Text style={{fontSize: 16, fontWeight: 'bold', color: 'blue'}}>
-                {accBalance.toFixed(2)}
+                {currencyFormatter(+accBalance, {})}
               </Text>
               <Text style={{fontSize: 11, marginTop: 10}}>
                 ({item.budget} budget)
@@ -121,17 +122,25 @@ const AccountsScreen = ({navigation}: Props) => {
   return (
     <View style={styles.container}>
       <View style={styles.assetsContainer}>
-        <View>
-          <Text>Assets</Text>
-          <Text style={{color: 'blue'}}>{totalAssets}</Text>
+        <View style={styles.headerBox}>
+          <Text style={styles.headerText}>Assets</Text>
+          <Text style={[styles.headerValueText, {color: 'blue'}]}>
+            {currencyFormatter(+totalAssets, {})}
+          </Text>
         </View>
-        <View>
-          <Text>Liabilities</Text>
-          <Text style={{color: 'red'}}>{totalExpenses}</Text>
+
+        <View style={styles.headerBox}>
+          <Text style={styles.headerText}>Liabilities</Text>
+          <Text style={[styles.headerValueText, {color: 'red'}]}>
+            {currencyFormatter(+totalExpenses, {})}
+          </Text>
         </View>
-        <View>
-          <Text>Total</Text>
-          <Text>{total}</Text>
+
+        <View style={styles.headerBox}>
+          <Text style={styles.headerText}>Total</Text>
+          <Text style={styles.headerValueText}>
+            {currencyFormatter(+total, {})}
+          </Text>
         </View>
       </View>
 
@@ -203,6 +212,19 @@ const styles = StyleSheet.create({
   accountsContainer: {
     flex: 1,
     marginTop: 20,
+  },
+  headerBox: {
+    // backgroundColor: 'red',
+    width: (width * 0.8) / 4,
+    alignSelf: 'center',
+  },
+  headerText: {
+    alignSelf: 'center',
+    fontSize: 14,
+  },
+  headerValueText: {
+    alignSelf: 'center',
+    fontSize: 15,
   },
   accountTitle: {
     fontSize: 16,

@@ -1,12 +1,12 @@
 import {Dimensions, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
-import moment from 'moment';
+// import moment from 'moment';
 
 import {EXPENSES} from '../../dummy/dummy';
 import BarchartTab from '../screenComponents/BarChartTab';
 import IconButton from '../../components/UI/iconButton';
-import {sumByCustomDate, sumByDate} from '../../util/math';
+// import {sumByCustomDate, sumByDate} from '../../util/math';
 import {SpendingTabRouteProp} from '../../types';
 import {ExpenseType} from '../../models/expense';
 
@@ -14,7 +14,7 @@ type Props = {
   route: SpendingTabRouteProp;
 };
 
-const {width, height} = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 
 const SpendingTab = ({route}: Props) => {
   const [expenseData, setExpenseData] = useState<ExpenseType>();
@@ -36,7 +36,7 @@ const SpendingTab = ({route}: Props) => {
     d => d.date >= new Date(fromDate) && d.date <= new Date(toDate),
   );
 
-  const renderBarchartTab = () => {
+  const RenderBarchartTab = () => {
     return (
       <BarchartTab data={filteredData} fromDate={fromDate} toDate={toDate} />
     );
@@ -44,7 +44,9 @@ const SpendingTab = ({route}: Props) => {
 
   return (
     <View style={styles.container}>
-      {renderBarchartTab()}
+      {/* {renderBarchartTab()} */}
+      <RenderBarchartTab />
+
       <View style={styles.addButtonContainer}>
         <IconButton
           name="add-outline"

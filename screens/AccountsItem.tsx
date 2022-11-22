@@ -31,6 +31,7 @@ import {AccountsItemNavigationType, AccountsItemRouteProp} from '../types';
 import {ExpenseType} from '../models/expense';
 import {AccountType, CashType} from '../models/account';
 import {IncomeType} from '../models/income';
+import {currencyFormatter} from '../util/currencyFormatter';
 
 type Props = {
   navigation: AccountsItemNavigationType;
@@ -509,25 +510,32 @@ function AccountsItem({navigation, route}: Props) {
   return (
     <View style={styles.container}>
       <View style={styles.balanceContainer}>
-        <View>
-          <Text>Deposit</Text>
-          <Text style={{color: 'blue'}}>
-            {totalIncomeByAccount?.toFixed(2)}
+        <View style={styles.headerBox}>
+          <Text style={styles.headerText}>Deposit</Text>
+          <Text style={[styles.headerValueText, {color: 'blue'}]}>
+            {currencyFormatter(+totalIncomeByAccount, {})}
           </Text>
         </View>
-        <View>
-          <Text>Withdraw</Text>
-          <Text style={{color: 'red'}}>
-            {totalExpenseByAccount?.toFixed(2)}
+
+        <View style={styles.headerBox}>
+          <Text style={styles.headerText}>Withdraw</Text>
+          <Text style={[styles.headerValueText, {color: 'red'}]}>
+            {currencyFormatter(+totalExpenseByAccount, {})}
           </Text>
         </View>
-        <View>
-          <Text>Total</Text>
-          <Text>{total?.toFixed(2)}</Text>
+
+        <View style={styles.headerBox}>
+          <Text style={styles.headerText}>Total</Text>
+          <Text style={[styles.headerValueText, {color: 'black'}]}>
+            {currencyFormatter(+total, {})}
+          </Text>
         </View>
-        <View>
-          <Text>Balance</Text>
-          <Text>{balance?.toFixed(2)}</Text>
+
+        <View style={styles.headerBox}>
+          <Text style={styles.headerText}>Balance</Text>
+          <Text style={[styles.headerValueText, {color: 'black'}]}>
+            {currencyFormatter(+balance, {})}
+          </Text>
         </View>
       </View>
 
@@ -605,6 +613,19 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     marginTop: 20,
     marginBottom: 20,
+  },
+  headerBox: {
+    // backgroundColor: 'red',
+    width: (width * 0.8) / 4,
+    alignSelf: 'center',
+  },
+  headerText: {
+    alignSelf: 'center',
+    fontSize: 14,
+  },
+  headerValueText: {
+    alignSelf: 'center',
+    fontSize: 15,
   },
   list: {
     flexDirection: 'row',

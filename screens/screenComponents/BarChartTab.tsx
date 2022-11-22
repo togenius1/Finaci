@@ -8,6 +8,7 @@ import {AccountCategory} from '../../dummy/categoryItems';
 import BarChart from '../../components/Graph/BarChart';
 import {useAppDispatch, useAppSelector} from '../../hooks';
 import {sumByDate, sumEachAccountId} from '../../util/math';
+import {currencyFormatter} from '../../util/currencyFormatter';
 
 type Props = {
   data: any[];
@@ -30,7 +31,7 @@ const BarchartTab = ({data, fromDate}: Props) => {
     <View>
       <View style={styles.summary}>
         <Text style={{fontSize: 28, fontWeight: 'bold', color: 'green'}}>
-          {availBudget}
+          {currencyFormatter(+availBudget, {})}
         </Text>
         <Text style={{fontSize: 14, color: 'green'}}>left to spend</Text>
       </View>
@@ -40,7 +41,7 @@ const BarchartTab = ({data, fromDate}: Props) => {
             <View style={{marginTop: -20}}>
               <Text
                 style={{fontSize: 16, fontWeight: 'bold', color: '#d10000'}}>
-                {totalExpenses}
+                {currencyFormatter(+totalExpenses, {})}
               </Text>
             </View>
             <Text style={{fontSize: 12, color: '#d10000'}}>Spent</Text>
@@ -48,7 +49,7 @@ const BarchartTab = ({data, fromDate}: Props) => {
           <View style={styles.available}>
             <View style={{marginTop: -20}}>
               <Text style={{fontSize: 16, fontWeight: 'bold', color: 'green'}}>
-                {budgetPerDay}
+                {currencyFormatter(+budgetPerDay, {})}
               </Text>
             </View>
             <View>

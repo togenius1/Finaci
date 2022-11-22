@@ -1,7 +1,7 @@
-import {Dimensions, StyleSheet, Text, View} from 'react-native';
+import {Dimensions, StyleSheet, View} from 'react-native';
 import React from 'react';
 import {useNavigation} from '@react-navigation/native';
-import {v4 as uuidv4} from 'uuid';
+// import {v4 as uuidv4} from 'uuid';
 
 import PieChart from '../Graph/PieChart';
 import {
@@ -15,11 +15,11 @@ import {IncomeCategory} from '../../dummy/categoryItems';
 
 type Props = {};
 
-const {width, height} = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 
 const IncomeOutput = ({data, fromDate, toDate}: Props) => {
-  let slices = [];
-  const incomeData = data;
+  // let slices = [];
+  // const incomeData = data;
   const navigation = useNavigation();
 
   // Filtered data: from date -to- to date

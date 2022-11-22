@@ -23,7 +23,7 @@ Amplify.configure(awsconfig);
 setPRNG(PRNG);
 
 const App = () => {
-  const [currentUser, setCurrentUser] = useState();
+  const [currentUser, setCurrentUser] = useState<User | null>();
   const [cloudPrivateKey, setCloudPrivateKey] = useState<string | null>();
   // const [localPrivateKey, setLocalPrivateKey] = useState<string | null>();
 
@@ -33,8 +33,6 @@ const App = () => {
   // useEffect(() => {
   //   dispatch(fetchExpensesData());
   // }, []);
-
-
 
   // Listening for Login events.
   useEffect(() => {

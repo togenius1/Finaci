@@ -21,9 +21,6 @@
           "deploymentBucketName": "amplify-finnerver1-staging-124024-deployment",
           "s3Key": "amplify-builds/FinnerVer1PostConfirmation-6d666638787270723345-build.zip"
         }
-      },
-      "api": {
-        "FinnerVer1": {}
       }
     }
   }

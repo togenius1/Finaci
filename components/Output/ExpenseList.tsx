@@ -1,5 +1,6 @@
 import {FlatList, Pressable, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
+import {currencyFormatter} from '../../util/currencyFormatter';
 // import OverviewItem from './OverviewItem';
 
 type Props = {};
@@ -12,13 +13,13 @@ function renderExpenseItem(itemData) {
       <View style={styles.transactBox}>
         <View style={styles.textLeftBox}>
           <View style={styles.pctBox}>
-            <Text>{(itemData.item.percentage * 100).toFixed(0)}%</Text>
+            <Text>{(itemData.item.percentage * 100).toFixed(0)} %</Text>
           </View>
           <View style={styles.cateBox}>
             <Text style={styles.cateText}>{itemData.item.title}</Text>
           </View>
         </View>
-        <Text>$ {itemData.item.amount.toFixed(2)}</Text>
+        <Text> {currencyFormatter(itemData.item.amount, {})}</Text>
       </View>
     </Pressable>
   );

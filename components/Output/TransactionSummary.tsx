@@ -18,7 +18,6 @@ import {
   sumByWeek,
   sumTotalFunc,
 } from '../../util/math';
-
 import {currencyFormatter} from '../../util/currencyFormatter';
 import {getDaysInWeek} from '../../util/date';
 import Export from '../Menu/Export';
@@ -38,6 +37,7 @@ type Props = {
   fromDate: string | null;
   toDate: string | null;
   exportPressed: boolean;
+  year: string | null;
 };
 
 interface HeaderSummaryType {
@@ -64,34 +64,19 @@ function HeaderSummary({total, totalIncome, totalExpenses}: HeaderSummaryType) {
       <View style={styles.assetBox}>
         <Text style={{fontSize: 14}}>Income</Text>
         <Text style={{color: 'blue', fontSize: 16, fontWeight: 'bold'}}>
-          {currencyFormatter(+totalIncome, {
-            symbol: '$',
-            significantDigits: 2,
-            thousandsSeparator: ',',
-            decimalSeparator: '.',
-          })}
+          {currencyFormatter(+totalIncome, {})}
         </Text>
       </View>
       <View style={styles.assetBox}>
         <Text style={{fontSize: 14}}>Expenses</Text>
         <Text style={{color: 'red', fontSize: 16, fontWeight: 'bold'}}>
-          {currencyFormatter(+totalExpenses, {
-            symbol: '$',
-            significantDigits: 2,
-            thousandsSeparator: ',',
-            decimalSeparator: '.',
-          })}
+          {currencyFormatter(+totalExpenses, {})}
         </Text>
       </View>
       <View style={styles.assetBox}>
         <Text style={{fontSize: 14}}>Total</Text>
         <Text style={{fontSize: 16, fontWeight: 'bold'}}>
-          {currencyFormatter(+total, {
-            symbol: '$',
-            significantDigits: 2,
-            thousandsSeparator: ',',
-            decimalSeparator: '.',
-          })}
+          {currencyFormatter(+total, {})}
         </Text>
       </View>
     </View>
@@ -291,6 +276,7 @@ const TransactionSummary = ({
   fromDate,
   toDate,
   exportPressed,
+  year,
 }: Props) => {
   // Parameters
   let _renderItem = '';
@@ -326,7 +312,8 @@ const TransactionSummary = ({
   let monthlyData = Object.values(
     data2.reduce((acc, cur) => {
       if (!acc[cur?.month]) {
-        acc[cur?.month] = {Month: cur.month, Date: cur?.date, Products: []};
+        const date = moment(`${year}-${cur.month}-01`).format('YYYY-MM-DD');
+        acc[cur?.month] = {Month: cur.month, Date: date, Products: []};
       }
       acc[cur?.month].Products.push(cur);
       return acc;

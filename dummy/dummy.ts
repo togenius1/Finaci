@@ -139,17 +139,33 @@ export const INCOME = [
     'Sell laptop',
     new Date('2022-11-11'),
   ),
+  new Income(
+    'i5',
+    'ic1',
+    'cash1',
+    '1000',
+    'Sell laptop',
+    new Date('2022-11-20'),
+  ),
+  new Income(
+    'i5',
+    'ic1',
+    'cash1',
+    '1000',
+    'Sell laptop',
+    new Date('2022-11-21'),
+  ),
+  new Income(
+    'i5',
+    'ic1',
+    'cash1',
+    '1000',
+    'Sell laptop',
+    new Date('2022-11-22'),
+  ),
 ];
 
 export const EXPENSES = [
-  new Expense(
-    'e1',
-    'ec2',
-    'cash1',
-    '50.9',
-    'pay electricity',
-    new Date('2022-10-11'),
-  ),
   new Expense(
     'e2',
     'ec2',
@@ -390,5 +406,29 @@ export const EXPENSES = [
     '200',
     'Starbucks at office',
     new Date('2022-11-11'),
+  ),
+  new Expense(
+    'e1',
+    'ec2',
+    'cash1',
+    '250.9',
+    'pay electricity',
+    new Date('2022-11-16'),
+  ),
+  new Expense(
+    'e1',
+    'ec2',
+    'cash1',
+    '350.9',
+    'pay electricity',
+    new Date('2022-11-21'),
+  ),
+  new Expense(
+    'e1',
+    'ec2',
+    'cash1',
+    '150.9',
+    'pay electricity',
+    new Date('2022-11-22'),
   ),
 ];

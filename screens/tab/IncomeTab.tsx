@@ -1,6 +1,6 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {useIsFocused} from '@react-navigation/native';
+// import {useIsFocused} from '@react-navigation/native';
 
 import IncomeOutput from '../../components/Output/IncomeOutput';
 import {INCOME} from '../../dummy/dummy';
@@ -14,7 +14,7 @@ type Props = {
 const IncomeTab = ({route}: Props) => {
   const [incomeData, setIncomeData] = useState<IncomeType>();
 
-  const isFocused = useIsFocused();
+  // const isFocused = useIsFocused();
   const fromDate = route.params?.fromDate;
   const toDate = route.params?.toDate;
 

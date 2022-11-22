@@ -29,7 +29,7 @@ type Props = {
   month: string;
 };
 
-const {width, height} = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 
 const TabsDataObject = {
   monthly: 'Monthly',
@@ -199,6 +199,7 @@ const TransactionOutput = ({
         fromDate={fromDate}
         toDate={toDate}
         exportPressed={exportPressed}
+        year={String(year)}
       />
     </View>
   );
