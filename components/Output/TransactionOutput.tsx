@@ -161,8 +161,12 @@ const TransactionOutput = ({
       today = `0${today}`;
     }
 
-    const fromdate = moment(new Date(`${year}-${month}-01`), 'YYYY-MM-DD');
-    const todate = moment(new Date(`${year}-${month}-${today}`), 'YYYY-MM-DD');
+    const fromdate = moment(new Date(`${year}-${month}-01`)).format(
+      'YYYY-MM-DD',
+    );
+    const todate = moment(new Date(`${year}-${month}-${today}`)).format(
+      'YYYY-MM-DD',
+    );
 
     setFromDate(String(fromdate));
     setToDate(String(todate));
@@ -186,7 +190,7 @@ const TransactionOutput = ({
       <Tabs
         TabsDataObject={TabsDataObject}
         onItemPress={onItemPress}
-        indicatorIndex={indicatorIndex}
+        indicatorIndex={Number(indicatorIndex)}
       />
 
       <TransactionSummary

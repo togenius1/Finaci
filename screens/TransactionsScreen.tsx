@@ -182,6 +182,10 @@ const TransactionsScreen = ({navigation}: Props) => {
       month = moment(fromdate).month() + 1;
     }
 
+    // Added 22 Nov 2022
+    if (Number(month) < 10) {
+      month = `0${month}`;
+    }
     setFromDate(String(fromdate));
     setToDate(String(todate));
     setDuration(String(time));

@@ -65,7 +65,7 @@ const BackupScreen = () => {
 
   useEffect(() => {
     timerRef.current = setInterval(() => {
-      console.log('timer running');
+      // console.log('timer running');
     }, SevenDays);
     () => clearInterval(timerRef.current);
   }, []);

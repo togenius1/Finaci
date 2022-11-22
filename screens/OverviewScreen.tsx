@@ -4,7 +4,6 @@ import {
   Pressable,
   StyleSheet,
   Text,
-  useColorScheme,
   View,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
@@ -242,9 +241,14 @@ const OverviewScreen = ({navigation}: Props) => {
     let todate;
     // let month;
     const mm = moment().month(time).format('MM');
-    const daysInMonth = moment(moment().format(`YYYY-${mm}`)).daysInMonth();
-    fromdate = moment(new Date(`${year}-${mm}-01`), 'YYYY-MM-DD');
-    todate = moment(new Date(`${year}-${mm}-${daysInMonth}`), 'YYYY-MM-DD');
+
+    // const daysInMonth = moment(`YYYY-${mm}-DD`).daysInMonth();
+    const daysInMonth = moment(
+      moment().format(`YYYY-${mm}`),
+      'YYYY-MM',
+    ).daysInMonth();
+    fromdate = moment(`${year}-${mm}-01`).format('YYYY-MM-DD');
+    todate = moment(`${year}-${mm}-${daysInMonth}`).format('YYYY-MM-DD');
     // month = moment(fromdate).month() + 1;
 
     setFromDate(moment(fromdate).format('YYYY-MM-DD'));

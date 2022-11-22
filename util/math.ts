@@ -194,7 +194,7 @@ export function sumByCustomMonth(object, type, fromDate, toDate) {
 
 // SUMMATION by WEEK
 export function sumByWeek(object, type, date) {
-  let month = moment(new Date(date)).month() + 1;
+  let month = moment(date).month() + 1;
   if (month < 10) {
     month = `0${month}`;
   }
@@ -227,9 +227,9 @@ export function sumByWeek(object, type, date) {
     ...obj,
     // id: obj.id,
     week: getWeekInMonth(
-      moment(new Date(obj.date)).year(),
-      moment(new Date(obj.date)).month() + 1,
-      moment(new Date(obj.date)).date(),
+      moment(obj.date).year(),
+      moment(obj.date).month() + 1,
+      moment(obj.date).date(),
     ),
     // date: obj.date,
   }));
@@ -330,7 +330,10 @@ export function sumByCustomDate(object, type, fromDate, toDate) {
 
   let results = [];
   monthObject?.forEach((element, index) => {
-    const fDate = moment(fromDate).format(`${year}-0${element}-01`);
+    if (element < 10) {
+      element = `0${element}`;
+    }
+    const fDate = moment(fromDate).format(`${year}-${element}-01`);
     const sum = sumByDate(object, type, moment(fDate));
     results = Object.assign(results, sum);
   });

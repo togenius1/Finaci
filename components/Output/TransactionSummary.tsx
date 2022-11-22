@@ -220,6 +220,10 @@ const DailyItem = ({
   year,
   navigation,
 }: DailyItemType) => {
+  if (day < 10) {
+    day = `0${day}`;
+  }
+
   return (
     <View style={styles.list}>
       <Pressable
@@ -411,6 +415,10 @@ const TransactionSummary = ({
   function DailyRenderItem({item}) {
     const expenseAmount = currencyFormatter(item.Products[0]?.amount, {});
     const incomeAmount = currencyFormatter(item.Products[1]?.amount, {});
+
+    if (customPressed && +expenseAmount === 0 && +incomeAmount === 0) {
+      return;
+    }
 
     const date = new Date(item.Products[0]?.date);
     let day = moment(date).date();
