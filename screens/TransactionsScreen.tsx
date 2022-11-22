@@ -21,6 +21,9 @@ import {TransactionNavigationProp} from '../types';
 import {ExpenseType} from '../models/expense';
 import {CategoryType} from '../models/category';
 import {IncomeType} from '../models/income';
+import {MonthTransactions} from '../dummy/monthlyTransact';
+import {WeekTransactions} from '../dummy/weeklyTransact';
+import {DailyTractions} from '../dummy/dailyTransact';
 
 type Props = {
   navigation: TransactionNavigationProp;
@@ -32,6 +35,10 @@ const TransactionsScreen = ({navigation}: Props) => {
   const [expenseCateData, setExpenseCateData] = useState<CategoryType>();
   const [expenseData, setExpenseData] = useState<ExpenseType>();
   const [incomeData, setIncomeData] = useState<IncomeType>();
+  const [monthlyTransactions, setMonthlyTransactions] = useState();
+  const [weeklyTransactions, setWeeklyTransactions] = useState();
+  const [dailyTransactions, setDailyTransactions] = useState();
+
   const [fromDate, setFromDate] = useState<string | null>();
   const [toDate, setToDate] = useState<string | null>();
   const [monthlyPressed, setMonthlyPressed] = useState<boolean>(true);
@@ -137,7 +144,9 @@ const TransactionsScreen = ({navigation}: Props) => {
     setExpenseCateData(ExpenseCategory);
     setExpenseData(EXPENSES);
     setIncomeData(INCOME);
-    // setAccountsData(AccountCategory);
+    setMonthlyTransactions(MonthTransactions);
+    setWeeklyTransactions(WeekTransactions);
+    setDailyTransactions(DailyTractions);
   }, []);
 
   if (
@@ -264,6 +273,9 @@ const TransactionsScreen = ({navigation}: Props) => {
         customPressed={customPressed}
         year={year}
         month={month}
+        monthlyTransactions={monthlyTransactions}
+        weeklyTransactions={weeklyTransactions}
+        dailyTransactions={dailyTransactions}
       />
 
       {showMonthYearListMenu && (

@@ -57,6 +57,9 @@ const TransactionOutput = ({
   customPressed,
   year,
   month,
+  monthlyTransactions,
+  weeklyTransactions,
+  dailyTransactions,
 }: Props) => {
   const [exportPressed, setExportPressed] = useState<boolean>(false);
   // const [customPressed, setCustomPressed] = useState(false);
@@ -204,6 +207,9 @@ const TransactionOutput = ({
         toDate={toDate}
         exportPressed={exportPressed}
         year={String(year)}
+        monthlyTransactions={monthlyTransactions}
+        weeklyTransactions={weeklyTransactions}
+        dailyTransactions={dailyTransactions}
       />
     </View>
   );

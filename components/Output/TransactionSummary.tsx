@@ -11,13 +11,7 @@ import {v4 as uuidv4} from 'uuid';
 import moment from 'moment';
 // import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import {
-  sumByCustomDate,
-  sumByDate,
-  sumByMonth,
-  sumByWeek,
-  sumTotalFunc,
-} from '../../util/math';
+import {sumTotalFunc} from '../../util/math';
 import {currencyFormatter} from '../../util/currencyFormatter';
 import {getDaysInWeek} from '../../util/date';
 import Export from '../Menu/Export';
@@ -26,6 +20,12 @@ import {useNavigation} from '@react-navigation/native';
 import {ExpenseType} from '../../models/expense';
 import {IncomeType} from '../../models/income';
 import {TransactionSummaryNavigationProp} from '../../types';
+import {
+  customTransaction,
+  dailyTransaction,
+  monthlyTransaction,
+  weeklyTransaction,
+} from '../../util/transaction';
 
 type Props = {
   expenseData: ExpenseType | undefined;
@@ -281,6 +281,9 @@ const TransactionSummary = ({
   toDate,
   exportPressed,
   year,
+  monthlyTransactions,
+  weeklyTransactions,
+  dailyTransactions,
 }: Props) => {
   // Parameters
   let _renderItem = '';
@@ -309,79 +312,20 @@ const TransactionSummary = ({
   const totalIncome = +sumTotalFunc(selectedDurationIncomeData).toFixed(0);
   const total = totalIncome - totalExpenses;
 
-  // Combine data and sum by monthly
-  const sumExpenseByMonth = sumByMonth(selectedDurationExpenseData, 'expense');
-  const sumIncomeByMonth = sumByMonth(selectedDurationIncomeData, 'income');
-  const data2 = [...sumExpenseByMonth, ...sumIncomeByMonth];
-  let monthlyData = Object.values(
-    data2.reduce((acc, cur) => {
-      if (!acc[cur?.month]) {
-        const date = moment(`${year}-${cur.month}-01`).format('YYYY-MM-DD');
-        acc[cur?.month] = {Month: cur.month, Date: date, Products: []};
-      }
-      acc[cur?.month].Products.push(cur);
-      return acc;
-    }, {}),
-  );
+  // Monthly Transaction
+  // const monthlyData = monthlyTransaction(fromDate, toDate, year);
+  const monthlyData = monthlyTransactions;
 
-  // Combine data and sum by weekly
-  const sumExpenseByWeek = sumByWeek(
-    selectedDurationExpenseData,
-    'expense',
-    date,
-  );
-  const sumIncomeByWeek = sumByWeek(selectedDurationIncomeData, 'income', date);
-  const data3 = [...sumExpenseByWeek, ...sumIncomeByWeek];
-  // const selectedMonth = moment(fromDate).month() + 1;
-  let weeklyData = Object.values(
-    data3.reduce((acc, cur) => {
-      if (!acc[cur?.week]) {
-        acc[cur?.week] = {Week: cur?.week, Products: [], Date: fromDate};
-      }
-      acc[cur?.week].Products.push(cur);
-      return acc;
-    }, {}),
-  );
+  //  Weekly Transaction
+  // const weeklyData = weeklyTransaction(fromDate, toDate, date);
+  const weeklyData = weeklyTransactions;
 
   // Combine data and sum by date
-  const sumExpenseByDate = sumByDate(
-    selectedDurationExpenseData,
-    'expense',
-    date,
-  );
-  const sumIncomeByDate = sumByDate(selectedDurationIncomeData, 'income', date);
-  const data = [...sumExpenseByDate, ...sumIncomeByDate];
-  let dailyData = Object.values(
-    data.reduce((acc, cur) => {
-      if (!acc[cur?.day])
-        acc[cur?.day] = {Day: cur?.day, Date: cur?.date, Products: []};
-      acc[cur?.day].Products.push(cur);
-      return acc;
-    }, {}),
-  );
+  // const dailyData = dailyTransaction(String(fromDate), String(toDate), date);
+  const dailyData = dailyTransactions;
 
   // Combine data and sum by custom
-  const sumExpenseByCustomDate = sumByCustomDate(
-    selectedDurationExpenseData,
-    'expense',
-    fromDate,
-    toDate,
-  );
-  const sumIncomeByCustomDate = sumByCustomDate(
-    selectedDurationIncomeData,
-    'income',
-    fromDate,
-    toDate,
-  );
-  const data4 = [...sumExpenseByCustomDate, ...sumIncomeByCustomDate];
-  let customData = Object.values(
-    data4.reduce((acc, cur) => {
-      if (!acc[cur?.day])
-        acc[cur?.day] = {Day: cur?.day, Date: cur?.date, Products: []};
-      acc[cur?.day].Products.push(cur);
-      return acc;
-    }, {}),
-  );
+  const customData = customTransaction(String(fromDate), String(toDate));
 
   // on pressed
   if (monthlyPressed) {
