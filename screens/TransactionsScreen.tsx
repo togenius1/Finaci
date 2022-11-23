@@ -172,21 +172,22 @@ const TransactionsScreen = ({navigation}: Props) => {
     let fromdate;
     let todate;
     let month;
+    let daysInMonth;
+    let mm;
 
-    const mm = moment().month(time).format('M');
-    const daysInMonth = moment(
-      moment().format(`YYYY-0${mm}`),
-      'YYYY-MM',
-    ).daysInMonth();
+    if (typeof time === 'string') {
+      mm = moment().month(time).format('M');
+      daysInMonth = moment(`${year}-0${mm}`, 'YYYY-MM').daysInMonth();
+    }
 
-    if (monthlyPressed) {
+    if (monthlyPressed && mm !== undefined && daysInMonth !== undefined) {
       // fromdate = moment(`${time}-01-01`).startOf('year').format('YYYY-MM-DD');
       fromdate = moment([time, 0]).format('YYYY-MM-DD');
       todate = moment(`${time}-12-31`).endOf('year').format('YYYY-MM-DD');
       month = moment().month() + 1;
       setYear(String(moment(fromdate).year()));
     }
-    if (!monthlyPressed) {
+    if (!monthlyPressed && mm !== undefined && daysInMonth !== undefined) {
       // fromdate = moment(`${year}-${mm}-01`).format('YYYY-MM-DD');
       fromdate = moment([String(year), +mm - 1]).format('YYYY-MM-DD');
       todate = moment(`${year}-${mm}-${daysInMonth}`).format('YYYY-MM-DD');
