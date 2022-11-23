@@ -10,7 +10,7 @@ import {incomeActions} from '../store/income-slice';
 import {transferActions} from '../store/transfer-slice';
 import {useAppDispatch, useAppSelector} from '../hooks';
 import Note from '../components/Menu/Note';
-import Account from '../components/Menu/Account';
+import Accounts from '../components/Menu/Accounts';
 import Category from '../components/Menu/Category';
 import {
   ExpenseCategory,
@@ -18,7 +18,7 @@ import {
   IncomeCategory,
   TransferCategory,
 } from '../dummy/categoryItems';
-import { CategoryType } from '../models/category';
+import {CategoryType} from '../models/category';
 
 type Props = {
   navigation: AddDetailsNavigationType;
@@ -170,7 +170,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
       )}
 
       {accountPressed && (
-        <Account
+        <Accounts
           setAccount={setAccount}
           setAccountPressed={setAccountPressed}
         />

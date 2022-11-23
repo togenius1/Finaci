@@ -49,8 +49,9 @@ const SpendingTab = ({route}: Props) => {
 
       <View style={styles.addButtonContainer}>
         <IconButton
-          name="add-outline"
-          size={15}
+          name="add"
+          size={30}
+          color="white"
           onPress={() => navigation.navigate('AddExpenses')}
         />
       </View>

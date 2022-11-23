@@ -91,9 +91,9 @@ const AddExpensesScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Calculator nextScreen="AddDetails" transaction={transaction} />
-
       <Tabs data={select} handleOnPressHandler={handleOnPressHandler} />
+
+      <Calculator nextScreen="AddDetails" transaction={transaction} />
     </View>
   );
 };

@@ -478,14 +478,14 @@ export const DailyTractions = [
     Products: [
       {
         accountId: 'accountId22',
-        amount: 0,
+        amount: 230,
         date: '2022-11-23',
         day: 23,
         id: 'e23',
       },
       {
         accountId: 'accountId22',
-        amount: 0,
+        amount: 230,
         date: '2022-11-23',
         day: 23,
         id: 'i23',

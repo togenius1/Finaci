@@ -10,12 +10,14 @@ import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {v4 as uuidv4} from 'uuid';
 
-import {AccountCategory} from '../../dummy/categoryItems';
+import {AccountCategory, CashCategory} from '../../dummy/categoryItems';
 import AddAccountForm from '../Form/AddAccountForm';
 import {useAppDispatch} from '../../hooks';
 import {accountActions} from '../../store/account-slice';
-import {CategoryType} from '../../models/category';
-import {AccountType} from '../../models/account';
+import {AccountType, CashType} from '../../models/account';
+import {currencyFormatter} from '../../util/currencyFormatter';
+import {sumTotalBudget, sumTotalFunc} from '../../util/math';
+import {EXPENSES} from '../../dummy/dummy';
 
 type Dispatcher<S> = Dispatch<SetStateAction<S>>;
 
@@ -26,8 +28,10 @@ type Props = {
 
 const {width, height} = Dimensions.get('window');
 
-const Account = ({setAccount, setAccountPressed}: Props) => {
-  const [data, setDate] = useState<AccountType>();
+const Accounts = ({setAccount, setAccountPressed}: Props) => {
+  const [expenseData, setExpenseData] = useState<AccountType>();
+  const [accountsData, setAccountsData] = useState<AccountType>();
+  const [cashData, setCashData] = useState<CashType>();
   const [addAccountPressed, setAddAccountPressed] = useState<boolean>(false);
   const [account, setAccountText] = useState<string | null>('');
   const [budget, setBudget] = useState<number | undefined>(0);
@@ -35,8 +39,18 @@ const Account = ({setAccount, setAccountPressed}: Props) => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    setDate(AccountCategory);
+    setAccountsData(AccountCategory);
+    setCashData(CashCategory);
+    setExpenseData(EXPENSES);
   }, []);
+
+  if (
+    accountsData === undefined ||
+    cashData === undefined ||
+    expenseData === undefined
+  ) {
+    return;
+  }
 
   function addAccountHandler() {
     setAddAccountPressed(pressed => !pressed);
@@ -59,6 +73,7 @@ const Account = ({setAccount, setAccountPressed}: Props) => {
   }
 
   const renderItem = ({item}) => {
+    const budgeted = currencyFormatter(+item.budget, {});
     return (
       <View>
         <Pressable
@@ -67,7 +82,7 @@ const Account = ({setAccount, setAccountPressed}: Props) => {
           onPress={() => onAccountsHandler(item)}>
           <View style={styles.item}>
             <Text>{item.title}</Text>
-            <Text>27,000</Text>
+            <Text>{budgeted}</Text>
           </View>
         </Pressable>
       </View>
@@ -75,9 +90,19 @@ const Account = ({setAccount, setAccountPressed}: Props) => {
   };
 
   function onAccountsHandler(item) {
+    console.log(item);
     setAccountPressed(false);
     setAccount(item);
   }
+
+  const cashBudget = sumTotalBudget(cashData)?.toFixed(2);
+  const accountsBudget = sumTotalBudget(accountsData)?.toFixed(2);
+  const totalAssets = +cashBudget + +accountsBudget;
+  const totalExpenses = sumTotalFunc(expenseData)?.toFixed(2);
+  const total = totalAssets - +totalExpenses;
+
+  console.log(account);
+  console.log(cashData[0]);
 
   return (
     <View style={styles.container}>
@@ -93,23 +118,39 @@ const Account = ({setAccount, setAccountPressed}: Props) => {
       <View style={styles.assetsContainer}>
         <View>
           <Text>Assets</Text>
-          <Text style={{color: 'green'}}>$27,000</Text>
+          <Text style={{color: 'green'}}>
+            {currencyFormatter(+totalAssets, {})}
+          </Text>
         </View>
         <View>
           <Text>Liabilities</Text>
-          <Text style={{color: 'red'}}>$11,000</Text>
+          <Text style={{color: 'red'}}>
+            {currencyFormatter(+totalExpenses, {})}
+          </Text>
         </View>
         <View>
           <Text>Total</Text>
-          <Text>$16,000</Text>
+          <Text>{currencyFormatter(+total, {})}</Text>
         </View>
       </View>
+
+      <View>
+        <Pressable
+          style={({pressed}) => pressed && styles.pressed}
+          onPress={() => onAccountsHandler(cashData[0])}>
+          <View style={styles.item}>
+            <Text>Cash</Text>
+            <Text>{currencyFormatter(+cashData[0]?.budget, {})}</Text>
+          </View>
+        </Pressable>
+      </View>
+
       <View style={styles.accountsContainer}>
         <View style={styles.cash}>
           <Text style={styles.accountTitle}>Accounts</Text>
           <FlatList
             keyExtractor={item => item.title + uuidv4()}
-            data={data}
+            data={accountsData}
             renderItem={renderItem}
             bounces={false}
           />
@@ -142,7 +183,7 @@ const Account = ({setAccount, setAccountPressed}: Props) => {
   );
 };
 
-export default Account;
+export default Accounts;
 
 const styles = StyleSheet.create({
   container: {

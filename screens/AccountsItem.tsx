@@ -461,7 +461,7 @@ function AccountsItem({navigation, route}: Props) {
               // backgroundColor: '#e1f3cd',
             }}>
             <Text style={{fontSize: 14, color: 'blue', alignSelf: 'center'}}>
-              {incomeAmount}
+              {currencyFormatter(+incomeAmount, {})}
             </Text>
           </View>
         </Pressable>
@@ -489,7 +489,7 @@ function AccountsItem({navigation, route}: Props) {
               // backgroundColor: '#f5bebe',
             }}>
             <Text style={{fontSize: 14, color: 'red', alignSelf: 'center'}}>
-              {expenseAmount}
+              {currencyFormatter(+expenseAmount, {})}
             </Text>
             {/* <Text style={{fontSize: 10, color: 'grey'}}>{expenseCategory}</Text> */}
           </View>

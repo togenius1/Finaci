@@ -46,9 +46,13 @@ export const getDaysInWeek = (year, month, daysInMonth) => {
   let w4 = [];
   let w5 = [];
 
+  if (month < 10) {
+    month = `0${month}`;
+  }
+
   let weeks;
   for (i = 1; i <= daysInMonth; i++) {
-    const date = new Date(moment().format(`${year}-${month}-0${i}`));
+    const date = moment(`${year}-${month}-0${i}`);
     weeks = getWeekInMonth(year, month, moment(date).date());
 
     if (weeks === 1) {

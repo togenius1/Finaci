@@ -163,6 +163,14 @@ export const INCOME = [
     'Sell laptop',
     new Date('2022-11-22'),
   ),
+  new Income(
+    'i5',
+    'ic1',
+    'cash1',
+    '230',
+    'Sell laptop',
+    new Date('2022-11-23'),
+  ),
 ];
 
 export const EXPENSES = [
@@ -518,5 +526,13 @@ export const EXPENSES = [
     '150.9',
     'pay electricity',
     new Date('2022-11-22'),
+  ),
+  new Expense(
+    'e1',
+    'ec2',
+    'cash1',
+    '230',
+    'pay electricity',
+    new Date('2022-11-23'),
   ),
 ];

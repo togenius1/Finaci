@@ -126,11 +126,8 @@ function WeeklyRenderItem({item}) {
 
   const date = new Date(item.Date);
 
-  const year = moment(date).year();
+  const year = moment(date).year(); // Fixed
   let month = moment(date).month() + 1;
-  // if (month < 10) {
-  //   month = +`0${month}`;
-  // }
 
   const daysInMonth = moment(date, 'YYYY-MM-DD').daysInMonth();
   const weeks = getDaysInWeek(year, month, daysInMonth);
@@ -364,7 +361,7 @@ const TransactionSummary = ({
       return;
     }
 
-    const date = new Date(item.Products[0]?.date);
+    const date = item.Products[0]?.date;
     let day = moment(date).date();
     if (day < 10) {
       day = +`0${day}`;

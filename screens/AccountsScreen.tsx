@@ -38,8 +38,13 @@ const AccountsScreen = ({navigation}: Props) => {
   const [cashData, setCashData] = useState<CashType>();
   const [expenseData, setExpenseData] = useState<ExpenseType>();
   const [addAccountPressed, setAddAccountPressed] = useState<boolean>(false);
-  const [account, setAccountText] = useState<string | null>('');
+  const [accountText, setAccountText] = useState<string | null>('');
   const [budget, setBudget] = useState<number>(0);
+
+  console.log(accountText);
+  console.log(budget);
+  // Set accountText and budget to Storage, after add account.
+  // Update account details
 
   const dispatch = useAppDispatch();
 
@@ -84,7 +89,7 @@ const AccountsScreen = ({navigation}: Props) => {
     dispatch(
       accountActions.addAccount({
         id: 'account' + uuidv4(),
-        account: account,
+        account: accountText,
         budget: budget,
         date: new Date(),
       }),
@@ -110,7 +115,7 @@ const AccountsScreen = ({navigation}: Props) => {
                 {currencyFormatter(+accBalance, {})}
               </Text>
               <Text style={{fontSize: 11, marginTop: 10}}>
-                ({item.budget} budget)
+                ({currencyFormatter(+item.budget, {})} budget)
               </Text>
             </View>
           </View>
@@ -171,7 +176,7 @@ const AccountsScreen = ({navigation}: Props) => {
           style={({pressed}) => pressed && styles.pressed}
           onPress={() => addAccountHandler()}>
           <View style={{marginRight: 10, marginBottom: 15}}>
-            <Ionicons name="add-circle" size={45} color="#3683e2" />
+            <Ionicons name="add-circle" size={80} color="#3683e2" />
           </View>
         </Pressable>
       </View>
@@ -181,7 +186,7 @@ const AccountsScreen = ({navigation}: Props) => {
           closeFormHandler={closeFormHandler}
           saveFormHandler={saveFormHandler}
           setAccountText={setAccountText}
-          account={account}
+          accountText={accountText}
           setBudget={setBudget}
           budget={budget}
         />

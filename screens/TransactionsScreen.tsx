@@ -21,9 +21,9 @@ import {TransactionNavigationProp} from '../types';
 import {ExpenseType} from '../models/expense';
 import {CategoryType} from '../models/category';
 import {IncomeType} from '../models/income';
-import {MonthTransactions} from '../dummy/monthlyTransact';
-import {WeekTransactions} from '../dummy/weeklyTransact';
-import {DailyTractions} from '../dummy/dailyTransact';
+import {MonthTransactions} from '../dummy/transactions/monthlyTransact';
+import {WeekTransactions} from '../dummy/transactions/weeklyTransact';
+import {DailyTractions} from '../dummy/transactions/dailyTransact';
 
 type Props = {
   navigation: TransactionNavigationProp;
@@ -173,20 +173,22 @@ const TransactionsScreen = ({navigation}: Props) => {
     let todate;
     let month;
 
-    const mm = moment().month(time).format('MM');
+    const mm = moment().month(time).format('M');
     const daysInMonth = moment(
-      moment().format(`YYYY-${mm}`),
+      moment().format(`YYYY-0${mm}`),
       'YYYY-MM',
     ).daysInMonth();
 
     if (monthlyPressed) {
-      fromdate = moment().startOf('year').format(`${time}-01-01`);
-      todate = moment().endOf('year').format(`${time}-12-31`);
+      // fromdate = moment(`${time}-01-01`).startOf('year').format('YYYY-MM-DD');
+      fromdate = moment([time, 0]).format('YYYY-MM-DD');
+      todate = moment(`${time}-12-31`).endOf('year').format('YYYY-MM-DD');
       month = moment().month() + 1;
       setYear(String(moment(fromdate).year()));
     }
     if (!monthlyPressed) {
-      fromdate = moment(`${year}-${mm}-01`).format('YYYY-MM-DD');
+      // fromdate = moment(`${year}-${mm}-01`).format('YYYY-MM-DD');
+      fromdate = moment([String(year), +mm - 1]).format('YYYY-MM-DD');
       todate = moment(`${year}-${mm}-${daysInMonth}`).format('YYYY-MM-DD');
       month = moment(fromdate).month() + 1;
     }

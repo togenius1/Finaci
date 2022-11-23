@@ -10,7 +10,7 @@ const AddAccountForm = ({
   closeFormHandler,
   saveFormHandler,
   setAccountText,
-  account,
+  accountText,
   setBudget,
   budget,
 }) => {
@@ -25,7 +25,7 @@ const AddAccountForm = ({
             right: -140,
             // top: 5,
           }}>
-          <Ionicons name="close" size={20} color="#000000" />
+          <Ionicons name="close" size={29} color="#000000" />
         </View>
       </Pressable>
       <Input
@@ -33,7 +33,7 @@ const AddAccountForm = ({
         style={styles.input}
         textInputConfig={{
           onChangeText: setAccountText,
-          value: account,
+          value: accountText,
           placeholder: 'account name',
         }}
       />
