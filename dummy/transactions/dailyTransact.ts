@@ -1,5 +1,71 @@
 export const DailyTractions = [
   {
+    Date: '2022-10-29',
+    Day: 1,
+    Products: [
+      {
+        accountId: 'acc1',
+        amount: 227.5,
+        cateId: 'ec2',
+        date: '2022-10-29',
+        day: 1,
+        id: 'e21',
+      },
+      {
+        accountId: 'acc4',
+        amount: 6500,
+        cateId: 'ic4',
+        date: '2022-10-29',
+        day: 1,
+        id: 'i5',
+      },
+    ],
+  },
+  {
+    Date: '2022-10-30',
+    Day: 1,
+    Products: [
+      {
+        accountId: 'acc1',
+        amount: 227.5,
+        cateId: 'ec2',
+        date: '2022-10-30',
+        day: 1,
+        id: 'e21',
+      },
+      {
+        accountId: 'acc4',
+        amount: 6500,
+        cateId: 'ic4',
+        date: '2022-10-30',
+        day: 1,
+        id: 'i5',
+      },
+    ],
+  },
+  {
+    Date: '2022-10-31',
+    Day: 1,
+    Products: [
+      {
+        accountId: 'acc1',
+        amount: 227.5,
+        cateId: 'ec2',
+        date: '2022-10-31',
+        day: 1,
+        id: 'e21',
+      },
+      {
+        accountId: 'acc4',
+        amount: 6500,
+        cateId: 'ic4',
+        date: '2022-10-31',
+        day: 1,
+        id: 'i5',
+      },
+    ],
+  },
+  {
     Date: '2022-11-01',
     Day: 1,
     Products: [

@@ -311,16 +311,26 @@ const TransactionSummary = ({
 
   // Monthly Transaction
   // const monthlyData = monthlyTransaction(fromDate, toDate, year);
-  const monthlyData = monthlyTransactions;
+  const monthlyData = monthlyTransactions?.filter(
+    transact => moment(transact?.Date).year() === moment(date).year(),
+  );
 
   //  Weekly Transaction
   // const weeklyData = weeklyTransaction(fromDate, toDate, date);
-  const weeklyData = weeklyTransactions;
+  const weeklyData = weeklyTransactions?.filter(
+    transact => moment(transact?.Date).month() === moment(date).month(),
+  );
 
   // Combine data and sum by date
   // const dailyData = dailyTransaction(String(fromDate), String(toDate), date);
-  const dailyData = dailyTransactions;
-
+  const dailyData = dailyTransactions?.filter(
+    transact =>
+      new Date(String(transact?.Date)) >= new Date(String(fromDate)) &&
+      new Date(String(transact?.Date)) <= new Date(String(toDate)),
+  );
+  // console.log('Receive fromDate: ', fromDate);
+  // console.log('Receive todDate: ', toDate);
+  // console.log(dailyData);
   // Combine data and sum by custom
   const customData = customTransaction(String(fromDate), String(toDate));
 
@@ -366,6 +376,7 @@ const TransactionSummary = ({
     if (day < 10) {
       day = +`0${day}`;
     }
+
     const dayLabel = moment(date).format('ddd');
     const monthLabel = moment(date).format('MMM');
     const year = moment(date).year();

@@ -1,5 +1,21 @@
 export const MonthTransactions = [
   {
+    Date: '2021-01-01',
+    Month: 1,
+    Products: [
+      {amount: 2500, id: 'e1', month: 1},
+      {amount: 1800, id: 'i1', month: 1},
+    ],
+  },
+  {
+    Date: '2021-02-01',
+    Month: 2,
+    Products: [
+      {amount: 1000, id: 'e1', month: 2},
+      {amount: 2000, id: 'i1', month: 2},
+    ],
+  },
+  {
     Date: '2022-01-01',
     Month: 1,
     Products: [

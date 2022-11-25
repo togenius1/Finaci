@@ -160,16 +160,12 @@ const TransactionOutput = ({
     }
 
     let today = moment().date();
-    if (today < 10) {
+    if (+today < 10) {
       today = `0${today}`;
     }
 
-    const fromdate = moment(new Date(`${year}-${month}-01`)).format(
-      'YYYY-MM-DD',
-    );
-    const todate = moment(new Date(`${year}-${month}-${today}`)).format(
-      'YYYY-MM-DD',
-    );
+    const fromdate = moment(`${year}-${month}-01`).format('YYYY-MM-DD');
+    const todate = moment(`${year}-${month}-${today}`).format('YYYY-MM-DD');
 
     setFromDate(String(fromdate));
     setToDate(String(todate));

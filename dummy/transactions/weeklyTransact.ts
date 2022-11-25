@@ -1,5 +1,37 @@
 export const WeekTransactions = [
   {
+    Date: '2022-10-01',
+    Products: [
+      {amount: 1304.7, id: 'e1', week: 1},
+      {amount: 23500, id: 'i1', week: 1},
+    ],
+    Week: 1,
+  },
+  {
+    Date: '2022-10-01',
+    Products: [
+      {amount: 1304.7, id: 'e1', week: 2},
+      {amount: 23500, id: 'i1', week: 2},
+    ],
+    Week: 2,
+  },
+  {
+    Date: '2022-10-01',
+    Products: [
+      {amount: 1304.7, id: 'e1', week: 3},
+      {amount: 23500, id: 'i1', week: 3},
+    ],
+    Week: 3,
+  },
+  {
+    Date: '2022-10-01',
+    Products: [
+      {amount: 1304.7, id: 'e1', week: 4},
+      {amount: 23500, id: 'i1', week: 4},
+    ],
+    Week: 4,
+  },
+  {
     Date: '2022-11-01',
     Products: [
       {amount: 1304.7, id: 'e1', week: 1},

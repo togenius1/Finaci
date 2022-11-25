@@ -31,6 +31,11 @@ type Props = {
 
 const {width} = Dimensions.get('window');
 
+const initialStartDate = moment(`${moment().year()}-01-01`).format(
+  'YYYY-MM-DD',
+);
+const initialToDate = moment(`${moment().year()}-12-31`).format('YYYY-MM-DD');
+
 const TransactionsScreen = ({navigation}: Props) => {
   const [expenseCateData, setExpenseCateData] = useState<CategoryType>();
   const [expenseData, setExpenseData] = useState<ExpenseType>();
@@ -39,8 +44,8 @@ const TransactionsScreen = ({navigation}: Props) => {
   const [weeklyTransactions, setWeeklyTransactions] = useState();
   const [dailyTransactions, setDailyTransactions] = useState();
 
-  const [fromDate, setFromDate] = useState<string | null>();
-  const [toDate, setToDate] = useState<string | null>();
+  const [fromDate, setFromDate] = useState<string | null>(initialStartDate);
+  const [toDate, setToDate] = useState<string | null>(initialToDate);
   const [monthlyPressed, setMonthlyPressed] = useState<boolean>(true);
   const [showMonthYearListMenu, setShowMonthYearListMenu] =
     useState<boolean>(false);
@@ -169,40 +174,40 @@ const TransactionsScreen = ({navigation}: Props) => {
   });
 
   function onMonthYearSelectedHandler(time) {
-    let fromdate;
-    let todate;
-    let month;
-    let daysInMonth;
-    let mm;
+    if (monthlyPressed) {
+      const mm = moment().month(time).format('M');
+      const daysInMonth = moment(`${year}-0${mm}`, 'YYYY-MM').daysInMonth();
+      const fromdate = moment([time, 0]).format('YYYY-MM-DD');
+      const todate = moment(`${time}-12-31`).endOf('year').format('YYYY-MM-DD');
 
-    if (typeof time === 'string') {
-      mm = moment().month(time).format('M');
-      daysInMonth = moment(`${year}-0${mm}`, 'YYYY-MM').daysInMonth();
+      setFromDate(String(fromdate));
+      setToDate(String(todate));
+      setDuration(String(time));
+      setMonth(String(moment().month() + 1));
+      setShowMonthYearListMenu(false);
     }
+    if (!monthlyPressed) {
+      const mm = moment().month(String(time)).format('M');
+      const daysInMonth = moment(`${year}-${mm}`, 'YYYY-M').daysInMonth();
+      const fromdate = moment([String(year), +mm - 1]).format('YYYY-MM-DD');
+      const todate = moment(`${year}-0${mm}-${daysInMonth}`).format(
+        'YYYY-MM-DD',
+      );
+      let month = moment(fromdate).month() + 1;
 
-    if (monthlyPressed && mm !== undefined && daysInMonth !== undefined) {
-      // fromdate = moment(`${time}-01-01`).startOf('year').format('YYYY-MM-DD');
-      fromdate = moment([time, 0]).format('YYYY-MM-DD');
-      todate = moment(`${time}-12-31`).endOf('year').format('YYYY-MM-DD');
-      month = moment().month() + 1;
-      setYear(String(moment(fromdate).year()));
-    }
-    if (!monthlyPressed && mm !== undefined && daysInMonth !== undefined) {
-      // fromdate = moment(`${year}-${mm}-01`).format('YYYY-MM-DD');
-      fromdate = moment([String(year), +mm - 1]).format('YYYY-MM-DD');
-      todate = moment(`${year}-${mm}-${daysInMonth}`).format('YYYY-MM-DD');
-      month = moment(fromdate).month() + 1;
-    }
+      if (month < 10) {
+        month = `0${month}`;
+      }
+      console.log('time: ', time);
+      console.log('daysInMonth: ',daysInMonth);
+      console.log(todate);
 
-    // Added 22 Nov 2022
-    if (Number(month) < 10) {
-      month = `0${month}`;
+      setFromDate(String(fromdate));
+      setToDate(String(todate));
+      setDuration(String(time));
+      setMonth(String(month));
+      setShowMonthYearListMenu(false);
     }
-    setFromDate(String(fromdate));
-    setToDate(String(todate));
-    setDuration(String(time));
-    setMonth(String(month));
-    setShowMonthYearListMenu(false);
   }
 
   function showMonthYearListMenuHandler() {
@@ -218,21 +223,6 @@ const TransactionsScreen = ({navigation}: Props) => {
     showDatePicker();
     setToDateClicked(true);
   }
-
-  // DatePicker Function
-  // function onChange(event, selectedDate) {
-  //   // const currentDate = selectedDate || DATE;
-  //   if (Platform.OS === 'android') {
-  //     setDatePickerVisibility(true);
-  //   }
-  //   let date = moment(event).format('YYYY-MM-DD');
-  //   if (fromDateClicked) {
-  //     setFromDate(date);
-  //   }
-  //   if (toDateClicked) {
-  //     setToDate(date);
-  //   }
-  // }
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
