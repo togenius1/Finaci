@@ -7,18 +7,21 @@ import {AddDetailsNavigationType, AddDetailsRouteProp} from '../types';
 import ExpenseForm from '../components/ManageExpense/ExpenseForm';
 import {expenseActions} from '../store/expense-slice';
 import {incomeActions} from '../store/income-slice';
-import {transferActions} from '../store/transfer-slice';
 import {useAppDispatch, useAppSelector} from '../hooks';
 import Note from '../components/Menu/Note';
 import Accounts from '../components/Menu/Accounts';
 import Category from '../components/Menu/Category';
-import {
-  ExpenseCategory,
-  AccountCategory,
-  IncomeCategory,
-  TransferCategory,
-} from '../dummy/categoryItems';
+// import {
+//   ExpenseCategory,
+//   IncomeCategory,
+//   TransferCategory,
+// } from '../dummy/categoryItems';
+// import {AccountCategory} from '../dummy/account';
 import {CategoryType} from '../models/category';
+import {fetchAccountsData} from '../store/account-action';
+import {fetchExpenseCategoriesData} from '../store/expense-category-action';
+import {fetchIncomeCategoriesData} from '../store/income-category-action';
+import {fetchTransferCategoriesData} from '../store/transfer-category-action';
 
 type Props = {
   navigation: AddDetailsNavigationType;
@@ -28,6 +31,9 @@ type Props = {
 const {width, height} = Dimensions.get('window');
 
 const AddDetailsScreen = ({route, navigation}: Props) => {
+  const dispatch = useAppDispatch();
+  const dataLoaded = useAppSelector(store => store);
+
   const amount = route.params?.amount;
   const type = type === undefined ? 'expense' : route.params?.transaction?.type;
   const categoryTitle = route.params?.transaction?.categoryTitle;
@@ -48,7 +54,13 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
   });
   const [cateData, setCateData] = useState<CategoryType>();
 
-  const dispatch = useAppDispatch();
+  // useEffect(() => {
+  //   dispatch(fetchAccountsData());
+  //   // dispatch(fetchCashAccountsData());
+  //   dispatch(fetchExpenseCategoriesData());
+  //   dispatch(fetchIncomeCategoriesData());
+  //   dispatch(fetchTransferCategoriesData());
+  // }, []);
 
   // set initial date: from Calculator route or from Account route
   const initialDate =
@@ -56,8 +68,11 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
       ? moment(createdDate).format('YYYY-MM-DD')
       : textDate;
 
-  const selectedExpenseRedux = useAppSelector(store => store);
-  const selectedExpense = selectedExpenseRedux.transfers;
+  const AccountCategory = dataLoaded?.accounts?.accounts;
+  const ExpenseCategory = dataLoaded?.expenseCategories?.expenseCategories;
+  const IncomeCategory = dataLoaded?.incomeCategories?.incomeCategories;
+  const TransferCategory = dataLoaded?.transferCategories?.transferCategories;
+
   const accountCategoryById = AccountCategory.find(
     acc => acc.id === account?.id,
   );
@@ -123,18 +138,18 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
         }),
       );
     }
-    if (type === 'transfer') {
-      dispatch(
-        transferActions.addTransfer({
-          id: 'transfer' + uuidv4(),
-          cateId: transferCategoryById?.id,
-          accountId: accountCategoryById?.id,
-          amount: amount,
-          note: note.note,
-          date: textDate,
-        }),
-      );
-    }
+    // if (type === 'transfer') {
+    //   dispatch(
+    //     transferActions.addTransfer({
+    //       id: 'transfer' + uuidv4(),
+    //       cateId: transferCategoryById?.id,
+    //       accountId: accountCategoryById?.id,
+    //       amount: amount,
+    //       note: note.note,
+    //       date: textDate,
+    //     }),
+    //   );
+    // }
     navigation.navigate('Overview');
   }
 

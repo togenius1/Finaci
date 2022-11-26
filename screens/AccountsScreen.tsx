@@ -11,9 +11,8 @@ import React, {useEffect, useState} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {v4 as uuidv4} from 'uuid';
 
-import {EXPENSES} from '../dummy/dummy';
-import {AccountCategory, CashCategory} from '../dummy/categoryItems';
-import {useAppDispatch} from '../hooks';
+// import {EXPENSES} from '../dummy/dummy';
+import {useAppDispatch, useAppSelector} from '../hooks';
 import {accountActions} from '../store/account-slice';
 import {sumTotalBudget, sumTotalFunc} from '../util/math';
 import {AccountNavigationType} from '../types';
@@ -21,6 +20,10 @@ import AddAccountForm from '../components/Form/AddAccountForm';
 import {AccountType, CashType} from '../models/account';
 import {ExpenseType} from '../models/expense';
 import {currencyFormatter} from '../util/currencyFormatter';
+import {fetchExpensesData} from '../store/expense-action';
+import {fetchAccountsData} from '../store/account-action';
+import {fetchCashAccountsData} from '../store/cash-action';
+// import { AccountCategory, CashCategory } from '../dummy/account';
 
 type Props = {
   navigation: AccountNavigationType;
@@ -34,24 +37,27 @@ const {width} = Dimensions.get('window');
 // };
 
 const AccountsScreen = ({navigation}: Props) => {
-  const [accountData, setAccountData] = useState<AccountType>();
-  const [cashData, setCashData] = useState<CashType>();
-  const [expenseData, setExpenseData] = useState<ExpenseType>();
+  const dispatch = useAppDispatch();
+  const dataLoaded = useAppSelector(store => store);
+
+  const expenseData = dataLoaded?.expenses?.expenses;
+  const cashData = dataLoaded?.cashAccounts?.cashAccounts;
+  const accountData = dataLoaded?.accounts?.accounts;
+
+  // const [expenseData, setExpenseData] = useState<ExpenseType>();
+  // const [cashData, setCashData] = useState<CashType>();
+  // const [accountData, setAccountData] = useState<AccountType>();
   const [addAccountPressed, setAddAccountPressed] = useState<boolean>(false);
   const [accountText, setAccountText] = useState<string | null>('');
   const [budget, setBudget] = useState<number>(0);
 
-  console.log(accountText);
-  console.log(budget);
   // Set accountText and budget to Storage, after add account.
   // Update account details
 
-  const dispatch = useAppDispatch();
-
   useEffect(() => {
-    setAccountData(AccountCategory);
-    setCashData(CashCategory);
-    setExpenseData(EXPENSES);
+    dispatch(fetchExpensesData());
+    dispatch(fetchAccountsData());
+    dispatch(fetchCashAccountsData());
   }, []);
 
   if (

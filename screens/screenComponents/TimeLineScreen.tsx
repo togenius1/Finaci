@@ -1,14 +1,16 @@
 import {Dimensions, FlatList, StyleSheet, Text, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import moment from 'moment';
 // import {v4 as uuidv4} from 'uuid';
 // import {max, sum} from 'd3-array';
 
 // import {EXPENSES} from '../../dummy/dummy';
-import {AccountCategory} from '../../dummy/categoryItems';
+// import {AccountCategory} from '../../dummy/categoryItems';
 import TimeLine from '../../components/Graph/TimeLine';
 // import {useAppDispatch, useAppSelector} from '../../hooks';
 import {sumEachAccountId, sumTotalBudget, sumTotalFunc} from '../../util/math';
+import {useAppDispatch, useAppSelector} from '../../hooks';
+import {fetchAccountsData} from '../../store/account-action';
 
 type Props = {
   data: any[];
@@ -25,18 +27,24 @@ const TimeLineTab = ({data, fromDate, toDate}: Props) => {
   // const filteredData = data?.filter(
   //   d => d.date >= new Date(fromDate) && d.date <= new Date(toDate),
   // );
+  const dispatch = useAppDispatch();
+  const dataLoaded = useAppSelector(store => store);
+
+  useEffect(() => {
+    dispatch(fetchAccountsData());
+  }, []);
 
   const sumExpenseByEachAccount = sumEachAccountId(data);
-  const accountsFiltered = AccountCategory?.filter(account => {
+  const accountsFiltered = dataLoaded?.accounts?.accounts?.filter(account => {
     const findItem = sumExpenseByEachAccount?.find(
-      sum => sum.accountId === account.id,
+      sum => sum.accountId === account?.id,
     );
     return findItem;
   });
-  const mergeObj = accountsFiltered.map(acc => {
+  const mergeObj = accountsFiltered?.map(acc => {
     const Obj = sumExpenseByEachAccount?.find(sum => sum.accountId === acc.id);
     const newObj = {...acc, ...Obj};
-    const deletedIdObj = Object.values([newObj]).map(
+    const deletedIdObj = Object.values([newObj])?.map(
       ({id, ...accountId}) => accountId,
     );
     return deletedIdObj[0];
@@ -55,7 +63,7 @@ const TimeLineTab = ({data, fromDate, toDate}: Props) => {
   ];
 
   //sort Data
-  mergeObj.sort((a: any, b: any) => {
+  mergeObj?.sort((a: any, b: any) => {
     // const amountA = +a.budget;
     // const amountB = +b.budget;
     const amountA = +a.amount;

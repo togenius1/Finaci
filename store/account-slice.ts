@@ -8,7 +8,7 @@ const accountSlice = createSlice({
   reducers: {
     // Load data from DB to Mobile
     replaceAccount(state, action) {
-      state.accounts = action.payload.expenses;
+      state.accounts = action.payload.accounts;
     },
 
     addAccount(state, action) {
@@ -16,11 +16,11 @@ const accountSlice = createSlice({
       const existingItem = state.accounts.find(
         account => account.id === newAccounts.id,
       );
-     
+
       if (!existingItem) {
         state.accounts.push({
           id: newAccounts.id,
-          account: newAccounts.account,
+          title: newAccounts.title,
           budget: newAccounts.budget,
           date: newAccounts.date,
         });
@@ -28,16 +28,16 @@ const accountSlice = createSlice({
     },
     deleteAccount(state, action) {
       const id = action.payload;
-      const existingItem = state.expenses.find(expense => expense.id === id);
+      const existingItem = state.accounts.find(account => account.id === id);
       if (existingItem) {
-        state.expenses = state.expenses.filter(expense => expense.id !== id);
+        state.accounts = state.accounts.filter(account => account.id !== id);
       }
     },
     updateAccount(state, action) {
-      const updatedExpenseIndex = state.expenses.findIndex(
-        expense => expense.id === action.payload.id,
+      const updatedAccountIndex = state.accounts.findIndex(
+        account => account.id === action.payload.id,
       );
-      state.expenses[updatedExpenseIndex] = action.payload;
+      state.accounts[updatedAccountIndex] = action.payload;
     },
   },
 });

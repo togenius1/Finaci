@@ -12,7 +12,7 @@ import {v4 as uuidv4} from 'uuid';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import {useAppDispatch} from '../../hooks';
-import {categoryActions} from '../../store/category-slice';
+import {categoryActions} from '../../store/expense-category-slice';
 import {CategoryType} from '../../models/category';
 
 type Dispatcher<S> = Dispatch<SetStateAction<S>>;
@@ -29,14 +29,13 @@ const Category = ({setCategoryPressed, setCategory, data}: Props) => {
   const [categoryText, setCategoryText] = useState<string | null>('');
   const [filterData, setFilterData] = useState<any[]>();
 
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
 
   useEffect(() => {
     setFilterData(data);
   }, []);
 
   const renderItem = ({item}) => {
-    console.log(item);
     return (
       <View>
         <Pressable
@@ -56,13 +55,13 @@ const Category = ({setCategoryPressed, setCategory, data}: Props) => {
     setCategoryPressed(false);
   }
   function addCategoryHandler() {
-    dispatch(
-      categoryActions.addCategory({
-        id: 'category' + uuidv4(),
-        category: categoryText,
-        date: new Date(),
-      }),
-    );
+    // dispatch(
+    //   categoryActions.addCategory({
+    //     id: 'category' + uuidv4(),
+    //     category: categoryText,
+    //     date: new Date(),
+    //   }),
+    // );
   }
 
   function searchFilterHandler(text) {

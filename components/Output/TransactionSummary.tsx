@@ -15,7 +15,7 @@ import {sumTotalFunc} from '../../util/math';
 import {currencyFormatter} from '../../util/currencyFormatter';
 import {getDaysInWeek} from '../../util/date';
 import Export from '../Menu/Export';
-import {useAppSelector} from '../../hooks';
+import {useAppDispatch, useAppSelector} from '../../hooks';
 import {useNavigation} from '@react-navigation/native';
 import {ExpenseType} from '../../models/expense';
 import {IncomeType} from '../../models/income';
@@ -26,6 +26,9 @@ import {
   monthlyTransaction,
   weeklyTransaction,
 } from '../../util/transaction';
+import {fetchExpensesData} from '../../store/expense-action';
+import {fetchWeeklyTransactsData} from '../../store/weeklyTransact-action';
+import {fetchMonthlyTransactsData} from '../../store/monthlyTransact-action';
 
 type Props = {
   expenseData: ExpenseType | undefined;
@@ -85,9 +88,17 @@ function HeaderSummary({total, totalIncome, totalExpenses}: HeaderSummaryType) {
 
 // Monthly renderItem
 function MonthlyRenderItem({item}) {
-  const monthLabel = moment.monthsShort(Number(item.Products[0].month) - 1);
-  const expenseAmount = currencyFormatter(item.Products[0]?.amount, {});
-  const incomeAmount = currencyFormatter(item.Products[1]?.amount, {});
+  const monthLabel = moment.monthsShort(
+    Number(item.Finance[0]?.expense_monthly.month) - 1,
+  );
+  const expenseAmount = currencyFormatter(
+    item.Finance[0]?.expense_monthly?.amount,
+    {},
+  );
+  const incomeAmount = currencyFormatter(
+    item.Finance[0]?.income_monthly?.amount,
+    {},
+  );
 
   return (
     <View style={styles.list}>
@@ -120,9 +131,15 @@ function MonthlyRenderItem({item}) {
 
 // Weekly renderItem
 function WeeklyRenderItem({item}) {
-  const expenseAmount = currencyFormatter(item.Products[0]?.amount, {});
-  const incomeAmount = currencyFormatter(item.Products[1]?.amount, {});
-  const weekNum = item.Products[0].week;
+  const expenseAmount = currencyFormatter(
+    item.Finance[0]?.expense_week.amount,
+    {},
+  );
+  const incomeAmount = currencyFormatter(
+    item.Finance[0]?.income_week.amount,
+    {},
+  );
+  const weekNum = item?.Week;
 
   const date = new Date(item.Date);
 
@@ -268,8 +285,6 @@ const DailyItem = ({
 };
 
 const TransactionSummary = ({
-  expenseData,
-  incomeData,
   monthlyPressed,
   weeklyPressed,
   dailyPressed,
@@ -278,27 +293,29 @@ const TransactionSummary = ({
   toDate,
   exportPressed,
   year,
-  monthlyTransactions,
-  weeklyTransactions,
-  dailyTransactions,
-}: Props) => {
+}: // monthlyTransactions,
+// weeklyTransactions,
+// dailyTransactions,
+Props) => {
   // Parameters
   let _renderItem = '';
   let _renderData = [];
   const date = moment(fromDate).format('YYYY-MM-DD');
 
+  // console.log('fromDate ', fromDate);
+  // console.log('date ', date);
+
   const navigation = useNavigation();
 
-  const selectedExpenseRedux = useAppSelector(store => store);
-  const selectedExpense = selectedExpenseRedux.transfers;
+  const dataLoaded = useAppSelector(store => store);
 
   // FILTERED DATA (From date ----> To date)
-  const selectedDurationExpenseData = expenseData?.filter(
+  const selectedDurationExpenseData = dataLoaded?.expenses?.expenses?.filter(
     expense =>
       new Date(expense.date) >= new Date(String(fromDate)) &&
       new Date(expense.date) <= new Date(String(toDate)),
   );
-  const selectedDurationIncomeData = incomeData?.filter(
+  const selectedDurationIncomeData = dataLoaded?.incomes?.incomes.filter(
     income =>
       new Date(income.date) >= new Date(String(fromDate)) &&
       new Date(income.date) <= new Date(String(toDate)),
@@ -311,28 +328,30 @@ const TransactionSummary = ({
 
   // Monthly Transaction
   // const monthlyData = monthlyTransaction(fromDate, toDate, year);
-  const monthlyData = monthlyTransactions?.filter(
+  const monthlyData = dataLoaded?.monthlyTransacts?.monthlyTransacts?.filter(
     transact => moment(transact?.Date).year() === moment(date).year(),
   );
 
   //  Weekly Transaction
   // const weeklyData = weeklyTransaction(fromDate, toDate, date);
-  const weeklyData = weeklyTransactions?.filter(
+  const weeklyData = dataLoaded?.weeklyTransacts?.weeklyTransacts?.filter(
     transact => moment(transact?.Date).month() === moment(date).month(),
   );
 
   // Combine data and sum by date
   // const dailyData = dailyTransaction(String(fromDate), String(toDate), date);
-  const dailyData = dailyTransactions?.filter(
+  const dailyData = dataLoaded?.dailyTransacts?.dailyTransacts.filter(
     transact =>
       new Date(String(transact?.Date)) >= new Date(String(fromDate)) &&
       new Date(String(transact?.Date)) <= new Date(String(toDate)),
   );
-  // console.log('Receive fromDate: ', fromDate);
-  // console.log('Receive todDate: ', toDate);
-  // console.log(dailyData);
+
   // Combine data and sum by custom
-  const customData = customTransaction(String(fromDate), String(toDate));
+  // const customData = dailyTransactions?.filter(
+  //   transact =>
+  //     new Date(String(transact?.Date)) >= new Date(String(fromDate)) &&
+  //     new Date(String(transact?.Date)) <= new Date(String(toDate)),
+  // );
 
   // on pressed
   if (monthlyPressed) {
@@ -349,7 +368,7 @@ const TransactionSummary = ({
   }
   if (customPressed) {
     _renderItem = DailyRenderItem;
-    _renderData = customData;
+    _renderData = dailyData;
   }
 
   //sort Data
@@ -364,14 +383,20 @@ const TransactionSummary = ({
 
   // daily renderItem
   function DailyRenderItem({item}) {
-    const expenseAmount = currencyFormatter(item.Products[0]?.amount, {});
-    const incomeAmount = currencyFormatter(item.Products[1]?.amount, {});
+    const expenseAmount = currencyFormatter(
+      item.Finance[0]?.expense_daily?.amount,
+      {},
+    );
+    const incomeAmount = currencyFormatter(
+      item.Finance[0]?.income_daily?.amount,
+      {},
+    );
 
     if (customPressed && +expenseAmount === 0 && +incomeAmount === 0) {
       return;
     }
 
-    const date = item.Products[0]?.date;
+    const date = item.Finance[0]?.expense_daily.date;
     let day = moment(date).date();
     if (day < 10) {
       day = +`0${day}`;

@@ -17,6 +17,16 @@ import {
 import FinnerNavigator from './navigation/FinnerNavigator';
 import {User} from './src/models';
 import CButton from './components/UI/CButton';
+import {useAppDispatch, useAppSelector} from './hooks';
+import {fetchExpensesData} from './store/expense-action';
+import {fetchIncomesData} from './store/income-action';
+import {fetchAccountsData} from './store/account-action';
+import {fetchCashAccountsData} from './store/cash-action';
+// import {categories} from './dummy/categoryItems';
+import {fetchExpenseCategoriesData} from './store/expense-category-action';
+import {fetchIncomeCategoriesData} from './store/income-category-action';
+import {fetchTransferCategoriesData} from './store/transfer-category-action';
+import {fetchDailyTransactsData} from './store/dailyTransact-action';
 
 Amplify.configure(awsconfig);
 
@@ -27,12 +37,21 @@ const App = () => {
   const [cloudPrivateKey, setCloudPrivateKey] = useState<string | null>();
   // const [localPrivateKey, setLocalPrivateKey] = useState<string | null>();
 
-  // const dispatch = useAppDispatch();
-  // // const dataLoaded = useAppSelector(store => store);
+  const dispatch = useAppDispatch();
+  const dataLoaded = useAppSelector(store => store);
 
   // useEffect(() => {
-  //   dispatch(fetchExpensesData());
+    // dispatch(fetchExpensesData());
+    // dispatch(fetchIncomesData());
+    // dispatch(fetchAccountsData());
+    // dispatch(fetchCashAccountsData());
+    // dispatch(fetchExpenseCategoriesData());
+    // dispatch(fetchIncomeCategoriesData());
+    // dispatch(fetchTransferCategoriesData());
+    // dispatch(fetchDailyTransactsData());
   // }, []);
+
+  // console.log('App: ', dataLoaded.expenses.expenses);
 
   // Listening for Login events.
   useEffect(() => {
@@ -43,8 +62,6 @@ const App = () => {
       }
     };
     Hub.listen('auth', listener);
-
-    return () => Hub.remove('auth', listener);
   }, []);
 
   // Check if authenticated user.

@@ -24,6 +24,7 @@ import {IncomeType} from '../models/income';
 import {MonthTransactions} from '../dummy/transactions/monthlyTransact';
 import {WeekTransactions} from '../dummy/transactions/weeklyTransact';
 import {DailyTractions} from '../dummy/transactions/dailyTransact';
+import {useAppDispatch, useAppSelector} from '../hooks';
 
 type Props = {
   navigation: TransactionNavigationProp;
@@ -37,13 +38,6 @@ const initialStartDate = moment(`${moment().year()}-01-01`).format(
 const initialToDate = moment(`${moment().year()}-12-31`).format('YYYY-MM-DD');
 
 const TransactionsScreen = ({navigation}: Props) => {
-  const [expenseCateData, setExpenseCateData] = useState<CategoryType>();
-  const [expenseData, setExpenseData] = useState<ExpenseType>();
-  const [incomeData, setIncomeData] = useState<IncomeType>();
-  const [monthlyTransactions, setMonthlyTransactions] = useState();
-  const [weeklyTransactions, setWeeklyTransactions] = useState();
-  const [dailyTransactions, setDailyTransactions] = useState();
-
   const [fromDate, setFromDate] = useState<string | null>(initialStartDate);
   const [toDate, setToDate] = useState<string | null>(initialToDate);
   const [monthlyPressed, setMonthlyPressed] = useState<boolean>(true);
@@ -52,9 +46,7 @@ const TransactionsScreen = ({navigation}: Props) => {
   const [weeklyPressed, setWeeklyPressed] = useState<boolean>(false);
   const [dailyPressed, setDailyPressed] = useState<boolean>(false);
   const [customPressed, setCustomPressed] = useState<boolean>(false);
-  const [duration, setDuration] = useState<string | null>(
-    String(moment().year()),
-  );
+  const [duration, setDuration] = useState<string | null>();
   const [month, setMonth] = useState<string | null>();
   const [year, setYear] = useState<string | null>(String(moment().year()));
   const [isDatePickerVisible, setDatePickerVisibility] =
@@ -67,6 +59,10 @@ const TransactionsScreen = ({navigation}: Props) => {
   useEffect(() => {
     onMonthYearSelectedHandler(moment().year());
   }, []);
+
+  // useEffect(() => {
+  //   onMonthYearSelectedHandler(moment.monthsShort(moment().month() + 1));
+  // }, [weeklyPressed]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -144,36 +140,8 @@ const TransactionsScreen = ({navigation}: Props) => {
     showMonthYearListMenuHandler,
   ]);
 
-  // set data
-  useEffect(() => {
-    setExpenseCateData(ExpenseCategory);
-    setExpenseData(EXPENSES);
-    setIncomeData(INCOME);
-    setMonthlyTransactions(MonthTransactions);
-    setWeeklyTransactions(WeekTransactions);
-    setDailyTransactions(DailyTractions);
-  }, []);
-
-  if (
-    expenseCateData === null ||
-    expenseCateData === undefined ||
-    expenseData === null ||
-    expenseData === undefined
-  ) {
-    return <ActivityIndicator />;
-  }
-
-  //sort Data
-  expenseData.sort((a: any, b: any) => {
-    const dateA = new Date(a.date).valueOf();
-    const dateB = new Date(b.date).valueOf();
-    if (dateA > dateB) {
-      return -1; // return -1 here for DESC order
-    }
-    return 1; // return 1 here for DESC Order
-  });
-
   function onMonthYearSelectedHandler(time) {
+    console.log('time: ', time);
     if (monthlyPressed) {
       const mm = moment().month(time).format('M');
       const daysInMonth = moment(`${year}-0${mm}`, 'YYYY-MM').daysInMonth();
@@ -193,14 +161,11 @@ const TransactionsScreen = ({navigation}: Props) => {
       const todate = moment(`${year}-0${mm}-${daysInMonth}`).format(
         'YYYY-MM-DD',
       );
-      let month = moment(fromdate).month() + 1;
 
+      let month = moment(fromdate).month() + 1;
       if (month < 10) {
         month = `0${month}`;
       }
-      console.log('time: ', time);
-      console.log('daysInMonth: ',daysInMonth);
-      console.log(todate);
 
       setFromDate(String(fromdate));
       setToDate(String(todate));
@@ -249,8 +214,6 @@ const TransactionsScreen = ({navigation}: Props) => {
   return (
     <View style={styles.container}>
       <TransactionOutput
-        expenseData={expenseData}
-        incomeData={incomeData}
         setDuration={setDuration}
         setFromDate={setFromDate}
         fromDate={String(fromDate)}
@@ -266,9 +229,9 @@ const TransactionsScreen = ({navigation}: Props) => {
         customPressed={customPressed}
         year={year}
         month={month}
-        monthlyTransactions={monthlyTransactions}
-        weeklyTransactions={weeklyTransactions}
-        dailyTransactions={dailyTransactions}
+        // monthlyTransactions={monthlyTransactions}
+        // weeklyTransactions={weeklyTransactions}
+        // dailyTransactions={dailyTransactions}
       />
 
       {showMonthYearListMenu && (

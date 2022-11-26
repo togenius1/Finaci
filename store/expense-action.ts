@@ -1,27 +1,31 @@
-// import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// import {expenseActions} from './expenses-slice';
+import {expenseActions} from './expense-slice';
+import {EXPENSES} from '../dummy/dummy';
 
-// import {DUMMY_EXPENSES} from '../dummy/dummy';
-// export const fetchExpensesData = () => {
-//   return async dispatch => {
-//     const fetchData = async () => {
-//       //   const response = await AsyncStorage.getItem('root');
-//       const response = DUMMY_EXPENSES;
+export const fetchExpensesData = () => {
+  return async dispatch => {
+    const fetchData = async () => {
+      // const response = Sync data from Amplify
+      const response = EXPENSES;
 
-//       return response !== null ? JSON.stringify(response) : null;
-//     };
+      // return response !== null ? JSON.stringify(response) : null;
+      return response !== null ? response : null;
+    };
 
-//     try {
-//       const ExpensesData = await fetchData();
-//       dispatch(
-//         expenseActions.replaceExpenses({
-//           expenses: ExpensesData || [],
-//         }),
-//       );
-//     } catch (error) {}
-//   };
-// };
+    try {
+      const ExpensesData = await fetchData();
+      dispatch(
+        expenseActions.replaceExpenses({
+          expenses: ExpensesData || [],
+        }),
+      );
+    } catch (error) {}
+  };
+};
 
-// /* Redux-persist will automatically retrieve data from AsyncStorage 
-// ,so dont have to do the same as Amplify*/
+/* 
+Don't have to fetch data from AsyncStorage.
+Redux-persist will automatically retrieve data from AsyncStorage 
+,so don't have to do the same as Amplify: 
+ */

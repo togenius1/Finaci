@@ -7,7 +7,7 @@ const transferSlice = createSlice({
   },
   reducers: {
     // Load data from DB to Mobile
-    replaceIncome(state, action) {
+    replaceTransfer(state, action) {
       state.transfers = action.payload.transfers;
     },
 

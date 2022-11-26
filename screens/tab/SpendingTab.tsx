@@ -1,14 +1,16 @@
-import {Dimensions, StyleSheet, Text, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
+import {Dimensions, StyleSheet, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 // import moment from 'moment';
 
-import {EXPENSES} from '../../dummy/dummy';
+// import {EXPENSES} from '../../dummy/dummy';
 import BarchartTab from '../screenComponents/BarChartTab';
 import IconButton from '../../components/UI/iconButton';
 // import {sumByCustomDate, sumByDate} from '../../util/math';
 import {SpendingTabRouteProp} from '../../types';
-import {ExpenseType} from '../../models/expense';
+// import {ExpenseType} from '../../models/expense';
+import {useAppDispatch, useAppSelector} from '../../hooks';
+import {fetchExpensesData} from '../../store/expense-action';
 
 type Props = {
   route: SpendingTabRouteProp;
@@ -17,7 +19,11 @@ type Props = {
 const {width} = Dimensions.get('window');
 
 const SpendingTab = ({route}: Props) => {
-  const [expenseData, setExpenseData] = useState<ExpenseType>();
+  const dispatch = useAppDispatch();
+  const dataLoaded = useAppSelector(store => store);
+
+  const expenseData = dataLoaded?.expenses?.expenses;
+  // const [expenseData, setExpenseData] = useState<ExpenseType>();
 
   const navigation = useNavigation();
 
@@ -25,7 +31,8 @@ const SpendingTab = ({route}: Props) => {
   const toDate = route.params?.toDate;
 
   useEffect(() => {
-    setExpenseData(EXPENSES);
+    // setExpenseData(EXPENSES);
+    dispatch(fetchExpensesData());
   }, []);
 
   if (expenseData === null || expenseData === undefined) {

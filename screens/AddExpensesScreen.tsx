@@ -1,6 +1,6 @@
-// import {StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {Dimensions, Pressable, StyleSheet, Text, View} from 'react-native';
+
 import Calculator from '../components/UI/Calculator';
 
 // const colors = {
@@ -18,7 +18,7 @@ interface InitTransactionType {
 const transactionData = [
   {id: 1, type: 'expense', selected: true},
   {id: 2, type: 'income', selected: false},
-  {id: 3, type: 'transfer', selected: false},
+  // {id: 3, type: 'transfer', selected: false},
 ];
 
 const {width} = Dimensions.get('window');
@@ -35,10 +35,10 @@ function Tab({item, onPress}) {
     selectedColor = item.selected ? '#90ed90' : 'white';
     fontWeight = item.selected ? 'bold' : '';
   }
-  if (item.id === 3) {
-    selectedColor = item.selected ? '#8ddfff' : 'white';
-    fontWeight = item.selected ? 'bold' : '';
-  }
+  // if (item.id === 3) {
+  //   selectedColor = item.selected ? '#8ddfff' : 'white';
+  //   fontWeight = item.selected ? 'bold' : '';
+  // }
 
   return (
     <Pressable
@@ -57,7 +57,7 @@ function Tabs({data, handleOnPressHandler}) {
   return (
     <View style={styles.tabs}>
       <View style={{justifyContent: 'space-evenly', flexDirection: 'row'}}>
-        {data.map((item, index) => {
+        {data?.map(item => {
           return (
             <Tab
               key={item.id}
@@ -91,9 +91,8 @@ const AddExpensesScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Tabs data={select} handleOnPressHandler={handleOnPressHandler} />
-
       <Calculator nextScreen="AddDetails" transaction={transaction} />
+      <Tabs data={select} handleOnPressHandler={handleOnPressHandler} />
     </View>
   );
 };
@@ -122,6 +121,6 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   pressed: {
-    opacity: 0.75,
+    opacity: 0.65,
   },
 });

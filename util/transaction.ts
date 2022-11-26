@@ -1,4 +1,6 @@
 import moment from 'moment';
+import {v4 as uuidv4} from 'uuid';
+
 import {EXPENSES, INCOME} from '../dummy/dummy';
 import {sumByCustomDate, sumByDate, sumByMonth, sumByWeek} from './math';
 
@@ -27,9 +29,9 @@ export function monthlyTransaction(
     data2.reduce((acc, cur) => {
       if (!acc[cur?.month]) {
         const date = moment(`${year}-${cur.month}-01`).format('YYYY-MM-DD');
-        acc[cur?.month] = {Month: cur.month, Date: date, Products: []};
+        acc[cur?.month] = {Month: cur.month, Date: date, Finance: []};
       }
-      acc[cur?.month].Products.push(cur);
+      acc[cur?.month].Finance.push(cur);
       return acc;
     }, {}),
   );
@@ -64,9 +66,9 @@ export function weeklyTransaction(
   const weeklyData = Object.values(
     data3.reduce((acc, cur) => {
       if (!acc[cur?.week]) {
-        acc[cur?.week] = {Week: cur?.week, Products: [], Date: fromDate};
+        acc[cur?.week] = {Week: cur?.week, Finance: [], Date: fromDate};
       }
-      acc[cur?.week].Products.push(cur);
+      acc[cur?.week].Finance.push(cur);
       return acc;
     }, {}),
   );
@@ -100,8 +102,8 @@ export function dailyTransaction(
   const dailyData = Object.values(
     data.reduce((acc, cur) => {
       if (!acc[cur?.day])
-        acc[cur?.day] = {Day: cur?.day, Date: cur?.date, Products: []};
-      acc[cur?.day].Products.push(cur);
+        acc[cur?.day] = {Day: cur?.day, Date: cur?.date, Finance: []};
+      acc[cur?.day].Finance.push(cur);
       return acc;
     }, {}),
   );
@@ -109,38 +111,37 @@ export function dailyTransaction(
 }
 
 ///////////////////////////// Custom Transaction ///////////////////////////////////
-export function customTransaction(fromDate: string, toDate: string) {
-  const selectedDurationExpenseData = EXPENSES?.filter(
-    expense =>
-      new Date(expense.date) >= new Date(String(fromDate)) &&
-      new Date(expense.date) <= new Date(String(toDate)),
-  );
-  const selectedDurationIncomeData = INCOME?.filter(
-    income =>
-      new Date(income.date) >= new Date(String(fromDate)) &&
-      new Date(income.date) <= new Date(String(toDate)),
-  );
-
-  const sumExpenseByCustomDate = sumByCustomDate(
-    selectedDurationExpenseData,
-    'expense',
-    fromDate,
-    toDate,
-  );
-  const sumIncomeByCustomDate = sumByCustomDate(
-    selectedDurationIncomeData,
-    'income',
-    fromDate,
-    toDate,
-  );
-  const data4 = [...sumExpenseByCustomDate, ...sumIncomeByCustomDate];
-  const customData = Object.values(
-    data4.reduce((acc, cur) => {
-      if (!acc[cur?.day])
-        acc[cur?.day] = {Day: cur?.day, Date: cur?.date, Products: []};
-      acc[cur?.day].Products.push(cur);
-      return acc;
-    }, {}),
-  );
-  return customData;
-}
+// export function customTransaction(
+//   fromDate: string,
+//   toDate: string,
+//   selectedDurationExpenseData,
+//   selectedDurationIncomeData,
+// ) {
+//   const sumExpenseByCustomDate = sumByCustomDate(
+//     selectedDurationExpenseData,
+//     'expense',
+//     fromDate,
+//     toDate,
+//   );
+//   const sumIncomeByCustomDate = sumByCustomDate(
+//     selectedDurationIncomeData,
+//     'income',
+//     fromDate,
+//     toDate,
+//   );
+//   const data4 = [...sumExpenseByCustomDate, ...sumIncomeByCustomDate];
+//   const customData = Object.values(
+//     data4.reduce((acc, cur) => {
+//       if (!acc[cur?.day])
+//         acc[cur?.day] = {
+//           Day: cur?.day,
+//           Date: cur?.date,
+//           id: uuidv4(),
+//           Finance: [],
+//         };
+//       acc[cur?.day].Finance.push(cur);
+//       return acc;
+//     }, {}),
+//   );
+//   return customData;
+// }

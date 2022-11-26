@@ -10,14 +10,17 @@ import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {v4 as uuidv4} from 'uuid';
 
-import {AccountCategory, CashCategory} from '../../dummy/categoryItems';
 import AddAccountForm from '../Form/AddAccountForm';
-import {useAppDispatch} from '../../hooks';
+import {useAppDispatch, useAppSelector} from '../../hooks';
 import {accountActions} from '../../store/account-slice';
 import {AccountType, CashType} from '../../models/account';
 import {currencyFormatter} from '../../util/currencyFormatter';
 import {sumTotalBudget, sumTotalFunc} from '../../util/math';
-import {EXPENSES} from '../../dummy/dummy';
+// import {EXPENSES} from '../../dummy/dummy';
+// import {AccountCategory, CashCategory} from '../../dummy/account';
+import {fetchCashAccountsData} from '../../store/cash-action';
+import {fetchExpenseCategoriesData} from '../../store/expense-category-action';
+import {fetchAccountsData} from '../../store/account-action';
 
 type Dispatcher<S> = Dispatch<SetStateAction<S>>;
 
@@ -29,19 +32,27 @@ type Props = {
 const {width, height} = Dimensions.get('window');
 
 const Accounts = ({setAccount, setAccountPressed}: Props) => {
-  const [expenseData, setExpenseData] = useState<AccountType>();
-  const [accountsData, setAccountsData] = useState<AccountType>();
-  const [cashData, setCashData] = useState<CashType>();
+  const dispatch = useAppDispatch();
+  const dataLoaded = useAppSelector(store => store);
+
+  const expenseData = dataLoaded?.expenses?.expenses;
+  const cashData = dataLoaded?.cashAccounts?.cashAccounts;
+  const accountsData = dataLoaded?.accounts?.accounts;
+
+  // const [expenseData, setExpenseData] = useState<AccountType>();
+  // const [accountsData, setAccountsData] = useState<AccountType>();
+  // const [cashData, setCashData] = useState<CashType>();
   const [addAccountPressed, setAddAccountPressed] = useState<boolean>(false);
   const [account, setAccountText] = useState<string | null>('');
   const [budget, setBudget] = useState<number | undefined>(0);
 
-  const dispatch = useAppDispatch();
-
   useEffect(() => {
-    setAccountsData(AccountCategory);
-    setCashData(CashCategory);
-    setExpenseData(EXPENSES);
+    // setExpenseData(EXPENSES);
+    // setCashData(CashCategory);
+    // setAccountsData(AccountCategory);
+    dispatch(fetchExpenseCategoriesData());
+    dispatch(fetchCashAccountsData());
+    dispatch(fetchAccountsData());
   }, []);
 
   if (
@@ -90,7 +101,6 @@ const Accounts = ({setAccount, setAccountPressed}: Props) => {
   };
 
   function onAccountsHandler(item) {
-    console.log(item);
     setAccountPressed(false);
     setAccount(item);
   }
@@ -100,9 +110,6 @@ const Accounts = ({setAccount, setAccountPressed}: Props) => {
   const totalAssets = +cashBudget + +accountsBudget;
   const totalExpenses = sumTotalFunc(expenseData)?.toFixed(2);
   const total = totalAssets - +totalExpenses;
-
-  console.log(account);
-  console.log(cashData[0]);
 
   return (
     <View style={styles.container}>

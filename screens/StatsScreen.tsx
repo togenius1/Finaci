@@ -8,12 +8,15 @@ import TimeLineTab from './screenComponents/TimeLineScreen';
 import Tabs from '../components/UI/Tabs';
 import LineChart from '../components/Graph/LineChart';
 import {sumByCustomMonth} from '../util/math';
-import {EXPENSES, INCOME} from '../dummy/dummy';
+// import {EXPENSES, INCOME} from '../dummy/dummy';
 // import {useNavigation} from '@react-navigation/native';
 import MonthYearList from '../components/Menu/MonthYearList';
 import {StatsNavigationProp} from '../types';
 import {ExpenseType} from '../models/expense';
 import {IncomeType} from '../models/income';
+import {useAppDispatch, useAppSelector} from '../hooks';
+import {fetchExpensesData} from '../store/expense-action';
+import {fetchIncomesData} from '../store/income-action';
 
 type Props = {
   navigation: StatsNavigationProp;
@@ -61,10 +64,15 @@ function HeaderRightComponent({
 }
 
 const StatsScreen = ({navigation}: Props) => {
+  const dispatch = useAppDispatch();
+  const dataLoaded = useAppSelector(store => store);
   // const navigation = useNavigation();
 
-  const [expenseData, setExpenseData] = useState<ExpenseType>();
-  const [incomeData, setIncomeData] = useState<IncomeType>();
+  const expenseData = dataLoaded?.expenses?.expenses;
+  const incomeData = dataLoaded?.incomes?.incomes;
+
+  // const [expenseData, setExpenseData] = useState<ExpenseType>();
+  // const [incomeData, setIncomeData] = useState<IncomeType>();
   const [showMonthYearListMenu, setShowMonthYearListMenu] =
     useState<boolean>(false);
   const [fromDate, setFromDate] = useState<string | null>(initFromDate);
@@ -90,8 +98,11 @@ const StatsScreen = ({navigation}: Props) => {
   }, []);
 
   useEffect(() => {
-    setExpenseData(EXPENSES);
-    setIncomeData(INCOME);
+    // setExpenseData(EXPENSES);
+    // setIncomeData(INCOME);
+    dispatch(fetchExpensesData());
+    dispatch(fetchIncomesData());
+
     onMonthYearSelectedHandler(moment().month());
   }, []);
 

@@ -40,8 +40,6 @@ const TabsDataObject = {
 };
 
 const TransactionOutput = ({
-  expenseData,
-  incomeData,
   setDuration,
   setFromDate,
   fromDate,
@@ -57,10 +55,10 @@ const TransactionOutput = ({
   customPressed,
   year,
   month,
-  monthlyTransactions,
-  weeklyTransactions,
-  dailyTransactions,
-}: Props) => {
+}: // monthlyTransactions,
+// weeklyTransactions,
+// dailyTransactions,
+Props) => {
   const [exportPressed, setExportPressed] = useState<boolean>(false);
   // const [customPressed, setCustomPressed] = useState(false);
   const [indicatorIndex, setIndicatorIndex] = useState<number | undefined>(0);
@@ -107,10 +105,10 @@ const TransactionOutput = ({
   };
 
   const setWeeklyHandler = () => {
-    if (+month < 10) {
-      month = `0${month}`;
-    }
-    const date = moment().format(`${year}-${month}-DD`);
+    // if (+month < 10) {
+    //   month = `0${month}`;
+    // }
+    const date = moment(`${year}-${month}-DD`).format('YYYY-MM-DD');
     const daysInMonth = moment(
       moment().format(`YYYY-${month}`),
       'YYYY-MM',
@@ -131,9 +129,9 @@ const TransactionOutput = ({
   };
 
   const setDailyHandler = () => {
-    if (+month < 10) {
-      month = `0${month}`;
-    }
+    // if (+month < 10) {
+    //   month = `0${month}`;
+    // }
     const date = moment().format(`${year}-${month}-DD`);
     const daysInMonth = moment(
       moment().format(`YYYY-${month}`),
@@ -155,9 +153,9 @@ const TransactionOutput = ({
   };
 
   const setCustomHandler = () => {
-    if (+month < 10) {
-      month = `0${month}`;
-    }
+    // if (+month < 10) {
+    //   month = `0${month}`;
+    // }
 
     let today = moment().date();
     if (+today < 10) {
@@ -193,8 +191,6 @@ const TransactionOutput = ({
       />
 
       <TransactionSummary
-        expenseData={expenseData}
-        incomeData={incomeData}
         monthlyPressed={monthlyPressed}
         weeklyPressed={weeklyPressed}
         dailyPressed={dailyPressed}
@@ -203,9 +199,9 @@ const TransactionOutput = ({
         toDate={toDate}
         exportPressed={exportPressed}
         year={String(year)}
-        monthlyTransactions={monthlyTransactions}
-        weeklyTransactions={weeklyTransactions}
-        dailyTransactions={dailyTransactions}
+        // monthlyTransactions={monthlyTransactions}
+        // weeklyTransactions={weeklyTransactions}
+        // dailyTransactions={dailyTransactions}
       />
     </View>
   );

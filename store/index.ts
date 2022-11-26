@@ -5,16 +5,28 @@ import {persistReducer, persistStore} from 'redux-persist';
 
 import expenseSlice from './expense-slice';
 import incomeSlice from './income-slice';
-import transferSlice from './transfer-slice';
+// import transferSlice from './transfer-slice';
+import cashAccountsSlice from './cash-slice';
 import accountSlice from './account-slice';
-import categorySlice from './category-slice';
+import expenseCategoriesSlice from './expense-category-slice';
+import incomeCategoriesSlice from './income-category-slice';
+import transferCategoriesSlice from './transfer-category-slice';
+import dailyTransactsSlice from './dailyTransact-slice';
+import weeklyTransactsSlice from './weeklyTransact-slice';
+import monthlyTransactsSlice from './monthlyTransact-slice';
 
 const rootReducer = combineReducers({
   expenses: expenseSlice.reducer,
   incomes: incomeSlice.reducer,
-  transfers: transferSlice.reducer,
+  // transfers: transferSlice.reducer,
+  cashAccounts: cashAccountsSlice.reducer,
   accounts: accountSlice.reducer,
-  categories: categorySlice.reducer,
+  expenseCategories: expenseCategoriesSlice.reducer,
+  incomeCategories: incomeCategoriesSlice.reducer,
+  transferCategories: transferCategoriesSlice.reducer,
+  dailyTransacts: dailyTransactsSlice.reducer,
+  weeklyTransacts: weeklyTransactsSlice.reducer,
+  monthlyTransacts: monthlyTransactsSlice.reducer,
 });
 
 const persistConfig = {

@@ -13,12 +13,7 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import moment from 'moment';
 import {v4 as uuidv4} from 'uuid';
 
-import {
-  AccountCategory,
-  CashCategory,
-  ExpenseCategory,
-  IncomeCategory,
-} from '../dummy/categoryItems';
+import {ExpenseCategory, IncomeCategory} from '../dummy/categoryItems';
 import {EXPENSES, INCOME} from '../dummy/dummy';
 import {
   // sortDataByDay,
@@ -32,6 +27,7 @@ import {ExpenseType} from '../models/expense';
 import {AccountType, CashType} from '../models/account';
 import {IncomeType} from '../models/income';
 import {currencyFormatter} from '../util/currencyFormatter';
+import {AccountCategory, CashCategory} from '../dummy/account';
 
 type Props = {
   navigation: AccountsItemNavigationType;

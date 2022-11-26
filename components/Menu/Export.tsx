@@ -2,22 +2,29 @@ import React, {useEffect, useState} from 'react';
 import {Dimensions, Pressable, StyleSheet, Text, View} from 'react-native';
 import moment from 'moment';
 
-import {
-  AccountCategory,
-  CashCategory,
-  ExpenseCategory,
-} from '../../dummy/categoryItems';
-import {EXPENSES} from '../../dummy/dummy';
+// import {ExpenseCategory} from '../../dummy/categoryItems';
+// import {EXPENSES} from '../../dummy/dummy';
+// import {AccountCategory, CashCategory} from '../../dummy/account';
 import {xport} from '../../util/xport';
+import {useAppDispatch, useAppSelector} from '../../hooks';
+import {fetchExpensesData} from '../../store/expense-action';
+import {fetchAccountsData} from '../../store/account-action';
+import {fetchExpenseCategoriesData} from '../../store/expense-category-action';
 
 const {width} = Dimensions.get('window');
 
 const Export = () => {
+  const dispatch = useAppDispatch();
+  const dataLoaded = useAppSelector(store => store);
+
   const [jsonData, setJsonData] = useState();
   const [newJson, setNewJson] = useState();
 
   useEffect(() => {
-    setJsonData(EXPENSES);
+    // setJsonData(EXPENSES);
+    dispatch(fetchExpensesData());
+    dispatch(fetchAccountsData());
+    dispatch(fetchExpenseCategoriesData());
   }, []);
 
   useEffect(() => {
@@ -26,12 +33,18 @@ const Export = () => {
 
   // Export format.
   const createNewObject = () => {
-    const obj = jsonData?.map((json, index) => {
+    const obj = dataLoaded?.expenses.expenses?.map((json, index) => {
       let accountObj;
-      const expenseObj = ExpenseCategory.find(cate => cate.id === json.cateId);
-      accountObj = CashCategory.find(cate => cate.id === json.accountId);
+      const expenseObj = dataLoaded?.expenseCategories?.expenseCategories?.find(
+        cate => cate.id === json.cateId,
+      );
+      accountObj = dataLoaded?.cashAccounts?.cashAccounts?.find(
+        cate => cate.id === json.accountId,
+      );
       if (accountObj === undefined) {
-        accountObj = AccountCategory.find(cate => cate.id === json.accountId);
+        accountObj = dataLoaded?.accounts?.accounts?.find(
+          cate => cate?.id === json?.accountId,
+        );
       }
       return {
         No: index + 1,

@@ -1,18 +1,24 @@
 import {StyleSheet} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 // import {useIsFocused} from '@react-navigation/native';
 
 import IncomeOutput from '../../components/Output/IncomeOutput';
-import {INCOME} from '../../dummy/dummy';
+// import {INCOME} from '../../dummy/dummy';
 import {IncomeTabRouteProp} from '../../types';
-import {IncomeType} from '../../models/income';
+// import {IncomeType} from '../../models/income';
+import {useAppDispatch, useAppSelector} from '../../hooks';
+import {fetchIncomesData} from '../../store/income-action';
 
 type Props = {
   route: IncomeTabRouteProp;
 };
 
 const IncomeTab = ({route}: Props) => {
-  const [incomeData, setIncomeData] = useState<IncomeType>();
+  const dispatch = useAppDispatch();
+  const dataLoaded = useAppSelector(store => store);
+
+  const incomeData = dataLoaded?.incomes?.incomes;
+  // const [incomeData, setIncomeData] = useState<IncomeType>();
 
   // const isFocused = useIsFocused();
   const fromDate = route.params?.fromDate;
@@ -21,7 +27,8 @@ const IncomeTab = ({route}: Props) => {
   useEffect(() => {}, [route.params]);
 
   useEffect(() => {
-    setIncomeData(INCOME);
+    // setIncomeData(INCOME);
+    dispatch(fetchIncomesData());
   }, []);
 
   if (incomeData === null || incomeData === undefined) {
