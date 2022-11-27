@@ -22,6 +22,10 @@ import {fetchAccountsData} from '../store/account-action';
 import {fetchExpenseCategoriesData} from '../store/expense-category-action';
 import {fetchIncomeCategoriesData} from '../store/income-category-action';
 import {fetchTransferCategoriesData} from '../store/transfer-category-action';
+import {sumByCustomMonth, sumByMonth} from '../util/math';
+import {fetchCashAccountsData} from '../store/cash-action';
+import {monthlyTransaction} from '../util/transaction';
+import {monthlyTransactsActions} from '../store/monthlyTransact-slice';
 
 type Props = {
   navigation: AddDetailsNavigationType;
@@ -35,7 +39,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
   const dataLoaded = useAppSelector(store => store);
 
   const amount = route.params?.amount;
-  const type = type === undefined ? 'expense' : route.params?.transaction?.type;
+  const type = route.params?.transaction?.type;
   const categoryTitle = route.params?.transaction?.categoryTitle;
   const accountTitle = route.params?.transaction?.account;
   const d = route.params?.transaction?.date;
@@ -53,6 +57,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     note: '',
   });
   const [cateData, setCateData] = useState<CategoryType>();
+  // const [date, setDate] = useState<string | null>();
 
   // useEffect(() => {
   //   dispatch(fetchAccountsData());
@@ -68,23 +73,46 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
       ? moment(createdDate).format('YYYY-MM-DD')
       : textDate;
 
+  const expenses = dataLoaded?.expenses?.expenses;
+  const incomes = dataLoaded?.incomes?.incomes;
   const AccountCategory = dataLoaded?.accounts?.accounts;
+  const CashAccountCategory = dataLoaded?.cashAccounts?.cashAccounts;
   const ExpenseCategory = dataLoaded?.expenseCategories?.expenseCategories;
   const IncomeCategory = dataLoaded?.incomeCategories?.incomeCategories;
-  const TransferCategory = dataLoaded?.transferCategories?.transferCategories;
+  // const TransferCategory = dataLoaded?.transferCategories?.transferCategories;
 
+  const cashAccountCategoryById = CashAccountCategory.find(
+    acc => acc.id === account?.id,
+  );
   const accountCategoryById = AccountCategory.find(
     acc => acc.id === account?.id,
   );
   const expenseCategoryById = ExpenseCategory.find(
-    cate => cate.id === category?.id,
+    cate => cate?.id === category?.id,
   );
   const incomeCategoryById = IncomeCategory.find(
     cate => cate.id === category?.id,
   );
-  const transferCategoryById = TransferCategory.find(
-    tr => tr.id === category?.id,
-  );
+  // const transferCategoryById = TransferCategory.find(
+  //   tr => tr.id === category?.id,
+  // );
+
+  // Cash or other accounts
+  const selectedAccount =
+    account?.title === 'Cash'
+      ? cashAccountCategoryById?.id
+      : accountCategoryById?.id;
+
+  // console.log('expenses -- ', expenses);
+  // console.log('sumMonthly ', sumMonthly);
+
+  // Provision categories should move from dummy to constant folder
+  useEffect(() => {
+    dispatch(fetchAccountsData()); // to Load the existing categories
+    dispatch(fetchCashAccountsData()); // to Load the existing categories
+    dispatch(fetchExpenseCategoriesData()); // to Load the existing categories
+    dispatch(fetchIncomeCategoriesData()); // to Load the existing categories
+  }, []);
 
   useEffect(() => {
     navigation.setOptions({
@@ -108,9 +136,9 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     if (type === 'income') {
       setCateData(IncomeCategory);
     }
-    if (type === 'transfer') {
-      setCateData(TransferCategory);
-    }
+    // if (type === 'transfer') {
+    //   setCateData(TransferCategory);
+    // }
   }, []);
 
   function saveHandler() {
@@ -118,8 +146,8 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
       dispatch(
         expenseActions.addExpense({
           id: 'expense' + uuidv4(),
+          accountId: selectedAccount,
           cateId: expenseCategoryById?.id,
-          accountId: accountCategoryById?.id,
           amount: amount,
           note: note.note,
           date: textDate,
@@ -130,8 +158,8 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
       dispatch(
         incomeActions.addIncome({
           id: 'income' + uuidv4(),
+          accountId: selectedAccount,
           cateId: incomeCategoryById?.id,
-          accountId: accountCategoryById?.id,
           amount: amount,
           note: note.note,
           date: textDate,
@@ -151,7 +179,37 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     //   );
     // }
     navigation.navigate('Overview');
+
+    // Monthly transactions
+    monthlyTransactionsUpdate();
+    // Weekly transactions
+    // Daily transactions
   }
+
+  // monthly transactions
+  const monthlyTransactionsUpdate = () => {
+    const month = moment(textDate).month() + 1;
+
+    const expenseMonthly = sumByMonth(expenses, 'expense')?.filter(
+      expense => expense?.month === month,
+    );
+    const incomeMonthly = sumByMonth(incomes, 'income')?.filter(
+      income => income?.month === month,
+    );
+
+    console.log('expenseMonthly ', expenseMonthly);
+    console.log('incomeMonthly ', incomeMonthly);
+
+    dispatch(
+      monthlyTransactsActions.addMonthlyTransactions({
+        date: textDate,
+        month: month,
+        id: 'monthlyTransaction' + month,
+        expense_monthly: expenseMonthly[0]?.amount,
+        income_monthly: incomeMonthly[0]?.amount,
+      }),
+    );
+  };
 
   return (
     <View style={styles.container}>

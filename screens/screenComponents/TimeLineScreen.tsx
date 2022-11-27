@@ -30,9 +30,9 @@ const TimeLineTab = ({data, fromDate, toDate}: Props) => {
   const dispatch = useAppDispatch();
   const dataLoaded = useAppSelector(store => store);
 
-  useEffect(() => {
-    dispatch(fetchAccountsData());
-  }, []);
+  // useEffect(() => {
+  //   dispatch(fetchAccountsData());
+  // }, []);
 
   const sumExpenseByEachAccount = sumEachAccountId(data);
   const accountsFiltered = dataLoaded?.accounts?.accounts?.filter(account => {

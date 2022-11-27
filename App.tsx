@@ -34,6 +34,7 @@ setPRNG(PRNG);
 
 const App = () => {
   const [currentUser, setCurrentUser] = useState<User | null>();
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | undefined>();
   const [cloudPrivateKey, setCloudPrivateKey] = useState<string | null>();
   // const [localPrivateKey, setLocalPrivateKey] = useState<string | null>();
 
@@ -41,14 +42,14 @@ const App = () => {
   const dataLoaded = useAppSelector(store => store);
 
   // useEffect(() => {
-    // dispatch(fetchExpensesData());
-    // dispatch(fetchIncomesData());
-    // dispatch(fetchAccountsData());
-    // dispatch(fetchCashAccountsData());
-    // dispatch(fetchExpenseCategoriesData());
-    // dispatch(fetchIncomeCategoriesData());
-    // dispatch(fetchTransferCategoriesData());
-    // dispatch(fetchDailyTransactsData());
+  // dispatch(fetchExpensesData());
+  // dispatch(fetchIncomesData());
+  // dispatch(fetchAccountsData());
+  // dispatch(fetchCashAccountsData());
+  // dispatch(fetchExpenseCategoriesData());
+  // dispatch(fetchIncomeCategoriesData());
+  // dispatch(fetchTransferCategoriesData());
+  // dispatch(fetchDailyTransactsData());
   // }, []);
 
   // console.log('App: ', dataLoaded.expenses.expenses);
@@ -56,24 +57,39 @@ const App = () => {
   // Listening for Login events.
   useEffect(() => {
     const listener = data => {
-      if (data.payload.event === 'signIn' || data.payload.event === 'signOut') {
+      if (data.payload.event === 'signIn') {
         checkUser();
         generateNewKey();
+        // setIsAuthenticated(true);
+      }
+      if (data.payload.event === 'signOut') {
+        checkUser();
+        setIsAuthenticated(false);
       }
     };
+
     Hub.listen('auth', listener);
   }, []);
 
   // Check if authenticated user.
   useEffect(() => {
-    checkUser();
+    const isAuthenticated = async () => {
+      try {
+        const authedUser = await Auth.currentAuthenticatedUser();
+        // console.log(authedUser); // this means that you've logged in before with valid user/pass.
+        setIsAuthenticated(true);
+      } catch (err) {
+        console.log(err); // this means there is no currently authenticated user
+      }
+    };
+    isAuthenticated();
   }, []);
 
   // Check if authenticated user.
   const checkUser = async () => {
     try {
-      const authUser = await Auth.currentAuthenticatedUser({bypassCache: true});
-      // const authUser = await Auth.currentAuthenticatedUser();
+      // const authUser = await Auth.currentAuthenticatedUser({bypassCache: true});
+      const authUser = await Auth.currentAuthenticatedUser();
       const dbUser = await DataStore.query(User, authUser.attributes.sub);
       setCurrentUser(dbUser);
 
@@ -93,7 +109,6 @@ const App = () => {
     if (cloudPrivateKey !== null || cloudPrivateKey !== undefined) {
       return;
     }
-    console.log('Generating new key');
     // Remove old key
     await AsyncStorage.removeItem(PRIVATE_KEY);
     await AsyncStorage.removeItem(PUBLIC_KEY);
@@ -106,8 +121,6 @@ const App = () => {
     await AsyncStorage.setItem(PUBLIC_KEY, publicKey.toString());
 
     // const originalUser = await DataStore.query(User, user?.id);
-    console.log('secretKey: ', secretKey);
-    console.log('cloud Key: ', cloudPrivateKey);
     await DataStore.save(
       User.copyOf(currentUser, updated => {
         updated.backupKey = String(secretKey);
@@ -141,7 +154,7 @@ const App = () => {
   return (
     <>
       <StatusBar barStyle="light-content" />
-      <FinnerNavigator authUser={currentUser} />
+      <FinnerNavigator isAuthenticated={isAuthenticated} />
 
       {/* {currentUser && (
         <>

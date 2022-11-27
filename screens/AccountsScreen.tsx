@@ -55,9 +55,9 @@ const AccountsScreen = ({navigation}: Props) => {
   // Update account details
 
   useEffect(() => {
-    dispatch(fetchExpensesData());
-    dispatch(fetchAccountsData());
-    dispatch(fetchCashAccountsData());
+    // dispatch(fetchExpensesData());
+    // dispatch(fetchAccountsData());
+    // dispatch(fetchCashAccountsData());
   }, []);
 
   if (

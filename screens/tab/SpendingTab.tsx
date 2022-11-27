@@ -19,21 +19,21 @@ type Props = {
 const {width} = Dimensions.get('window');
 
 const SpendingTab = ({route}: Props) => {
-  const dispatch = useAppDispatch();
+  const navigation = useNavigation();
+
+  // const dispatch = useAppDispatch();
   const dataLoaded = useAppSelector(store => store);
 
   const expenseData = dataLoaded?.expenses?.expenses;
   // const [expenseData, setExpenseData] = useState<ExpenseType>();
 
-  const navigation = useNavigation();
-
   const fromDate = route.params?.fromDate;
   const toDate = route.params?.toDate;
 
-  useEffect(() => {
-    // setExpenseData(EXPENSES);
-    dispatch(fetchExpensesData());
-  }, []);
+  // useEffect(() => {
+  // setExpenseData(EXPENSES);
+  // dispatch(fetchExpensesData());
+  // }, []);
 
   if (expenseData === null || expenseData === undefined) {
     return;

@@ -1,7 +1,9 @@
 import moment from 'moment';
 import {v4 as uuidv4} from 'uuid';
 
-import {EXPENSES, INCOME} from '../dummy/dummy';
+// import {EXPENSES, INCOME} from '../dummy/dummy';
+import Expense from '../models/expense';
+import Income from '../models/income';
 import {sumByCustomDate, sumByDate, sumByMonth, sumByWeek} from './math';
 
 ///////////////////////////// Monthly Transaction ///////////////////////////////////
@@ -9,6 +11,8 @@ export function monthlyTransaction(
   fromDate: string,
   toDate: string,
   year: string,
+  EXPENSES: Expense[],
+  INCOME: Income[],
 ) {
   const selectedDurationExpenseData = EXPENSES?.filter(
     expense =>

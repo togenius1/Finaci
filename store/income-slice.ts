@@ -14,7 +14,7 @@ const incomeSlice = createSlice({
     addIncome(state, action) {
       const newIncomes = action.payload;
       const existingItem = state.incomes.find(
-        income => income.id === newIncomes.id,
+        income => income?.id === newIncomes?.id,
       );
       if (!existingItem) {
         state.incomes.push({

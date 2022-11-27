@@ -26,10 +26,10 @@ const IncomeTab = ({route}: Props) => {
 
   useEffect(() => {}, [route.params]);
 
-  useEffect(() => {
+  // useEffect(() => {
     // setIncomeData(INCOME);
-    dispatch(fetchIncomesData());
-  }, []);
+    // dispatch(fetchIncomesData());
+  // }, []);
 
   if (incomeData === null || incomeData === undefined) {
     return;

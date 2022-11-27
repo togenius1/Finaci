@@ -8,7 +8,8 @@ import BarChart from '../../components/Graph/BarChart';
 import {useAppDispatch, useAppSelector} from '../../hooks';
 import {sumByDate, sumEachAccountId} from '../../util/math';
 import {currencyFormatter} from '../../util/currencyFormatter';
-import { AccountCategory } from '../../dummy/account';
+import {AccountCategory} from '../../dummy/account';
+import {isEmpty} from '@aws-amplify/core';
 
 type Props = {
   data: any[];

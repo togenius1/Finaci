@@ -15,21 +15,22 @@ const monthlyTransactsSlice = createSlice({
       state.monthlyTransacts = action.payload.monthlyTransacts;
     },
 
-    addExpense(state, action) {
+    addMonthlyTransactions(state, action) {
       const newTransact = action.payload;
       const existingItem = state.monthlyTransacts.find(
-        transact => transact.id === newTransact.id,
+        transact => transact?.id === newTransact.id,
       );
       if (!existingItem) {
         state.monthlyTransacts.push({
           id: newTransact.id,
-          Date: newTransact.Date,
-          day: newTransact.day,
-          Finance: newTransact.Finance,
+          date: newTransact.date,
+          month: newTransact.month,
+          expense_monthly: newTransact.expense_monthly,
+          income_monthly: newTransact.income_monthly,
         });
       }
     },
-    deleteExpense(state, action) {
+    deleteMonthlyTransactions(state, action) {
       const id = action.payload;
       const existingItem = state.monthlyTransacts.find(
         transact => transact.id === id,
@@ -40,7 +41,8 @@ const monthlyTransactsSlice = createSlice({
         );
       }
     },
-    updateExpense(state, action) {
+    // Update by month number
+    updateMonthlyTransactions(state, action) {
       const updatedTransactIndex = state.monthlyTransacts.findIndex(
         transact => transact.id === action.payload.id,
       );

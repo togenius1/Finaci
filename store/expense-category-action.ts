@@ -7,7 +7,7 @@ export const fetchExpenseCategoriesData = () => {
   return async dispatch => {
     const fetchData = async () => {
       //   const response = await AsyncStorage.getItem('root');
-      const response = ExpenseCategory;
+      const response = ExpenseCategory; // to load provisioned account category.
 
       // return response !== null ? JSON.stringify(response) : null;
       return response !== null ? response : null;

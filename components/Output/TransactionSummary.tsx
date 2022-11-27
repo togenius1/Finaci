@@ -6,7 +6,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {v4 as uuidv4} from 'uuid';
 import moment from 'moment';
 // import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -29,6 +29,7 @@ import {
 import {fetchExpensesData} from '../../store/expense-action';
 import {fetchWeeklyTransactsData} from '../../store/weeklyTransact-action';
 import {fetchMonthlyTransactsData} from '../../store/monthlyTransact-action';
+import {fetchIncomesData} from '../../store/income-action';
 
 type Props = {
   expenseData: ExpenseType | undefined;
@@ -88,17 +89,9 @@ function HeaderSummary({total, totalIncome, totalExpenses}: HeaderSummaryType) {
 
 // Monthly renderItem
 function MonthlyRenderItem({item}) {
-  const monthLabel = moment.monthsShort(
-    Number(item.Finance[0]?.expense_monthly.month) - 1,
-  );
-  const expenseAmount = currencyFormatter(
-    item.Finance[0]?.expense_monthly?.amount,
-    {},
-  );
-  const incomeAmount = currencyFormatter(
-    item.Finance[0]?.income_monthly?.amount,
-    {},
-  );
+  const monthLabel = moment.monthsShort(Number(item?.month) - 1);
+  const expenseAmount = currencyFormatter(item?.expense_monthly, {});
+  const incomeAmount = currencyFormatter(item?.income_monthly, {});
 
   return (
     <View style={styles.list}>
@@ -141,7 +134,7 @@ function WeeklyRenderItem({item}) {
   );
   const weekNum = item?.Week;
 
-  const date = new Date(item.Date);
+  const date = new Date(item.date);
 
   const year = moment(date).year(); // Fixed
   let month = moment(date).month() + 1;
@@ -302,12 +295,17 @@ Props) => {
   let _renderData = [];
   const date = moment(fromDate).format('YYYY-MM-DD');
 
-  // console.log('fromDate ', fromDate);
-  // console.log('date ', date);
-
   const navigation = useNavigation();
 
+  const dispatch = useAppDispatch();
   const dataLoaded = useAppSelector(store => store);
+
+  // useEffect(() => {
+  //   dispatch(fetchExpensesData());
+  //   dispatch(fetchIncomesData());
+  //   // dispatch(fetchWeeklyTransactsData());
+  //   dispatch(fetchMonthlyTransactsData());
+  // }, []);
 
   // FILTERED DATA (From date ----> To date)
   const selectedDurationExpenseData = dataLoaded?.expenses?.expenses?.filter(
@@ -329,21 +327,22 @@ Props) => {
   // Monthly Transaction
   // const monthlyData = monthlyTransaction(fromDate, toDate, year);
   const monthlyData = dataLoaded?.monthlyTransacts?.monthlyTransacts?.filter(
-    transact => moment(transact?.Date).year() === moment(date).year(),
+    transact => moment(transact?.date).year() === moment(date).year(),
   );
+  console.log(monthlyData);
 
   //  Weekly Transaction
   // const weeklyData = weeklyTransaction(fromDate, toDate, date);
   const weeklyData = dataLoaded?.weeklyTransacts?.weeklyTransacts?.filter(
-    transact => moment(transact?.Date).month() === moment(date).month(),
+    transact => moment(transact?.date).month() === moment(date).month(),
   );
 
   // Combine data and sum by date
   // const dailyData = dailyTransaction(String(fromDate), String(toDate), date);
   const dailyData = dataLoaded?.dailyTransacts?.dailyTransacts.filter(
     transact =>
-      new Date(String(transact?.Date)) >= new Date(String(fromDate)) &&
-      new Date(String(transact?.Date)) <= new Date(String(toDate)),
+      new Date(String(transact?.date)) >= new Date(String(fromDate)) &&
+      new Date(String(transact?.date)) <= new Date(String(toDate)),
   );
 
   // Combine data and sum by custom
@@ -373,8 +372,8 @@ Props) => {
 
   //sort Data
   _renderData?.sort((a: any, b: any) => {
-    const dateA = new Date(a.Date);
-    const dateB = new Date(b.Date);
+    const dateA = new Date(moment(a.date).format('YYYY-MM-DD'));
+    const dateB = new Date(moment(b.date).format('YYYY-MM-DD'));
     if (dateA > dateB) {
       return -1; // return -1 here for DESC order
     }

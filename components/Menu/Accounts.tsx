@@ -50,9 +50,9 @@ const Accounts = ({setAccount, setAccountPressed}: Props) => {
     // setExpenseData(EXPENSES);
     // setCashData(CashCategory);
     // setAccountsData(AccountCategory);
-    dispatch(fetchExpenseCategoriesData());
-    dispatch(fetchCashAccountsData());
-    dispatch(fetchAccountsData());
+    // dispatch(fetchExpenseCategoriesData());
+    // dispatch(fetchCashAccountsData());
+    // dispatch(fetchAccountsData());
   }, []);
 
   if (

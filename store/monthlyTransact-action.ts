@@ -6,8 +6,10 @@ import {monthlyTransactsActions} from './monthlyTransact-slice';
 export const fetchMonthlyTransactsData = () => {
   return async dispatch => {
     const fetchData = async () => {
+      await AsyncStorage.removeItem('root');
       //   const response = await AsyncStorage.getItem('root');
-      const response = MonthTransactions;
+      // const response = MonthTransactions;
+      const response = null;
 
       // return response !== null ? JSON.stringify(response) : null;
       return response !== null ? response : null;
@@ -17,7 +19,7 @@ export const fetchMonthlyTransactsData = () => {
       const MonthlyTransactsData = await fetchData();
       dispatch(
         monthlyTransactsActions.replaceMonthlyTransacts({
-         monthlyTransacts: MonthlyTransactsData || [],
+          monthlyTransacts: MonthlyTransactsData || [],
         }),
       );
     } catch (error) {}

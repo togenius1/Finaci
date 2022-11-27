@@ -22,9 +22,9 @@ const Export = () => {
 
   useEffect(() => {
     // setJsonData(EXPENSES);
-    dispatch(fetchExpensesData());
-    dispatch(fetchAccountsData());
-    dispatch(fetchExpenseCategoriesData());
+    // dispatch(fetchExpensesData());
+    // dispatch(fetchAccountsData());
+    // dispatch(fetchExpenseCategoriesData());
   }, []);
 
   useEffect(() => {

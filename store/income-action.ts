@@ -6,8 +6,10 @@ import {INCOME} from '../dummy/dummy';
 export const fetchIncomesData = () => {
   return async dispatch => {
     const fetchData = async () => {
+      await AsyncStorage.removeItem('root');
       //   const response = await AsyncStorage.getItem('root');
-      const response = INCOME;
+      // const response = INCOME;
+      const response = null;
 
       // return response !== null ? JSON.stringify(response) : null;
       return response !== null ? response : null;

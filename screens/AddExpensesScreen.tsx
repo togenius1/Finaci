@@ -12,7 +12,7 @@ import Calculator from '../components/UI/Calculator';
 interface InitTransactionType {
   id: number;
   selected: boolean;
-  title: string;
+  type: string;
 }
 
 const transactionData = [
@@ -22,7 +22,7 @@ const transactionData = [
 ];
 
 const {width} = Dimensions.get('window');
-const initTransaction = {id: 1, selected: false, title: 'expense'};
+const initTransaction = {id: 1, selected: true, type: 'expense'};
 
 function Tab({item, onPress}) {
   let selectedColor;

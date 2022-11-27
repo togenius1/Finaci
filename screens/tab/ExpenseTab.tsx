@@ -22,10 +22,10 @@ const ExpenseTab = ({route}: Props) => {
   const fromDate = route.params?.fromDate;
   const toDate = route.params?.toDate;
 
-  useEffect(() => {
+  // useEffect(() => {
     // setExpensesData(EXPENSES);
-    dispatch(fetchExpensesData());
-  }, []);
+    // dispatch(fetchExpensesData());
+  // }, []);
 
   if (expensesData === null || expensesData === undefined) {
     return;

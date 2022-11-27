@@ -6,8 +6,10 @@ import {EXPENSES} from '../dummy/dummy';
 export const fetchExpensesData = () => {
   return async dispatch => {
     const fetchData = async () => {
-      // const response = Sync data from Amplify
-      const response = EXPENSES;
+      await AsyncStorage.removeItem('root');
+      // const response = Load data from Amplify Data store.
+      // const response = EXPENSES;
+      const response = null;
 
       // return response !== null ? JSON.stringify(response) : null;
       return response !== null ? response : null;

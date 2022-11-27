@@ -1,7 +1,7 @@
 export const DailyTractions = [
   {
-    Date: '2022-10-29',
-    Day: 1,
+    date: '2022-10-29',
+    day: 1,
     id: 'transId1',
     Finance: [
       {
@@ -26,8 +26,8 @@ export const DailyTractions = [
     ],
   },
   {
-    Date: '2022-10-30',
-    Day: 1,
+    date: '2022-10-30',
+    day: 1,
     id: 'transId2',
     Finance: [
       {
@@ -52,8 +52,8 @@ export const DailyTractions = [
     ],
   },
   {
-    Date: '2022-10-31',
-    Day: 1,
+    date: '2022-10-31',
+    day: 1,
     id: 'transId3',
     Finance: [
       {
@@ -78,8 +78,8 @@ export const DailyTractions = [
     ],
   },
   {
-    Date: '2022-11-25',
-    Day: 25,
+    date: '2022-11-25',
+    day: 25,
     id: 'transId4',
     Finance: [
       {
@@ -104,8 +104,8 @@ export const DailyTractions = [
     ],
   },
   {
-    Date: '2022-11-26',
-    Day: 26,
+    date: '2022-11-26',
+    day: 26,
     id: 'transId5',
     Finance: [
       {
@@ -130,8 +130,8 @@ export const DailyTractions = [
     ],
   },
   {
-    Date: '2022-11-27',
-    Day: 27,
+    date: '2022-11-27',
+    day: 27,
     id: 'transId6',
     Finance: [
       {
@@ -156,8 +156,8 @@ export const DailyTractions = [
     ],
   },
   {
-    Date: '2022-11-28',
-    Day: 28,
+    date: '2022-11-28',
+    day: 28,
     id: 'transId7',
     Finance: [
       {
@@ -181,8 +181,8 @@ export const DailyTractions = [
     ],
   },
   {
-    Date: '2022-11-29',
-    Day: 29,
+    date: '2022-11-29',
+    day: 29,
     id: 'transId8',
     Finance: [
       {
@@ -207,8 +207,8 @@ export const DailyTractions = [
     ],
   },
   {
-    Date: '2022-11-30',
-    Day: 30,
+    date: '2022-11-30',
+    day: 30,
     id: 'transId33',
     Finance: [
       {

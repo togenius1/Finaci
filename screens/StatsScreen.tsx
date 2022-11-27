@@ -100,8 +100,8 @@ const StatsScreen = ({navigation}: Props) => {
   useEffect(() => {
     // setExpenseData(EXPENSES);
     // setIncomeData(INCOME);
-    dispatch(fetchExpensesData());
-    dispatch(fetchIncomesData());
+    // dispatch(fetchExpensesData());
+    // dispatch(fetchIncomesData());
 
     onMonthYearSelectedHandler(moment().month());
   }, []);
