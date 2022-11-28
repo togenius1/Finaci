@@ -20,16 +20,6 @@ import {useNavigation} from '@react-navigation/native';
 import {ExpenseType} from '../../models/expense';
 import {IncomeType} from '../../models/income';
 import {TransactionSummaryNavigationProp} from '../../types';
-import {
-  customTransaction,
-  dailyTransaction,
-  monthlyTransaction,
-  weeklyTransaction,
-} from '../../util/transaction';
-import {fetchExpensesData} from '../../store/expense-action';
-import {fetchWeeklyTransactsData} from '../../store/weeklyTransact-action';
-import {fetchMonthlyTransactsData} from '../../store/monthlyTransact-action';
-import {fetchIncomesData} from '../../store/income-action';
 
 type Props = {
   expenseData: ExpenseType | undefined;
@@ -329,7 +319,7 @@ Props) => {
   const monthlyData = dataLoaded?.monthlyTransacts?.monthlyTransacts?.filter(
     transact => moment(transact?.date).year() === moment(date).year(),
   );
-  console.log(monthlyData);
+
 
   //  Weekly Transaction
   // const weeklyData = weeklyTransaction(fromDate, toDate, date);

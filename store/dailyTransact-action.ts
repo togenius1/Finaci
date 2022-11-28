@@ -7,7 +7,9 @@ export const fetchDailyTransactsData = () => {
   return async dispatch => {
     const fetchData = async () => {
       //   const response = await AsyncStorage.getItem('root');
-      const response = DailyTractions;
+      // const response = DailyTractions;
+      await AsyncStorage.removeItem('root');
+      const response = null;
 
       // return response !== null ? JSON.stringify(response) : null;
       return response !== null ? response : null;
@@ -17,7 +19,7 @@ export const fetchDailyTransactsData = () => {
       const DailyTransactsData = await fetchData();
       dispatch(
         dailyTransactsActions.replaceDailyTransacts({
-         dailyTransacts: DailyTransactsData || [],
+          dailyTransacts: DailyTransactsData || [],
         }),
       );
     } catch (error) {}

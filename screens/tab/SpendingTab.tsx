@@ -9,8 +9,8 @@ import IconButton from '../../components/UI/iconButton';
 // import {sumByCustomDate, sumByDate} from '../../util/math';
 import {SpendingTabRouteProp} from '../../types';
 // import {ExpenseType} from '../../models/expense';
-import {useAppDispatch, useAppSelector} from '../../hooks';
-import {fetchExpensesData} from '../../store/expense-action';
+import {useAppSelector} from '../../hooks';
+// import {fetchExpensesData} from '../../store/expense-action';
 
 type Props = {
   route: SpendingTabRouteProp;
@@ -35,12 +35,14 @@ const SpendingTab = ({route}: Props) => {
   // dispatch(fetchExpensesData());
   // }, []);
 
-  if (expenseData === null || expenseData === undefined) {
-    return;
-  }
+  // if (expenseData === null || expenseData === undefined) {
+  //   return;
+  // }
 
   const filteredData = expenseData?.filter(
-    d => d.date >= new Date(fromDate) && d.date <= new Date(toDate),
+    d =>
+      new Date(d.date) >= new Date(fromDate) &&
+      new Date(d.date) <= new Date(toDate),
   );
 
   const RenderBarchartTab = () => {

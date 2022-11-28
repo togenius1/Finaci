@@ -38,8 +38,8 @@ const App = () => {
   const [cloudPrivateKey, setCloudPrivateKey] = useState<string | null>();
   // const [localPrivateKey, setLocalPrivateKey] = useState<string | null>();
 
-  const dispatch = useAppDispatch();
-  const dataLoaded = useAppSelector(store => store);
+  // const dispatch = useAppDispatch();
+  // const dataLoaded = useAppSelector(store => store);
 
   // useEffect(() => {
   // dispatch(fetchExpensesData());

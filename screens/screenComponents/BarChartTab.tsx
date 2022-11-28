@@ -12,7 +12,6 @@ import {AccountCategory} from '../../dummy/account';
 import {isEmpty} from '@aws-amplify/core';
 
 type Props = {
-  data: any[];
   fromDate: string;
 };
 

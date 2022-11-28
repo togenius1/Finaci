@@ -21,11 +21,18 @@ import {CategoryType} from '../models/category';
 import {fetchAccountsData} from '../store/account-action';
 import {fetchExpenseCategoriesData} from '../store/expense-category-action';
 import {fetchIncomeCategoriesData} from '../store/income-category-action';
-import {fetchTransferCategoriesData} from '../store/transfer-category-action';
+// import {fetchTransferCategoriesData} from '../store/transfer-category-action';
 import {sumByCustomMonth, sumByMonth} from '../util/math';
 import {fetchCashAccountsData} from '../store/cash-action';
 import {monthlyTransaction} from '../util/transaction';
 import {monthlyTransactsActions} from '../store/monthlyTransact-slice';
+import {fetchExpensesData} from '../store/expense-action';
+import {fetchIncomesData} from '../store/income-action';
+import {fetchDailyTransactsData} from '../store/dailyTransact-action';
+import {fetchMonthlyTransactsData} from '../store/monthlyTransact-action';
+import {fetchWeeklyTransactsData} from '../store/weeklyTransact-action';
+import {Button} from 'react-native-share';
+import CButton from '../components/UI/CButton';
 
 type Props = {
   navigation: AddDetailsNavigationType;
@@ -107,11 +114,12 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
   // console.log('sumMonthly ', sumMonthly);
 
   // Provision categories should move from dummy to constant folder
+  // to Load the existing categories
   useEffect(() => {
-    dispatch(fetchAccountsData()); // to Load the existing categories
-    dispatch(fetchCashAccountsData()); // to Load the existing categories
-    dispatch(fetchExpenseCategoriesData()); // to Load the existing categories
-    dispatch(fetchIncomeCategoriesData()); // to Load the existing categories
+    dispatch(fetchAccountsData());
+    dispatch(fetchCashAccountsData());
+    dispatch(fetchExpenseCategoriesData());
+    dispatch(fetchIncomeCategoriesData());
   }, []);
 
   useEffect(() => {
@@ -141,11 +149,11 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     // }
   }, []);
 
-  function saveHandler() {
+  async function saveHandler() {
     if (type === 'expense') {
       dispatch(
         expenseActions.addExpense({
-          id: 'expense' + uuidv4(),
+          id: 'expense-' + uuidv4(),
           accountId: selectedAccount,
           cateId: expenseCategoryById?.id,
           amount: amount,
@@ -157,7 +165,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     if (type === 'income') {
       dispatch(
         incomeActions.addIncome({
-          id: 'income' + uuidv4(),
+          id: 'income-' + uuidv4(),
           accountId: selectedAccount,
           cateId: incomeCategoryById?.id,
           amount: amount,
@@ -179,14 +187,18 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     //   );
     // }
     navigation.navigate('Overview');
-
-    // Monthly transactions
-    monthlyTransactionsUpdate();
-    // Weekly transactions
-    // Daily transactions
   }
 
-  // monthly transactions
+  // Clear data store.
+  // useEffect(() => {
+  //   dispatch(fetchExpensesData());
+  //   dispatch(fetchIncomesData());
+  //   dispatch(fetchMonthlyTransactsData());
+  //   dispatch(fetchWeeklyTransactsData());
+  //   dispatch(fetchDailyTransactsData());
+  // }, []);
+
+  // monthly transactions should be updated in background
   const monthlyTransactionsUpdate = () => {
     const month = moment(textDate).month() + 1;
 
@@ -197,14 +209,11 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
       income => income?.month === month,
     );
 
-    console.log('expenseMonthly ', expenseMonthly);
-    console.log('incomeMonthly ', incomeMonthly);
-
     dispatch(
       monthlyTransactsActions.addMonthlyTransactions({
         date: textDate,
         month: month,
-        id: 'monthlyTransaction' + month,
+        id: 'monthlyTransaction-' + month,
         expense_monthly: expenseMonthly[0]?.amount,
         income_monthly: incomeMonthly[0]?.amount,
       }),

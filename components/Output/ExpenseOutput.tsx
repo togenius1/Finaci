@@ -23,7 +23,9 @@ const ExpenseOutput = ({data, fromDate, toDate}: Props) => {
 
   // filter data: from date --> to date
   const filteredData = data.filter(
-    d => d.date >= new Date(fromDate) && d.date <= new Date(toDate),
+    d =>
+      new Date(d.date) >= new Date(fromDate) &&
+      new Date(d.date) <= new Date(toDate),
   );
 
   // Summation for each category
@@ -59,8 +61,9 @@ const ExpenseOutput = ({data, fromDate, toDate}: Props) => {
 
       <View style={styles.addButtonContainer}>
         <IconButton
-          name="remove-outline"
-          size={15}
+          name="add"
+          size={30}
+          color="white"
           onPress={() => navigation.navigate('AddExpenses')}
         />
       </View>

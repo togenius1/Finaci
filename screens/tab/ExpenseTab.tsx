@@ -12,7 +12,7 @@ type Props = {
 };
 
 const ExpenseTab = ({route}: Props) => {
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
   const dataLoaded = useAppSelector(store => store);
 
   const expensesData = dataLoaded?.expenses?.expenses;
@@ -23,13 +23,13 @@ const ExpenseTab = ({route}: Props) => {
   const toDate = route.params?.toDate;
 
   // useEffect(() => {
-    // setExpensesData(EXPENSES);
-    // dispatch(fetchExpensesData());
+  // setExpensesData(EXPENSES);
+  // dispatch(fetchExpensesData());
   // }, []);
 
-  if (expensesData === null || expensesData === undefined) {
-    return;
-  }
+  // if (expensesData === null || expensesData === undefined) {
+  //   return;
+  // }
 
   return (
     <ExpenseOutput data={expensesData} fromDate={fromDate} toDate={toDate} />

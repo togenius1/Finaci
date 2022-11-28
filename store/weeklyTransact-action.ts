@@ -7,7 +7,9 @@ export const fetchWeeklyTransactsData = () => {
   return async dispatch => {
     const fetchData = async () => {
       //   const response = await AsyncStorage.getItem('root');
-      const response = WeekTransactions;
+      // const response = WeekTransactions;
+      await AsyncStorage.removeItem('root');
+      const response = null;
 
       // return response !== null ? JSON.stringify(response) : null;
       return response !== null ? response : null;
