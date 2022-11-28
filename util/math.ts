@@ -122,11 +122,11 @@ export function sumByMonth(object, type) {
   const mapDayToMonth = object?.map(obj => ({
     ...obj,
     id: obj.id,
-    month: moment(obj.date).month(),
-    amount: Number(obj.amount),
+    month: moment(obj?.date).month(),
+    amount: Number(obj?.amount),
   }));
 
-  const sumPerMonth = mapDayToMonth.reduce((acc, cur) => {
+  const sumPerMonth = mapDayToMonth?.reduce((acc, cur) => {
     acc[cur.month] = acc[cur.month] + +cur.amount || cur.amount; // increment or initialize to cur.value
     results[cur.month] = {
       id: results[cur.month].id,

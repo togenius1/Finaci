@@ -54,22 +54,22 @@ const AccountsScreen = ({navigation}: Props) => {
   // Set accountText and budget to Storage, after add account.
   // Update account details
 
-  useEffect(() => {
+  // useEffect(() => {
     // dispatch(fetchExpensesData());
     // dispatch(fetchAccountsData());
     // dispatch(fetchCashAccountsData());
-  }, []);
+  // }, []);
 
-  if (
-    accountData === null ||
-    accountData === undefined ||
-    expenseData === null ||
-    expenseData === undefined ||
-    cashData === null ||
-    cashData === undefined
-  ) {
-    return <ActivityIndicator />;
-  }
+  // if (
+  //   accountData === null ||
+  //   accountData === undefined ||
+  //   expenseData === null ||
+  //   expenseData === undefined ||
+  //   cashData === null ||
+  //   cashData === undefined
+  // ) {
+  //   return <ActivityIndicator />;
+  // }
   const cashBudget = sumTotalBudget(cashData)?.toFixed(2);
   const accountsBudget = sumTotalBudget(accountData)?.toFixed(2);
   const totalAssets = +cashBudget + +accountsBudget;

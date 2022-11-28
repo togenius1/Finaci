@@ -1,5 +1,5 @@
 import {Dimensions, Pressable, StyleSheet, Text, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {v4 as uuidv4} from 'uuid';
 import moment from 'moment';
 
@@ -33,6 +33,8 @@ import {fetchMonthlyTransactsData} from '../store/monthlyTransact-action';
 import {fetchWeeklyTransactsData} from '../store/weeklyTransact-action';
 import {Button} from 'react-native-share';
 import CButton from '../components/UI/CButton';
+import {isEmpty} from '@aws-amplify/core';
+import {store} from '../store';
 
 type Props = {
   navigation: AddDetailsNavigationType;
@@ -64,15 +66,8 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     note: '',
   });
   const [cateData, setCateData] = useState<CategoryType>();
+  const timerRef = useRef();
   // const [date, setDate] = useState<string | null>();
-
-  // useEffect(() => {
-  //   dispatch(fetchAccountsData());
-  //   // dispatch(fetchCashAccountsData());
-  //   dispatch(fetchExpenseCategoriesData());
-  //   dispatch(fetchIncomeCategoriesData());
-  //   dispatch(fetchTransferCategoriesData());
-  // }, []);
 
   // set initial date: from Calculator route or from Account route
   const initialDate =
@@ -149,7 +144,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     // }
   }, []);
 
-  async function saveHandler() {
+  const saveHandler = () => {
     if (type === 'expense') {
       dispatch(
         expenseActions.addExpense({
@@ -174,20 +169,9 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
         }),
       );
     }
-    // if (type === 'transfer') {
-    //   dispatch(
-    //     transferActions.addTransfer({
-    //       id: 'transfer' + uuidv4(),
-    //       cateId: transferCategoryById?.id,
-    //       accountId: accountCategoryById?.id,
-    //       amount: amount,
-    //       note: note.note,
-    //       date: textDate,
-    //     }),
-    //   );
-    // }
+
     navigation.navigate('Overview');
-  }
+  };
 
   // Clear data store.
   // useEffect(() => {
@@ -209,15 +193,30 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
       income => income?.month === month,
     );
 
-    dispatch(
-      monthlyTransactsActions.addMonthlyTransactions({
-        date: textDate,
-        month: month,
-        id: 'monthlyTransaction-' + month,
-        expense_monthly: expenseMonthly[0]?.amount,
-        income_monthly: incomeMonthly[0]?.amount,
-      }),
-    );
+    if (!isEmpty(expenses)) {
+      console.log('expense is not null');
+
+      dispatch(
+        monthlyTransactsActions.updateMonthlyTransactions({
+          date: textDate,
+          month: month,
+          id: 'monthlyTransaction-' + month,
+          expense_monthly: expenseMonthly[0]?.amount,
+          income_monthly: incomeMonthly[0]?.amount,
+        }),
+      );
+    } else {
+      console.log('expense is null');
+      dispatch(
+        monthlyTransactsActions.addMonthlyTransactions({
+          date: textDate,
+          month: month,
+          id: 'monthlyTransaction-' + month,
+          expense_monthly: expenseMonthly[0]?.amount,
+          income_monthly: incomeMonthly[0]?.amount,
+        }),
+      );
+    }
   };
 
   return (
