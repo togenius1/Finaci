@@ -20,6 +20,8 @@ import {useNavigation} from '@react-navigation/native';
 import {ExpenseType} from '../../models/expense';
 import {IncomeType} from '../../models/income';
 import {TransactionSummaryNavigationProp} from '../../types';
+import {fetchWeeklyTransactsData} from '../../store/weeklyTransact-action';
+import {fetchDailyTransactsData} from '../../store/dailyTransact-action';
 
 type Props = {
   expenseData: ExpenseType | undefined;
@@ -114,23 +116,17 @@ function MonthlyRenderItem({item}) {
 
 // Weekly renderItem
 function WeeklyRenderItem({item}) {
-  const expenseAmount = currencyFormatter(
-    item.Finance[0]?.expense_week.amount,
-    {},
-  );
-  const incomeAmount = currencyFormatter(
-    item.Finance[0]?.income_week.amount,
-    {},
-  );
-  const weekNum = item?.Week;
+  const expenseAmount = currencyFormatter(+item.expense_weekly, {});
+  const incomeAmount = currencyFormatter(+item.income_weekly, {});
+  const weekNum = item?.week;
+
 
   const date = new Date(item.date);
-
-  const year = moment(date).year(); // Fixed
-  let month = moment(date).month() + 1;
+  let month = moment(item.date).month() + 1;
+  const year = moment(item.date).year(); // Fixed
 
   const daysInMonth = moment(date, 'YYYY-MM-DD').daysInMonth();
-  const weeks = getDaysInWeek(year, month, daysInMonth);
+  const weeks = getDaysInWeek(String(year), String(month), daysInMonth);
 
   let startDateOfWeek;
   let endDateOfWeek;
@@ -291,10 +287,10 @@ Props) => {
   const dataLoaded = useAppSelector(store => store);
 
   // useEffect(() => {
-  //   dispatch(fetchExpensesData());
-  //   dispatch(fetchIncomesData());
-  //   // dispatch(fetchWeeklyTransactsData());
-  //   dispatch(fetchMonthlyTransactsData());
+  //   //   dispatch(fetchExpensesData());
+  //   //   dispatch(fetchIncomesData());
+  //   dispatch(fetchWeeklyTransactsData());
+  //   dispatch(fetchDailyTransactsData());
   // }, []);
 
   // FILTERED DATA (From date ----> To date)
@@ -319,7 +315,6 @@ Props) => {
   const monthlyData = dataLoaded?.monthlyTransacts?.monthlyTransacts?.filter(
     transact => moment(transact?.date).year() === moment(date).year(),
   );
-
 
   //  Weekly Transaction
   // const weeklyData = weeklyTransaction(fromDate, toDate, date);
@@ -372,20 +367,14 @@ Props) => {
 
   // daily renderItem
   function DailyRenderItem({item}) {
-    const expenseAmount = currencyFormatter(
-      item.Finance[0]?.expense_daily?.amount,
-      {},
-    );
-    const incomeAmount = currencyFormatter(
-      item.Finance[0]?.income_daily?.amount,
-      {},
-    );
+    const expenseAmount = currencyFormatter(item.expense_daily, {});
+    const incomeAmount = currencyFormatter(item.income_daily, {});
 
     if (customPressed && +expenseAmount === 0 && +incomeAmount === 0) {
       return;
     }
 
-    const date = item.Finance[0]?.expense_daily.date;
+    const date = item.date;
     let day = moment(date).date();
     if (day < 10) {
       day = +`0${day}`;

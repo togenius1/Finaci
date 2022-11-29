@@ -39,14 +39,18 @@ export function getWeekInMonth(year, month, day) {
 }
 
 // GET Days in week of current date
-export const getDaysInWeek = (year, month, daysInMonth) => {
+export const getDaysInWeek = (
+  year: string,
+  month: string,
+  daysInMonth: number,
+) => {
   let w1 = [];
   let w2 = [];
   let w3 = [];
   let w4 = [];
   let w5 = [];
 
-  if (month < 10) {
+  if (+month < 10) {
     month = `0${month}`;
   }
 

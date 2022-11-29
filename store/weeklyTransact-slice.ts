@@ -7,7 +7,7 @@ import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 const weeklyTransactsSlice = createSlice({
   name: 'weeklyTransact',
   initialState: {
-   weeklyTransacts: [],
+    weeklyTransacts: [],
   },
   reducers: {
     // Load data from DB to Mobile
@@ -15,34 +15,35 @@ const weeklyTransactsSlice = createSlice({
       state.weeklyTransacts = action.payload.weeklyTransacts;
     },
 
-    addExpense(state, action) {
+    addWeeklyTransacts(state, action) {
       const newTransact = action.payload;
       const existingItem = state.weeklyTransacts.find(
-        expense => expense.id === newTransact.id,
+        expense => expense.week === newTransact.week,
       );
       if (!existingItem) {
         state.weeklyTransacts.push({
           id: newTransact.id,
-          Date: newTransact.Date,
-          day: newTransact.day,
-          Finance: newTransact.Finance,
+          date: newTransact.date,
+          week: newTransact.week,
+          expense_weekly: newTransact.expense_weekly,
+          income_weekly: newTransact.income_weekly,
         });
       }
     },
-    deleteExpense(state, action) {
+    deleteWeeklyTransacts(state, action) {
       const id = action.payload;
       const existingItem = state.weeklyTransacts.find(
         transact => transact.id === id,
       );
       if (existingItem) {
         state.weeklyTransacts = state.weeklyTransacts.filter(
-         transact => transact.id !== id,
+          transact => transact.id !== id,
         );
       }
     },
-    updateExpense(state, action) {
+    updateWeeklyTransacts(state, action) {
       const updatedTransactIndex = state.weeklyTransacts.findIndex(
-        transact => transact.id === action.payload.id,
+        transact => transact.week === action.payload.week,
       );
       state.weeklyTransacts[updatedTransactIndex] = action.payload;
     },

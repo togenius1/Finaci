@@ -22,7 +22,7 @@ import {fetchAccountsData} from '../store/account-action';
 import {fetchExpenseCategoriesData} from '../store/expense-category-action';
 import {fetchIncomeCategoriesData} from '../store/income-category-action';
 // import {fetchTransferCategoriesData} from '../store/transfer-category-action';
-import {sumByCustomMonth, sumByMonth} from '../util/math';
+import {sumByMonth, sumByWeek} from '../util/math';
 import {fetchCashAccountsData} from '../store/cash-action';
 import {monthlyTransaction} from '../util/transaction';
 import {monthlyTransactsActions} from '../store/monthlyTransact-slice';
@@ -35,6 +35,8 @@ import {Button} from 'react-native-share';
 import CButton from '../components/UI/CButton';
 import {isEmpty} from '@aws-amplify/core';
 import {store} from '../store';
+import {getWeekInMonth} from '../util/date';
+import {weeklyTransactsActions} from '../store/weeklyTransact-slice';
 
 type Props = {
   navigation: AddDetailsNavigationType;
@@ -169,6 +171,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
       );
     }
     monthlyTransactionsUpdate();
+    weeklyTransactionsUpdate();
     navigation.navigate('Overview');
   };
 
@@ -184,7 +187,6 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
   // monthly transactions should be updated in background
   const monthlyTransactionsUpdate = () => {
     const month = moment(textDate).month() + 1;
-    console.log('month ', month);
 
     if (type === 'expense') {
       // Previous monthly transactions values
@@ -196,7 +198,13 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
         income => income?.month === month,
       )[0]?.amount;
 
-      updateMonthlyTransactions(+expenseMonthly, incomeMonthly, String(month));
+      const income_monthly = incomeMonthly === undefined ? 0 : incomeMonthly;
+
+      updateMonthlyTransactionsToStorage(
+        +expenseMonthly,
+        income_monthly,
+        String(month),
+      );
     }
     if (type === 'income') {
       const expenseMonthly = sumByMonth(expenses, 'expense')?.filter(
@@ -207,24 +215,109 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
           income => income?.month === month,
         )[0]?.amount + amount;
 
-      updateMonthlyTransactions(expenseMonthly, +incomeMonthly, String(month));
+      const expense_monthly = expenseMonthly === undefined ? 0 : expenseMonthly;
+
+      updateMonthlyTransactionsToStorage(
+        expense_monthly,
+        +incomeMonthly,
+        String(month),
+      );
     }
   };
 
-  const updateMonthlyTransactions = (
+  const weeklyTransactionsUpdate = () => {
+    const year = moment(textDate).year();
+    const month = moment(textDate).month() + 1;
+    const day = moment(textDate).date();
+    const currentWeek = getWeekInMonth(year, month, day);
+
+    if (type === 'expense') {
+      const expenseWeekly =
+        sumByWeek(expenses, 'expense', textDate)?.filter(
+          expense => expense?.week === currentWeek,
+        )[0]?.amount + amount;
+
+      const incomeWeekly = sumByWeek(incomes, 'income', textDate)?.filter(
+        expense => expense?.week === currentWeek,
+      )[0]?.amount;
+
+      const income_weekly = incomeWeekly === undefined ? 0 : incomeWeekly;
+
+      console.log('expenseWeekly: ', expenseWeekly);
+
+      updateWeeklyTransactionsToStorage(
+        +expenseWeekly,
+        +income_weekly,
+        +currentWeek,
+      );
+    }
+    if (type === 'income') {
+      const expenseWeekly = sumByWeek(expenses, 'expense', textDate)?.filter(
+        expense => expense?.week === currentWeek,
+      )[0]?.amount;
+
+      const incomeWeekly =
+        sumByWeek(incomes, 'income', textDate)?.filter(
+          expense => expense?.week === currentWeek,
+        )[0]?.amount + amount;
+
+      const expense_weekly = expenseWeekly === undefined ? 0 : expenseWeekly;
+
+      console.log('incomeWeekly: ', incomeWeekly);
+
+      updateWeeklyTransactionsToStorage(
+        +expense_weekly,
+        +incomeWeekly,
+        +currentWeek,
+      );
+    }
+  };
+
+  // Update weekly transactions
+  const updateWeeklyTransactionsToStorage = (
+    expenseWeekly: number,
+    incomeWeekly: number,
+    week: number,
+  ) => {
+    const transact_weekly = dataLoaded?.weeklyTransacts?.weeklyTransacts;
+    const findWeek = transact_weekly?.filter(
+      transact => Number(transact?.week) === week,
+    );
+
+    if (findWeek[0]?.week !== undefined) {
+      dispatch(
+        weeklyTransactsActions.updateWeeklyTransacts({
+          id: 'weeklyTransaction-' + week,
+          date: textDate,
+          week: week,
+          expense_weekly: expenseWeekly,
+          income_weekly: incomeWeekly,
+        }),
+      );
+    }
+    if (findWeek[0]?.week === undefined) {
+      dispatch(
+        weeklyTransactsActions.addWeeklyTransacts({
+          id: 'weeklyTransaction-' + week,
+          date: textDate,
+          week: week,
+          expense_weekly: expenseWeekly,
+          income_weekly: incomeWeekly,
+        }),
+      );
+    }
+  };
+
+  // Update monthly transactions
+  const updateMonthlyTransactionsToStorage = (
     expenseAmount: number,
     incomeAmount: number,
-    month: string,
+    month: number,
   ) => {
     const transact_monthly = dataLoaded.monthlyTransacts?.monthlyTransacts;
-    const findMonth = transact_monthly.filter(tr => String(tr.month) === month);
-
-    console.log('transact_monthly: ', transact_monthly);
-    console.log('findMonth: ', findMonth);
-    console.log('month: ', findMonth[0]?.month);
+    const findMonth = transact_monthly.filter(tr => Number(tr.month) === month);
 
     if (findMonth[0]?.month !== undefined) {
-      console.log('expense is not null');
       dispatch(
         monthlyTransactsActions.updateMonthlyTransactions({
           id: 'monthlyTransaction-' + month,
@@ -236,7 +329,6 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
       );
     }
     if (findMonth[0]?.month === undefined) {
-      console.log('expense is null');
       dispatch(
         monthlyTransactsActions.addMonthlyTransactions({
           id: 'monthlyTransaction-' + month,
