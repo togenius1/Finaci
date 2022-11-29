@@ -72,9 +72,9 @@ export function calPctEachCategoryId(obj, total, cateObj) {
     res[value.cateId].amount += +value.amount;
     res[value.cateId] = {
       id: uuidv4(),
-      title: cateObj.find(cate => cate.id === value.cateId).title,
+      title: cateObj?.find(cate => cate.id === value.cateId)?.title,
       amount: res[value.cateId].amount,
-      percentage: res[value.cateId].amount / total,
+      percentage: res[value.cateId]?.amount / total,
     };
     pct.push(res[value.cateId]);
     return res;

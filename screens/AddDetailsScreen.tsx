@@ -66,7 +66,6 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     note: '',
   });
   const [cateData, setCateData] = useState<CategoryType>();
-  const timerRef = useRef();
   // const [date, setDate] = useState<string | null>();
 
   // set initial date: from Calculator route or from Account route
@@ -169,7 +168,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
         }),
       );
     }
-
+    monthlyTransactionsUpdate();
     navigation.navigate('Overview');
   };
 
@@ -185,35 +184,66 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
   // monthly transactions should be updated in background
   const monthlyTransactionsUpdate = () => {
     const month = moment(textDate).month() + 1;
+    console.log('month ', month);
 
-    const expenseMonthly = sumByMonth(expenses, 'expense')?.filter(
-      expense => expense?.month === month,
-    );
-    const incomeMonthly = sumByMonth(incomes, 'income')?.filter(
-      income => income?.month === month,
-    );
+    if (type === 'expense') {
+      // Previous monthly transactions values
+      const expenseMonthly =
+        sumByMonth(expenses, 'expense')?.filter(
+          expense => expense?.month === month,
+        )[0]?.amount + amount;
+      const incomeMonthly = sumByMonth(incomes, 'income')?.filter(
+        income => income?.month === month,
+      )[0]?.amount;
 
-    if (!isEmpty(expenses)) {
+      updateMonthlyTransactions(+expenseMonthly, incomeMonthly, String(month));
+    }
+    if (type === 'income') {
+      const expenseMonthly = sumByMonth(expenses, 'expense')?.filter(
+        expense => expense?.month === month,
+      )[0]?.amount;
+      const incomeMonthly =
+        sumByMonth(incomes, 'income')?.filter(
+          income => income?.month === month,
+        )[0]?.amount + amount;
+
+      updateMonthlyTransactions(expenseMonthly, +incomeMonthly, String(month));
+    }
+  };
+
+  const updateMonthlyTransactions = (
+    expenseAmount: number,
+    incomeAmount: number,
+    month: string,
+  ) => {
+    const transact_monthly = dataLoaded.monthlyTransacts?.monthlyTransacts;
+    const findMonth = transact_monthly.filter(tr => String(tr.month) === month);
+
+    console.log('transact_monthly: ', transact_monthly);
+    console.log('findMonth: ', findMonth);
+    console.log('month: ', findMonth[0]?.month);
+
+    if (findMonth[0]?.month !== undefined) {
       console.log('expense is not null');
-
       dispatch(
         monthlyTransactsActions.updateMonthlyTransactions({
+          id: 'monthlyTransaction-' + month,
           date: textDate,
           month: month,
-          id: 'monthlyTransaction-' + month,
-          expense_monthly: expenseMonthly[0]?.amount,
-          income_monthly: incomeMonthly[0]?.amount,
+          expense_monthly: expenseAmount,
+          income_monthly: incomeAmount,
         }),
       );
-    } else {
+    }
+    if (findMonth[0]?.month === undefined) {
       console.log('expense is null');
       dispatch(
         monthlyTransactsActions.addMonthlyTransactions({
+          id: 'monthlyTransaction-' + month,
           date: textDate,
           month: month,
-          id: 'monthlyTransaction-' + month,
-          expense_monthly: expenseMonthly[0]?.amount,
-          income_monthly: incomeMonthly[0]?.amount,
+          expense_monthly: type === 'expense' ? amount : '',
+          income_monthly: type === 'income' ? amount : '',
         }),
       );
     }

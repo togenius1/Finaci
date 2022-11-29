@@ -1,4 +1,4 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {createSlice} from '@reduxjs/toolkit';
 
 // import {Expenses} from '../types';
 
@@ -18,7 +18,7 @@ const monthlyTransactsSlice = createSlice({
     addMonthlyTransactions(state, action) {
       const newTransact = action.payload;
       const existingItem = state.monthlyTransacts.find(
-        transact => transact?.id === newTransact.id,
+        transact => transact?.month === newTransact.month,
       );
       if (!existingItem) {
         state.monthlyTransacts.push({
@@ -44,7 +44,7 @@ const monthlyTransactsSlice = createSlice({
     // Update by month number
     updateMonthlyTransactions(state, action) {
       const updatedTransactIndex = state.monthlyTransacts.findIndex(
-        transact => transact.id === action.payload.id,
+        transact => transact.month === action.payload.month,
       );
       state.monthlyTransacts[updatedTransactIndex] = action.payload;
     },
