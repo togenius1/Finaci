@@ -105,9 +105,10 @@ Props) => {
   };
 
   const setWeeklyHandler = () => {
-    // if (+month < 10) {
-    //   month = `0${month}`;
-    // }
+    if (+month < 10) {
+      month = `0${month}`;
+    }
+
     const date = moment(`${year}-${month}-DD`).format('YYYY-MM-DD');
     const daysInMonth = moment(
       moment().format(`YYYY-${month}`),
@@ -129,9 +130,9 @@ Props) => {
   };
 
   const setDailyHandler = () => {
-    // if (+month < 10) {
-    //   month = `0${month}`;
-    // }
+    if (+month < 10) {
+      month = `0${month}`;
+    }
     const date = moment().format(`${year}-${month}-DD`);
     const daysInMonth = moment(
       moment().format(`YYYY-${month}`),
@@ -153,9 +154,9 @@ Props) => {
   };
 
   const setCustomHandler = () => {
-    // if (+month < 10) {
-    //   month = `0${month}`;
-    // }
+    if (+month < 10) {
+      month = `0${month}`;
+    }
 
     let today = moment().date();
     if (+today < 10) {

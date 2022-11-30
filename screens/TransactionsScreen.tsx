@@ -63,10 +63,6 @@ const TransactionsScreen = ({navigation}: Props) => {
     onMonthYearSelectedHandler(moment().year());
   }, []);
 
-  // useEffect(() => {
-  //   onMonthYearSelectedHandler(moment.monthsShort(moment().month() + 1));
-  // }, [weeklyPressed]);
-
   useEffect(() => {
     navigation.setOptions({
       title: '',
@@ -144,9 +140,10 @@ const TransactionsScreen = ({navigation}: Props) => {
   ]);
 
   function onMonthYearSelectedHandler(time) {
+    console.log(time);
     if (monthlyPressed) {
       const mm = moment().month(time).format('M');
-      const daysInMonth = moment(`${year}-0${mm}`, 'YYYY-MM').daysInMonth();
+      // const daysInMonth = moment(`${year}-0${mm}`, 'YYYY-MM').daysInMonth();
       const fromdate = moment([time, 0]).format('YYYY-MM-DD');
       const todate = moment(`${time}-12-31`).endOf('year').format('YYYY-MM-DD');
 
@@ -165,9 +162,9 @@ const TransactionsScreen = ({navigation}: Props) => {
       );
 
       let month = moment(fromdate).month() + 1;
-      if (month < 10) {
-        month = `0${month}`;
-      }
+      // if (month < 10) {
+      //   month = `0${month}`;
+      // }
 
       setFromDate(String(fromdate));
       setToDate(String(todate));
