@@ -18,7 +18,6 @@ type Props = {
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const FinnerNavigator = ({isAuthenticated}: Props) => {
-  // console.log(authUser);
   return (
     <>
       {isAuthenticated ? (

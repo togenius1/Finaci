@@ -52,8 +52,6 @@ const App = () => {
   // dispatch(fetchDailyTransactsData());
   // }, []);
 
-  // console.log('App: ', dataLoaded.expenses.expenses);
-
   // Listening for Login events.
   useEffect(() => {
     const listener = data => {
@@ -76,11 +74,8 @@ const App = () => {
     const isAuthenticated = async () => {
       try {
         const authedUser = await Auth.currentAuthenticatedUser();
-        // console.log(authedUser); // this means that you've logged in before with valid user/pass.
         setIsAuthenticated(true);
-      } catch (err) {
-        console.log(err); // this means there is no currently authenticated user
-      }
+      } catch (err) {}
     };
     isAuthenticated();
   }, []);
@@ -130,7 +125,6 @@ const App = () => {
 
   // Load Key from Cloud
   const saveCloudKeyToLocal = async () => {
-    console.log('Cloud Key to Local');
     await AsyncStorage.removeItem(PRIVATE_KEY);
     await AsyncStorage.removeItem(PUBLIC_KEY);
 
@@ -142,7 +136,6 @@ const App = () => {
   };
 
   const removeCloudKey = async () => {
-    console.log('++++++++++ Removing Cloud Key ++++++++++++');
     const originalUser = await DataStore.query(User, String(user?.id));
     await DataStore.save(
       User.copyOf(originalUser, updated => {

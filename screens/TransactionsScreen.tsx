@@ -25,6 +25,7 @@ import {MonthTransactions} from '../dummy/transactions/monthlyTransact';
 import {WeekTransactions} from '../dummy/transactions/weeklyTransact';
 import {DailyTractions} from '../dummy/transactions/dailyTransact';
 import {useAppDispatch, useAppSelector} from '../hooks';
+import {fetchWeeklyTransactsData} from '../store/weeklyTransact-action';
 
 type Props = {
   navigation: TransactionNavigationProp;
@@ -38,6 +39,8 @@ const initialStartDate = moment(`${moment().year()}-01-01`).format(
 const initialToDate = moment(`${moment().year()}-12-31`).format('YYYY-MM-DD');
 
 const TransactionsScreen = ({navigation}: Props) => {
+  const dispatch = useAppDispatch();
+
   const [fromDate, setFromDate] = useState<string | null>(initialStartDate);
   const [toDate, setToDate] = useState<string | null>(initialToDate);
   const [monthlyPressed, setMonthlyPressed] = useState<boolean>(true);
@@ -141,7 +144,6 @@ const TransactionsScreen = ({navigation}: Props) => {
   ]);
 
   function onMonthYearSelectedHandler(time) {
-    console.log('time: ', time);
     if (monthlyPressed) {
       const mm = moment().month(time).format('M');
       const daysInMonth = moment(`${year}-0${mm}`, 'YYYY-MM').daysInMonth();

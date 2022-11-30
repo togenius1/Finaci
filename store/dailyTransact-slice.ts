@@ -1,4 +1,4 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {createSlice} from '@reduxjs/toolkit';
 
 // import {Expenses} from '../types';
 
@@ -15,21 +15,23 @@ const dailyTransactsSlice = createSlice({
       state.dailyTransacts = action.payload.dailyTransacts;
     },
 
-    addExpense(state, action) {
+    addDailyTransacts(state, action) {
       const newTransact = action.payload;
       const existingItem = state.dailyTransacts.find(
-        transact => transact.id === newTransact.id,
+        transact => transact?.date === newTransact.date,
       );
+
       if (!existingItem) {
         state.dailyTransacts.push({
           id: newTransact.id,
-          Date: newTransact.Date,
+          date: newTransact.date,
           day: newTransact.day,
-          Finance: newTransact.Finance,
+          expense_daily: newTransact.expense_daily,
+          income_daily: newTransact.income_daily,
         });
       }
     },
-    deleteExpense(state, action) {
+    deleteDailyTransacts(state, action) {
       const id = action.payload;
       const existingItem = state.dailyTransacts.find(
         transact => transact.id === id,
@@ -40,10 +42,11 @@ const dailyTransactsSlice = createSlice({
         );
       }
     },
-    updateExpense(state, action) {
+    updateDailyTransacts(state, action) {
       const updatedTransactIndex = state.dailyTransacts.findIndex(
-        transact => transact.id === action.payload.id,
+        transact => transact.date === action.payload.date,
       );
+
       state.dailyTransacts[updatedTransactIndex] = action.payload;
     },
   },

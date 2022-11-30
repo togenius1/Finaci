@@ -120,7 +120,6 @@ function WeeklyRenderItem({item}) {
   const incomeAmount = currencyFormatter(+item.income_weekly, {});
   const weekNum = item?.week;
 
-
   const date = new Date(item.date);
   let month = moment(item.date).month() + 1;
   const year = moment(item.date).year(); // Fixed
@@ -283,15 +282,7 @@ Props) => {
 
   const navigation = useNavigation();
 
-  const dispatch = useAppDispatch();
   const dataLoaded = useAppSelector(store => store);
-
-  // useEffect(() => {
-  //   //   dispatch(fetchExpensesData());
-  //   //   dispatch(fetchIncomesData());
-  //   dispatch(fetchWeeklyTransactsData());
-  //   dispatch(fetchDailyTransactsData());
-  // }, []);
 
   // FILTERED DATA (From date ----> To date)
   const selectedDurationExpenseData = dataLoaded?.expenses?.expenses?.filter(
@@ -326,16 +317,9 @@ Props) => {
   // const dailyData = dailyTransaction(String(fromDate), String(toDate), date);
   const dailyData = dataLoaded?.dailyTransacts?.dailyTransacts.filter(
     transact =>
-      new Date(String(transact?.date)) >= new Date(String(fromDate)) &&
-      new Date(String(transact?.date)) <= new Date(String(toDate)),
+      new Date(transact?.date) >= new Date(fromDate) &&
+      new Date(transact?.date) <= new Date(toDate),
   );
-
-  // Combine data and sum by custom
-  // const customData = dailyTransactions?.filter(
-  //   transact =>
-  //     new Date(String(transact?.Date)) >= new Date(String(fromDate)) &&
-  //     new Date(String(transact?.Date)) <= new Date(String(toDate)),
-  // );
 
   // on pressed
   if (monthlyPressed) {

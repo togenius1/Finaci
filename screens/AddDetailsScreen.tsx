@@ -22,7 +22,7 @@ import {fetchAccountsData} from '../store/account-action';
 import {fetchExpenseCategoriesData} from '../store/expense-category-action';
 import {fetchIncomeCategoriesData} from '../store/income-category-action';
 // import {fetchTransferCategoriesData} from '../store/transfer-category-action';
-import {sumByMonth, sumByWeek} from '../util/math';
+import {sumByDate, sumByMonth, sumByWeek} from '../util/math';
 import {fetchCashAccountsData} from '../store/cash-action';
 import {monthlyTransaction} from '../util/transaction';
 import {monthlyTransactsActions} from '../store/monthlyTransact-slice';
@@ -37,6 +37,7 @@ import {isEmpty} from '@aws-amplify/core';
 import {store} from '../store';
 import {getWeekInMonth} from '../util/date';
 import {weeklyTransactsActions} from '../store/weeklyTransact-slice';
+import {dailyTransactsActions} from '../store/dailyTransact-slice';
 
 type Props = {
   navigation: AddDetailsNavigationType;
@@ -106,9 +107,6 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
       ? cashAccountCategoryById?.id
       : accountCategoryById?.id;
 
-  // console.log('expenses -- ', expenses);
-  // console.log('sumMonthly ', sumMonthly);
-
   // Provision categories should move from dummy to constant folder
   // to Load the existing categories
   useEffect(() => {
@@ -172,6 +170,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     }
     monthlyTransactionsUpdate();
     weeklyTransactionsUpdate();
+    dailyTransactionsUpdate();
     navigation.navigate('Overview');
   };
 
@@ -200,10 +199,10 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
 
       const income_monthly = incomeMonthly === undefined ? 0 : incomeMonthly;
 
-      updateMonthlyTransactionsToStorage(
+      dispatchMonthlyTransactionsToStorage(
         +expenseMonthly,
         income_monthly,
-        String(month),
+        month,
       );
     }
     if (type === 'income') {
@@ -217,10 +216,10 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
 
       const expense_monthly = expenseMonthly === undefined ? 0 : expenseMonthly;
 
-      updateMonthlyTransactionsToStorage(
+      dispatchMonthlyTransactionsToStorage(
         expense_monthly,
         +incomeMonthly,
-        String(month),
+        month,
       );
     }
   };
@@ -243,9 +242,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
 
       const income_weekly = incomeWeekly === undefined ? 0 : incomeWeekly;
 
-      console.log('expenseWeekly: ', expenseWeekly);
-
-      updateWeeklyTransactionsToStorage(
+      dispatchWeeklyTransactionsToStorage(
         +expenseWeekly,
         +income_weekly,
         +currentWeek,
@@ -263,9 +260,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
 
       const expense_weekly = expenseWeekly === undefined ? 0 : expenseWeekly;
 
-      console.log('incomeWeekly: ', incomeWeekly);
-
-      updateWeeklyTransactionsToStorage(
+      dispatchWeeklyTransactionsToStorage(
         +expense_weekly,
         +incomeWeekly,
         +currentWeek,
@@ -273,8 +268,89 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     }
   };
 
-  // Update weekly transactions
-  const updateWeeklyTransactionsToStorage = (
+  const dailyTransactionsUpdate = () => {
+    const date = moment(textDate).format('YYYY-MM-DD');
+    const day = moment(textDate).date();
+
+    if (type === 'expense') {
+      const expenseDaily =
+        sumByDate(expenses, 'expense', textDate).filter(
+          expense => expense.day === day,
+        )[0]?.amount + +amount;
+
+      const incomeDaily = sumByDate(incomes, 'income', textDate)?.filter(
+        income => income.day === day,
+      )[0]?.amount;
+
+      const income_daily = incomeDaily === undefined ? 0 : incomeDaily;
+
+      dispatchDailyTransactionsToStorage(
+        +expenseDaily,
+        +income_daily,
+        date,
+        +day,
+      );
+    }
+
+    if (type === 'income') {
+      const expenseDaily = sumByDate(expenses, 'expense', textDate)?.filter(
+        expense => expense?.day === day,
+      )[0]?.amount;
+
+      const incomeDaily =
+        sumByDate(incomes, 'income', textDate)?.filter(
+          income => income?.day === day,
+        )[0]?.amount + +amount;
+
+      const expense_daily = expenseDaily === undefined ? 0 : expenseDaily;
+
+      dispatchDailyTransactionsToStorage(
+        +expense_daily,
+        +incomeDaily,
+        date,
+        +day,
+      );
+    }
+  };
+
+  // Dispatch daily transactions
+  const dispatchDailyTransactionsToStorage = (
+    expenseDaily: number,
+    incomeDaily: number,
+    date: string,
+    day: number,
+  ) => {
+    const transact_daily = dataLoaded?.dailyTransacts?.dailyTransacts;
+    const findDay = transact_daily?.filter(transact => transact?.date === date);
+
+    console.log('textDate: ', findDay[0]?.date);
+
+    if (findDay[0]?.date !== undefined) {
+      dispatch(
+        dailyTransactsActions.updateDailyTransacts({
+          id: uuidv4(),
+          date: textDate,
+          day: day,
+          expense_daily: expenseDaily,
+          income_daily: incomeDaily,
+        }),
+      );
+    }
+    if (findDay[0]?.date === undefined) {
+      dispatch(
+        dailyTransactsActions.addDailyTransacts({
+          id: uuidv4(),
+          date: textDate,
+          day: day,
+          expense_daily: expenseDaily,
+          income_daily: incomeDaily,
+        }),
+      );
+    }
+  };
+
+  // Dispatch weekly transactions
+  const dispatchWeeklyTransactionsToStorage = (
     expenseWeekly: number,
     incomeWeekly: number,
     week: number,
@@ -308,8 +384,8 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     }
   };
 
-  // Update monthly transactions
-  const updateMonthlyTransactionsToStorage = (
+  // Dispatch monthly transactions
+  const dispatchMonthlyTransactionsToStorage = (
     expenseAmount: number,
     incomeAmount: number,
     month: number,

@@ -1,6 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import {weekTransactions} from '../dummy/transactions/weeklyTransact';
+import {
+  initialWeekTransactions,
+  weekTransactions,
+} from '../dummy/transactions/weeklyTransact';
 
 import {weeklyTransactsActions} from './weeklyTransact-slice';
 
@@ -9,6 +12,8 @@ export const fetchWeeklyTransactsData = () => {
     const fetchData = async () => {
       //   const response = await AsyncStorage.getItem('root');
       // const response = weekTransactions;
+
+      // const response = initialWeekTransactions;
       await AsyncStorage.removeItem('root');
       const response = null;
 

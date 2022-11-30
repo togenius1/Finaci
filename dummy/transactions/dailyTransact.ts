@@ -41,7 +41,7 @@ export const DailyTractions = [
   {
     date: '2022-11-27',
     day: 27,
-    id: 'transId6',
+    id: 'transId27',
     expense_daily: 118,
     income_daily: 15000,
   },
@@ -49,7 +49,7 @@ export const DailyTractions = [
   {
     date: '2022-11-28',
     day: 28,
-    id: 'transId7',
+    id: 'transId28',
     expense_daily: 578,
     income_daily: 0,
   },

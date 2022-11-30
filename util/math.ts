@@ -286,14 +286,14 @@ export function sumByDate(object, type, date) {
     results = results?.map((result, index) => ({
       ...result,
       id: expenseId[index],
-      accountId: `accountId${index}`,
+      accountId: `accountId${index + 1}`,
     }));
   }
   if (type === 'income') {
     results = results?.map((result, index) => ({
       ...result,
       id: incomeId[index],
-      accountId: `accountId${index}`,
+      accountId: `accountId${index + 1}`,
     }));
   }
 
@@ -311,7 +311,7 @@ export function sumByDate(object, type, date) {
       accountId: cur.accountId,
       day: cur.day,
       date: moment(cur.date).format('YYYY-MM-DD'),
-      amount: acc[cur.day - 1],
+      amount: +acc[cur.day - 1],
       // cateId: cur.cateId,
     };
     return acc;
