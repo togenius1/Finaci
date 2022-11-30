@@ -11,7 +11,7 @@ const expenseCategoriesSlice = createSlice({
       state.expenseCategories = action.payload.expenseCategories;
     },
 
-    addCategory(state, action) {
+    addExpenseCategories(state, action) {
       const newCategories = action.payload;
       const existingItem = state.expenseCategories.find(
         cate => cate.id === newCategories.id,
@@ -25,14 +25,14 @@ const expenseCategoriesSlice = createSlice({
         });
       }
     },
-    deleteCategory(state, action) {
+    deleteExpenseCategories(state, action) {
       const id = action.payload;
       const existingItem = state.expenseCategories.find(cate => cate.id === id);
       if (existingItem) {
         state.expenseCategories = state.expenseCategories.filter(cate => cate.id !== id);
       }
     },
-    updateCategory(state, action) {
+    updateExpenseCategories(state, action) {
       const updatedCategoryIndex = state.expenseCategories.findIndex(
         cate => cate.id === action.payload.id,
       );

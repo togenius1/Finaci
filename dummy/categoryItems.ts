@@ -1,34 +1,34 @@
 export const ExpenseCategory = [
-  {id: 'ec1', title: 'Food & Drinks', date: new Date('2022-10-01')},
-  {id: 'ec2', title: 'Transport', date: new Date('2022-10-01')},
-  {id: 'ec3', title: 'Home & Utilities', date: new Date('2022-10-01')},
-  {id: 'ec4', title: 'Leisure', date: new Date('2022-10-01')},
-  {id: 'ec5', title: 'Charity', date: new Date('2022-10-01')},
-  {id: 'ec6', title: 'Clothing & Footwear', date: new Date('2022-10-01')},
-  {id: 'ec7', title: 'Education', date: new Date('2022-10-01')},
-  {id: 'ec8', title: 'Gifts', date: new Date('2022-10-01')},
-  {id: 'ec9', title: 'Health & Personal Care', date: new Date('2022-10-01')},
-  {id: 'ec10', title: 'Loans', date: new Date('2022-10-01')},
-  {id: 'ec11', title: 'Sports', date: new Date('2022-10-01')},
-  {id: 'ec12', title: 'Taxes', date: new Date('2022-10-01')},
-  {id: 'ec13', title: 'Other', date: new Date('2022-10-01')},
+  {id: 'ec1', title: 'Food & Drinks', date: '2022-10-01'},
+  {id: 'ec2', title: 'Transport', date: '2022-10-01'},
+  {id: 'ec3', title: 'Home & Utilities', date: '2022-10-01'},
+  {id: 'ec4', title: 'Leisure', date: '2022-10-01'},
+  {id: 'ec5', title: 'Charity', date: '2022-10-01'},
+  {id: 'ec6', title: 'Clothing & Footwear', date: '2022-10-01'},
+  {id: 'ec7', title: 'Education', date: '2022-10-01'},
+  {id: 'ec8', title: 'Gifts', date: '2022-10-01'},
+  {id: 'ec9', title: 'Health & Personal Care', date: '2022-10-01'},
+  {id: 'ec10', title: 'Loans', date: '2022-10-01'},
+  {id: 'ec11', title: 'Sports', date: '2022-10-01'},
+  {id: 'ec12', title: 'Taxes', date: '2022-10-01'},
+  {id: 'ec13', title: 'Other', date: '2022-10-01'},
 ];
 
 export const IncomeCategory = [
-  {id: 'ic1', title: 'Salary', date: new Date('2022-10-01')},
-  {id: 'ic2', title: 'Allowance', date: new Date('2022-11-15')},
-  {id: 'ic3', title: 'Selling', date: new Date('2022-10-17')},
-  {id: 'ic4', title: 'Commission', date: new Date('2022-10-18')},
-  {id: 'ic5', title: 'Other', date: new Date('2022-10-19')},
+  {id: 'ic1', title: 'Salary', date: '2022-10-01'},
+  {id: 'ic2', title: 'Allowance', date: '2022-11-15'},
+  {id: 'ic3', title: 'Selling', date: '2022-10-17'},
+  {id: 'ic4', title: 'Commission', date: '2022-10-18'},
+  {id: 'ic5', title: 'Other', date: '2022-10-19'},
 ];
 
 ///////////////////////////// Transfer category ////////////////////////////////////////
 export const TransferCategory = [
-  {id: 'tc1', title: 'Children', date: new Date('2022-09-01')},
-  {id: 'tc2', title: 'Friends', date: new Date('2022-09-05')},
-  {id: 'tc3', title: 'Loan', date: new Date('2022-09-10')},
-  {id: 'tc4', title: 'Aids', date: new Date('2022-09-12')},
-  {id: 'tc5', title: 'Other', date: new Date('2022-09-17')},
+  {id: 'tc1', title: 'Children', date: '2022-09-01'},
+  {id: 'tc2', title: 'Friends', date: '2022-09-05'},
+  {id: 'tc3', title: 'Loan', date: '2022-09-10'},
+  {id: 'tc4', title: 'Aids', date: '2022-09-12'},
+  {id: 'tc5', title: 'Other', date: '2022-09-17'},
 ];
 
 // export const TagsItems = [

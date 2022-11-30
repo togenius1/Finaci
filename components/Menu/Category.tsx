@@ -8,32 +8,47 @@ import {
   Dimensions,
 } from 'react-native';
 import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
+import moment from 'moment';
 import {v4 as uuidv4} from 'uuid';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import {useAppDispatch} from '../../hooks';
-import {categoryActions} from '../../store/category-slice';
+import {useAppDispatch, useAppSelector} from '../../hooks';
 import {CategoryType} from '../../models/category';
+import {expenseCategoriesActions} from '../../store/expense-category-slice';
+import {incomeCategoriesActions} from '../../store/income-category-slice';
 
 type Dispatcher<S> = Dispatch<SetStateAction<S>>;
 
 type Props = {
   setCategoryPressed: Dispatcher<boolean>;
   setCategory: Dispatcher<CategoryType>;
-  data: any[];
+  // data: any[];
+  type: string;
 };
 
 const {width, height} = Dimensions.get('window');
 
-const Category = ({setCategoryPressed, setCategory, data}: Props) => {
+const Category = ({setCategoryPressed, setCategory, type}: Props) => {
   const [categoryText, setCategoryText] = useState<string | null>('');
   const [filterData, setFilterData] = useState<any[]>();
+  const [addedCategory, setAddedCategory] = useState<boolean>(false);
 
   const dispatch = useAppDispatch();
+  const dataLoaded = useAppSelector(store => store);
+
+  let categoryData;
+  if (type === 'expense') {
+    categoryData = dataLoaded?.expenseCategories?.expenseCategories;
+  }
+  if (type === 'income') {
+    categoryData = dataLoaded?.incomeCategories?.incomeCategories;
+  }
 
   useEffect(() => {
-    setFilterData(data);
+    setFilterData(categoryData);
   }, []);
+
+  useEffect(() => {}, [addedCategory]);
 
   const renderItem = ({item}) => {
     return (
@@ -55,18 +70,37 @@ const Category = ({setCategoryPressed, setCategory, data}: Props) => {
     setCategoryPressed(false);
   }
   function addCategoryHandler() {
-    // dispatch(
-    //   categoryActions.addCategory({
-    //     id: 'category' + uuidv4(),
-    //     category: categoryText,
-    //     date: new Date(),
-    //   }),
-    // );
+    const findCategory = categoryData?.filter(
+      cate => cate.title === categoryText,
+    );
+
+    if (type === 'expense') {
+      if (findCategory[0]?.title === undefined) {
+        dispatch(
+          expenseCategoriesActions.addExpenseCategories({
+            id: 'expenseCategory-' + uuidv4(),
+            title: categoryText,
+            date: moment().format('YYYY-MM-DD'),
+          }),
+        );
+      }
+    }
+    if (type === 'income') {
+      if (findCategory[0]?.title === undefined) {
+        dispatch(
+          incomeCategoriesActions.addIncomeCategories({
+            id: 'expenseCategory-' + uuidv4(),
+            title: categoryText,
+            date: moment().format('YYYY-MM-DD'),
+          }),
+        );
+      }
+    }
   }
 
   function searchFilterHandler(text) {
     if (text) {
-      const newData = data?.filter(item => {
+      const newData = categoryData?.filter(item => {
         const itemData = item.title
           ? item.title.toUpperCase()
           : ''.toUpperCase();
@@ -75,7 +109,7 @@ const Category = ({setCategoryPressed, setCategory, data}: Props) => {
       });
       setFilterData(newData);
     } else {
-      setFilterData(data);
+      setFilterData(categoryData);
     }
   }
 

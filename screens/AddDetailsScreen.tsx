@@ -131,17 +131,17 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     });
   }, [navigation, amount, category, note, textDate, account]);
 
-  useEffect(() => {
-    if (type === 'expense') {
-      setCateData(ExpenseCategory);
-    }
-    if (type === 'income') {
-      setCateData(IncomeCategory);
-    }
-    // if (type === 'transfer') {
-    //   setCateData(TransferCategory);
-    // }
-  }, []);
+  // useEffect(() => {
+  //   if (type === 'expense') {
+  //     setCateData(ExpenseCategory);
+  //   }
+  //   if (type === 'income') {
+  //     setCateData(IncomeCategory);
+  //   }
+  //   // if (type === 'transfer') {
+  //   //   setCateData(TransferCategory);
+  //   // }
+  // }, []);
 
   const saveHandler = () => {
     if (type === 'expense') {
@@ -440,7 +440,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
         <Category
           setCategoryPressed={setCategoryPressed}
           setCategory={setCategory}
-          data={cateData}
+          type={type}
         />
       )}
 

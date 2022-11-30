@@ -11,12 +11,11 @@ const incomeCategoriesSlice = createSlice({
       state.incomeCategories = action.payload.incomeCategories;
     },
 
-    addCategory(state, action) {
+    addIncomeCategories(state, action) {
       const newCategories = action.payload;
       const existingItem = state.incomeCategories.find(
         cate => cate.id === newCategories.id,
       );
-
       if (!existingItem) {
         state.incomeCategories.push({
           id: newCategories.id,
@@ -25,7 +24,7 @@ const incomeCategoriesSlice = createSlice({
         });
       }
     },
-    deleteCategory(state, action) {
+    deleteIncomeCategories(state, action) {
       const id = action.payload;
       const existingItem = state.incomeCategories.find(cate => cate.id === id);
       if (existingItem) {
@@ -34,7 +33,7 @@ const incomeCategoriesSlice = createSlice({
         );
       }
     },
-    updateCategory(state, action) {
+    updateIncomeCategories(state, action) {
       const updatedCategoryIndex = state.incomeCategories.findIndex(
         cate => cate.id === action.payload.id,
       );
