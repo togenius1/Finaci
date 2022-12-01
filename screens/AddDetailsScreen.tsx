@@ -174,15 +174,6 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     navigation.navigate('Overview');
   };
 
-  // Clear data store.
-  // useEffect(() => {
-  //   dispatch(fetchExpensesData());
-  //   dispatch(fetchIncomesData());
-  //   dispatch(fetchMonthlyTransactsData());
-  //   dispatch(fetchWeeklyTransactsData());
-  //   dispatch(fetchDailyTransactsData());
-  // }, []);
-
   // monthly transactions should be updated in background
   const monthlyTransactionsUpdate = () => {
     const month = moment(textDate).month() + 1;

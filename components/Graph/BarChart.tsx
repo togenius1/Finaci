@@ -218,8 +218,10 @@ const BarChart = ({data, round, unit}: Props) => {
             fontSize="10"
             fontWeight="bold"
             fill="#00a210"
-            x={timeRamp(moment().date())}
-            y={graph_marginY + 35}
+            x={timeRamp(
+              moment().date() === 1 ? moment().date() + 0.5 : moment().date(),
+            )}
+            y={graph_marginY + 40}
             textAnchor="middle">
             {today}
           </SvgText>
@@ -229,7 +231,7 @@ const BarChart = ({data, round, unit}: Props) => {
             fontSize="10"
             fill="#2a2828"
             x={20}
-            y={graph_marginY + 20}
+            y={graph_marginY + 30}
             textAnchor="middle">
             {startDate}
           </SvgText>
@@ -238,8 +240,8 @@ const BarChart = ({data, round, unit}: Props) => {
             key={'label' + Math.random() * 1}
             fontSize="10"
             fill="#2a2828"
-            x={timeRamp(moment().daysInMonth()) - 10}
-            y={graph_marginY + 20}
+            x={timeRamp(moment().daysInMonth()) - 9}
+            y={graph_marginY + 30}
             textAnchor="middle">
             {endDate}
           </SvgText>

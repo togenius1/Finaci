@@ -24,8 +24,6 @@ import {fetchWeeklyTransactsData} from '../../store/weeklyTransact-action';
 import {fetchDailyTransactsData} from '../../store/dailyTransact-action';
 
 type Props = {
-  expenseData: ExpenseType | undefined;
-  incomeData: IncomeType | undefined;
   monthlyPressed: boolean;
   weeklyPressed: boolean;
   dailyPressed: boolean;

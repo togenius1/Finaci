@@ -109,13 +109,23 @@ Props) => {
       month = `0${month}`;
     }
 
-    const date = moment(`${year}-${month}-DD`).format('YYYY-MM-DD');
+    let Month = month === undefined ? `${moment().month() + 1}` : month;
+
+    if (+Month < 10) {
+      Month = `0${Month}`;
+    }
+
+    let currentDate = moment().date();
+    if (currentDate < 10) {
+      currentDate = `0${currentDate}`;
+    }
+    const date = moment(`${year}-${Month}-${currentDate}`).format('YYYY-MM-DD');
     const daysInMonth = moment(
-      moment().format(`YYYY-${month}`),
+      moment().format(`YYYY-${Month}`),
       'YYYY-MM',
     ).daysInMonth();
-    const fromdate = moment(`${year}-${month}-01`).format('YYYY-MM-DD');
-    const todate = moment(`${year}-${month}-${daysInMonth}`).format(
+    const fromdate = moment(`${year}-${Month}-01`).format('YYYY-MM-DD');
+    const todate = moment(`${year}-${Month}-${daysInMonth}`).format(
       'YYYY-MM-DD',
     );
 
@@ -200,9 +210,6 @@ Props) => {
         toDate={toDate}
         exportPressed={exportPressed}
         year={String(year)}
-        // monthlyTransactions={monthlyTransactions}
-        // weeklyTransactions={weeklyTransactions}
-        // dailyTransactions={dailyTransactions}
       />
     </View>
   );

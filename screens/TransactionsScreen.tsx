@@ -26,6 +26,10 @@ import {WeekTransactions} from '../dummy/transactions/weeklyTransact';
 import {DailyTractions} from '../dummy/transactions/dailyTransact';
 import {useAppDispatch, useAppSelector} from '../hooks';
 import {fetchWeeklyTransactsData} from '../store/weeklyTransact-action';
+import {fetchDailyTransactsData} from '../store/dailyTransact-action';
+import {fetchMonthlyTransactsData} from '../store/monthlyTransact-action';
+import {fetchExpensesData} from '../store/expense-action';
+import {fetchIncomesData} from '../store/income-action';
 
 type Props = {
   navigation: TransactionNavigationProp;
@@ -140,7 +144,6 @@ const TransactionsScreen = ({navigation}: Props) => {
   ]);
 
   function onMonthYearSelectedHandler(time) {
-    console.log(time);
     if (monthlyPressed) {
       const mm = moment().month(time).format('M');
       // const daysInMonth = moment(`${year}-0${mm}`, 'YYYY-MM').daysInMonth();
@@ -161,10 +164,7 @@ const TransactionsScreen = ({navigation}: Props) => {
         'YYYY-MM-DD',
       );
 
-      let month = moment(fromdate).month() + 1;
-      // if (month < 10) {
-      //   month = `0${month}`;
-      // }
+      const month = moment(fromdate).month() + 1;
 
       setFromDate(String(fromdate));
       setToDate(String(todate));
@@ -209,6 +209,15 @@ const TransactionsScreen = ({navigation}: Props) => {
     setToDateClicked(false);
     hideDatePicker();
   };
+
+  // Clear data store.
+  // useEffect(() => {
+  //   dispatch(fetchExpensesData());
+  //   dispatch(fetchIncomesData());
+  //   dispatch(fetchMonthlyTransactsData());
+  //   dispatch(fetchWeeklyTransactsData());
+  //   dispatch(fetchDailyTransactsData());
+  // }, []);
 
   return (
     <View style={styles.container}>
