@@ -22,13 +22,13 @@ interface IndicatorType {
 
 const {width} = Dimensions.get('window');
 
-const Tab = React.forwardRef(({item, onItemPress}, ref) => {
+const Tab = React.forwardRef(({item, onItemPress, opacity}, ref) => {
   return (
     <Pressable
       style={({pressed}) => pressed && styles.pressed}
       onPress={onItemPress}>
       <View ref={ref}>
-        <Text style={{fontSize: 14, fontWeight: '600'}}>{item}</Text>
+        <Text style={{fontSize: 14, fontWeight: '600', opacity}}>{item}</Text>
       </View>
     </Pressable>
   );
@@ -85,11 +85,13 @@ const Tabs = ({TabsDataObject, onItemPress, indicatorIndex}: Props) => {
     <View style={styles.tabContainer}>
       <View ref={containerRef} style={styles.itemContainer}>
         {data?.map((item, index) => {
+          const opacity = index === indicatorIndex ? 1 : 0.6;
           return (
             <Tab
               key={item.key}
               item={item.title.toUpperCase()}
               onItemPress={() => onItemPress(index)}
+              opacity={opacity}
               ref={item.ref}
             />
           );

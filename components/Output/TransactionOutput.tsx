@@ -75,6 +75,7 @@ Props) => {
   const [exportPressed, setExportPressed] = useState<boolean>(false);
   // const [customPressed, setCustomPressed] = useState(false);
   const [indicatorIndex, setIndicatorIndex] = useState<number | undefined>(0);
+  const [pressedItem, setPressedItem] = useState(0);
 
   // const navigation = useNavigation();
 
