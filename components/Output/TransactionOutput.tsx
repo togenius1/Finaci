@@ -8,6 +8,7 @@ import React, {
 } from 'react';
 import moment from 'moment';
 import {useInterstitialAd, TestIds} from 'react-native-google-mobile-ads';
+import {useNavigation} from '@react-navigation/native';
 
 import TransactionSummary from './TransactionSummary';
 import Tabs from '../UI/Tabs';
@@ -46,6 +47,11 @@ const TabsDataObject = {
   export: 'Export',
 };
 
+// Ads variable
+const adUnitId = __DEV__
+  ? TestIds.INTERSTITIAL
+  : 'ca-app-pub-3212728042764573~3355076099';
+
 const TransactionOutput = ({
   setDuration,
   setFromDate,
@@ -72,12 +78,9 @@ Props) => {
 
   // const navigation = useNavigation();
 
-  const {isLoaded, isClosed, load, show} = useInterstitialAd(
-    TestIds.INTERSTITIAL,
-    {
-      requestNonPersonalizedAdsOnly: true,
-    },
-  );
+  const {isLoaded, isClosed, load, show} = useInterstitialAd(adUnitId, {
+    requestNonPersonalizedAdsOnly: true,
+  });
 
   // Load ads
   useEffect(() => {
@@ -93,11 +96,6 @@ Props) => {
       }
       if (itemIndex === 1) {
         setWeeklyHandler();
-        if (isLoaded) {
-          show();
-        } else {
-          // No advert ready to show yet
-        }
       }
       if (itemIndex === 2) {
         setDailyHandler();
@@ -162,6 +160,11 @@ Props) => {
     setDailyPressed(false);
     setCustomPressed(false);
     setExportPressed(false);
+
+    // show Ads
+    if (isLoaded) {
+      show();
+    }
   };
 
   const setDailyHandler = () => {

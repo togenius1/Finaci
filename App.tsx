@@ -1,4 +1,4 @@
-import {Appearance, StatusBar, View} from 'react-native';
+import {LogBox, StatusBar} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {setPRNG} from 'tweetnacl';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -44,6 +44,10 @@ const adUnitId = __DEV__
   : 'ca-app-pub-3212728042764573~3355076099';
 
 const App = () => {
+  // Disable warnings for release app.
+  LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message:
+  LogBox.ignoreAllLogs(); // Ignore all log notifications:
+
   const [currentUser, setCurrentUser] = useState<User | null>();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | undefined>();
   const [cloudPrivateKey, setCloudPrivateKey] = useState<string | null>();
@@ -150,6 +154,7 @@ const App = () => {
         <BannerAd
           unitId={adUnitId}
           size={BannerAdSize.BANNER}
+          onAdClosed
           requestOptions={{
             requestNonPersonalizedAdsOnly: true,
           }}
