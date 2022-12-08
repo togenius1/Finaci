@@ -36,6 +36,7 @@
     "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "^2.8.0",
     "react-native-get-random-values": "^1.8.0",
+    "react-native-google-mobile-ads": "^8.2.2",
     "react-native-modal-datetime-picker": "^14.0.0",
     "react-native-pager-view": "^6.1.0",
     "react-native-randombytes": "^3.6.1",

@@ -1,6 +1,13 @@
 import {Dimensions, StyleSheet, View} from 'react-native';
-import React, {Dispatch, SetStateAction, useCallback, useState} from 'react';
+import React, {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import moment from 'moment';
+import {useInterstitialAd, TestIds} from 'react-native-google-mobile-ads';
 
 import TransactionSummary from './TransactionSummary';
 import Tabs from '../UI/Tabs';
@@ -65,6 +72,19 @@ Props) => {
 
   // const navigation = useNavigation();
 
+  const {isLoaded, isClosed, load, show} = useInterstitialAd(
+    TestIds.INTERSTITIAL,
+    {
+      requestNonPersonalizedAdsOnly: true,
+    },
+  );
+
+  // Load ads
+  useEffect(() => {
+    // Start loading the interstitial straight away
+    load();
+  }, [load]);
+
   const onItemPress = useCallback(
     (itemIndex: number) => {
       setIndicatorIndex(itemIndex);
@@ -73,6 +93,11 @@ Props) => {
       }
       if (itemIndex === 1) {
         setWeeklyHandler();
+        if (isLoaded) {
+          show();
+        } else {
+          // No advert ready to show yet
+        }
       }
       if (itemIndex === 2) {
         setDailyHandler();

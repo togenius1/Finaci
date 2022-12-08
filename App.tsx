@@ -3,8 +3,14 @@ import React, {useEffect, useState} from 'react';
 import {setPRNG} from 'tweetnacl';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Amplify, Auth, DataStore, Hub} from 'aws-amplify';
+import {
+  BannerAd,
+  BannerAdSize,
+  TestIds,
+  InterstitialAd,
+  AdEventType,
+} from 'react-native-google-mobile-ads';
 
-import awsconfig from './src/aws-exports';
 import {
   generateKeyPair,
   generatePublicKeyFromSecretKey,
@@ -27,30 +33,21 @@ import {fetchExpenseCategoriesData} from './store/expense-category-action';
 import {fetchIncomeCategoriesData} from './store/income-category-action';
 import {fetchTransferCategoriesData} from './store/transfer-category-action';
 import {fetchDailyTransactsData} from './store/dailyTransact-action';
+import awsconfig from './src/aws-exports';
 
 Amplify.configure(awsconfig);
 
 setPRNG(PRNG);
+
+const adUnitId = __DEV__
+  ? TestIds.BANNER
+  : 'ca-app-pub-3212728042764573~3355076099';
 
 const App = () => {
   const [currentUser, setCurrentUser] = useState<User | null>();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | undefined>();
   const [cloudPrivateKey, setCloudPrivateKey] = useState<string | null>();
   // const [localPrivateKey, setLocalPrivateKey] = useState<string | null>();
-
-  // const dispatch = useAppDispatch();
-  // const dataLoaded = useAppSelector(store => store);
-
-  // useEffect(() => {
-  // dispatch(fetchExpensesData());
-  // dispatch(fetchIncomesData());
-  // dispatch(fetchAccountsData());
-  // dispatch(fetchCashAccountsData());
-  // dispatch(fetchExpenseCategoriesData());
-  // dispatch(fetchIncomeCategoriesData());
-  // dispatch(fetchTransferCategoriesData());
-  // dispatch(fetchDailyTransactsData());
-  // }, []);
 
   // Listening for Login events.
   useEffect(() => {
@@ -124,30 +121,40 @@ const App = () => {
   };
 
   // Load Key from Cloud
-  const saveCloudKeyToLocal = async () => {
-    await AsyncStorage.removeItem(PRIVATE_KEY);
-    await AsyncStorage.removeItem(PUBLIC_KEY);
+  // const saveCloudKeyToLocal = async () => {
+  //   await AsyncStorage.removeItem(PRIVATE_KEY);
+  //   await AsyncStorage.removeItem(PUBLIC_KEY);
 
-    await AsyncStorage.setItem(PRIVATE_KEY, String(cloudPrivateKey));
-    const newPublicKey = generatePublicKeyFromSecretKey(
-      stringToUint8Array(String(cloudPrivateKey)),
-    );
-    await AsyncStorage.setItem(PUBLIC_KEY, newPublicKey.publicKey.toString());
-  };
+  //   await AsyncStorage.setItem(PRIVATE_KEY, String(cloudPrivateKey));
+  //   const newPublicKey = generatePublicKeyFromSecretKey(
+  //     stringToUint8Array(String(cloudPrivateKey)),
+  //   );
+  //   await AsyncStorage.setItem(PUBLIC_KEY, newPublicKey.publicKey.toString());
+  // };
 
-  const removeCloudKey = async () => {
-    const originalUser = await DataStore.query(User, String(user?.id));
-    await DataStore.save(
-      User.copyOf(originalUser, updated => {
-        updated.backupKey = null;
-      }),
-    );
-  };
+  // const removeCloudKey = async () => {
+  //   const originalUser = await DataStore.query(User, String(user?.id));
+  //   await DataStore.save(
+  //     User.copyOf(originalUser, updated => {
+  //       updated.backupKey = null;
+  //     }),
+  //   );
+  // };
 
   return (
     <>
       <StatusBar barStyle="light-content" />
       <FinnerNavigator isAuthenticated={isAuthenticated} />
+
+      {isAuthenticated && (
+        <BannerAd
+          unitId={adUnitId}
+          size={BannerAdSize.BANNER}
+          requestOptions={{
+            requestNonPersonalizedAdsOnly: true,
+          }}
+        />
+      )}
 
       {/* {currentUser && (
         <>
