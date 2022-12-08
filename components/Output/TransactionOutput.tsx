@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 import moment from 'moment';
 import {useInterstitialAd, TestIds} from 'react-native-google-mobile-ads';
-import {useNavigation} from '@react-navigation/native';
+// import {useNavigation} from '@react-navigation/native';
 
 import TransactionSummary from './TransactionSummary';
 import Tabs from '../UI/Tabs';

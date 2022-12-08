@@ -3,13 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {setPRNG} from 'tweetnacl';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Amplify, Auth, DataStore, Hub} from 'aws-amplify';
-import {
-  BannerAd,
-  BannerAdSize,
-  TestIds,
-  InterstitialAd,
-  AdEventType,
-} from 'react-native-google-mobile-ads';
+import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
 
 import {
   generateKeyPair,
@@ -22,17 +16,7 @@ import {
 } from './util/crypto';
 import FinnerNavigator from './navigation/FinnerNavigator';
 import {User} from './src/models';
-import CButton from './components/UI/CButton';
-import {useAppDispatch, useAppSelector} from './hooks';
-import {fetchExpensesData} from './store/expense-action';
-import {fetchIncomesData} from './store/income-action';
-import {fetchAccountsData} from './store/account-action';
-import {fetchCashAccountsData} from './store/cash-action';
-// import {categories} from './dummy/categoryItems';
-import {fetchExpenseCategoriesData} from './store/expense-category-action';
-import {fetchIncomeCategoriesData} from './store/income-category-action';
-import {fetchTransferCategoriesData} from './store/transfer-category-action';
-import {fetchDailyTransactsData} from './store/dailyTransact-action';
+
 import awsconfig from './src/aws-exports';
 
 Amplify.configure(awsconfig);
@@ -45,8 +29,8 @@ const adUnitId = __DEV__
 
 const App = () => {
   // Disable warnings for release app.
-  LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message:
-  LogBox.ignoreAllLogs(); // Ignore all log notifications:
+  // LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message:
+  // LogBox.ignoreAllLogs(); // Ignore all log notifications:
 
   const [currentUser, setCurrentUser] = useState<User | null>();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | undefined>();
@@ -154,7 +138,6 @@ const App = () => {
         <BannerAd
           unitId={adUnitId}
           size={BannerAdSize.BANNER}
-          onAdClosed
           requestOptions={{
             requestNonPersonalizedAdsOnly: true,
           }}
