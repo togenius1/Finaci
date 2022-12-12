@@ -129,7 +129,7 @@ const BackupScreen = () => {
       });
 
     const decrypted = await decryption(String(encryptedData));
-    console.log('decrypted: ', decrypted);
+    // console.log('decrypted: ', decrypted);
     return decrypted;
   };
 
@@ -171,7 +171,7 @@ const BackupScreen = () => {
       const response = await DocumentPicker.pickSingle({
         presentationStyle: 'fullScreen',
       });
-      console.log('response: ', response);
+      // console.log('response: ', response);
       return response;
     } catch (err) {
       console.warn(err);
@@ -221,9 +221,11 @@ const BackupScreen = () => {
 
         <Pressable
           style={({pressed}) => pressed && styles.pressed}
-          onPress={() => restoreHandler()}>
+          onPress={() => {}}>
           <View style={{marginTop: 20}}>
-            <Text style={{fontSize: 18}}>Restore</Text>
+            <Text style={{fontSize: 18}}>
+              Restore <Text style={{fontSize: 12}}>(Coming soon)</Text>
+            </Text>
             <Text style={{fontSize: 14}}>Restore your data from cloud</Text>
           </View>
         </Pressable>

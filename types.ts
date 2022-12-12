@@ -21,6 +21,7 @@ export type RootStackParamList = {
     amount: string;
   };
   Settings: undefined;
+  Recommend: undefined;
   AddDetails: {
     amount: string;
     category?: string;

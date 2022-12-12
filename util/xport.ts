@@ -1,8 +1,9 @@
+import {Alert} from 'react-native';
 import {writeFile} from 'react-native-fs';
 import XLSX from 'xlsx';
 import Share from 'react-native-share';
 
-export const xport = data => {
+export const xport = async data => {
   const d = new Date();
   const mm = d.getMonth() + 1;
   let dd = d.getDate();

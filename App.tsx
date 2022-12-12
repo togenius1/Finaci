@@ -1,9 +1,10 @@
-import {LogBox, StatusBar} from 'react-native';
+import {LogBox, Pressable, StatusBar, StyleSheet, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {setPRNG} from 'tweetnacl';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Amplify, Auth, DataStore, Hub} from 'aws-amplify';
 import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {
   generateKeyPair,
@@ -29,12 +30,13 @@ const adUnitId = __DEV__
 
 const App = () => {
   // Disable warnings for release app.
-  // LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message:
-  // LogBox.ignoreAllLogs(); // Ignore all log notifications:
+  LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message:
+  LogBox.ignoreAllLogs(); // Ignore all log notifications:
 
   const [currentUser, setCurrentUser] = useState<User | null>();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | undefined>();
   const [cloudPrivateKey, setCloudPrivateKey] = useState<string | null>();
+  const [closedAds, setClosedAds] = useState<boolean>(false);
   // const [localPrivateKey, setLocalPrivateKey] = useState<string | null>();
 
   // Listening for Login events.
@@ -129,19 +131,33 @@ const App = () => {
   //   );
   // };
 
+  const closeAdsHandler = () => {
+    setClosedAds(true);
+  };
+
   return (
     <>
       <StatusBar barStyle="light-content" />
       <FinnerNavigator isAuthenticated={isAuthenticated} />
 
-      {isAuthenticated && (
-        <BannerAd
-          unitId={adUnitId}
-          size={BannerAdSize.BANNER}
-          requestOptions={{
-            requestNonPersonalizedAdsOnly: true,
-          }}
-        />
+      {isAuthenticated && !closedAds && (
+        <>
+          <Pressable
+            style={({pressed}) => pressed && styles.pressed}
+            onPress={() => closeAdsHandler()}>
+            <View style={styles.close}>
+              <MaterialCommunityIcons name="close" size={20} color={'grey'} />
+            </View>
+          </Pressable>
+
+          <BannerAd
+            unitId={adUnitId}
+            size={BannerAdSize.BANNER}
+            requestOptions={{
+              requestNonPersonalizedAdsOnly: true,
+            }}
+          />
+        </>
       )}
 
       {/* {currentUser && (
@@ -156,3 +172,13 @@ const App = () => {
 };
 
 export default App;
+
+const styles = StyleSheet.create({
+  close: {
+    position: 'absolute',
+    right: 15,
+  },
+  pressed: {
+    opacity: 0.65,
+  },
+});

@@ -18,7 +18,7 @@ function Settings() {
         <Text style={[styles.text, {marginTop: 20}]}>Appearance</Text>
       </View>
       <View>
-        <Text>Finner version 1.0.0</Text>
+        <Text>Finner version 1.0.5</Text>
       </View>
     </View>
   );

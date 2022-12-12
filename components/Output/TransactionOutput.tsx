@@ -75,7 +75,6 @@ Props) => {
   const [exportPressed, setExportPressed] = useState<boolean>(false);
   // const [customPressed, setCustomPressed] = useState(false);
   const [indicatorIndex, setIndicatorIndex] = useState<number | undefined>(0);
-  const [pressedItem, setPressedItem] = useState(0);
 
   // const navigation = useNavigation();
 
@@ -88,6 +87,14 @@ Props) => {
     // Start loading the interstitial straight away
     load();
   }, [load]);
+
+  // Load ads again
+  useEffect(() => {
+    if (isClosed) {
+      // console.log('Reloading ad...');
+      load();
+    }
+  }, [isClosed]);
 
   const onItemPress = useCallback(
     (itemIndex: number) => {

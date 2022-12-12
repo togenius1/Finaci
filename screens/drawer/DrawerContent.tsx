@@ -16,6 +16,7 @@ const colors = {
   budget: '#072ac7',
   setting: '#424242',
   user: '#075aff',
+  recommendation: '#00c4da',
 };
 
 // const {width, height} = Dimensions.get('window');
@@ -131,16 +132,20 @@ const DrawerContent = (props: Props) => {
             </View>
           </Pressable>
 
-          {/* <Pressable
+          <Pressable
             style={({pressed}) => pressed && styles.pressed}
             onPress={() => {
-              navigation.navigate('Profile');
+              navigation.navigate('Recommend');
             }}>
             <View style={{flexDirection: 'row'}}>
-              <Ionicons name="happy-outline" size={22} color={colors.user} />
-              <Text style={styles.profile}>Nunggu</Text>
+              <MaterialCommunityIcons
+                name="thumb-up"
+                size={22}
+                color={colors.recommendation}
+              />
+              <Text style={styles.RecommendText}>Recommend</Text>
             </View>
-          </Pressable> */}
+          </Pressable>
         </View>
 
         <View style={styles.logoutContainer}>
@@ -224,7 +229,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginLeft: 20,
   },
-  profile: {
+  RecommendText: {
     fontSize: 14,
     fontWeight: 'bold',
     marginLeft: 20,

@@ -9,6 +9,7 @@ import SettingsScreen from '../../../screens/SettingsScreen';
 import DrawerContent from '../../../screens/drawer/DrawerContent';
 import ReportsScreen from '../../../screens/ReportsScreen';
 import BackupScreen from '../../../screens/BackupScreen';
+import RecommendScreen from '../../../screens/RecommendScreen';
 import {RootStackParamList} from '../../../types';
 
 const Drawer = createDrawerNavigator<RootStackParamList>();
@@ -74,13 +75,13 @@ const MenuDrawer = () => {
           title: 'Settings',
         })}
       />
-      {/* <Drawer.Screen
-        name="Profile"
-        component={ProfileScreen}
-        options={({navigation}) => ({
-          title: 'Profile',
+      <Drawer.Screen
+        name="Recommend"
+        component={RecommendScreen}
+        options={() => ({
+          title: 'Recommend Program',
         })}
-      /> */}
+      />
     </Drawer.Navigator>
   );
 };

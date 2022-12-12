@@ -5,7 +5,6 @@ import {
   FlatList,
   Pressable,
   Dimensions,
-  ActivityIndicator,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -55,9 +54,9 @@ const AccountsScreen = ({navigation}: Props) => {
   // Update account details
 
   // useEffect(() => {
-    // dispatch(fetchExpensesData());
-    // dispatch(fetchAccountsData());
-    // dispatch(fetchCashAccountsData());
+  // dispatch(fetchExpensesData());
+  // dispatch(fetchAccountsData());
+  // dispatch(fetchCashAccountsData());
   // }, []);
 
   // if (
