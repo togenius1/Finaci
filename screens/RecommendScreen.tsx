@@ -120,7 +120,7 @@ export default RecommendScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#dedede',
+    backgroundColor: '#e9e9e9',
   },
   pointsContainer: {
     alignItems: 'center',
