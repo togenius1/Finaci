@@ -1,4 +1,4 @@
-import {Dimensions, StyleSheet, Text, View} from 'react-native';
+import {Dimensions, Pressable, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 // import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -10,7 +10,13 @@ type Props = {};
 const {width, height} = Dimensions.get('window');
 
 const RecommendScreen = (props: Props) => {
-  const sendCodeHandler = () => {};
+  const sendCodeHandler = () => {
+   console.log('send link download to friend')
+  };
+
+  const onCopyCode = () => {
+    console.log('copy code');
+  };
 
   return (
     <View style={styles.container}>
@@ -37,7 +43,20 @@ const RecommendScreen = (props: Props) => {
       <View style={styles.codeBoxContainer}>
         <View style={styles.codeBox}>
           <Text style={styles.codeText}>Code: </Text>
-          <Text style={styles.code}>256d54a4</Text>
+          <Pressable
+            style={({pressed}) => pressed && styles.pressed}
+            onPress={onCopyCode}>
+            <View style={{flexDirection: 'row'}}>
+              <Text style={styles.code}>256d54a4</Text>
+              <View style={{marginLeft: 50}}>
+                <MaterialCommunityIcons
+                  name="content-copy"
+                  size={24}
+                  color={'lightgrey'}
+                />
+              </View>
+            </View>
+          </Pressable>
         </View>
       </View>
 
@@ -84,11 +103,7 @@ const RecommendScreen = (props: Props) => {
 
       <View style={styles.featuresR2Container}>
         <View style={styles.featureContainer}>
-          <MaterialCommunityIcons
-            name="infinity"
-            size={28}
-            color={'grey'}
-          />
+          <MaterialCommunityIcons name="infinity" size={28} color={'grey'} />
           <Text style={styles.featuresText}>Unlimited Accounts</Text>
           <MaterialCommunityIcons
             name="lock-outline" // lock-open-variant-outline
@@ -197,5 +212,8 @@ const styles = StyleSheet.create({
   featuresText: {
     fontSize: 14,
     marginTop: 8,
+  },
+  pressed: {
+    opacity: 0.65,
   },
 });
