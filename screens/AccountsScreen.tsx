@@ -22,6 +22,7 @@ import {currencyFormatter} from '../util/currencyFormatter';
 import {fetchExpensesData} from '../store/expense-action';
 import {fetchAccountsData} from '../store/account-action';
 import {fetchCashAccountsData} from '../store/cash-action';
+import {cashAccountsActions} from '../store/cash-slice';
 // import { AccountCategory, CashCategory } from '../dummy/account';
 
 type Props = {
@@ -49,6 +50,7 @@ const AccountsScreen = ({navigation}: Props) => {
   const [addAccountPressed, setAddAccountPressed] = useState<boolean>(false);
   const [accountText, setAccountText] = useState<string | null>('');
   const [budget, setBudget] = useState<number>(0);
+  const [selectedCash, setSelectedCash] = useState<boolean>(true);
 
   // Set accountText and budget to Storage, after add account.
   // Update account details
@@ -91,14 +93,28 @@ const AccountsScreen = ({navigation}: Props) => {
   }
 
   function saveFormHandler() {
-    dispatch(
-      accountActions.addAccount({
-        id: 'account' + uuidv4(),
-        account: accountText,
-        budget: budget,
-        date: new Date(),
-      }),
-    );
+    if (selectedCash) {
+      // dispatch Cash
+      dispatch(
+        cashAccountsActions.addCashAccount({
+          id: 'cash-' + uuidv4(),
+          account: accountText,
+          budget: budget,
+          date: new Date(),
+        }),
+      );
+    } else {
+      // dispatch account
+      dispatch(
+        accountActions.addAccount({
+          id: 'account-' + uuidv4(),
+          account: accountText,
+          budget: budget,
+          date: new Date(),
+        }),
+      );
+    }
+
     setAddAccountPressed(false);
   }
 
@@ -188,6 +204,8 @@ const AccountsScreen = ({navigation}: Props) => {
 
       {addAccountPressed && (
         <AddAccountForm
+          selectedCash={selectedCash}
+          setSelectedCash={setSelectedCash}
           closeFormHandler={closeFormHandler}
           saveFormHandler={saveFormHandler}
           setAccountText={setAccountText}

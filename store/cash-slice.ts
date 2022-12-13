@@ -7,11 +7,11 @@ const cashAccountsSlice = createSlice({
   },
   reducers: {
     // Load data from DB to Mobile
-    replaceAccount(state, action) {
+    replaceCashAccount(state, action) {
       state.cashAccounts = action.payload.cashAccounts;
     },
 
-    addAccount(state, action) {
+    addCashAccount(state, action) {
       const newCashAccount = action.payload;
       const existingItem = state.cashAccounts.find(
         cash => cash.id === newCashAccount.id,
@@ -26,14 +26,14 @@ const cashAccountsSlice = createSlice({
         });
       }
     },
-    deleteAccount(state, action) {
+    deleteCashAccount(state, action) {
       const id = action.payload;
       const existingItem = state.cashAccounts.find(cash => cash.id === id);
       if (existingItem) {
         state.cash = state.cashAccounts.filter(cash => cash.id !== id);
       }
     },
-    updateAccount(state, action) {
+    updateCashAccount(state, action) {
       const updatedCashIndex = state.cashAccounts.findIndex(
         cash => cash.id === action.payload.id,
       );

@@ -30,8 +30,8 @@ const adUnitId = __DEV__
 
 const App = () => {
   // Disable warnings for release app.
-  LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message:
-  LogBox.ignoreAllLogs(); // Ignore all log notifications:
+  // LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message:
+  // LogBox.ignoreAllLogs(); // Ignore all log notifications:
 
   const [currentUser, setCurrentUser] = useState<User | null>();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | undefined>();
@@ -45,7 +45,7 @@ const App = () => {
       if (data.payload.event === 'signIn') {
         checkUser();
         generateNewKey();
-        // setIsAuthenticated(true);
+        setIsAuthenticated(true);
       }
       if (data.payload.event === 'signOut') {
         checkUser();
