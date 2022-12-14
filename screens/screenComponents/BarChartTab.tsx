@@ -8,36 +8,44 @@ import BarChart from '../../components/Graph/BarChart';
 import {useAppDispatch, useAppSelector} from '../../hooks';
 import {sumByDate, sumEachAccountId} from '../../util/math';
 import {currencyFormatter} from '../../util/currencyFormatter';
-import {AccountCategory} from '../../dummy/account';
-import {isEmpty} from '@aws-amplify/core';
+// import {AccountCategory} from '../../dummy/account';
 
 type Props = {
   fromDate: string;
 };
 
 const BarchartTab = ({data, fromDate}: Props) => {
+  const dataLoaded = useAppSelector(store => store);
+
+  const accounts = dataLoaded?.accounts?.accounts;
+  const cashAccounts = dataLoaded?.cashAccounts?.cashAccounts;
+
   // sum expense in the same day --> to barchart
   const sumByDateObj = sumByDate(data, 'expense', moment(fromDate));
 
-  const totalBudget = sum(AccountCategory, d => parseFloat(d.budget));
+  const totalCashAmount = sum(cashAccounts, d => parseFloat(d.budget));
+  const totalAccountAmount = sum(accounts, d => parseFloat(d.budget));
+  const totalBudget = totalCashAmount + totalAccountAmount;
   const totalExp = sum(data, d => parseFloat(d.amount));
 
-  const availBudget = (+totalBudget - +totalExp).toFixed(2);
+  const leftToSpend = (+totalBudget - +totalExp).toFixed(2);
   const totalExpenses = +totalExp.toFixed(2);
   const dayLeft = +moment().daysInMonth() - moment().date();
+
+  console.log(leftToSpend);
 
   let budgetPerDay;
   if (dayLeft === 0) {
     budgetPerDay = 0;
   } else {
-    budgetPerDay = (+availBudget / dayLeft).toFixed(2);
+    budgetPerDay = (+leftToSpend / dayLeft).toFixed(2);
   }
 
   return (
     <View>
       <View style={styles.summary}>
         <Text style={{fontSize: 28, fontWeight: 'bold', color: 'green'}}>
-          {currencyFormatter(+availBudget, {})}
+          {currencyFormatter(+leftToSpend, {})}
         </Text>
         <Text style={{fontSize: 14, color: 'green'}}>left to spend</Text>
       </View>

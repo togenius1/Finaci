@@ -45,16 +45,16 @@ const SpendingTab = ({route}: Props) => {
       new Date(d.date) <= new Date(toDate),
   );
 
-  const RenderBarchartTab = () => {
-    return (
-      <BarchartTab data={filteredData} fromDate={fromDate} toDate={toDate} />
-    );
-  };
+  // const RenderBarchartTab = () => {
+  //   return (
+  //     <BarchartTab data={filteredData} fromDate={fromDate} toDate={toDate} />
+  //   );
+  // };
 
   return (
     <View style={styles.container}>
-      {/* {renderBarchartTab()} */}
-      <RenderBarchartTab />
+      {/* <RenderBarchartTab /> */}
+      <BarchartTab data={filteredData} fromDate={fromDate} toDate={toDate} />
 
       <View style={styles.addButtonContainer}>
         <IconButton

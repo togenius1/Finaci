@@ -70,13 +70,13 @@ const AddAccountForm = ({
         </Pressable>
         <Text style={{marginLeft: 10, fontSize: 16}}>Cash</Text>
       </View>
-      {/* {!selectedCash && ( */}
+
       <Input
         label={selectedCash ? 'Cash' : 'Account'}
         style={styles.input}
         textInputConfig={{
           onChangeText: setAccountText,
-          value: accountText,
+          value: selectedCash ? 'Cash' : accountText,
           editable: !selectedCash,
           placeholder: selectedCash ? 'Cash' : 'account name',
           backgroundColor: selectedCash
@@ -84,7 +84,7 @@ const AddAccountForm = ({
             : GlobalStyles.colors.primary100,
         }}
       />
-      {/* )} */}
+
       <Input
         label={'Budget'}
         style={styles.input}

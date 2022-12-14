@@ -14,7 +14,7 @@ type Props = {
 };
 
 const IncomeTab = ({route}: Props) => {
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
   const dataLoaded = useAppSelector(store => store);
 
   const incomeData = dataLoaded?.incomes?.incomes;

@@ -23,6 +23,7 @@ import {fetchExpensesData} from '../store/expense-action';
 import {fetchAccountsData} from '../store/account-action';
 import {fetchCashAccountsData} from '../store/cash-action';
 import {cashAccountsActions} from '../store/cash-slice';
+import {isEmpty} from '@aws-amplify/core';
 // import { AccountCategory, CashCategory } from '../dummy/account';
 
 type Props = {
@@ -94,15 +95,28 @@ const AccountsScreen = ({navigation}: Props) => {
 
   function saveFormHandler() {
     if (selectedCash) {
-      // dispatch Cash
-      dispatch(
-        cashAccountsActions.addCashAccount({
-          id: 'cash-' + uuidv4(),
-          account: accountText,
-          budget: budget,
-          date: new Date(),
-        }),
-      );
+      // Create new Cash Account
+      console.log('cashData: ', cashData, cashData[0]?.budget);
+      if (cashData?.length === 0) {
+        dispatch(
+          cashAccountsActions.addCashAccount({
+            id: 'cash-' + uuidv4(),
+            account: accountText,
+            budget: budget,
+            date: new Date(),
+          }),
+        );
+      } else {
+        // Update Cash Account
+        dispatch(
+          cashAccountsActions.updateCashAccount({
+            id: cashData[0]?.id,
+            account: accountText,
+            budget: +cashData[0]?.budget + +budget,
+            date: new Date(),
+          }),
+        );
+      }
     } else {
       // dispatch account
       dispatch(
@@ -171,7 +185,7 @@ const AccountsScreen = ({navigation}: Props) => {
       </View>
 
       <View style={styles.accountsContainer}>
-        <View style={styles.cash}>
+        <View>
           <Text style={styles.accountTitle}>Cash</Text>
           <FlatList
             keyExtractor={item => item.id + uuidv4()}
