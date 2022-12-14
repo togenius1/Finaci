@@ -20,7 +20,7 @@ const cashAccountsSlice = createSlice({
       if (!existingItem) {
         state.cashAccounts.push({
           id: newCashAccount.id,
-          title: newCashAccount.title,
+          // title: newCashAccount.title,
           budget: newCashAccount.budget,
           date: newCashAccount.date,
         });

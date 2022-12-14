@@ -5,6 +5,7 @@ import {
   FlatList,
   Pressable,
   Dimensions,
+  Alert,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -43,7 +44,7 @@ const AccountsScreen = ({navigation}: Props) => {
 
   const expenseData = dataLoaded?.expenses?.expenses;
   const cashData = dataLoaded?.cashAccounts?.cashAccounts;
-  const accountData = dataLoaded?.accounts?.accounts;
+  const accountsData = dataLoaded?.accounts?.accounts;
 
   // const [expenseData, setExpenseData] = useState<ExpenseType>();
   // const [cashData, setCashData] = useState<CashType>();
@@ -62,18 +63,8 @@ const AccountsScreen = ({navigation}: Props) => {
   // dispatch(fetchCashAccountsData());
   // }, []);
 
-  // if (
-  //   accountData === null ||
-  //   accountData === undefined ||
-  //   expenseData === null ||
-  //   expenseData === undefined ||
-  //   cashData === null ||
-  //   cashData === undefined
-  // ) {
-  //   return <ActivityIndicator />;
-  // }
   const cashBudget = sumTotalBudget(cashData)?.toFixed(2);
-  const accountsBudget = sumTotalBudget(accountData)?.toFixed(2);
+  const accountsBudget = sumTotalBudget(accountsData)?.toFixed(2);
   const totalAssets = +cashBudget + +accountsBudget;
   const totalExpenses = sumTotalFunc(expenseData)?.toFixed(2);
   const total = totalAssets - +totalExpenses;
@@ -95,13 +86,12 @@ const AccountsScreen = ({navigation}: Props) => {
 
   function saveFormHandler() {
     if (selectedCash) {
+      const cashId = 'cash-' + uuidv4();
       // Create new Cash Account
-      console.log('cashData: ', cashData, cashData[0]?.budget);
       if (cashData?.length === 0) {
         dispatch(
           cashAccountsActions.addCashAccount({
-            id: 'cash-' + uuidv4(),
-            account: accountText,
+            id: cashId,
             budget: budget,
             date: new Date(),
           }),
@@ -111,36 +101,86 @@ const AccountsScreen = ({navigation}: Props) => {
         dispatch(
           cashAccountsActions.updateCashAccount({
             id: cashData[0]?.id,
-            account: accountText,
             budget: +cashData[0]?.budget + +budget,
             date: new Date(),
           }),
         );
       }
     } else {
-      // dispatch account
-      dispatch(
-        accountActions.addAccount({
-          id: 'account-' + uuidv4(),
-          account: accountText,
-          budget: budget,
-          date: new Date(),
-        }),
+      //
+      const accId = 'cash-' + uuidv4();
+      const findAccTitle = accountsData?.findIndex(
+        acc => acc?.title === accountText,
       );
+      // dispatch account
+      if (accountsData?.length === 0 || findAccTitle === -1) {
+        dispatch(
+          accountActions.addAccount({
+            id: accId,
+            title: accountText,
+            budget: budget,
+            date: new Date(),
+            removable: true,
+          }),
+        );
+      } else {
+        Alert.alert('Account Warning', 'The account is in the list already.');
+      }
     }
 
     setAddAccountPressed(false);
   }
 
+  const removeAccountHandler = accountId => {
+    const findAcc = accountsData?.filter(acc => acc?.id === accountId);
+
+    console.log(findAcc);
+    console.log(findAcc[0]?.removable);
+
+    if (findAcc?.length > 0 && findAcc[0]?.removable === true) {
+      dispatch(
+        accountActions.deleteAccount({
+          accountId,
+        }),
+      );
+    } else {
+      Alert.alert('Account Warning!', 'The account cannot be removed.');
+    }
+  };
+
   const renderItem = ({item}) => {
-    const accBalance = total - +item.budget;
+    const accBalance = +item.budget - +totalExpenses;
 
     return (
       <View>
         <Pressable
           key={item}
           style={({pressed}) => pressed && styles.pressed}
-          onPress={() => onAccountsHandler(item)}>
+          onPress={() => onAccountsHandler(item)}
+          onLongPress={() =>
+            Alert.alert(
+              'Do you want to remove this account?',
+              'You can add new accounts after remove it.',
+              [
+                {
+                  text: 'Yes',
+                  onPress: () => removeAccountHandler(item?.id),
+                },
+                {
+                  text: 'No',
+                  // onPress: () => console.log('No'),
+                  style: 'cancel',
+                },
+              ],
+              {
+                cancelable: true,
+                // onDismiss: () =>
+                //   Alert.alert(
+                //     'This alert was dismissed by tapping outside of the alert dialog.',
+                //   ),
+              },
+            )
+          }>
           <View style={styles.item}>
             <View>
               <Text style={{fontSize: 16}}>{item.title}</Text>
@@ -199,7 +239,7 @@ const AccountsScreen = ({navigation}: Props) => {
           <Text style={styles.accountTitle}>Accounts</Text>
           <FlatList
             keyExtractor={item => item.id + uuidv4()}
-            data={accountData}
+            data={accountsData}
             renderItem={renderItem}
             bounces={false}
           />

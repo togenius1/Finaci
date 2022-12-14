@@ -23,6 +23,7 @@ const accountSlice = createSlice({
           title: newAccounts.title,
           budget: newAccounts.budget,
           date: newAccounts.date,
+          removable: newAccounts.removable,
         });
       }
     },

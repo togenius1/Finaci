@@ -5,6 +5,7 @@ import {
   FlatList,
   Pressable,
   Dimensions,
+  Alert,
 } from 'react-native';
 import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -21,6 +22,7 @@ import {sumTotalBudget, sumTotalFunc} from '../../util/math';
 import {fetchCashAccountsData} from '../../store/cash-action';
 import {fetchExpenseCategoriesData} from '../../store/expense-category-action';
 import {fetchAccountsData} from '../../store/account-action';
+import {cashAccountsActions} from '../../store/cash-slice';
 
 type Dispatcher<S> = Dispatch<SetStateAction<S>>;
 
@@ -43,17 +45,18 @@ const Accounts = ({setAccount, setAccountPressed}: Props) => {
   // const [accountsData, setAccountsData] = useState<AccountType>();
   // const [cashData, setCashData] = useState<CashType>();
   const [addAccountPressed, setAddAccountPressed] = useState<boolean>(false);
-  const [account, setAccountText] = useState<string | null>('');
-  const [budget, setBudget] = useState<number | undefined>(0);
+  const [accountText, setAccountText] = useState<string | null>('');
+  const [budget, setBudget] = useState<number>(0);
+  const [selectedCash, setSelectedCash] = useState<boolean>(true);
 
-  useEffect(() => {
-    // setExpenseData(EXPENSES);
-    // setCashData(CashCategory);
-    // setAccountsData(AccountCategory);
-    // dispatch(fetchExpenseCategoriesData());
-    // dispatch(fetchCashAccountsData());
-    // dispatch(fetchAccountsData());
-  }, []);
+  // useEffect(() => {
+  // setExpenseData(EXPENSES);
+  // setCashData(CashCategory);
+  // setAccountsData(AccountCategory);
+  // dispatch(fetchExpenseCategoriesData());
+  // dispatch(fetchCashAccountsData());
+  // dispatch(fetchAccountsData());
+  // }, []);
 
   if (
     accountsData === undefined ||
@@ -72,14 +75,48 @@ const Accounts = ({setAccount, setAccountPressed}: Props) => {
   }
 
   function saveFormHandler() {
-    dispatch(
-      accountActions.addAccount({
-        id: 'account' + uuidv4(),
-        account: account,
-        budget: budget,
-        date: new Date(),
-      }),
-    );
+    if (selectedCash) {
+      const cashId = 'cash-' + uuidv4();
+      // Create new Cash Account
+      if (cashData?.length === 0) {
+        dispatch(
+          cashAccountsActions.addCashAccount({
+            id: cashId,
+            budget: budget,
+            date: new Date(),
+          }),
+        );
+      } else {
+        // Update Cash Account
+        dispatch(
+          cashAccountsActions.updateCashAccount({
+            id: cashData[0]?.id,
+            budget: +cashData[0]?.budget + +budget,
+            date: new Date(),
+          }),
+        );
+      }
+    } else {
+      //
+      const accId = 'cash-' + uuidv4();
+      const findAccTitle = accountsData?.findIndex(
+        acc => acc?.title === accountText,
+      );
+      // dispatch account
+      if (accountsData?.length === 0 || findAccTitle === -1) {
+        dispatch(
+          accountActions.addAccount({
+            id: accId,
+            title: accountText,
+            budget: budget,
+            date: new Date(),
+            removable: true,
+          }),
+        );
+      } else {
+        Alert.alert('Account Warning', 'The account is in the list already.');
+      }
+    }
     setAddAccountPressed(false);
   }
 
@@ -177,10 +214,12 @@ const Accounts = ({setAccount, setAccountPressed}: Props) => {
       {addAccountPressed && (
         <View style={{left: 15, top: 40}}>
           <AddAccountForm
+            selectedCash={selectedCash}
+            setSelectedCash={setSelectedCash}
             closeFormHandler={closeFormHandler}
             saveFormHandler={saveFormHandler}
             setAccountText={setAccountText}
-            account={account}
+            accountText={accountText}
             setBudget={setBudget}
             budget={budget}
           />
