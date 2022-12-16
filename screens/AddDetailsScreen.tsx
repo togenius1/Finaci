@@ -314,7 +314,6 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     const transact_daily = dataLoaded?.dailyTransacts?.dailyTransacts;
     const findDay = transact_daily?.filter(transact => transact?.date === date);
 
-    console.log('textDate: ', findDay[0]?.date);
 
     if (findDay[0]?.date !== undefined) {
       dispatch(

@@ -57,11 +57,11 @@ const AccountsScreen = ({navigation}: Props) => {
   // Set accountText and budget to Storage, after add account.
   // Update account details
 
-  // useEffect(() => {
-  // dispatch(fetchExpensesData());
-  // dispatch(fetchAccountsData());
-  // dispatch(fetchCashAccountsData());
-  // }, []);
+  useEffect(() => {
+    // dispatch(fetchExpensesData());
+    dispatch(fetchAccountsData());
+    // dispatch(fetchCashAccountsData());
+  }, []);
 
   const cashBudget = sumTotalBudget(cashData)?.toFixed(2);
   const accountsBudget = sumTotalBudget(accountsData)?.toFixed(2);
@@ -134,9 +134,6 @@ const AccountsScreen = ({navigation}: Props) => {
   const removeAccountHandler = accountId => {
     const findAcc = accountsData?.filter(acc => acc?.id === accountId);
 
-    console.log(findAcc);
-    console.log(findAcc[0]?.removable);
-
     if (findAcc?.length > 0 && findAcc[0]?.removable === true) {
       dispatch(
         accountActions.deleteAccount({
@@ -146,6 +143,10 @@ const AccountsScreen = ({navigation}: Props) => {
     } else {
       Alert.alert('Account Warning!', 'The account cannot be removed.');
     }
+  };
+
+  const editAccountHandler = () => {
+    alert('Edit Account');
   };
 
   const renderItem = ({item}) => {
@@ -159,17 +160,17 @@ const AccountsScreen = ({navigation}: Props) => {
           onPress={() => onAccountsHandler(item)}
           onLongPress={() =>
             Alert.alert(
-              'Do you want to remove this account?',
-              'You can add new accounts after remove it.',
+              'Edit or Delete?',
+              'You can Edit or remove the account.',
               [
                 {
-                  text: 'Yes',
+                  text: 'Delete',
                   onPress: () => removeAccountHandler(item?.id),
                 },
                 {
-                  text: 'No',
-                  // onPress: () => console.log('No'),
-                  style: 'cancel',
+                  text: 'Edit',
+                  onPress: () => editAccountHandler(),
+                  // style: 'cancel',
                 },
               ],
               {
@@ -251,7 +252,7 @@ const AccountsScreen = ({navigation}: Props) => {
           style={({pressed}) => pressed && styles.pressed}
           onPress={() => addAccountHandler()}>
           <View style={{marginRight: 10, marginBottom: 15}}>
-            <Ionicons name="add-circle" size={80} color="#3683e2" />
+            <Ionicons name="add-circle" size={width * 0.15} color="#3683e2" />
           </View>
         </Pressable>
       </View>
@@ -309,9 +310,10 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   accountTitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
     marginLeft: 15,
+    marginBottom: 5,
   },
   accounts: {
     marginBottom: 50,
@@ -321,7 +323,8 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'center',
     width: width * 0.8,
-    marginBottom: 30,
+    marginTop: 5,
+    marginBottom: 5,
     marginLeft: 60,
     // backgroundColor: 'red',
   },

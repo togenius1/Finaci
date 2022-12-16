@@ -139,7 +139,7 @@ const Accounts = ({setAccount, setAccountPressed}: Props) => {
 
   function onAccountsHandler(item) {
     setAccountPressed(false);
-    setAccount(item);
+    setAccount(item === undefined ? 0 : item);
   }
 
   const cashBudget = sumTotalBudget(cashData)?.toFixed(2);
@@ -178,12 +178,12 @@ const Accounts = ({setAccount, setAccountPressed}: Props) => {
         </View>
       </View>
 
-      <View>
+      <View style={{marginTop: 20}}>
         <Pressable
           style={({pressed}) => pressed && styles.pressed}
-          onPress={() => onAccountsHandler(cashData[0])}>
+          onPress={() => onAccountsHandler(cashData[0]?.title)}>
           <View style={styles.item}>
-            <Text>Cash</Text>
+            <Text style={{fontSize: 16, fontWeight: 'bold'}}>Cash</Text>
             <Text>{currencyFormatter(+cashData[0]?.budget, {})}</Text>
           </View>
         </Pressable>
@@ -206,7 +206,7 @@ const Accounts = ({setAccount, setAccountPressed}: Props) => {
           style={({pressed}) => pressed && styles.pressed}
           onPress={() => addAccountHandler()}>
           <View style={{marginRight: 10, marginBottom: 15}}>
-            <Ionicons name="add-circle" size={45} color="#367ed5" />
+            <Ionicons name="add-circle" size={width * 0.15} color="#367ed5" />
           </View>
         </Pressable>
       </View>
@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: width * 0.9,
-    height: height * 0.65,
+    height: height * 0.8,
     position: 'absolute',
     top: 50,
     shadowOffset: {width: 0, height: 0},
@@ -262,6 +262,7 @@ const styles = StyleSheet.create({
   },
   accountTitle: {
     fontSize: 16,
+    fontWeight: 'bold',
     marginLeft: 15,
     color: '#444343',
   },
@@ -276,7 +277,6 @@ const styles = StyleSheet.create({
     top: 60,
     marginBottom: 70,
     marginLeft: 20,
-
     // backgroundColor: 'red',
   },
   pressed: {

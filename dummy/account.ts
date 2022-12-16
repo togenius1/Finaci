@@ -1,56 +1,56 @@
 //////////////////////////////// Account category ///////////////////////////////////////////
 export const CashCategory = [
-  {id: 'cash1', title: 'Cash', budget: '15000', date: new Date('2022-09-01')},
+  {id: 'cash1', title: 'Cash', budget: 0, date: new Date()},
 ];
 
 export const AccountCategory = [
   {
     id: 'acc1',
     title: 'Travel',
-    budget: '2300',
-    date: new Date('2022-09-05'),
+    budget: 0,
+    date: new Date(),
     removable: false,
   },
   {
     id: 'acc2',
     title: 'Party',
-    budget: '1800',
-    date: new Date('2022-09-10'),
+    budget: 0,
+    date: new Date(),
     removable: false,
   },
   {
     id: 'acc3',
     title: 'Business',
-    budget: '4200',
-    date: new Date('2022-09-13'),
+    budget: 0,
+    date: new Date(),
     removable: false,
   },
   {
     id: 'acc4',
     title: 'Food',
-    budget: '5500',
-    date: new Date('2022-09-01'),
+    budget: 0,
+    date: new Date(),
     removable: false,
   },
   {
     id: 'acc5',
     title: 'Leisure',
-    budget: '2000',
-    date: new Date('2022-09-14'),
+    budget: 0,
+    date: new Date(),
     removable: false,
   },
   {
     id: 'acc6',
     title: 'Education',
-    budget: '3600',
-    date: new Date('2022-09-16'),
+    budget: 0,
+    date: new Date(),
     removable: false,
   },
   {
     id: 'acc7',
     title: 'Other',
-    budget: '5600',
-    date: new Date('2022-09-17'),
+    budget: 0,
+    date: new Date(),
     removable: false,
   },
 ];
