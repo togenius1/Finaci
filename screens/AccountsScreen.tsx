@@ -24,7 +24,6 @@ import {fetchExpensesData} from '../store/expense-action';
 import {fetchAccountsData} from '../store/account-action';
 import {fetchCashAccountsData} from '../store/cash-action';
 import {cashAccountsActions} from '../store/cash-slice';
-import {isEmpty} from '@aws-amplify/core';
 // import { AccountCategory, CashCategory } from '../dummy/account';
 
 type Props = {
@@ -42,26 +41,46 @@ const AccountsScreen = ({navigation}: Props) => {
   const dispatch = useAppDispatch();
   const dataLoaded = useAppSelector(store => store);
 
-  const expenseData = dataLoaded?.expenses?.expenses;
-  const cashData = dataLoaded?.cashAccounts?.cashAccounts;
-  const accountsData = dataLoaded?.accounts?.accounts;
+  const expenseD = dataLoaded?.expenses?.expenses;
+  const cashD = dataLoaded?.cashAccounts?.cashAccounts;
+  const accountsD = dataLoaded?.accounts?.accounts;
 
-  // const [expenseData, setExpenseData] = useState<ExpenseType>();
-  // const [cashData, setCashData] = useState<CashType>();
-  // const [accountData, setAccountData] = useState<AccountType>();
-  const [addAccountPressed, setAddAccountPressed] = useState<boolean>(false);
+  const [expenseData, setExpenseData] = useState<ExpenseType>();
+  const [cashData, setCashData] = useState<CashType>();
+  const [accountsData, setAccountsData] = useState<AccountType>();
+  // const [addAccountPressed, setAddAccountPressed] = useState<boolean>(false);
   const [accountText, setAccountText] = useState<string | null>('');
   const [budget, setBudget] = useState<number>(0);
   const [selectedCash, setSelectedCash] = useState<boolean>(true);
+  const [removeAccount, setRemoveAccount] = useState<boolean>(false);
+  const [editAccount, setEditAccount] = useState<boolean>(false);
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
   // Set accountText and budget to Storage, after add account.
   // Update account details
+  useEffect(() => {
+    dispatch(fetchExpensesData());
+    dispatch(fetchCashAccountsData());
+    dispatch(fetchAccountsData());
+  }, []);
 
   useEffect(() => {
-    // dispatch(fetchExpensesData());
-    dispatch(fetchAccountsData());
-    // dispatch(fetchCashAccountsData());
-  }, []);
+    setExpenseData(expenseD);
+    setCashData(cashD);
+    setAccountsData(accountsD);
+  }, [removeAccount, isModalVisible]);
+
+  useEffect(() => {}, [editAccount]);
+
+  if (
+    cashData === undefined ||
+    accountsData === undefined ||
+    expenseData === undefined
+  ) {
+    return;
+  }
+
+  console.log('visible: ----', isModalVisible);
 
   const cashBudget = sumTotalBudget(cashData)?.toFixed(2);
   const accountsBudget = sumTotalBudget(accountsData)?.toFixed(2);
@@ -76,13 +95,13 @@ const AccountsScreen = ({navigation}: Props) => {
     });
   }
 
-  function addAccountHandler() {
-    setAddAccountPressed(pressed => !pressed);
+  function openAddAccountForm() {
+    setIsModalVisible(pressed => !pressed);
   }
 
-  function closeFormHandler() {
-    setAddAccountPressed(false);
-  }
+  // function closeFormHandler() {
+  //   setIsModalVisible(false);
+  // }
 
   function saveFormHandler() {
     if (selectedCash) {
@@ -97,18 +116,11 @@ const AccountsScreen = ({navigation}: Props) => {
           }),
         );
       } else {
-        // Update Cash Account
-        dispatch(
-          cashAccountsActions.updateCashAccount({
-            id: cashData[0]?.id,
-            budget: +cashData[0]?.budget + +budget,
-            date: new Date(),
-          }),
-        );
+        Alert.alert('Account Warning', 'The account is in the list already.');
       }
     } else {
       //
-      const accId = 'cash-' + uuidv4();
+      const accId = 'account-' + uuidv4();
       const findAccTitle = accountsData?.findIndex(
         acc => acc?.title === accountText,
       );
@@ -128,10 +140,11 @@ const AccountsScreen = ({navigation}: Props) => {
       }
     }
 
-    setAddAccountPressed(false);
+    setIsModalVisible(false);
   }
 
   const removeAccountHandler = accountId => {
+    setRemoveAccount(true);
     const findAcc = accountsData?.filter(acc => acc?.id === accountId);
 
     if (findAcc?.length > 0 && findAcc[0]?.removable === true) {
@@ -143,10 +156,52 @@ const AccountsScreen = ({navigation}: Props) => {
     } else {
       Alert.alert('Account Warning!', 'The account cannot be removed.');
     }
+    setRemoveAccount(false);
+  };
+
+  const editAccountPressedHandler = () => {
+    setIsModalVisible(true);
+    setEditAccount(true);
+    // setEditAccount(false);
   };
 
   const editAccountHandler = () => {
-    alert('Edit Account');
+    if (selectedCash) {
+      const cashId = cashData[0]?.id;
+      // Create new Cash Account
+      if (cashData?.length > 0) {
+        dispatch(
+          cashAccountsActions.updateCashAccount({
+            id: cashId,
+            budget: budget,
+            date: new Date(),
+          }),
+        );
+      } else {
+        Alert.alert('You should add an account first!');
+      }
+    } else {
+      //
+      const selectedAcc = accountsData?.filter(
+        acc => acc?.title === accountText,
+      );
+      const accId = selectedAcc?.id;
+
+      // dispatch account
+      if (selectedAcc?.length > 0) {
+        dispatch(
+          accountActions.updateAccount({
+            id: accId,
+            title: accountText,
+            budget: budget,
+            date: new Date(),
+            removable: selectedAcc?.removable,
+          }),
+        );
+      } else {
+        Alert.alert('You should add an account first!');
+      }
+    }
   };
 
   const renderItem = ({item}) => {
@@ -169,7 +224,7 @@ const AccountsScreen = ({navigation}: Props) => {
                 },
                 {
                   text: 'Edit',
-                  onPress: () => editAccountHandler(),
+                  onPress: () => editAccountPressedHandler(),
                   // style: 'cancel',
                 },
               ],
@@ -250,25 +305,27 @@ const AccountsScreen = ({navigation}: Props) => {
       <View style={styles.addButton}>
         <Pressable
           style={({pressed}) => pressed && styles.pressed}
-          onPress={() => addAccountHandler()}>
+          onPress={() => openAddAccountForm()}>
           <View style={{marginRight: 10, marginBottom: 15}}>
             <Ionicons name="add-circle" size={width * 0.15} color="#3683e2" />
           </View>
         </Pressable>
       </View>
 
-      {addAccountPressed && (
-        <AddAccountForm
-          selectedCash={selectedCash}
-          setSelectedCash={setSelectedCash}
-          closeFormHandler={closeFormHandler}
-          saveFormHandler={saveFormHandler}
-          setAccountText={setAccountText}
-          accountText={accountText}
-          setBudget={setBudget}
-          budget={budget}
-        />
-      )}
+      {/* {addAccountPressed && ( */}
+      <AddAccountForm
+        setIsModalVisible={setIsModalVisible}
+        isModalVisible={isModalVisible}
+        editAccount={editAccount}
+        selectedCash={selectedCash}
+        setSelectedCash={setSelectedCash}
+        saveFormHandler={saveFormHandler}
+        setAccountText={setAccountText}
+        accountText={accountText}
+        setBudget={setBudget}
+        budget={budget}
+      />
+      {/* )} */}
     </View>
   );
 };

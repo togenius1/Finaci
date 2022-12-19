@@ -1,6 +1,12 @@
 //////////////////////////////// Account category ///////////////////////////////////////////
 export const CashCategory = [
-  {id: 'cash1', title: 'Cash', budget: 0, date: new Date()},
+  {
+    id: 'cash1',
+    title: 'Cash',
+    budget: 0,
+    date: new Date(),
+    removable: false,
+  },
 ];
 
 export const AccountCategory = [

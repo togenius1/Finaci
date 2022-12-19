@@ -1,4 +1,11 @@
-import {Dimensions, Pressable, StyleSheet, Text, View} from 'react-native';
+import {
+  Dimensions,
+  Modal,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import React from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -8,100 +15,119 @@ import Button from '../UI/CButton';
 import {GlobalStyles} from '../../constants/styles';
 
 type Props = {
+  editAccount: boolean;
   selectedCash: boolean;
-  setSelectedCash: (value: boolean) => void;
+  isModalVisible: boolean;
+  accountText: string;
+  budget: number;
+  saveFormHandler: () => void;
 };
 
 const {width, height} = Dimensions.get('window');
 
 const AddAccountForm = ({
-  closeFormHandler,
-  saveFormHandler,
-  setAccountText,
-  accountText,
-  setBudget,
-  budget,
+  editAccount,
   selectedCash,
+  accountText,
+  budget,
+  isModalVisible,
+  setAccountText,
+  setBudget,
+  setIsModalVisible,
   setSelectedCash,
+  saveFormHandler,
 }: Props) => {
   //
 
   const checkedBox = () => {
-    setSelectedCash(!selectedCash);
+    setSelectedCash(pressed => !pressed);
   };
 
   return (
-    <View style={styles.addAccountForm}>
-      <Pressable
-        style={({pressed}) => pressed && styles.pressed}
-        onPress={() => closeFormHandler()}>
-        <View
-          style={{
-            position: 'absolute',
-            right: -140,
-            // top: 5,
-          }}>
-          <Ionicons name="close" size={29} color="#000000" />
-        </View>
-      </Pressable>
-
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          marginLeft: -(width / 2) + 25,
-        }}>
+    <Modal
+      transparent={true}
+      visible={isModalVisible}
+      onDismiss={() => setIsModalVisible(false)}
+      onRequestClose={() => setIsModalVisible(false)}>
+      <View style={styles.addAccountForm}>
         <Pressable
           style={({pressed}) => pressed && styles.pressed}
-          onPress={() => checkedBox()}>
-          {selectedCash ? (
+          onPress={() => setIsModalVisible(false)}>
+          <View
+            style={{
+              position: 'absolute',
+              right: -140,
+              // top: 5,
+              backgroundColor: '#e8e8e8',
+            }}>
             <MaterialCommunityIcons
-              name="checkbox-outline"
-              size={32}
+              name="close"
+              size={width * 0.08}
               color="#000000"
             />
-          ) : (
-            <MaterialCommunityIcons
-              name="checkbox-blank-outline"
-              size={32}
-              color="#000000"
-            />
-          )}
+          </View>
         </Pressable>
-        <Text style={{marginLeft: 10, fontSize: 16}}>Cash</Text>
+
+        {!editAccount && (
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginLeft: -(width / 2) + 25,
+            }}>
+            <Pressable
+              style={({pressed}) => pressed && styles.pressed}
+              onPress={() => checkedBox()}>
+              {selectedCash ? (
+                <MaterialCommunityIcons
+                  name="checkbox-outline"
+                  size={32}
+                  color="#000000"
+                />
+              ) : (
+                <MaterialCommunityIcons
+                  name="checkbox-blank-outline"
+                  size={32}
+                  color="#000000"
+                />
+              )}
+            </Pressable>
+            <Text style={{marginLeft: 10, fontSize: 16}}>Cash</Text>
+          </View>
+        )}
+
+        <Input
+          label={selectedCash ? 'Cash' : 'Account'}
+          style={styles.input}
+          textInputConfig={{
+            onChangeText: setAccountText,
+            value: selectedCash ? 'Cash' : accountText,
+            editable: !selectedCash,
+            placeholder: selectedCash ? 'Cash' : 'account name',
+            backgroundColor: selectedCash
+              ? 'lightgrey'
+              : GlobalStyles.colors.primary100,
+          }}
+        />
+
+        <Input
+          label={'Budget'}
+          style={styles.input}
+          textInputConfig={{
+            keyboardType: 'numeric',
+            onChangeText: setBudget,
+            value: budget,
+            placeholder: 'budget amount',
+          }}
+        />
+        <Button
+          style={{width: 60}}
+          styleBtn={{paddingVertical: 6, backgroundColor: '#4e9ff1'}}
+          onPress={() => saveFormHandler()}>
+          Save
+        </Button>
       </View>
-
-      <Input
-        label={selectedCash ? 'Cash' : 'Account'}
-        style={styles.input}
-        textInputConfig={{
-          onChangeText: setAccountText,
-          value: selectedCash ? 'Cash' : accountText,
-          editable: !selectedCash,
-          placeholder: selectedCash ? 'Cash' : 'account name',
-          backgroundColor: selectedCash
-            ? 'lightgrey'
-            : GlobalStyles.colors.primary100,
-        }}
-      />
-
-      <Input
-        label={'Budget'}
-        style={styles.input}
-        textInputConfig={{
-          keyboardType: 'numeric',
-          onChangeText: setBudget,
-          value: budget,
-          placeholder: 'budget amount',
-        }}
-      />
-      <Button
-        style={{width: 60}}
-        styleBtn={{paddingVertical: 6, backgroundColor: '#4e9ff1'}}
-        onPress={() => saveFormHandler()}>
-        Save
-      </Button>
-    </View>
+    </Modal>
   );
 };
 

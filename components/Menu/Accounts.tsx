@@ -23,6 +23,7 @@ import {fetchCashAccountsData} from '../../store/cash-action';
 import {fetchExpenseCategoriesData} from '../../store/expense-category-action';
 import {fetchAccountsData} from '../../store/account-action';
 import {cashAccountsActions} from '../../store/cash-slice';
+import {isEmpty} from '@aws-amplify/core';
 
 type Dispatcher<S> = Dispatch<SetStateAction<S>>;
 
@@ -184,7 +185,7 @@ const Accounts = ({setAccount, setAccountPressed}: Props) => {
           onPress={() => onAccountsHandler(cashData[0]?.title)}>
           <View style={styles.item}>
             <Text style={{fontSize: 16, fontWeight: 'bold'}}>Cash</Text>
-            <Text>{currencyFormatter(+cashData[0]?.budget, {})}</Text>
+            <Text>{currencyFormatter(cashBudget, {})}</Text>
           </View>
         </Pressable>
       </View>
