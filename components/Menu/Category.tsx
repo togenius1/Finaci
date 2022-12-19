@@ -69,6 +69,7 @@ const Category = ({setCategoryPressed, setCategory, type}: Props) => {
     setCategory(item);
     setCategoryPressed(false);
   }
+
   function addCategoryHandler() {
     const findCategory = categoryData?.filter(
       cate => cate.title === categoryText,
@@ -122,8 +123,10 @@ const Category = ({setCategoryPressed, setCategory, type}: Props) => {
           <Ionicons name="close" size={24} color="black" />
         </View>
       </Pressable>
-      <View style={{marginLeft: 35}}>
-        <Text>Search:</Text>
+      <View style={{marginLeft: 20}}>
+        <Text style={{fontWeight: '800', fontSize: height * 0.020}}>
+          Search:
+        </Text>
       </View>
       <View style={styles.searchContainer}>
         <TextInput
@@ -158,9 +161,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: width * 0.9,
-    height: height * 0.7,
+    height: height * 0.75,
     position: 'absolute',
-    top: 50,
+    top: 35,
     shadowOffset: {width: 0, height: 0},
     shadowOpacity: 0.7,
     shadowRadius: 3,
@@ -175,10 +178,10 @@ const styles = StyleSheet.create({
     // backgroundColor: '#facece',
   },
   textInput: {
-    width: 200,
-    height: 25,
+    width: width * 0.55,
+    height: height * 0.05,
     marginRight: 20,
-    marginLeft: 35,
+    marginLeft: 20,
     backgroundColor: 'white',
     borderWidth: 1,
     borderColor: 'grey',

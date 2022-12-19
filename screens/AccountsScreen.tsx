@@ -55,22 +55,21 @@ const AccountsScreen = ({navigation}: Props) => {
   const [removeAccount, setRemoveAccount] = useState<boolean>(false);
   const [editAccount, setEditAccount] = useState<boolean>(false);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [editedAccountId, setEditedAccountId] = useState<string | null>();
 
   // Set accountText and budget to Storage, after add account.
   // Update account details
-  useEffect(() => {
-    dispatch(fetchExpensesData());
-    dispatch(fetchCashAccountsData());
-    dispatch(fetchAccountsData());
-  }, []);
+  // useEffect(() => {
+  //   dispatch(fetchExpensesData());
+  //   dispatch(fetchCashAccountsData());
+  //   dispatch(fetchAccountsData());
+  // }, []);
 
   useEffect(() => {
     setExpenseData(expenseD);
     setCashData(cashD);
     setAccountsData(accountsD);
-  }, [removeAccount, isModalVisible]);
-
-  useEffect(() => {}, [editAccount]);
+  }, [removeAccount, isModalVisible, editAccount]);
 
   if (
     cashData === undefined ||
@@ -79,8 +78,6 @@ const AccountsScreen = ({navigation}: Props) => {
   ) {
     return;
   }
-
-  console.log('visible: ----', isModalVisible);
 
   const cashBudget = sumTotalBudget(cashData)?.toFixed(2);
   const accountsBudget = sumTotalBudget(accountsData)?.toFixed(2);
@@ -116,7 +113,7 @@ const AccountsScreen = ({navigation}: Props) => {
           }),
         );
       } else {
-        Alert.alert('Account Warning', 'The account is in the list already.');
+        Alert.alert('Account Warning', 'This account is in the list already!');
       }
     } else {
       //
@@ -132,11 +129,10 @@ const AccountsScreen = ({navigation}: Props) => {
             title: accountText,
             budget: budget,
             date: new Date(),
-            removable: true,
           }),
         );
       } else {
-        Alert.alert('Account Warning', 'The account is in the list already.');
+        Alert.alert('Account Warning', 'This account is in the list already!');
       }
     }
 
@@ -159,16 +155,17 @@ const AccountsScreen = ({navigation}: Props) => {
     setRemoveAccount(false);
   };
 
-  const editAccountPressedHandler = () => {
+  const editAccountPressedHandler = accId => {
     setIsModalVisible(true);
     setEditAccount(true);
-    // setEditAccount(false);
+    setEditedAccountId(accId);
   };
 
-  const editAccountHandler = () => {
-    if (selectedCash) {
+  const submitEditedAccountHandler = () => {
+    const cashOrAcc = editedAccountId?.split('-')[0];
+    console.log('cash or acc', cashOrAcc);
+    if (cashOrAcc === 'cash') {
       const cashId = cashData[0]?.id;
-      // Create new Cash Account
       if (cashData?.length > 0) {
         dispatch(
           cashAccountsActions.updateCashAccount({
@@ -185,8 +182,7 @@ const AccountsScreen = ({navigation}: Props) => {
       const selectedAcc = accountsData?.filter(
         acc => acc?.title === accountText,
       );
-      const accId = selectedAcc?.id;
-
+      const accId = selectedAcc[0]?.id;
       // dispatch account
       if (selectedAcc?.length > 0) {
         dispatch(
@@ -195,13 +191,14 @@ const AccountsScreen = ({navigation}: Props) => {
             title: accountText,
             budget: budget,
             date: new Date(),
-            removable: selectedAcc?.removable,
           }),
         );
       } else {
         Alert.alert('You should add an account first!');
       }
     }
+    setIsModalVisible(false);
+    setEditAccount(false);
   };
 
   const renderItem = ({item}) => {
@@ -224,7 +221,7 @@ const AccountsScreen = ({navigation}: Props) => {
                 },
                 {
                   text: 'Edit',
-                  onPress: () => editAccountPressedHandler(),
+                  onPress: () => editAccountPressedHandler(item?.id),
                   // style: 'cancel',
                 },
               ],
@@ -319,7 +316,9 @@ const AccountsScreen = ({navigation}: Props) => {
         editAccount={editAccount}
         selectedCash={selectedCash}
         setSelectedCash={setSelectedCash}
-        saveFormHandler={saveFormHandler}
+        saveFormHandler={
+          editAccount ? submitEditedAccountHandler : saveFormHandler
+        }
         setAccountText={setAccountText}
         accountText={accountText}
         setBudget={setBudget}
