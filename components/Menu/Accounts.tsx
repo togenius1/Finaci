@@ -50,14 +50,14 @@ const Accounts = ({setAccount, setAccountPressed}: Props) => {
   const [budget, setBudget] = useState<number>(0);
   const [selectedCash, setSelectedCash] = useState<boolean>(true);
 
-  // useEffect(() => {
+  useEffect(() => {
   // setExpenseData(EXPENSES);
   // setCashData(CashCategory);
   // setAccountsData(AccountCategory);
   // dispatch(fetchExpenseCategoriesData());
-  // dispatch(fetchCashAccountsData());
-  // dispatch(fetchAccountsData());
-  // }, []);
+  dispatch(fetchCashAccountsData());
+  dispatch(fetchAccountsData());
+  }, []);
 
   if (
     accountsData === undefined ||

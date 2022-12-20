@@ -10,7 +10,7 @@ import {incomeActions} from '../store/income-slice';
 import {useAppDispatch, useAppSelector} from '../hooks';
 import Note from '../components/Menu/Note';
 import Accounts from '../components/Menu/Accounts';
-import Category from '../components/Menu/Category';
+import Category from '../components/Form/Category';
 // import {
 //   ExpenseCategory,
 //   IncomeCategory,

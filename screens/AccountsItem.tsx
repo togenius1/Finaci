@@ -356,21 +356,6 @@ function AccountsItem({navigation, route}: Props) {
     setDatePickerVisibility(false);
   }
 
-  // function onChange(event, selectedDate) {
-  //   // const currentDate = selectedDate || date;
-  //   if (Platform.OS === 'android') {
-  //     setDatePickerVisibility(true);
-  //   }
-  //   let date = moment(event).format('YYYY-MM-DD');
-
-  //   if (fromDateClicked) {
-  //     setFromDate(date);
-  //   }
-  //   if (toDateClicked) {
-  //     setToDate(date);
-  //   }
-  // }
-
   const onConfirm = (date: string) => {
     const fromdate = moment(date).format('YYYY-MM-DD');
     const todate = moment(date).format('YYYY-MM-DD');

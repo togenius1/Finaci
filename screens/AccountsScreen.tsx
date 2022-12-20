@@ -309,7 +309,6 @@ const AccountsScreen = ({navigation}: Props) => {
         </Pressable>
       </View>
 
-      {/* {addAccountPressed && ( */}
       <AddAccountForm
         setIsModalVisible={setIsModalVisible}
         isModalVisible={isModalVisible}
@@ -324,7 +323,6 @@ const AccountsScreen = ({navigation}: Props) => {
         setBudget={setBudget}
         budget={budget}
       />
-      {/* )} */}
     </View>
   );
 };
