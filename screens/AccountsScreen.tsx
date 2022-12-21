@@ -59,11 +59,10 @@ const AccountsScreen = ({navigation}: Props) => {
 
   // Set accountText and budget to Storage, after add account.
   // Update account details
-  // useEffect(() => {
-  //   dispatch(fetchExpensesData());
-  //   dispatch(fetchCashAccountsData());
-  //   dispatch(fetchAccountsData());
-  // }, []);
+  useEffect(() => {
+    dispatch(fetchCashAccountsData());
+    dispatch(fetchAccountsData());
+  }, []);
 
   useEffect(() => {
     setExpenseData(expenseD);
@@ -206,48 +205,50 @@ const AccountsScreen = ({navigation}: Props) => {
 
     return (
       <View>
-        <Pressable
-          key={item}
-          style={({pressed}) => pressed && styles.pressed}
-          onPress={() => onAccountsHandler(item)}
-          onLongPress={() =>
-            Alert.alert(
-              'Edit or Delete?',
-              'You can Edit or remove the account.',
-              [
+        {item?.budget > 0 ? (
+          <Pressable
+            key={item}
+            style={({pressed}) => pressed && styles.pressed}
+            onPress={() => onAccountsHandler(item)}
+            onLongPress={() =>
+              Alert.alert(
+                'Edit or Delete?',
+                'You can Edit or remove the account.',
+                [
+                  {
+                    text: 'Delete',
+                    onPress: () => removeAccountHandler(item?.id),
+                  },
+                  {
+                    text: 'Edit',
+                    onPress: () => editAccountPressedHandler(item?.id),
+                    // style: 'cancel',
+                  },
+                ],
                 {
-                  text: 'Delete',
-                  onPress: () => removeAccountHandler(item?.id),
+                  cancelable: true,
+                  // onDismiss: () =>
+                  //   Alert.alert(
+                  //     'This alert was dismissed by tapping outside of the alert dialog.',
+                  //   ),
                 },
-                {
-                  text: 'Edit',
-                  onPress: () => editAccountPressedHandler(item?.id),
-                  // style: 'cancel',
-                },
-              ],
-              {
-                cancelable: true,
-                // onDismiss: () =>
-                //   Alert.alert(
-                //     'This alert was dismissed by tapping outside of the alert dialog.',
-                //   ),
-              },
-            )
-          }>
-          <View style={styles.item}>
-            <View>
-              <Text style={{fontSize: 16}}>{item.title}</Text>
+              )
+            }>
+            <View style={styles.item}>
+              <View>
+                <Text style={{fontSize: 16}}>{item.title}</Text>
+              </View>
+              <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                <Text style={{fontSize: 16, fontWeight: 'bold', color: 'blue'}}>
+                  {currencyFormatter(+accBalance, {})}
+                </Text>
+                <Text style={{fontSize: 11, marginTop: 10}}>
+                  ({currencyFormatter(+item.budget, {})} budget)
+                </Text>
+              </View>
             </View>
-            <View style={{justifyContent: 'center', alignItems: 'center'}}>
-              <Text style={{fontSize: 16, fontWeight: 'bold', color: 'blue'}}>
-                {currencyFormatter(+accBalance, {})}
-              </Text>
-              <Text style={{fontSize: 11, marginTop: 10}}>
-                ({currencyFormatter(+item.budget, {})} budget)
-              </Text>
-            </View>
-          </View>
-        </Pressable>
+          </Pressable>
+        ) : null}
       </View>
     );
   };
