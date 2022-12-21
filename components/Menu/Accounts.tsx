@@ -67,55 +67,9 @@ const Accounts = ({setAccount, setAccountPressed}: Props) => {
     setAddAccountPressed(pressed => !pressed);
   }
 
-  function closeFormHandler() {
-    setAddAccountPressed(false);
-  }
-
-  function saveFormHandler() {
-    if (selectedCash) {
-      const cashId = 'cash-' + uuidv4();
-      // Create new Cash Account
-      if (cashData?.length === 0) {
-        dispatch(
-          cashAccountsActions.addCashAccount({
-            id: cashId,
-            budget: budget,
-            date: new Date(),
-          }),
-        );
-      } else {
-        // Update Cash Account
-        dispatch(
-          cashAccountsActions.updateCashAccount({
-            id: cashData[0]?.id,
-            budget: +cashData[0]?.budget + +budget,
-            date: new Date(),
-          }),
-        );
-      }
-    } else {
-      //
-      const accId = 'cash-' + uuidv4();
-      const findAccTitle = accountsData?.findIndex(
-        acc => acc?.title === accountText,
-      );
-      // dispatch account
-      if (accountsData?.length === 0 || findAccTitle === -1) {
-        dispatch(
-          accountActions.addAccount({
-            id: accId,
-            title: accountText,
-            budget: budget,
-            date: new Date(),
-            removable: true,
-          }),
-        );
-      } else {
-        Alert.alert('Account Warning', 'The account is in the list already.');
-      }
-    }
-    setAddAccountPressed(false);
-  }
+  // function closeFormHandler() {
+  //   setAddAccountPressed(false);
+  // }
 
   const renderItem = ({item}) => {
     const budgeted = currencyFormatter(+item.budget, {});
@@ -214,8 +168,7 @@ const Accounts = ({setAccount, setAccountPressed}: Props) => {
           <AddAccountForm
             selectedCash={selectedCash}
             setSelectedCash={setSelectedCash}
-            closeFormHandler={closeFormHandler}
-            saveFormHandler={saveFormHandler}
+            // closeFormHandler={closeFormHandler}
             setAccountText={setAccountText}
             accountText={accountText}
             setBudget={setBudget}

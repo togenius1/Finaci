@@ -1,4 +1,5 @@
 import {
+  Alert,
   Dimensions,
   FlatList,
   Modal,
@@ -23,6 +24,7 @@ import {AccountType} from '../../models/account';
 import {AccountCategory} from '../../dummy/account';
 import {fetchCashAccountsData} from '../../store/cash-action';
 import {fetchAccountsData} from '../../store/account-action';
+import CButton from '../UI/CButton';
 
 type Props = {
   editAccount: boolean;
@@ -45,7 +47,6 @@ const AddAccountForm = ({
   setBudget,
   setIsModalVisible,
   setSelectedCash,
-  saveFormHandler,
 }: Props) => {
   //
   const dispatch = useAppDispatch();
@@ -66,6 +67,52 @@ const AddAccountForm = ({
   }, [addAccPressed]);
 
   useEffect(() => {}, [addAccPressed]);
+
+  function saveFormHandler() {
+    if (selectedCash) {
+      const cashId = 'cash-' + uuidv4();
+      // Create new Cash Account
+      if (cashData?.length === 0) {
+        dispatch(
+          cashAccountsActions.addCashAccount({
+            id: cashId,
+            budget: budget,
+            date: new Date(),
+          }),
+        );
+      } else {
+        // Update Cash Account
+        dispatch(
+          cashAccountsActions.updateCashAccount({
+            id: cashData[0]?.id,
+            budget: +cashData[0]?.budget + +budget,
+            date: new Date(),
+          }),
+        );
+      }
+    } else {
+      //
+      const accId = 'cash-' + uuidv4();
+      const findAccTitle = accountsData?.findIndex(
+        acc => acc?.title === accountText,
+      );
+      // dispatch account
+      if (accountsData?.length === 0 || findAccTitle === -1) {
+        dispatch(
+          accountActions.addAccount({
+            id: accId,
+            title: accountText,
+            budget: budget,
+            date: new Date(),
+            removable: true,
+          }),
+        );
+      } else {
+        Alert.alert('Account Warning', 'The account is in the list already.');
+      }
+    }
+    // setAddAccountPressed(false);
+  }
 
   const renderItem = ({item}) => {
     return (
@@ -147,6 +194,23 @@ const AddAccountForm = ({
           </View>
         </Pressable>
 
+        <View style={styles.accounts}>
+          <Pressable
+            style={({pressed}) => pressed && styles.pressed}
+            onPress={() => console.log('Cash selected')}>
+            <View style={styles.account}>
+              <Text>Cash</Text>
+            </View>
+          </Pressable>
+          <Pressable
+            style={({pressed}) => pressed && styles.pressed}
+            onPress={() => console.log('Cash selected')}>
+            <View style={styles.account}>
+              <Text>Accounts</Text>
+            </View>
+          </Pressable>
+        </View>
+
         <View style={{marginLeft: 20}}>
           <Text style={{fontWeight: '800', fontSize: height * 0.02}}>
             Search:
@@ -220,9 +284,11 @@ const AddAccountForm = ({
 
 export default AddAccountForm;
 
+const WIDTH = width * 0.9;
+
 const styles = StyleSheet.create({
   container: {
-    width: width * 0.9,
+    width: WIDTH,
     height: height * 0.75,
     marginHorizontal: 20,
     marginTop: 100,
@@ -232,6 +298,22 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 4,
     backgroundColor: 'white',
+  },
+  accounts: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  account: {
+    alignItems: 'center',
+    borderWidth: 1,
+    paddingVertical: 10,
+    width: WIDTH / 2,
+    borderColor: 'lightgrey',
+
+    shadowOffset: {width: 0.5, height: 0.5},
+    shadowOpacity: 0.7,
+    shadowRadius: 5,
+    elevation: 1,
   },
   searchContainer: {
     alignItems: 'center',
