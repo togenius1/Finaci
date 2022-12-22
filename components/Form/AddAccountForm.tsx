@@ -13,10 +13,10 @@ import React, {useEffect, useState} from 'react';
 import {v4 as uuidv4} from 'uuid';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import moment from 'moment';
 
 import Input from '../ManageExpense/Input';
 import Button from '../UI/CButton';
+import moment from 'moment';
 import {GlobalStyles} from '../../constants/styles';
 import {useAppDispatch, useAppSelector} from '../../hooks';
 import {accountActions} from '../../store/account-slice';
@@ -39,6 +39,8 @@ type Props = {
 const {width, height} = Dimensions.get('window');
 const WIDTH = width * 0.9;
 
+const btnAccCashColor = '#ffe9b9';
+
 const AddAccountForm = ({
   isModalVisible,
   setIsModalVisible,
@@ -54,6 +56,10 @@ const AddAccountForm = ({
   const [filterData, setFilterData] = useState<any[]>();
   const [addAccPressed, setAddAccPressed] = useState<boolean>(false);
   const [selectedCash, setSelectedCash] = useState<boolean>(false);
+  const [btnCashColor, setCashBtnColor] = useState<string | undefined>();
+  const [btnAccColor, setAccBtnColor] = useState<string | undefined>(
+    btnAccCashColor,
+  );
 
   const accountsData = dataLoaded?.accounts?.accounts;
 
@@ -61,28 +67,11 @@ const AddAccountForm = ({
     setFilterData(accountsData);
   }, [addAccPressed]);
 
-  useEffect(() => {}, [addAccPressed]);
-
   function saveFormHandler() {
     // Reset State
     setIsModalVisible(false);
     setAddAccPressed(false);
   }
-
-  const renderItem = ({item}) => {
-    return (
-      // <View>
-      <Pressable
-        key={item.title + uuidv4()}
-        style={({pressed}) => pressed && styles.pressed}
-        onPress={() => categoryHandler(item)}>
-        <View style={styles.item}>
-          <Text>{item.title}</Text>
-        </View>
-      </Pressable>
-      // </View>
-    );
-  };
 
   function categoryHandler(item) {
     setAccountText(item?.title);
@@ -108,12 +97,6 @@ const AddAccountForm = ({
     console.log('add account');
     setAddAccPressed(true);
   };
-
-  // const addBudgetHandler = () => {
-  //   setAddBudgetPressed(true);
-  //   setAddAccPressed(false);
-  //   // setIsModalVisible(false);
-  // };
 
   const closeHandler = () => {
     // Reset State
@@ -170,6 +153,40 @@ const AddAccountForm = ({
     // setAddAccPressed(true);
   };
 
+  const cashBtnPressedHandler = () => {
+    console.log('cash pressed');
+    setCashBtnColor(btnAccCashColor);
+    setAccBtnColor(undefined);
+    // Reset
+    setSelectedCash(true);
+  };
+
+  const accBtnPressedHandler = () => {
+    console.log('acc pressed');
+
+    setCashBtnColor(undefined);
+    setAccBtnColor(btnAccCashColor);
+
+    // Reset
+    setSelectedCash(false);
+  };
+
+  // Render Item
+  const renderItem = ({item}) => {
+    return (
+      // <View>
+      <Pressable
+        key={item.title + uuidv4()}
+        style={({pressed}) => pressed && styles.pressed}
+        onPress={() => categoryHandler(item)}>
+        <View style={styles.item}>
+          <Text>{item.title}</Text>
+        </View>
+      </Pressable>
+      // </View>
+    );
+  };
+
   return (
     <Modal
       animationType="fade"
@@ -206,15 +223,15 @@ const AddAccountForm = ({
         <View style={styles.accountsBtn}>
           <Pressable
             style={({pressed}) => pressed && styles.pressed}
-            onPress={() => setSelectedCash(true)}>
-            <View style={styles.accountBtn}>
+            onPress={() => cashBtnPressedHandler()}>
+            <View style={[styles.accountBtn, {backgroundColor: btnCashColor}]}>
               <Text>Cash</Text>
             </View>
           </Pressable>
           <Pressable
             style={({pressed}) => pressed && styles.pressed}
-            onPress={() => setSelectedCash(false)}>
-            <View style={styles.accountBtn}>
+            onPress={() => accBtnPressedHandler()}>
+            <View style={[styles.accountBtn, {backgroundColor: btnAccColor}]}>
               <Text>Accounts</Text>
             </View>
           </Pressable>
@@ -280,7 +297,7 @@ const AddAccountForm = ({
             <View style={styles.searchContainer}>
               <TextInput
                 style={styles.textInput}
-                placeholder="Please Enter budget amount."
+                placeholder="Please enter budget amount."
                 keyboardType="numeric"
                 // onChange={event => {
                 //   searchFilterHandler(event.nativeEvent.text);
