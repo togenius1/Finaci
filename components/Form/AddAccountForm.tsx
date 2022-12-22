@@ -36,26 +36,28 @@ type Props = {
 };
 
 const {width, height} = Dimensions.get('window');
+const WIDTH = width * 0.9;
 
 const AddAccountForm = ({
   editAccount,
-  selectedCash,
+  // selectedCash,
   accountText,
   budget,
   isModalVisible,
   setAccountText,
   setBudget,
   setIsModalVisible,
-  setSelectedCash,
-}: Props) => {
+}: // setSelectedCash,
+Props) => {
   //
   const dispatch = useAppDispatch();
   const dataLoaded = useAppSelector(store => store);
 
   const [filterData, setFilterData] = useState<any[]>();
   const [addAccPressed, setAddAccPressed] = useState<boolean>(false);
-  const [addBudgetPressed, setAddBudgetPressed] = useState<boolean>(false);
-  const [itemPressed, setItemPressed] = useState<boolean>(false);
+  const [selectedCash, setSelectedCash] = useState<boolean>(false);
+  // const [addBudgetPressed, setAddBudgetPressed] = useState<boolean>(false);
+  // const [itemPressed, setItemPressed] = useState<boolean>(false);
   // const [categoryText, setCategoryText] = useState<string | null>('');
   // const [addedAccount, setAddedAccount] = useState<boolean>(false);
   // const [accountsCatData, setAccountsCatData] = useState<AccountType>();
@@ -132,7 +134,7 @@ const AddAccountForm = ({
   function categoryHandler(item) {
     setAccountText(item?.title);
     setAddAccPressed(true);
-    setItemPressed(item => !item);
+    // setItemPressed(item => !item);
   }
 
   function searchFilterHandler(text) {
@@ -163,7 +165,7 @@ const AddAccountForm = ({
   const closeHandler = () => {
     // Reset State
     setIsModalVisible(false);
-    setAddBudgetPressed(false);
+    // setAddBudgetPressed(false);
     setAddAccPressed(false);
   };
 
@@ -173,7 +175,7 @@ const AddAccountForm = ({
 
     // Reset State
     setIsModalVisible(false);
-    setAddBudgetPressed(false);
+    // setAddBudgetPressed(false);
     setAddAccPressed(false);
   };
 
@@ -185,56 +187,102 @@ const AddAccountForm = ({
       onDismiss={() => setIsModalVisible(false)}
       onRequestClose={() => setIsModalVisible(false)}>
       <View style={styles.container}>
-        <Pressable
-          style={({pressed}) => pressed && styles.pressed}
-          onPress={() => closeHandler()}>
-          <View
-            style={{alignItems: 'flex-end', marginRight: 10, marginTop: 10}}>
-            <Ionicons name="close" size={24} color="black" />
-          </View>
-        </Pressable>
-
-        <View style={styles.accounts}>
+        <View style={styles.header}>
           <Pressable
             style={({pressed}) => pressed && styles.pressed}
-            onPress={() => console.log('Cash selected')}>
-            <View style={styles.account}>
+            onPress={() => closeHandler()}>
+            <View style={styles.close}>
+              <Ionicons name="close" size={24} color="#454545" />
+            </View>
+          </Pressable>
+
+          <Pressable
+            style={({pressed}) => pressed && styles.pressed}
+            onPress={() => saveHandler()}>
+            <View>
+              <Text
+                style={{
+                  fontSize: width * 0.05,
+                  fontWeight: '600',
+                  color: 'blue',
+                }}>
+                Save
+              </Text>
+            </View>
+          </Pressable>
+        </View>
+
+        <View style={styles.accountsBtn}>
+          <Pressable
+            style={({pressed}) => pressed && styles.pressed}
+            onPress={() => setSelectedCash(true)}>
+            <View style={styles.accountBtn}>
               <Text>Cash</Text>
             </View>
           </Pressable>
           <Pressable
             style={({pressed}) => pressed && styles.pressed}
-            onPress={() => console.log('Cash selected')}>
-            <View style={styles.account}>
+            onPress={() => setSelectedCash(false)}>
+            <View style={styles.accountBtn}>
               <Text>Accounts</Text>
             </View>
           </Pressable>
         </View>
 
-        <View style={{marginLeft: 20}}>
-          <Text style={{fontWeight: '800', fontSize: height * 0.02}}>
-            Search:
-          </Text>
-        </View>
+        {selectedCash && (
+          <View style={{marginLeft: 20}}>
+            <Text
+              style={{
+                fontSize: width * 0.05,
+                fontWeight: '800',
+                marginLeft: 20,
+                marginTop: 20,
+              }}>
+              Cash
+            </Text>
+            <View style={styles.searchContainer}>
+              <TextInput
+                style={styles.textInput}
+                placeholder="Please Enter budget amount."
+                keyboardType="numeric"
+                // onChange={event => {
+                //   searchFilterHandler(event.nativeEvent.text);
+                // }}
+                onChangeText={setBudget}
+                value={budget}
+              />
+            </View>
+          </View>
+        )}
 
-        <View style={styles.searchContainer}>
-          <TextInput
-            style={styles.textInput}
-            placeholder="search or add category"
-            onChange={event => {
-              searchFilterHandler(event.nativeEvent.text);
-            }}
-            onChangeText={setAccountText}
-            value={addAccPressed ? accountText : filterData}
-          />
-          <Pressable
-            style={({pressed}) => pressed && styles.pressed}
-            onPress={() => addAccount()}>
-            <Text style={{fontWeight: '800', color: '#0439c2'}}>Add</Text>
-          </Pressable>
-        </View>
+        {!selectedCash && (
+          <>
+            <View style={{marginLeft: 20}}>
+              <Text style={{fontWeight: '800', fontSize: height * 0.02}}>
+                Search:
+              </Text>
+            </View>
 
-        {addAccPressed && (
+            <View style={styles.searchContainer}>
+              <TextInput
+                style={styles.textInput}
+                placeholder="search or add category"
+                onChange={event => {
+                  searchFilterHandler(event.nativeEvent.text);
+                }}
+                onChangeText={setAccountText}
+                value={addAccPressed ? accountText : filterData}
+              />
+              <Pressable
+                style={({pressed}) => pressed && styles.pressed}
+                onPress={() => addAccount()}>
+                <Text style={{fontWeight: '800', color: '#0439c2'}}>Add new</Text>
+              </Pressable>
+            </View>
+          </>
+        )}
+
+        {addAccPressed && !selectedCash && (
           <>
             <View style={styles.searchContainer}>
               <TextInput
@@ -247,44 +295,24 @@ const AddAccountForm = ({
                 onChangeText={setBudget}
                 value={budget}
               />
-              {/* <Pressable
-                style={({pressed}) => pressed && styles.pressed}
-                onPress={() => addBudgetHandler()}>
-                <Text style={{fontWeight: '800', color: '#0439c2'}}>Add</Text>
-              </Pressable> */}
             </View>
-
-            <Pressable
-              style={({pressed}) => pressed && styles.pressed}
-              onPress={() => saveHandler()}>
-              <View style={{alignItems: 'center'}}>
-                <Text
-                  style={{
-                    fontSize: width * 0.05,
-                    fontWeight: '600',
-                    color: 'blue',
-                  }}>
-                  Save
-                </Text>
-              </View>
-            </Pressable>
           </>
         )}
 
-        <FlatList
-          keyExtractor={item => item.title + uuidv4()}
-          data={filterData}
-          renderItem={renderItem}
-          bounces={false}
-        />
+        {!selectedCash && (
+          <FlatList
+            keyExtractor={item => item.title + uuidv4()}
+            data={filterData}
+            renderItem={renderItem}
+            bounces={false}
+          />
+        )}
       </View>
     </Modal>
   );
 };
 
 export default AddAccountForm;
-
-const WIDTH = width * 0.9;
 
 const styles = StyleSheet.create({
   container: {
@@ -299,16 +327,34 @@ const styles = StyleSheet.create({
     elevation: 4,
     backgroundColor: 'white',
   },
-  accounts: {
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: 10,
+    marginTop: 10,
+    marginBottom: 20,
+  },
+  close: {
+    backgroundColor: 'lightgrey',
+    borderColor: 'white',
+
+    shadowOffset: {width: 0.5, height: 0.5},
+    shadowOpacity: 0.7,
+    shadowRadius: 5,
+    elevation: 4,
+  },
+  accountsBtn: {
     flexDirection: 'row',
     justifyContent: 'center',
+    marginBottom: 20,
   },
-  account: {
+  accountBtn: {
     alignItems: 'center',
     borderWidth: 1,
     paddingVertical: 10,
     width: WIDTH / 2,
     borderColor: 'lightgrey',
+    backgroundColor: 'white',
 
     shadowOffset: {width: 0.5, height: 0.5},
     shadowOpacity: 0.7,
