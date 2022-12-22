@@ -192,7 +192,7 @@ Props) => {
             style={({pressed}) => pressed && styles.pressed}
             onPress={() => closeHandler()}>
             <View style={styles.close}>
-              <Ionicons name="close" size={24} color="#454545" />
+              <Ionicons name="close" size={width * 0.07} color="#454545" />
             </View>
           </Pressable>
 
@@ -276,7 +276,9 @@ Props) => {
               <Pressable
                 style={({pressed}) => pressed && styles.pressed}
                 onPress={() => addAccount()}>
-                <Text style={{fontWeight: '800', color: '#0439c2'}}>Add new</Text>
+                <Text style={{fontWeight: '800', color: '#0439c2'}}>
+                  Add new
+                </Text>
               </Pressable>
             </View>
           </>
@@ -351,7 +353,7 @@ const styles = StyleSheet.create({
   accountBtn: {
     alignItems: 'center',
     borderWidth: 1,
-    paddingVertical: 10,
+    paddingVertical: height * 0.008,
     width: WIDTH / 2,
     borderColor: 'lightgrey',
     backgroundColor: 'white',
