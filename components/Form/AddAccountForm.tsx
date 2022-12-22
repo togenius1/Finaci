@@ -13,42 +13,40 @@ import React, {useEffect, useState} from 'react';
 import {v4 as uuidv4} from 'uuid';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import moment from 'moment';
 
 import Input from '../ManageExpense/Input';
 import Button from '../UI/CButton';
 import {GlobalStyles} from '../../constants/styles';
 import {useAppDispatch, useAppSelector} from '../../hooks';
-import moment from 'moment';
 import {accountActions} from '../../store/account-slice';
 import {AccountType} from '../../models/account';
 import {AccountCategory} from '../../dummy/account';
 import {fetchCashAccountsData} from '../../store/cash-action';
 import {fetchAccountsData} from '../../store/account-action';
 import CButton from '../UI/CButton';
+import {cashAccountsActions} from '../../store/cash-slice';
 
 type Props = {
-  editAccount: boolean;
-  selectedCash: boolean;
   isModalVisible: boolean;
-  accountText: string;
+  accountText: string | null;
   budget: number;
-  saveFormHandler: () => void;
+  setIsModalVisible: (value: boolean) => void;
+  setAccountText: (value: string) => void;
+  setBudget: (value: number) => void;
 };
 
 const {width, height} = Dimensions.get('window');
 const WIDTH = width * 0.9;
 
 const AddAccountForm = ({
-  editAccount,
-  // selectedCash,
-  accountText,
-  budget,
   isModalVisible,
-  setAccountText,
-  setBudget,
   setIsModalVisible,
-}: // setSelectedCash,
-Props) => {
+  accountText,
+  setAccountText,
+  budget,
+  setBudget,
+}: Props) => {
   //
   const dispatch = useAppDispatch();
   const dataLoaded = useAppSelector(store => store);
@@ -56,11 +54,6 @@ Props) => {
   const [filterData, setFilterData] = useState<any[]>();
   const [addAccPressed, setAddAccPressed] = useState<boolean>(false);
   const [selectedCash, setSelectedCash] = useState<boolean>(false);
-  // const [addBudgetPressed, setAddBudgetPressed] = useState<boolean>(false);
-  // const [itemPressed, setItemPressed] = useState<boolean>(false);
-  // const [categoryText, setCategoryText] = useState<string | null>('');
-  // const [addedAccount, setAddedAccount] = useState<boolean>(false);
-  // const [accountsCatData, setAccountsCatData] = useState<AccountType>();
 
   const accountsData = dataLoaded?.accounts?.accounts;
 
@@ -71,49 +64,9 @@ Props) => {
   useEffect(() => {}, [addAccPressed]);
 
   function saveFormHandler() {
-    if (selectedCash) {
-      const cashId = 'cash-' + uuidv4();
-      // Create new Cash Account
-      if (cashData?.length === 0) {
-        dispatch(
-          cashAccountsActions.addCashAccount({
-            id: cashId,
-            budget: budget,
-            date: new Date(),
-          }),
-        );
-      } else {
-        // Update Cash Account
-        dispatch(
-          cashAccountsActions.updateCashAccount({
-            id: cashData[0]?.id,
-            budget: +cashData[0]?.budget + +budget,
-            date: new Date(),
-          }),
-        );
-      }
-    } else {
-      //
-      const accId = 'cash-' + uuidv4();
-      const findAccTitle = accountsData?.findIndex(
-        acc => acc?.title === accountText,
-      );
-      // dispatch account
-      if (accountsData?.length === 0 || findAccTitle === -1) {
-        dispatch(
-          accountActions.addAccount({
-            id: accId,
-            title: accountText,
-            budget: budget,
-            date: new Date(),
-            removable: true,
-          }),
-        );
-      } else {
-        Alert.alert('Account Warning', 'The account is in the list already.');
-      }
-    }
-    // setAddAccountPressed(false);
+    // Reset State
+    setIsModalVisible(false);
+    setAddAccPressed(false);
   }
 
   const renderItem = ({item}) => {
@@ -134,7 +87,6 @@ Props) => {
   function categoryHandler(item) {
     setAccountText(item?.title);
     setAddAccPressed(true);
-    // setItemPressed(item => !item);
   }
 
   function searchFilterHandler(text) {
@@ -152,7 +104,8 @@ Props) => {
     }
   }
 
-  const addAccount = () => {
+  const addNewHandler = () => {
+    console.log('add account');
     setAddAccPressed(true);
   };
 
@@ -165,18 +118,56 @@ Props) => {
   const closeHandler = () => {
     // Reset State
     setIsModalVisible(false);
-    // setAddBudgetPressed(false);
     setAddAccPressed(false);
   };
 
-  const saveHandler = () => {
-    console.log('saved');
-    saveFormHandler();
+  const saveAccountToCloud = () => {
+    console.log('save account to cloud');
+    // if (selectedCash) {
+    //   const cashId = 'cash-' + uuidv4();
+    //   // Create new Cash Account
+    //   if (cashData?.length === 0) {
+    //     dispatch(
+    //       cashAccountsActions.addCashAccount({
+    //         id: cashId,
+    //         budget: budget,
+    //         date: new Date(),
+    //       }),
+    //     );
+    //   } else {
+    //     // Update Cash Account
+    //     dispatch(
+    //       cashAccountsActions.updateCashAccount({
+    //         id: cashData[0]?.id,
+    //         budget: +cashData[0]?.budget + +budget,
+    //         date: new Date(),
+    //       }),
+    //     );
+    //   }
+    // } else {
+    //   //
+    //   const accId = 'cash-' + uuidv4();
+    //   const findAccTitle = accountsData?.findIndex(
+    //     acc => acc?.title === accountText,
+    //   );
+    //   // dispatch account
+    //   if (accountsData?.length === 0 || findAccTitle === -1) {
+    //     dispatch(
+    //       accountActions.addAccount({
+    //         id: accId,
+    //         title: accountText,
+    //         budget: budget,
+    //         date: new Date(),
+    //         removable: true,
+    //       }),
+    //     );
+    //   } else {
+    //     Alert.alert('Account Warning', 'The account is in the list already.');
+    //   }
+    // }
 
-    // Reset State
-    setIsModalVisible(false);
-    // setAddBudgetPressed(false);
-    setAddAccPressed(false);
+    // Reset
+    // setAddAccPressed(true);
   };
 
   return (
@@ -198,7 +189,7 @@ Props) => {
 
           <Pressable
             style={({pressed}) => pressed && styles.pressed}
-            onPress={() => saveHandler()}>
+            onPress={() => saveFormHandler()}>
             <View>
               <Text
                 style={{
@@ -275,9 +266,9 @@ Props) => {
               />
               <Pressable
                 style={({pressed}) => pressed && styles.pressed}
-                onPress={() => addAccount()}>
+                onPress={() => addNewHandler()}>
                 <Text style={{fontWeight: '800', color: '#0439c2'}}>
-                  Add new
+                  add new
                 </Text>
               </Pressable>
             </View>
@@ -297,6 +288,13 @@ Props) => {
                 onChangeText={setBudget}
                 value={budget}
               />
+              <Pressable
+                style={({pressed}) => pressed && styles.pressed}
+                onPress={() => saveAccountToCloud()}>
+                <Text style={{fontWeight: '800', color: '#0439c2'}}>
+                  save acc
+                </Text>
+              </Pressable>
             </View>
           </>
         )}

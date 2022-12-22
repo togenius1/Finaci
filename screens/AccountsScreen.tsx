@@ -99,44 +99,44 @@ const AccountsScreen = ({navigation}: Props) => {
   //   setIsModalVisible(false);
   // }
 
-  function saveFormHandler() {
-    if (selectedCash) {
-      const cashId = 'cash-' + uuidv4();
-      // Create new Cash Account
-      if (cashData?.length === 0) {
-        dispatch(
-          cashAccountsActions.addCashAccount({
-            id: cashId,
-            budget: budget,
-            date: new Date(),
-          }),
-        );
-      } else {
-        Alert.alert('Account Warning', 'This account is in the list already!');
-      }
-    } else {
-      //
-      const accId = 'account-' + uuidv4();
-      const findAccTitle = accountsData?.findIndex(
-        acc => acc?.title === accountText,
-      );
-      // dispatch account
-      if (accountsData?.length === 0 || findAccTitle === -1) {
-        dispatch(
-          accountActions.addAccount({
-            id: accId,
-            title: accountText,
-            budget: budget,
-            date: new Date(),
-          }),
-        );
-      } else {
-        Alert.alert('Account Warning', 'This account is in the list already!');
-      }
-    }
+  // function saveFormHandler() {
+  //   if (selectedCash) {
+  //     const cashId = 'cash-' + uuidv4();
+  //     // Create new Cash Account
+  //     if (cashData?.length === 0) {
+  //       dispatch(
+  //         cashAccountsActions.addCashAccount({
+  //           id: cashId,
+  //           budget: budget,
+  //           date: new Date(),
+  //         }),
+  //       );
+  //     } else {
+  //       Alert.alert('Account Warning', 'This account is in the list already!');
+  //     }
+  //   } else {
+  //     //
+  //     const accId = 'account-' + uuidv4();
+  //     const findAccTitle = accountsData?.findIndex(
+  //       acc => acc?.title === accountText,
+  //     );
+  //     // dispatch account
+  //     if (accountsData?.length === 0 || findAccTitle === -1) {
+  //       dispatch(
+  //         accountActions.addAccount({
+  //           id: accId,
+  //           title: accountText,
+  //           budget: budget,
+  //           date: new Date(),
+  //         }),
+  //       );
+  //     } else {
+  //       Alert.alert('Account Warning', 'This account is in the list already!');
+  //     }
+  //   }
 
-    setIsModalVisible(false);
-  }
+  //   setIsModalVisible(false);
+  // }
 
   const removeAccountHandler = accountId => {
     setRemoveAccount(true);
@@ -313,12 +313,6 @@ const AccountsScreen = ({navigation}: Props) => {
       <AddAccountForm
         setIsModalVisible={setIsModalVisible}
         isModalVisible={isModalVisible}
-        editAccount={editAccount}
-        selectedCash={selectedCash}
-        setSelectedCash={setSelectedCash}
-        saveFormHandler={
-          editAccount ? submitEditedAccountHandler : saveFormHandler
-        }
         setAccountText={setAccountText}
         accountText={accountText}
         setBudget={setBudget}

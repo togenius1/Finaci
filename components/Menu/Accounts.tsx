@@ -166,8 +166,8 @@ const Accounts = ({setAccount, setAccountPressed}: Props) => {
       {addAccountPressed && (
         <View style={{left: 15, top: 40}}>
           <AddAccountForm
-            // selectedCash={selectedCash}
-            // setSelectedCash={setSelectedCash}
+            selectedCash={selectedCash}
+            setSelectedCash={setSelectedCash}
             // closeFormHandler={closeFormHandler}
             setAccountText={setAccountText}
             accountText={accountText}
