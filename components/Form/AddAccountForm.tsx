@@ -104,7 +104,7 @@ const AddAccountForm = ({
     setAddAccPressed(false);
   };
 
-  const saveAccountToCloud = () => {
+  const saveAccountToStorage = () => {
     console.log('save account to cloud');
     // if (selectedCash) {
     //   const cashId = 'cash-' + uuidv4();
@@ -307,7 +307,7 @@ const AddAccountForm = ({
               />
               <Pressable
                 style={({pressed}) => pressed && styles.pressed}
-                onPress={() => saveAccountToCloud()}>
+                onPress={() => saveAccountToStorage()}>
                 <Text style={{fontWeight: '800', color: '#0439c2'}}>
                   save acc
                 </Text>
@@ -340,7 +340,7 @@ const styles = StyleSheet.create({
 
     shadowOffset: {width: 0.5, height: 0.5},
     shadowOpacity: 0.7,
-    shadowRadius: 5,
+    shadowRadius: 3,
     elevation: 4,
     backgroundColor: 'white',
   },
@@ -357,7 +357,7 @@ const styles = StyleSheet.create({
 
     shadowOffset: {width: 0.5, height: 0.5},
     shadowOpacity: 0.7,
-    shadowRadius: 5,
+    shadowRadius: 2,
     elevation: 4,
   },
   accountsBtn: {
@@ -373,10 +373,10 @@ const styles = StyleSheet.create({
     borderColor: 'lightgrey',
     backgroundColor: 'white',
 
-    shadowOffset: {width: 0.5, height: 0.5},
+    shadowOffset: {width: 0, height: 0},
     shadowOpacity: 0.7,
-    shadowRadius: 5,
-    elevation: 1,
+    shadowRadius: 3,
+    elevation: 3,
   },
   searchContainer: {
     alignItems: 'center',
