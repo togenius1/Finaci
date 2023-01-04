@@ -12,19 +12,10 @@ import {
 import React, {useEffect, useState} from 'react';
 import {v4 as uuidv4} from 'uuid';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+// import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import Input from '../ManageExpense/Input';
-import Button from '../UI/CButton';
-import moment from 'moment';
-import {GlobalStyles} from '../../constants/styles';
 import {useAppDispatch, useAppSelector} from '../../hooks';
 import {accountActions} from '../../store/account-slice';
-import {AccountType} from '../../models/account';
-import {AccountCategory} from '../../dummy/account';
-import {fetchCashAccountsData} from '../../store/cash-action';
-import {fetchAccountsData} from '../../store/account-action';
-import CButton from '../UI/CButton';
 import {cashAccountsActions} from '../../store/cash-slice';
 
 type Props = {
@@ -32,7 +23,7 @@ type Props = {
   accountText: string | null;
   budget: number;
   setIsModalVisible: (value: boolean) => void;
-  setAccountText: (value: string) => void;
+  setAccountText: (value: string | null) => void;
   setBudget: (value: number) => void;
 };
 
@@ -53,26 +44,33 @@ const AddAccountForm = ({
   const dispatch = useAppDispatch();
   const dataLoaded = useAppSelector(store => store);
 
-  const [filterData, setFilterData] = useState<any[]>();
+  const accountsData = dataLoaded?.accounts?.accounts;
+  const cashData = dataLoaded?.cashAccounts?.cashAccounts;
+
+  const [filteredData, setFilteredData] = useState<any[]>();
   const [addAccPressed, setAddAccPressed] = useState<boolean>(false);
   const [selectedCash, setSelectedCash] = useState<boolean>(false);
+  const [savedAcc, setSavedAcc] = useState<boolean>(false);
   const [btnCashColor, setCashBtnColor] = useState<string | undefined>();
   const [btnAccColor, setAccBtnColor] = useState<string | undefined>(
     btnAccCashColor,
   );
 
-  const accountsData = dataLoaded?.accounts?.accounts;
-  const cashData = dataLoaded?.cashAccounts?.cashAccounts;
+  useEffect(() => {
+    setFilteredData(accountsData);
+  }, []);
 
   useEffect(() => {
-    setFilterData(accountsData);
-  }, [addAccPressed]);
+    searchFilterHandler(accountText);
+  }, [savedAcc]);
 
   function saveFormHandler() {
     // Reset State
     setIsModalVisible(false);
     setAddAccPressed(false);
+    setSavedAcc(false);
     setBudget(0);
+    setAccountText(null);
   }
 
   function categoryHandler(item) {
@@ -80,7 +78,7 @@ const AddAccountForm = ({
     setAddAccPressed(true);
   }
 
-  function searchFilterHandler(text) {
+  function searchFilterHandler(text: string | null) {
     if (text) {
       const newData = accountsData?.filter(item => {
         const itemData = item.title
@@ -89,28 +87,18 @@ const AddAccountForm = ({
         const textData = text.toUpperCase();
         return itemData.indexOf(textData) > -1;
       });
-      setFilterData(newData);
+      setFilteredData(newData);
     } else {
-      setFilterData(accountsData);
+      setFilteredData(accountsData);
     }
   }
 
-  const addNewHandler = () => {
-    console.log('add account');
+  const addAccHandler = () => {
     setAddAccPressed(true);
   };
 
-  const closeHandler = () => {
-    // Reset State
-    setIsModalVisible(false);
-    setAddAccPressed(false);
-    setBudget(0);
-  };
-
   const saveAccountHandler = () => {
-    // const findAccTitle = accountsData?.findIndex(
-    //   acc => acc?.title === accountText,
-    // );
+    setSavedAcc(true);
     const findAcc = accountsData?.filter(acc => acc?.title === accountText);
 
     // add new account
@@ -138,9 +126,6 @@ const AddAccountForm = ({
         }),
       );
     }
-
-    // Reset
-    // setAddAccPressed(true);
   };
 
   const saveCashHandler = () => {
@@ -181,6 +166,15 @@ const AddAccountForm = ({
     setSelectedCash(false);
   };
 
+  const closeHandler = () => {
+    // Reset State
+    setIsModalVisible(false);
+    setAddAccPressed(false);
+    setSavedAcc(false);
+    setBudget(0);
+    setAccountText(null);
+  };
+
   // Render Item
   const renderItem = ({item}) => {
     return (
@@ -196,8 +190,6 @@ const AddAccountForm = ({
       // </View>
     );
   };
-
-  console.log('Budget: ', budget);
 
   return (
     <Modal
@@ -296,12 +288,12 @@ const AddAccountForm = ({
                   searchFilterHandler(event.nativeEvent.text);
                 }}
                 onChangeText={setAccountText}
-                value={addAccPressed ? accountText : filterData}
+                value={addAccPressed ? accountText : filteredData}
               />
               <Pressable
                 style={({pressed}) => pressed && styles.pressed}
-                onPress={() => addNewHandler()}>
-                <Text style={styles.add}>add new</Text>
+                onPress={() => addAccHandler()}>
+                <Text style={styles.add}>add</Text>
               </Pressable>
             </View>
           </>
@@ -323,7 +315,7 @@ const AddAccountForm = ({
               <Pressable
                 style={({pressed}) => pressed && styles.pressed}
                 onPress={() => saveAccountHandler()}>
-                <Text style={styles.add}>save acc</Text>
+                <Text style={styles.add}>save</Text>
               </Pressable>
             </View>
           </>
@@ -332,7 +324,7 @@ const AddAccountForm = ({
         {!selectedCash && (
           <FlatList
             keyExtractor={item => item.title + uuidv4()}
-            data={filterData}
+            data={filteredData}
             renderItem={renderItem}
             bounces={false}
           />

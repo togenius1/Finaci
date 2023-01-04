@@ -57,18 +57,7 @@ const AccountsScreen = ({navigation}: Props) => {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [editedAccountId, setEditedAccountId] = useState<string | null>();
 
-  // Set accountText and budget to Storage, after add account.
-  // Update account details
-  useEffect(() => {
-    dispatch(fetchCashAccountsData());
-    dispatch(fetchAccountsData());
-  }, []);
-
-  useEffect(() => {
-    // setExpenseData(expenseD);
-    // setCashData(cashD);
-    // setAccountsData(accountsD);
-  }, [removeAccount, isModalVisible, editAccount]);
+  useEffect(() => {}, [accountsData]);
 
   if (
     cashData === undefined ||
@@ -77,6 +66,8 @@ const AccountsScreen = ({navigation}: Props) => {
   ) {
     return;
   }
+
+  console.log('accounts: ', accountsData);
 
   const cashBudget = sumTotalBudget(cashData)?.toFixed(2);
   const accountsBudget = sumTotalBudget(accountsData)?.toFixed(2);

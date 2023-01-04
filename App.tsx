@@ -19,6 +19,9 @@ import FinnerNavigator from './navigation/FinnerNavigator';
 import {User} from './src/models';
 
 import awsconfig from './src/aws-exports';
+import {useAppDispatch} from './hooks';
+import {fetchCashAccountsData} from './store/cash-action';
+import {fetchAccountsData} from './store/account-action';
 
 Amplify.configure(awsconfig);
 
@@ -32,6 +35,9 @@ const App = () => {
   // Disable warnings for release app.
   // LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message:
   // LogBox.ignoreAllLogs(); // Ignore all log notifications:
+
+  const dispatch = useAppDispatch();
+  // const dataLoaded = useAppSelector(store => store);
 
   const [currentUser, setCurrentUser] = useState<User | null>();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | undefined>();
@@ -65,6 +71,13 @@ const App = () => {
       } catch (err) {}
     };
     isAuthenticated();
+  }, []);
+
+  // Set accountText and budget to Storage, after add account.
+  // Update account details
+  useEffect(() => {
+    dispatch(fetchCashAccountsData());
+    dispatch(fetchAccountsData());
   }, []);
 
   // Check if authenticated user.
