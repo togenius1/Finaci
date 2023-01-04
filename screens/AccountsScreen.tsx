@@ -41,13 +41,13 @@ const AccountsScreen = ({navigation}: Props) => {
   const dispatch = useAppDispatch();
   const dataLoaded = useAppSelector(store => store);
 
-  const expenseD = dataLoaded?.expenses?.expenses;
-  const cashD = dataLoaded?.cashAccounts?.cashAccounts;
-  const accountsD = dataLoaded?.accounts?.accounts;
+  const expenseData = dataLoaded?.expenses?.expenses;
+  const cashData = dataLoaded?.cashAccounts?.cashAccounts;
+  const accountsData = dataLoaded?.accounts?.accounts;
 
-  const [expenseData, setExpenseData] = useState<ExpenseType>();
-  const [cashData, setCashData] = useState<CashType>();
-  const [accountsData, setAccountsData] = useState<AccountType>();
+  // const [expenseData, setExpenseData] = useState<ExpenseType>();
+  // const [cashData, setCashData] = useState<CashType>();
+  // const [accountsData, setAccountsData] = useState<AccountType>();
   // const [addAccountPressed, setAddAccountPressed] = useState<boolean>(false);
   const [accountText, setAccountText] = useState<string | null>('');
   const [budget, setBudget] = useState<number>(0);
@@ -65,9 +65,9 @@ const AccountsScreen = ({navigation}: Props) => {
   }, []);
 
   useEffect(() => {
-    setExpenseData(expenseD);
-    setCashData(cashD);
-    setAccountsData(accountsD);
+    // setExpenseData(expenseD);
+    // setCashData(cashD);
+    // setAccountsData(accountsD);
   }, [removeAccount, isModalVisible, editAccount]);
 
   if (

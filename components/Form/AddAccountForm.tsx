@@ -62,6 +62,7 @@ const AddAccountForm = ({
   );
 
   const accountsData = dataLoaded?.accounts?.accounts;
+  const cashData = dataLoaded?.cashAccounts?.cashAccounts;
 
   useEffect(() => {
     setFilterData(accountsData);
@@ -71,6 +72,7 @@ const AddAccountForm = ({
     // Reset State
     setIsModalVisible(false);
     setAddAccPressed(false);
+    setBudget(0);
   }
 
   function categoryHandler(item) {
@@ -102,59 +104,69 @@ const AddAccountForm = ({
     // Reset State
     setIsModalVisible(false);
     setAddAccPressed(false);
+    setBudget(0);
   };
 
-  const saveAccountToStorage = () => {
-    console.log('save account to cloud');
-    // if (selectedCash) {
-    //   const cashId = 'cash-' + uuidv4();
-    //   // Create new Cash Account
-    //   if (cashData?.length === 0) {
-    //     dispatch(
-    //       cashAccountsActions.addCashAccount({
-    //         id: cashId,
-    //         budget: budget,
-    //         date: new Date(),
-    //       }),
-    //     );
-    //   } else {
-    //     // Update Cash Account
-    //     dispatch(
-    //       cashAccountsActions.updateCashAccount({
-    //         id: cashData[0]?.id,
-    //         budget: +cashData[0]?.budget + +budget,
-    //         date: new Date(),
-    //       }),
-    //     );
-    //   }
-    // } else {
-    //   //
-    //   const accId = 'cash-' + uuidv4();
-    //   const findAccTitle = accountsData?.findIndex(
-    //     acc => acc?.title === accountText,
-    //   );
-    //   // dispatch account
-    //   if (accountsData?.length === 0 || findAccTitle === -1) {
-    //     dispatch(
-    //       accountActions.addAccount({
-    //         id: accId,
-    //         title: accountText,
-    //         budget: budget,
-    //         date: new Date(),
-    //         removable: true,
-    //       }),
-    //     );
-    //   } else {
-    //     Alert.alert('Account Warning', 'The account is in the list already.');
-    //   }
-    // }
+  const saveAccountHandler = () => {
+    // const findAccTitle = accountsData?.findIndex(
+    //   acc => acc?.title === accountText,
+    // );
+    const findAcc = accountsData?.filter(acc => acc?.title === accountText);
+
+    // add new account
+    // if (accountsData?.length === 0 || findAccTitle === -1) {
+    if (findAcc?.length === 0) {
+      const accId = 'account-' + uuidv4();
+      dispatch(
+        accountActions.addAccount({
+          id: accId,
+          title: accountText,
+          budget: budget,
+          date: new Date(),
+          // removable: true,
+        }),
+      );
+    } else {
+      // Update the account
+      dispatch(
+        accountActions.updateAccount({
+          id: findAcc[0]?.id,
+          title: accountText,
+          budget: +findAcc[0]?.budget + +budget,
+          date: new Date(),
+          // removable: true,
+        }),
+      );
+    }
 
     // Reset
     // setAddAccPressed(true);
   };
 
+  const saveCashHandler = () => {
+    // Create new Cash Account
+    if (cashData?.length === 0) {
+      const cashId = 'cash-' + uuidv4();
+      dispatch(
+        cashAccountsActions.addCashAccount({
+          id: cashId,
+          budget: budget,
+          date: new Date(),
+        }),
+      );
+    } else {
+      // Update Cash Account
+      dispatch(
+        cashAccountsActions.updateCashAccount({
+          id: cashData[0]?.id,
+          budget: +cashData[0]?.budget + +budget,
+          date: new Date(),
+        }),
+      );
+    }
+  };
+
   const cashBtnPressedHandler = () => {
-    console.log('cash pressed');
     setCashBtnColor(btnAccCashColor);
     setAccBtnColor(undefined);
     // Reset
@@ -162,8 +174,6 @@ const AddAccountForm = ({
   };
 
   const accBtnPressedHandler = () => {
-    console.log('acc pressed');
-
     setCashBtnColor(undefined);
     setAccBtnColor(btnAccCashColor);
 
@@ -186,6 +196,8 @@ const AddAccountForm = ({
       // </View>
     );
   };
+
+  console.log('Budget: ', budget);
 
   return (
     <Modal
@@ -259,6 +271,11 @@ const AddAccountForm = ({
                 onChangeText={setBudget}
                 value={budget}
               />
+              <Pressable
+                style={({pressed}) => pressed && styles.pressed}
+                onPress={() => saveCashHandler()}>
+                <Text style={styles.add}>add</Text>
+              </Pressable>
             </View>
           </View>
         )}
@@ -284,9 +301,7 @@ const AddAccountForm = ({
               <Pressable
                 style={({pressed}) => pressed && styles.pressed}
                 onPress={() => addNewHandler()}>
-                <Text style={{fontWeight: '800', color: '#0439c2'}}>
-                  add new
-                </Text>
+                <Text style={styles.add}>add new</Text>
               </Pressable>
             </View>
           </>
@@ -307,10 +322,8 @@ const AddAccountForm = ({
               />
               <Pressable
                 style={({pressed}) => pressed && styles.pressed}
-                onPress={() => saveAccountToStorage()}>
-                <Text style={{fontWeight: '800', color: '#0439c2'}}>
-                  save acc
-                </Text>
+                onPress={() => saveAccountHandler()}>
+                <Text style={styles.add}>save acc</Text>
               </Pressable>
             </View>
           </>
@@ -352,8 +365,11 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   close: {
-    backgroundColor: 'lightgrey',
+    backgroundColor: '#e6e6e6',
     borderColor: 'white',
+    width: WIDTH * 0.08,
+    height: WIDTH * 0.08,
+    // marginLeft: WIDTH - WIDTH * 0.08 - 20,
 
     shadowOffset: {width: 0.5, height: 0.5},
     shadowOpacity: 0.7,
@@ -374,9 +390,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
 
     shadowOffset: {width: 0, height: 0},
-    shadowOpacity: 0.7,
-    shadowRadius: 3,
-    elevation: 3,
+    shadowOpacity: 0.75,
+    shadowRadius: 1,
+    elevation: 1,
   },
   searchContainer: {
     alignItems: 'center',
@@ -393,6 +409,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderWidth: 1,
     borderColor: 'grey',
+  },
+  add: {
+    fontSize: WIDTH * 0.055,
+    fontWeight: '800',
+    color: '#0439c2',
   },
   item: {
     padding: height * 0.012,
