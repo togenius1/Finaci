@@ -1,5 +1,4 @@
 import {
-  Alert,
   Dimensions,
   FlatList,
   Modal,
@@ -29,7 +28,6 @@ type Props = {
 
 const {width, height} = Dimensions.get('window');
 const WIDTH = width * 0.9;
-
 const btnAccCashColor = '#ffe9b9';
 
 const AddAccountForm = ({

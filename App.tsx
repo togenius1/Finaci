@@ -73,13 +73,6 @@ const App = () => {
     isAuthenticated();
   }, []);
 
-  // Set accountText and budget to Storage, after add account.
-  // Update account details
-  useEffect(() => {
-    dispatch(fetchCashAccountsData());
-    dispatch(fetchAccountsData());
-  }, []);
-
   // Check if authenticated user.
   const checkUser = async () => {
     try {

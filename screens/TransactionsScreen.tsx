@@ -1,5 +1,4 @@
 import {
-  ActivityIndicator,
   Dimensions,
   Platform,
   Pressable,
@@ -12,24 +11,11 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import moment from 'moment';
 
-import {EXPENSES, INCOME} from '../dummy/dummy';
-import {ExpenseCategory} from '../dummy/categoryItems';
 import IconButton from '../components/UI/iconButton';
 import TransactionOutput from '../components/Output/TransactionOutput';
 import MonthYearList from '../components/Menu/MonthYearList';
 import {TransactionNavigationProp} from '../types';
-import {ExpenseType} from '../models/expense';
-import {CategoryType} from '../models/category';
-import {IncomeType} from '../models/income';
-import {MonthTransactions} from '../dummy/transactions/monthlyTransact';
-import {WeekTransactions} from '../dummy/transactions/weeklyTransact';
-import {DailyTractions} from '../dummy/transactions/dailyTransact';
 import {useAppDispatch, useAppSelector} from '../hooks';
-import {fetchWeeklyTransactsData} from '../store/weeklyTransact-action';
-import {fetchDailyTransactsData} from '../store/dailyTransact-action';
-import {fetchMonthlyTransactsData} from '../store/monthlyTransact-action';
-import {fetchExpensesData} from '../store/expense-action';
-import {fetchIncomesData} from '../store/income-action';
 
 type Props = {
   navigation: TransactionNavigationProp;

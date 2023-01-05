@@ -51,13 +51,25 @@ const AccountsScreen = ({navigation}: Props) => {
   // const [addAccountPressed, setAddAccountPressed] = useState<boolean>(false);
   const [accountText, setAccountText] = useState<string | null>('');
   const [budget, setBudget] = useState<number>(0);
-  const [selectedCash, setSelectedCash] = useState<boolean>(true);
+  // const [selectedCash, setSelectedCash] = useState<boolean>(true);
   const [removeAccount, setRemoveAccount] = useState<boolean>(false);
   const [editAccount, setEditAccount] = useState<boolean>(false);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [editedAccountId, setEditedAccountId] = useState<string | null>();
+  const [loadingScreen, setLoadingScreen] = useState(false);
 
-  useEffect(() => {}, [accountsData]);
+  // Set accountText and budget to Storage, after add account.
+  // Update account details
+  useEffect(() => {
+    // setLoadingScreen(true);
+    if (accountsData === null) {
+      dispatch(fetchCashAccountsData());
+      dispatch(fetchAccountsData());
+    }
+    // setLoadingScreen(false);
+  }, []);
+
+  useEffect(() => {}, [accountsData, cashData]);
 
   if (
     cashData === undefined ||
@@ -66,8 +78,6 @@ const AccountsScreen = ({navigation}: Props) => {
   ) {
     return;
   }
-
-  console.log('accounts: ', accountsData);
 
   const cashBudget = sumTotalBudget(cashData)?.toFixed(2);
   const accountsBudget = sumTotalBudget(accountsData)?.toFixed(2);
@@ -87,45 +97,6 @@ const AccountsScreen = ({navigation}: Props) => {
   }
 
   // function closeFormHandler() {
-  //   setIsModalVisible(false);
-  // }
-
-  // function saveFormHandler() {
-  //   if (selectedCash) {
-  //     const cashId = 'cash-' + uuidv4();
-  //     // Create new Cash Account
-  //     if (cashData?.length === 0) {
-  //       dispatch(
-  //         cashAccountsActions.addCashAccount({
-  //           id: cashId,
-  //           budget: budget,
-  //           date: new Date(),
-  //         }),
-  //       );
-  //     } else {
-  //       Alert.alert('Account Warning', 'This account is in the list already!');
-  //     }
-  //   } else {
-  //     //
-  //     const accId = 'account-' + uuidv4();
-  //     const findAccTitle = accountsData?.findIndex(
-  //       acc => acc?.title === accountText,
-  //     );
-  //     // dispatch account
-  //     if (accountsData?.length === 0 || findAccTitle === -1) {
-  //       dispatch(
-  //         accountActions.addAccount({
-  //           id: accId,
-  //           title: accountText,
-  //           budget: budget,
-  //           date: new Date(),
-  //         }),
-  //       );
-  //     } else {
-  //       Alert.alert('Account Warning', 'This account is in the list already!');
-  //     }
-  //   }
-
   //   setIsModalVisible(false);
   // }
 
@@ -194,6 +165,7 @@ const AccountsScreen = ({navigation}: Props) => {
   const renderItem = ({item}) => {
     const accBalance = +item.budget - +totalExpenses;
 
+    // if (!loadingScreen)
     return (
       <View>
         {item?.budget > 0 ? (
@@ -242,6 +214,7 @@ const AccountsScreen = ({navigation}: Props) => {
         ) : null}
       </View>
     );
+    // return null;
   };
 
   return (

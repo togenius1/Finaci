@@ -6,7 +6,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import React, {useEffect} from 'react';
+import React from 'react';
 import {v4 as uuidv4} from 'uuid';
 import moment from 'moment';
 // import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -17,11 +17,8 @@ import {getDaysInWeek} from '../../util/date';
 import Export from '../Menu/Export';
 import {useAppDispatch, useAppSelector} from '../../hooks';
 import {useNavigation} from '@react-navigation/native';
-import {ExpenseType} from '../../models/expense';
-import {IncomeType} from '../../models/income';
 import {TransactionSummaryNavigationProp} from '../../types';
-import {fetchWeeklyTransactsData} from '../../store/weeklyTransact-action';
-import {fetchDailyTransactsData} from '../../store/dailyTransact-action';
+
 
 type Props = {
   monthlyPressed: boolean;
