@@ -61,12 +61,10 @@ const AccountsScreen = ({navigation}: Props) => {
   // Set accountText and budget to Storage, after add account.
   // Update account details
   useEffect(() => {
-    // setLoadingScreen(true);
     if (accountsData === null) {
       dispatch(fetchCashAccountsData());
       dispatch(fetchAccountsData());
     }
-    // setLoadingScreen(false);
   }, []);
 
   useEffect(() => {}, [accountsData, cashData]);
@@ -124,7 +122,6 @@ const AccountsScreen = ({navigation}: Props) => {
 
   const submitEditedAccountHandler = () => {
     const cashOrAcc = editedAccountId?.split('-')[0];
-    console.log('cash or acc', cashOrAcc);
     if (cashOrAcc === 'cash') {
       const cashId = cashData[0]?.id;
       if (cashData?.length > 0) {
