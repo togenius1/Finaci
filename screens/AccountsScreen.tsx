@@ -59,7 +59,6 @@ const AccountsScreen = ({navigation}: Props) => {
   const [loadingScreen, setLoadingScreen] = useState(false);
 
   // Set accountText and budget to Storage, after add account.
-  // Update account details
   useEffect(() => {
     if (accountsData === null) {
       dispatch(fetchCashAccountsData());
