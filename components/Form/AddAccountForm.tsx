@@ -21,6 +21,7 @@ type Props = {
   isModalVisible: boolean;
   accountText: string | null;
   budget: number;
+  setLoadingData: (value: boolean) => void;
   setIsModalVisible: (value: boolean) => void;
   setAccountText: (value: string | null) => void;
   setBudget: (value: number) => void;
@@ -37,6 +38,7 @@ const AddAccountForm = ({
   setAccountText,
   budget,
   setBudget,
+  setLoadingData,
 }: Props) => {
   //
   const dispatch = useAppDispatch();
@@ -97,8 +99,8 @@ const AddAccountForm = ({
 
   const saveAccountHandler = () => {
     setSavedAcc(true);
+    setLoadingData(true);
     const findAcc = accountsData?.filter(acc => acc?.title === accountText);
-
     // add new account
     // if (accountsData?.length === 0 || findAccTitle === -1) {
     if (findAcc?.length === 0) {
@@ -124,9 +126,11 @@ const AddAccountForm = ({
         }),
       );
     }
+    setLoadingData(false);
   };
 
   const saveCashHandler = () => {
+    setLoadingData(true);
     // Create new Cash Account
     if (cashData?.length === 0) {
       const cashId = 'cash-' + uuidv4();
@@ -147,6 +151,7 @@ const AddAccountForm = ({
         }),
       );
     }
+    setLoadingData(false);
   };
 
   const cashBtnPressedHandler = () => {

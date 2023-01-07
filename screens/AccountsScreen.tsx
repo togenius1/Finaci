@@ -56,9 +56,15 @@ const AccountsScreen = ({navigation}: Props) => {
   const [editAccount, setEditAccount] = useState<boolean>(false);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [editedAccountId, setEditedAccountId] = useState<string | null>();
-  const [loadingScreen, setLoadingScreen] = useState(false);
+  const [loadingData, setLoadingData] = useState<boolean>(false);
 
-  // Set accountText and budget to Storage, after add account.
+  // Reset Storage
+  // useEffect(() => {
+  //   dispatch(fetchCashAccountsData());
+  //   dispatch(fetchAccountsData());
+  //   dispatch(fetchExpensesData());
+  // }, []);
+
   useEffect(() => {
     if (accountsData === null) {
       dispatch(fetchCashAccountsData());
@@ -75,6 +81,8 @@ const AccountsScreen = ({navigation}: Props) => {
   ) {
     return;
   }
+
+  console.log('Account: ', accountsData);
 
   const cashBudget = sumTotalBudget(cashData)?.toFixed(2);
   const accountsBudget = sumTotalBudget(accountsData)?.toFixed(2);
@@ -277,6 +285,7 @@ const AccountsScreen = ({navigation}: Props) => {
         accountText={accountText}
         setBudget={setBudget}
         budget={budget}
+        setLoadingData={setLoadingData}
       />
     </View>
   );
