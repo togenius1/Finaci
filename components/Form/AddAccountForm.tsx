@@ -122,7 +122,6 @@ const AddAccountForm = ({
       );
     } else {
       if (isEditAccount) {
-        console.log('is edit acc: ', isEditAccount);
         // Edit account
         dispatch(
           accountActions.updateAccount({
@@ -160,15 +159,28 @@ const AddAccountForm = ({
         }),
       );
     } else {
-      // Update Cash Account
-      dispatch(
-        cashAccountsActions.updateCashAccount({
-          id: cashData[0]?.id,
-          budget: +cashData[0]?.budget + +budget,
-          date: new Date(),
-        }),
-      );
+      if (isEditAccount) {
+        // Update Cash Account
+        dispatch(
+          cashAccountsActions.updateCashAccount({
+            id: cashData[0]?.id,
+            budget: +budget,
+            date: new Date(),
+          }),
+        );
+        setIsEditAccount(false);
+      } else {
+        // Update Cash Account
+        dispatch(
+          cashAccountsActions.updateCashAccount({
+            id: cashData[0]?.id,
+            budget: +cashData[0]?.budget + +budget,
+            date: new Date(),
+          }),
+        );
+      }
     }
+    resetHandler();
   };
 
   const cashBtnPressedHandler = () => {
@@ -286,7 +298,7 @@ const AddAccountForm = ({
               <Pressable
                 style={({pressed}) => pressed && styles.pressed}
                 onPress={() => saveCashHandler()}>
-                <Text style={styles.add}>add</Text>
+                <Text style={styles.add}>save</Text>
               </Pressable>
             </View>
           </View>
