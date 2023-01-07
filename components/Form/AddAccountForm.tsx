@@ -20,11 +20,10 @@ import {cashAccountsActions} from '../../store/cash-slice';
 type Props = {
   isModalVisible: boolean;
   accountText: string | null;
-  budget: number;
-  setLoadingData: (value: boolean) => void;
+  // budget: number;
   setIsModalVisible: (value: boolean) => void;
   setAccountText: (value: string | null) => void;
-  setBudget: (value: number) => void;
+  // setBudget: (value: number) => void;
 };
 
 const {width, height} = Dimensions.get('window');
@@ -36,9 +35,7 @@ const AddAccountForm = ({
   setIsModalVisible,
   accountText,
   setAccountText,
-  budget,
-  setBudget,
-  setLoadingData,
+
 }: Props) => {
   //
   const dispatch = useAppDispatch();
@@ -47,6 +44,7 @@ const AddAccountForm = ({
   const accountsData = dataLoaded?.accounts?.accounts;
   const cashData = dataLoaded?.cashAccounts?.cashAccounts;
 
+  const [budget, setBudget] = useState<number | undefined>(0);
   const [filteredData, setFilteredData] = useState<any[]>();
   const [addAccPressed, setAddAccPressed] = useState<boolean>(false);
   const [selectedCash, setSelectedCash] = useState<boolean>(false);
@@ -99,7 +97,6 @@ const AddAccountForm = ({
 
   const saveAccountHandler = () => {
     setSavedAcc(true);
-    setLoadingData(true);
     const findAcc = accountsData?.filter(acc => acc?.title === accountText);
     // add new account
     // if (accountsData?.length === 0 || findAccTitle === -1) {
@@ -109,9 +106,9 @@ const AddAccountForm = ({
         accountActions.addAccount({
           id: accId,
           title: accountText,
-          budget: budget,
+          budget: +budget,
           date: new Date(),
-          // removable: true,
+          removable: true,
         }),
       );
     } else {
@@ -122,22 +119,20 @@ const AddAccountForm = ({
           title: accountText,
           budget: +findAcc[0]?.budget + +budget,
           date: new Date(),
-          // removable: true,
+          removable: true,
         }),
       );
     }
-    setLoadingData(false);
   };
 
   const saveCashHandler = () => {
-    setLoadingData(true);
     // Create new Cash Account
     if (cashData?.length === 0) {
       const cashId = 'cash-' + uuidv4();
       dispatch(
         cashAccountsActions.addCashAccount({
           id: cashId,
-          budget: budget,
+          budget: +budget,
           date: new Date(),
         }),
       );
@@ -151,7 +146,6 @@ const AddAccountForm = ({
         }),
       );
     }
-    setLoadingData(false);
   };
 
   const cashBtnPressedHandler = () => {

@@ -7,7 +7,7 @@ import {
   Dimensions,
   Alert,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {v4 as uuidv4} from 'uuid';
 
@@ -24,6 +24,7 @@ import {fetchExpensesData} from '../store/expense-action';
 import {fetchAccountsData} from '../store/account-action';
 import {fetchCashAccountsData} from '../store/cash-action';
 import {cashAccountsActions} from '../store/cash-slice';
+import {shallowEqual} from 'react-redux';
 // import { AccountCategory, CashCategory } from '../dummy/account';
 
 type Props = {
@@ -39,24 +40,31 @@ const {width} = Dimensions.get('window');
 
 const AccountsScreen = ({navigation}: Props) => {
   const dispatch = useAppDispatch();
-  const dataLoaded = useAppSelector(store => store);
-
-  const expenseData = dataLoaded?.expenses?.expenses;
-  const cashData = dataLoaded?.cashAccounts?.cashAccounts;
-  const accountsData = dataLoaded?.accounts?.accounts;
+  const expenseData = useAppSelector(
+    state => state.expenses.expenses,
+    // shallowEqual,
+  );
+  const cashData = useAppSelector(
+    state => state.cashAccounts.cashAccounts,
+    // shallowEqual,
+  );
+  const accountsData = useAppSelector(
+    state => state.accounts.accounts,
+    // shallowEqual,
+  );
 
   // const [expenseData, setExpenseData] = useState<ExpenseType>();
   // const [cashData, setCashData] = useState<CashType>();
   // const [accountsData, setAccountsData] = useState<AccountType>();
   // const [addAccountPressed, setAddAccountPressed] = useState<boolean>(false);
   const [accountText, setAccountText] = useState<string | null>('');
-  const [budget, setBudget] = useState<number>(0);
-  // const [selectedCash, setSelectedCash] = useState<boolean>(true);
   const [removeAccount, setRemoveAccount] = useState<boolean>(false);
   const [editAccount, setEditAccount] = useState<boolean>(false);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [editedAccountId, setEditedAccountId] = useState<string | null>();
-  const [loadingData, setLoadingData] = useState<boolean>(false);
+  const [cashBudget, setCashBudget] = useState<number | undefined>();
+  const [accountsBudget, setAccountsBudget] = useState<number | undefined>();
+  const [totalExpenses, setTotalExpenses] = useState<number | undefined>();
 
   // Reset Storage
   // useEffect(() => {
@@ -72,7 +80,15 @@ const AccountsScreen = ({navigation}: Props) => {
     }
   }, []);
 
-  useEffect(() => {}, [accountsData, cashData]);
+  useEffect(() => {
+    const cashBudget = sumTotalBudget(cashData);
+    const accountsBudget = sumTotalBudget(accountsData);
+    const totalExpenses = sumTotalFunc(expenseData);
+
+    setCashBudget(cashBudget);
+    setAccountsBudget(accountsBudget);
+    setTotalExpenses(totalExpenses);
+  }, [totalExpenses, accountsBudget, cashBudget]);
 
   if (
     cashData === undefined ||
@@ -82,12 +98,7 @@ const AccountsScreen = ({navigation}: Props) => {
     return;
   }
 
-  console.log('Account: ', accountsData);
-
-  const cashBudget = sumTotalBudget(cashData)?.toFixed(2);
-  const accountsBudget = sumTotalBudget(accountsData)?.toFixed(2);
-  const totalAssets = +cashBudget + +accountsBudget;
-  const totalExpenses = sumTotalFunc(expenseData)?.toFixed(2);
+  const totalAssets = Number(cashBudget) + Number(accountsBudget);
   const total = totalAssets - +totalExpenses;
 
   function onAccountsHandler(item) {
@@ -100,10 +111,6 @@ const AccountsScreen = ({navigation}: Props) => {
   function openAddAccountForm() {
     setIsModalVisible(pressed => !pressed);
   }
-
-  // function closeFormHandler() {
-  //   setIsModalVisible(false);
-  // }
 
   const removeAccountHandler = accountId => {
     setRemoveAccount(true);
@@ -166,59 +173,74 @@ const AccountsScreen = ({navigation}: Props) => {
     setEditAccount(false);
   };
 
-  const renderItem = ({item}) => {
-    const accBalance = +item.budget - +totalExpenses;
+  // Sort Data
+  const getSortedState = data =>
+    [...data]?.sort((a, b) => parseInt(b.budget) - parseInt(a.budget));
+  const sortedItems = useMemo(() => {
+    if (accountsData) {
+      return getSortedState(accountsData);
+    }
 
-    // if (!loadingScreen)
+    return accountsData;
+  }, [accountsData]);
+
+  console.log('account: ', accountsData);
+
+  const renderItem = ({item}) => {
+    const accBalance = +item.budget - Number(totalExpenses);
+
+    console.log('item: ', item);
+
+    if (+item.budget === 0) return;
+
     return (
       <View>
-        {item?.budget > 0 ? (
-          <Pressable
-            key={item}
-            style={({pressed}) => pressed && styles.pressed}
-            onPress={() => onAccountsHandler(item)}
-            onLongPress={() =>
-              Alert.alert(
-                'Edit or Delete?',
-                'You can Edit or remove the account.',
-                [
-                  {
-                    text: 'Delete',
-                    onPress: () => removeAccountHandler(item?.id),
-                  },
-                  {
-                    text: 'Edit',
-                    onPress: () => editAccountPressedHandler(item?.id),
-                    // style: 'cancel',
-                  },
-                ],
+        {/* {Number(item.budget) > 0 ? ( */}
+        <Pressable
+          key={item}
+          style={({pressed}) => pressed && styles.pressed}
+          onPress={() => onAccountsHandler(item)}
+          onLongPress={() =>
+            Alert.alert(
+              'Edit or Delete?',
+              'You can Edit or remove the account.',
+              [
                 {
-                  cancelable: true,
-                  // onDismiss: () =>
-                  //   Alert.alert(
-                  //     'This alert was dismissed by tapping outside of the alert dialog.',
-                  //   ),
+                  text: 'Delete',
+                  onPress: () => removeAccountHandler(item?.id),
                 },
-              )
-            }>
-            <View style={styles.item}>
-              <View>
-                <Text style={{fontSize: 16}}>{item.title}</Text>
-              </View>
-              <View style={{justifyContent: 'center', alignItems: 'center'}}>
-                <Text style={{fontSize: 16, fontWeight: 'bold', color: 'blue'}}>
-                  {currencyFormatter(+accBalance, {})}
-                </Text>
-                <Text style={{fontSize: 11, marginTop: 10}}>
-                  ({currencyFormatter(+item.budget, {})} budget)
-                </Text>
-              </View>
+                {
+                  text: 'Edit',
+                  onPress: () => editAccountPressedHandler(item?.id),
+                  // style: 'cancel',
+                },
+              ],
+              {
+                cancelable: true,
+                // onDismiss: () =>
+                //   Alert.alert(
+                //     'This alert was dismissed by tapping outside of the alert dialog.',
+                //   ),
+              },
+            )
+          }>
+          <View style={styles.item}>
+            <View>
+              <Text style={{fontSize: 16}}>{item.title}</Text>
             </View>
-          </Pressable>
-        ) : null}
+            <View style={{justifyContent: 'center', alignItems: 'center'}}>
+              <Text style={{fontSize: 16, fontWeight: 'bold', color: 'blue'}}>
+                {currencyFormatter(+accBalance, {})}
+              </Text>
+              <Text style={{fontSize: 11, marginTop: 10}}>
+                ({currencyFormatter(+item.budget, {})} budget)
+              </Text>
+            </View>
+          </View>
+        </Pressable>
+        {/* ) : null} */}
       </View>
     );
-    // return null;
   };
 
   return (
@@ -261,7 +283,7 @@ const AccountsScreen = ({navigation}: Props) => {
           <Text style={styles.accountTitle}>Accounts</Text>
           <FlatList
             keyExtractor={item => item.id + uuidv4()}
-            data={accountsData}
+            data={sortedItems}
             renderItem={renderItem}
             bounces={false}
           />
@@ -283,9 +305,6 @@ const AccountsScreen = ({navigation}: Props) => {
         isModalVisible={isModalVisible}
         setAccountText={setAccountText}
         accountText={accountText}
-        setBudget={setBudget}
-        budget={budget}
-        setLoadingData={setLoadingData}
       />
     </View>
   );

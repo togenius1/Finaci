@@ -20,7 +20,7 @@ export const getJsonObject = async () => {
     // console.log(jsonValue);
     return jsonValue != null ? JSON.parse(jsonValue) : null;
   } catch (err) {
-    console.log('Effor: ', err);
+    // console.log('Effor: ', err);
   }
 };
 
@@ -37,9 +37,9 @@ export const restoreDataHandler = async () => {
     .catch(err => {
       console.log(err.message, err.code);
     });
-  console.log('encrypted: ', data);
+  // console.log('encrypted: ', data);
   const decrypted = await decryption(data);
-  console.log('decrypted: ', decrypted);
+  // console.log('decrypted: ', decrypted);
   return data;
 };
 
@@ -49,7 +49,7 @@ export const handleDocumentSelection = async () => {
     const response = await DocumentPicker.pickSingle({
       presentationStyle: 'fullScreen',
     });
-    console.log('response: ', response);
+    // console.log('response: ', response);
     return response;
   } catch (err) {
     console.warn(err);

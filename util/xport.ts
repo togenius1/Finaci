@@ -23,7 +23,7 @@ export const xport = async data => {
   var file = RNFS.DocumentDirectoryPath + `/${fileName}.xlsx`;
   writeFile(file, wbout, 'ascii')
     .then(r => {
-      console.log('FILE WRITTEN!\n' + file);
+      // console.log('FILE WRITTEN!\n' + file);
       customShare(file);
     })
     .catch(err => {
@@ -32,15 +32,15 @@ export const xport = async data => {
 };
 
 const customShare = async url => {
-  console.log(url);
+  // console.log(url);
   const shareOptions = {
     url: `file://${url}`,
   };
 
   try {
     const ShareResponse = await Share.open(shareOptions);
-    console.log(ShareResponse);
+    // console.log(ShareResponse);
   } catch (error) {
-    console.log('Error ==>', error);
+    // console.log('Error ==>', error);
   }
 };

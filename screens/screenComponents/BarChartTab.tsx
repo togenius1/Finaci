@@ -32,7 +32,7 @@ const BarchartTab = ({data, fromDate}: Props) => {
   const totalExpenses = +totalExp.toFixed(2);
   const dayLeft = +moment().daysInMonth() - moment().date();
 
-  console.log(leftToSpend);
+  // console.log(leftToSpend);
 
   let budgetPerDay;
   if (dayLeft === 0) {

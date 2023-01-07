@@ -11,11 +11,11 @@ const {width, height} = Dimensions.get('window');
 
 const RecommendScreen = (props: Props) => {
   const sendCodeHandler = () => {
-   console.log('send link download to friend')
+  //  console.log('send link download to friend')
   };
 
   const onCopyCode = () => {
-    console.log('copy code');
+    // console.log('copy code');
   };
 
   return (
