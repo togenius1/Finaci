@@ -5,29 +5,33 @@ import {
   FlatList,
   Pressable,
   Dimensions,
-  Alert,
 } from 'react-native';
-import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {v4 as uuidv4} from 'uuid';
 
 import AddAccountForm from '../Form/AddAccountForm';
-import {useAppDispatch, useAppSelector} from '../../hooks';
-import {accountActions} from '../../store/account-slice';
-import {AccountType, CashType} from '../../models/account';
+import {useAppSelector} from '../../hooks';
+
+import {AccountType} from '../../models/account';
 import {currencyFormatter} from '../../util/currencyFormatter';
 import {sumTotalBudget, sumTotalFunc} from '../../util/math';
 // import {EXPENSES} from '../../dummy/dummy';
 // import {AccountCategory, CashCategory} from '../../dummy/account';
-import {fetchCashAccountsData} from '../../store/cash-action';
-import {fetchExpenseCategoriesData} from '../../store/expense-category-action';
-import {fetchAccountsData} from '../../store/account-action';
-import {cashAccountsActions} from '../../store/cash-slice';
-import {isEmpty} from '@aws-amplify/core';
+import AddAccountBtn from '../UI/AddAccountBtn';
+import {useNavigation} from '@react-navigation/native';
+import AccountHeader from '../AccountHeader';
 
 type Dispatcher<S> = Dispatch<SetStateAction<S>>;
 
 type Props = {
+  // navigation: AccountNavigationType;
   setAccount: Dispatcher<AccountType>;
   setAccountPressed: Dispatcher<boolean>;
 };
@@ -35,44 +39,81 @@ type Props = {
 const {width, height} = Dimensions.get('window');
 
 const Accounts = ({setAccount, setAccountPressed}: Props) => {
-  const dispatch = useAppDispatch();
-  const dataLoaded = useAppSelector(store => store);
+  const navigation = useNavigation();
+  // const dispatch = useAppDispatch();
+  const expenseData = useAppSelector(
+    state => state.expenses.expenses,
+    // shallowEqual,
+  );
+  const cashData = useAppSelector(
+    state => state.cashAccounts.cashAccounts,
+    // shallowEqual,
+  );
+  const accountsData = useAppSelector(
+    state => state.accounts.accounts,
+    // shallowEqual,
+  );
 
-  const expenseData = dataLoaded?.expenses?.expenses;
-  const cashData = dataLoaded?.cashAccounts?.cashAccounts;
-  const accountsData = dataLoaded?.accounts?.accounts;
-
-  // const [expenseData, setExpenseData] = useState<AccountType>();
-  // const [accountsData, setAccountsData] = useState<AccountType>();
-  // const [cashData, setCashData] = useState<CashType>();
-  const [addAccountPressed, setAddAccountPressed] = useState<boolean>(false);
   const [accountText, setAccountText] = useState<string | null>('');
-  const [budget, setBudget] = useState<number>(0);
-  const [selectedCash, setSelectedCash] = useState<boolean>(true);
+  const [isEditAccount, setIsEditAccount] = useState<boolean>(false);
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [cashBudget, setCashBudget] = useState<number | undefined>();
+  const [accountsBudget, setAccountsBudget] = useState<number | undefined>();
+  const [totalExpenses, setTotalExpenses] = useState<number | undefined>();
+  const [addAccPressed, setAddAccPressed] = useState<boolean>(false);
+  const [budget, setBudget] = useState<number | undefined>();
 
   // useEffect(() => {
-  //   dispatch(fetchCashAccountsData());
-  //   dispatch(fetchAccountsData());
+  //   if (accountsData === null) {
+  //     dispatch(fetchCashAccountsData());
+  //     dispatch(fetchAccountsData());
+  //   }
   // }, []);
 
+  useEffect(() => {
+    const cashBudget = sumTotalBudget(cashData);
+    const accountsBudget = sumTotalBudget(accountsData);
+    const totalExpenses = sumTotalFunc(expenseData);
+
+    setCashBudget(cashBudget);
+    setAccountsBudget(accountsBudget);
+    setTotalExpenses(totalExpenses);
+  }, [expenseData, accountsData, cashData]);
+
   if (
-    accountsData === undefined ||
     cashData === undefined ||
+    accountsData === undefined ||
     expenseData === undefined
   ) {
     return;
   }
 
-  function addAccountHandler() {
-    setAddAccountPressed(pressed => !pressed);
+  function onAccountsHandler(item) {
+    setAccountPressed(false);
+    setAccount(item === undefined ? 0 : item);
   }
 
-  // function closeFormHandler() {
-  //   setAddAccountPressed(false);
-  // }
+  const totalAssets = Number(cashBudget) + Number(accountsBudget);
+  const total = totalAssets - +totalExpenses;
+
+  function openAddAccountForm() {
+    setIsModalVisible(pressed => !pressed);
+  }
+
+  // Sort Data
+  const getSortedState = data =>
+    [...data]?.sort((a, b) => parseInt(b.budget) - parseInt(a.budget));
+  const sortedItems = useMemo(() => {
+    if (accountsData) {
+      return getSortedState(accountsData);
+    }
+    return accountsData;
+  }, [accountsData]);
 
   const renderItem = ({item}) => {
     const budgeted = currencyFormatter(+item.budget, {});
+
+    if (item?.budget === 0) return;
 
     return (
       <View>
@@ -89,17 +130,6 @@ const Accounts = ({setAccount, setAccountPressed}: Props) => {
     );
   };
 
-  function onAccountsHandler(item) {
-    setAccountPressed(false);
-    setAccount(item === undefined ? 0 : item);
-  }
-
-  const cashBudget = sumTotalBudget(cashData)?.toFixed(2);
-  const accountsBudget = sumTotalBudget(accountsData)?.toFixed(2);
-  const totalAssets = +cashBudget + +accountsBudget;
-  const totalExpenses = sumTotalFunc(expenseData)?.toFixed(2);
-  const total = totalAssets - +totalExpenses;
-
   return (
     <View style={styles.container}>
       <Pressable
@@ -111,24 +141,12 @@ const Accounts = ({setAccount, setAccountPressed}: Props) => {
           <Ionicons name="close" size={24} color="black" />
         </View>
       </Pressable>
-      <View style={styles.assetsContainer}>
-        <View>
-          <Text>Assets</Text>
-          <Text style={{color: 'green'}}>
-            {currencyFormatter(+totalAssets, {})}
-          </Text>
-        </View>
-        <View>
-          <Text>Liabilities</Text>
-          <Text style={{color: 'red'}}>
-            {currencyFormatter(+totalExpenses, {})}
-          </Text>
-        </View>
-        <View>
-          <Text>Total</Text>
-          <Text>{currencyFormatter(+total, {})}</Text>
-        </View>
-      </View>
+
+      <AccountHeader
+        totalAssets={totalAssets}
+        totalExpenses={totalExpenses}
+        total={total}
+      />
 
       <View style={{marginTop: 20}}>
         <Pressable
@@ -146,36 +164,30 @@ const Accounts = ({setAccount, setAccountPressed}: Props) => {
           <Text style={styles.accountTitle}>Accounts</Text>
           <FlatList
             keyExtractor={item => item.title + uuidv4()}
-            data={accountsData}
+            data={sortedItems}
             renderItem={renderItem}
             bounces={false}
           />
         </View>
       </View>
-      <View style={styles.addButton}>
-        {/* <Text>Add Account</Text> */}
-        <Pressable
-          style={({pressed}) => pressed && styles.pressed}
-          onPress={() => addAccountHandler()}>
-          <View style={{marginRight: 10, marginBottom: 15}}>
-            <Ionicons name="add-circle" size={width * 0.15} color="#367ed5" />
-          </View>
-        </Pressable>
-      </View>
 
-      {addAccountPressed && (
-        <View style={{left: 15, top: 40}}>
-          <AddAccountForm
-            selectedCash={selectedCash}
-            setSelectedCash={setSelectedCash}
-            // closeFormHandler={closeFormHandler}
-            setAccountText={setAccountText}
-            accountText={accountText}
-            setBudget={setBudget}
-            budget={budget}
-          />
-        </View>
-      )}
+      <AddAccountBtn
+        onPress={openAddAccountForm}
+        style={{position: 'absolute', bottom: -15}}
+      />
+
+      <AddAccountForm
+        setIsModalVisible={setIsModalVisible}
+        isModalVisible={isModalVisible}
+        setAccountText={setAccountText}
+        accountText={accountText}
+        addAccPressed={addAccPressed}
+        setAddAccPressed={setAddAccPressed}
+        budget={budget}
+        setBudget={setBudget}
+        isEditAccount={isEditAccount}
+        setIsEditAccount={setIsEditAccount}
+      />
     </View>
   );
 };
@@ -185,10 +197,10 @@ export default Accounts;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: width * 0.9,
-    height: height * 0.8,
+    width: width * 0.95,
+    height: height * 0.84,
     position: 'absolute',
-    top: 50,
+    top: 10,
     shadowOffset: {width: 0, height: 0},
     shadowOpacity: 0.7,
     shadowRadius: 3,

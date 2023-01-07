@@ -38,6 +38,7 @@ import {store} from '../store';
 import {getWeekInMonth} from '../util/date';
 import {weeklyTransactsActions} from '../store/weeklyTransact-slice';
 import {dailyTransactsActions} from '../store/dailyTransact-slice';
+import AccountsElement from './screenComponents/AccountComponents';
 
 type Props = {
   navigation: AddDetailsNavigationType;
@@ -109,12 +110,12 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
 
   // Provision categories should move from dummy to constant folder
   // to Load the existing categories
-  useEffect(() => {
-    dispatch(fetchAccountsData());
-    dispatch(fetchCashAccountsData());
-    dispatch(fetchExpenseCategoriesData());
-    dispatch(fetchIncomeCategoriesData());
-  }, []);
+  // useEffect(() => {
+  //   dispatch(fetchAccountsData());
+  //   dispatch(fetchCashAccountsData());
+  //   dispatch(fetchExpenseCategoriesData());
+  //   dispatch(fetchIncomeCategoriesData());
+  // }, []);
 
   useEffect(() => {
     navigation.setOptions({
@@ -314,7 +315,6 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     const transact_daily = dataLoaded?.dailyTransacts?.dailyTransacts;
     const findDay = transact_daily?.filter(transact => transact?.date === date);
 
-
     if (findDay[0]?.date !== undefined) {
       dispatch(
         dailyTransactsActions.updateDailyTransacts({
@@ -439,6 +439,8 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
       )}
 
       {accountPressed && (
+        // <AccountsElement />
+
         <Accounts
           setAccount={setAccount}
           setAccountPressed={setAccountPressed}

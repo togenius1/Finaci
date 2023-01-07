@@ -63,6 +63,7 @@ const AddAccountForm = ({
   const [btnAccColor, setAccBtnColor] = useState<string | undefined>(
     btnAccCashColor,
   );
+  
 
   useEffect(() => {
     setFilteredData(accountsData);
@@ -386,14 +387,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginHorizontal: 10,
     marginTop: 10,
-    marginBottom: 20,
+    marginBottom: 25,
+    // backgroundColor: 'magenta',
   },
   close: {
     backgroundColor: '#e6e6e6',
     borderColor: 'white',
-    width: WIDTH * 0.08,
-    height: WIDTH * 0.08,
-    // marginLeft: WIDTH - WIDTH * 0.08 - 20,
+    width: WIDTH * 0.075,
+    height: WIDTH * 0.075,
+    marginLeft: WIDTH - WIDTH * 0.08 - 20,
 
     shadowOffset: {width: 0.5, height: 0.5},
     shadowOpacity: 0.7,
