@@ -25,6 +25,7 @@ import {fetchAccountsData} from '../store/account-action';
 import {fetchCashAccountsData} from '../store/cash-action';
 import {cashAccountsActions} from '../store/cash-slice';
 import {shallowEqual} from 'react-redux';
+import {acc} from 'react-native-reanimated';
 // import { AccountCategory, CashCategory } from '../dummy/account';
 
 type Props = {
@@ -59,12 +60,14 @@ const AccountsScreen = ({navigation}: Props) => {
   // const [addAccountPressed, setAddAccountPressed] = useState<boolean>(false);
   const [accountText, setAccountText] = useState<string | null>('');
   const [removeAccount, setRemoveAccount] = useState<boolean>(false);
-  const [editAccount, setEditAccount] = useState<boolean>(false);
+  const [isEditAccount, setIsEditAccount] = useState<boolean>(false);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [editedAccountId, setEditedAccountId] = useState<string | null>();
   const [cashBudget, setCashBudget] = useState<number | undefined>();
   const [accountsBudget, setAccountsBudget] = useState<number | undefined>();
   const [totalExpenses, setTotalExpenses] = useState<number | undefined>();
+  const [addAccPressed, setAddAccPressed] = useState<boolean>(false);
+  const [budget, setBudget] = useState<number | undefined>();
 
   // Reset Storage
   // useEffect(() => {
@@ -112,11 +115,11 @@ const AccountsScreen = ({navigation}: Props) => {
     setIsModalVisible(pressed => !pressed);
   }
 
-  const removeAccountHandler = accountId => {
+  const removeAccountHandler = (accountId: string) => {
     setRemoveAccount(true);
     const findAcc = accountsData?.filter(acc => acc?.id === accountId);
 
-    if (findAcc?.length > 0 && findAcc[0]?.removable === true) {
+    if (findAcc?.length > 0) {
       dispatch(
         accountActions.deleteAccount({
           accountId,
@@ -128,10 +131,15 @@ const AccountsScreen = ({navigation}: Props) => {
     setRemoveAccount(false);
   };
 
-  const editAccountPressedHandler = accId => {
+  const editAccountPressedHandler = (accId: string) => {
+    const findAcc = accountsData?.filter(acc => acc?.id === accId);
+
     setIsModalVisible(true);
-    setEditAccount(true);
+    setIsEditAccount(true);
     setEditedAccountId(accId);
+    setAddAccPressed(true);
+    setAccountText(findAcc[0]?.title);
+    setBudget(findAcc[0]?.budget);
   };
 
   const submitEditedAccountHandler = () => {
@@ -180,16 +188,11 @@ const AccountsScreen = ({navigation}: Props) => {
     if (accountsData) {
       return getSortedState(accountsData);
     }
-
     return accountsData;
   }, [accountsData]);
 
-  console.log('account: ', accountsData);
-
   const renderItem = ({item}) => {
     const accBalance = +item.budget - Number(totalExpenses);
-
-    console.log('item: ', item);
 
     if (+item.budget === 0) return;
 
@@ -206,13 +209,18 @@ const AccountsScreen = ({navigation}: Props) => {
               'You can Edit or remove the account.',
               [
                 {
+                  text: 'Edit',
+                  onPress: () => editAccountPressedHandler(item?.id),
+                  // style: 'cancel',
+                },
+                {
                   text: 'Delete',
                   onPress: () => removeAccountHandler(item?.id),
                 },
                 {
-                  text: 'Edit',
-                  onPress: () => editAccountPressedHandler(item?.id),
-                  // style: 'cancel',
+                  text: 'Cancel',
+                  // onPress: () => editAccountPressedHandler(item?.id),
+                  style: 'cancel',
                 },
               ],
               {
@@ -305,6 +313,12 @@ const AccountsScreen = ({navigation}: Props) => {
         isModalVisible={isModalVisible}
         setAccountText={setAccountText}
         accountText={accountText}
+        addAccPressed={addAccPressed}
+        setAddAccPressed={setAddAccPressed}
+        budget={budget}
+        setBudget={setBudget}
+        isEditAccount={isEditAccount}
+        setIsEditAccount={setIsEditAccount}
       />
     </View>
   );

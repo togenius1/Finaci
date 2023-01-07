@@ -20,10 +20,14 @@ import {cashAccountsActions} from '../../store/cash-slice';
 type Props = {
   isModalVisible: boolean;
   accountText: string | null;
-  // budget: number;
+  addAccPressed: boolean;
+  budget: number | undefined;
+  isEditAccount: boolean;
+  setBudget: (value: number | undefined) => void;
+  setIsEditAccount: (value: boolean) => void;
+  setAddAccPressed: (value: boolean) => void;
   setIsModalVisible: (value: boolean) => void;
   setAccountText: (value: string | null) => void;
-  // setBudget: (value: number) => void;
 };
 
 const {width, height} = Dimensions.get('window');
@@ -35,18 +39,24 @@ const AddAccountForm = ({
   setIsModalVisible,
   accountText,
   setAccountText,
-
+  addAccPressed,
+  setAddAccPressed,
+  budget,
+  setBudget,
+  isEditAccount,
+  setIsEditAccount,
 }: Props) => {
   //
+
   const dispatch = useAppDispatch();
   const dataLoaded = useAppSelector(store => store);
 
   const accountsData = dataLoaded?.accounts?.accounts;
   const cashData = dataLoaded?.cashAccounts?.cashAccounts;
 
-  const [budget, setBudget] = useState<number | undefined>(0);
+  // const [budget, setBudget] = useState<number | undefined>(0);
   const [filteredData, setFilteredData] = useState<any[]>();
-  const [addAccPressed, setAddAccPressed] = useState<boolean>(false);
+  // const [addAccPressed, setAddAccPressed] = useState<boolean>(false);
   const [selectedCash, setSelectedCash] = useState<boolean>(false);
   const [savedAcc, setSavedAcc] = useState<boolean>(false);
   const [btnCashColor, setCashBtnColor] = useState<string | undefined>();
@@ -62,7 +72,7 @@ const AddAccountForm = ({
     searchFilterHandler(accountText);
   }, [savedAcc]);
 
-  function saveFormHandler() {
+  function resetHandler() {
     // Reset State
     setIsModalVisible(false);
     setAddAccPressed(false);
@@ -108,21 +118,34 @@ const AddAccountForm = ({
           title: accountText,
           budget: +budget,
           date: new Date(),
-          removable: true,
         }),
       );
     } else {
-      // Update the account
-      dispatch(
-        accountActions.updateAccount({
-          id: findAcc[0]?.id,
-          title: accountText,
-          budget: +findAcc[0]?.budget + +budget,
-          date: new Date(),
-          removable: true,
-        }),
-      );
+      if (isEditAccount) {
+        console.log('is edit acc: ', isEditAccount);
+        // Edit account
+        dispatch(
+          accountActions.updateAccount({
+            id: findAcc[0]?.id,
+            title: accountText,
+            budget: +budget,
+            date: new Date(),
+          }),
+        );
+        setIsEditAccount(false);
+      } else {
+        // Update the account
+        dispatch(
+          accountActions.updateAccount({
+            id: findAcc[0]?.id,
+            title: accountText,
+            budget: +findAcc[0]?.budget + +budget,
+            date: new Date(),
+          }),
+        );
+      }
     }
+    resetHandler();
   };
 
   const saveCashHandler = () => {
@@ -205,7 +228,7 @@ const AddAccountForm = ({
             </View>
           </Pressable>
 
-          <Pressable
+          {/* <Pressable
             style={({pressed}) => pressed && styles.pressed}
             onPress={() => saveFormHandler()}>
             <View>
@@ -218,7 +241,7 @@ const AddAccountForm = ({
                 Save
               </Text>
             </View>
-          </Pressable>
+          </Pressable> */}
         </View>
 
         <View style={styles.accountsBtn}>
