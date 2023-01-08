@@ -39,7 +39,7 @@ type Props = {
 const {width, height} = Dimensions.get('window');
 
 const Accounts = ({setAccount, setAccountPressed}: Props) => {
-  const navigation = useNavigation();
+  // const navigation = useNavigation();
   // const dispatch = useAppDispatch();
   const expenseData = useAppSelector(
     state => state.expenses.expenses,
@@ -114,7 +114,6 @@ const Accounts = ({setAccount, setAccountPressed}: Props) => {
     const budgeted = currencyFormatter(+item.budget, {});
 
     if (item?.budget === 0) return;
-
     return (
       <View>
         <Pressable
@@ -151,7 +150,7 @@ const Accounts = ({setAccount, setAccountPressed}: Props) => {
       <View style={{marginTop: 20}}>
         <Pressable
           style={({pressed}) => pressed && styles.pressed}
-          onPress={() => onAccountsHandler(cashData[0]?.title)}>
+          onPress={() => onAccountsHandler(cashData[0])}>
           <View style={styles.item}>
             <Text style={{fontSize: 16, fontWeight: 'bold'}}>Cash</Text>
             <Text>{currencyFormatter(cashBudget, {})}</Text>

@@ -19,8 +19,8 @@ const incomeSlice = createSlice({
       if (!existingItem) {
         state.incomes.push({
           id: newIncomes.id,
-          cateId: newIncomes.cateId,
           accountId: newIncomes.accountId,
+          cateId: newIncomes.cateId,
           amount: newIncomes.amount,
           note: newIncomes.note,
           date: newIncomes.date,

@@ -18,27 +18,13 @@ import Category from '../components/Form/Category';
 // } from '../dummy/categoryItems';
 // import {AccountCategory} from '../dummy/account';
 import {CategoryType} from '../models/category';
-import {fetchAccountsData} from '../store/account-action';
-import {fetchExpenseCategoriesData} from '../store/expense-category-action';
-import {fetchIncomeCategoriesData} from '../store/income-category-action';
 // import {fetchTransferCategoriesData} from '../store/transfer-category-action';
 import {sumByDate, sumByMonth, sumByWeek} from '../util/math';
-import {fetchCashAccountsData} from '../store/cash-action';
-import {monthlyTransaction} from '../util/transaction';
+
 import {monthlyTransactsActions} from '../store/monthlyTransact-slice';
-import {fetchExpensesData} from '../store/expense-action';
-import {fetchIncomesData} from '../store/income-action';
-import {fetchDailyTransactsData} from '../store/dailyTransact-action';
-import {fetchMonthlyTransactsData} from '../store/monthlyTransact-action';
-import {fetchWeeklyTransactsData} from '../store/weeklyTransact-action';
-import {Button} from 'react-native-share';
-import CButton from '../components/UI/CButton';
-import {isEmpty} from '@aws-amplify/core';
-import {store} from '../store';
 import {getWeekInMonth} from '../util/date';
 import {weeklyTransactsActions} from '../store/weeklyTransact-slice';
 import {dailyTransactsActions} from '../store/dailyTransact-slice';
-import AccountsElement from './screenComponents/AccountComponents';
 
 type Props = {
   navigation: AddDetailsNavigationType;
@@ -69,7 +55,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
   const [note, setNote] = useState<Note>({
     note: '',
   });
-  const [cateData, setCateData] = useState<CategoryType>();
+  // const [cateData, setCateData] = useState<CategoryType>();
   // const [date, setDate] = useState<string | null>();
 
   // set initial date: from Calculator route or from Account route
@@ -107,15 +93,6 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     account?.title === 'Cash'
       ? cashAccountCategoryById?.id
       : accountCategoryById?.id;
-
-  // Provision categories should move from dummy to constant folder
-  // to Load the existing categories
-  // useEffect(() => {
-  //   dispatch(fetchAccountsData());
-  //   dispatch(fetchCashAccountsData());
-  //   dispatch(fetchExpenseCategoriesData());
-  //   dispatch(fetchIncomeCategoriesData());
-  // }, []);
 
   useEffect(() => {
     navigation.setOptions({
@@ -439,8 +416,6 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
       )}
 
       {accountPressed && (
-        // <AccountsElement />
-
         <Accounts
           setAccount={setAccount}
           setAccountPressed={setAccountPressed}

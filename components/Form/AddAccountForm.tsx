@@ -63,7 +63,6 @@ const AddAccountForm = ({
   const [btnAccColor, setAccBtnColor] = useState<string | undefined>(
     btnAccCashColor,
   );
-  
 
   useEffect(() => {
     setFilteredData(accountsData);
@@ -151,10 +150,11 @@ const AddAccountForm = ({
   const saveCashHandler = () => {
     // Create new Cash Account
     if (cashData?.length === 0) {
-      const cashId = 'cash-' + uuidv4();
+      const cashId = 'cash1';
       dispatch(
         cashAccountsActions.addCashAccount({
           id: cashId,
+          title: 'Cash',
           budget: +budget,
           date: new Date(),
         }),
@@ -165,6 +165,7 @@ const AddAccountForm = ({
         dispatch(
           cashAccountsActions.updateCashAccount({
             id: cashData[0]?.id,
+            title: 'Cash',
             budget: +budget,
             date: new Date(),
           }),
@@ -175,6 +176,7 @@ const AddAccountForm = ({
         dispatch(
           cashAccountsActions.updateCashAccount({
             id: cashData[0]?.id,
+            title: 'Cash',
             budget: +cashData[0]?.budget + +budget,
             date: new Date(),
           }),

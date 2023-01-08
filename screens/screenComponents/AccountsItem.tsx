@@ -13,21 +13,22 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import moment from 'moment';
 import {v4 as uuidv4} from 'uuid';
 
-import {ExpenseCategory, IncomeCategory} from '../dummy/categoryItems';
-import {EXPENSES, INCOME} from '../dummy/dummy';
+import {ExpenseCategory, IncomeCategory} from '../../dummy/categoryItems';
+import {EXPENSES, INCOME} from '../../dummy/dummy';
 import {
   // sortDataByDay,
   sumByCustomDate,
   // sumByDate,
   sumTotalFunc,
-} from '../util/math';
-import MonthYearList from '../components/Menu/MonthYearList';
-import {AccountsItemNavigationType, AccountsItemRouteProp} from '../types';
-import {ExpenseType} from '../models/expense';
-import {AccountType, CashType} from '../models/account';
-import {IncomeType} from '../models/income';
-import {currencyFormatter} from '../util/currencyFormatter';
-import {AccountCategory, CashCategory} from '../dummy/account';
+} from '../../util/math';
+import MonthYearList from '../../components/Menu/MonthYearList';
+import {AccountsItemNavigationType, AccountsItemRouteProp} from '../../types';
+import {ExpenseType} from '../../models/expense';
+import {AccountType, CashType} from '../../models/account';
+import {IncomeType} from '../../models/income';
+import {currencyFormatter} from '../../util/currencyFormatter';
+import {AccountCategory, CashCategory} from '../../dummy/account';
+import {useAppDispatch, useAppSelector} from '../../hooks';
 
 type Props = {
   navigation: AccountsItemNavigationType;
@@ -37,6 +38,16 @@ type Props = {
 interface MenuHandlerType {
   monthlyClickedHandler: () => void;
   customClickedHandler: () => void;
+}
+
+interface HeaderRightComponentType {
+  fromDate: string | null;
+  toDate: string | null;
+  showCustomDate: boolean;
+  fromDateClickedHandler: () => void;
+  toDateClickedHandler: () => void;
+  rightMenuClickedHandler: () => void;
+  showMonthYearListMenuHandler: () => void;
 }
 
 // CONSTANT
@@ -80,16 +91,6 @@ function MenuHandler({
       </Pressable>
     </View>
   );
-}
-
-interface HeaderRightComponentType {
-  fromDate: string | null;
-  toDate: string | null;
-  showCustomDate: boolean;
-  fromDateClickedHandler: () => void;
-  toDateClickedHandler: () => void;
-  rightMenuClickedHandler: () => void;
-  showMonthYearListMenuHandler: () => void;
 }
 
 function HeaderRightComponent({
@@ -167,10 +168,10 @@ function HeaderRightComponent({
 }
 
 function AccountsItem({navigation, route}: Props) {
-  const [expensesData, setExpensesData] = useState<ExpenseType>();
-  const [accountsData, setAccountsData] = useState<AccountType>();
-  const [cashData, setCashData] = useState<CashType>();
-  const [incomesData, setIncomesData] = useState<IncomeType>();
+  // const [expensesData, setExpensesData] = useState<ExpenseType>();
+  // const [accountsData, setAccountsData] = useState<AccountType>();
+  // const [cashData, setCashData] = useState<CashType>();
+  // const [incomesData, setIncomesData] = useState<IncomeType>();
   const [mode, setMode] = useState<string | null>('date');
   const [fromDate, setFromDate] = useState<string | null>(initFromDate);
   const [toDate, setToDate] = useState<string | null>(initToDate);
@@ -185,11 +186,29 @@ function AccountsItem({navigation, route}: Props) {
   const [fromDateClicked, setFromDateClicked] = React.useState<boolean>(false);
   const [showCustomDate, setShowCustomDate] = React.useState<boolean>(false);
 
+  // const dispatch = useAppDispatch();
+  const expensesData = useAppSelector(
+    state => state.expenses.expenses,
+    // shallowEqual,
+  );
+  const incomesData = useAppSelector(
+    state => state.incomes.incomes,
+    // shallowEqual,
+  );
+  const cashData = useAppSelector(
+    state => state.cashAccounts.cashAccounts,
+    // shallowEqual,
+  );
+  const accountsData = useAppSelector(
+    state => state.accounts.accounts,
+    // shallowEqual,
+  );
+
   useEffect(() => {
-    setExpensesData(EXPENSES);
-    setIncomesData(INCOME);
-    setAccountsData(AccountCategory);
-    setCashData(CashCategory);
+    // setExpensesData(expenseData);
+    // setIncomesData(incomeData);
+    // setCashData(cashData);
+    // setAccountsData(accountsData);
     onMonthYearSelectedHandler(String(moment().month()));
   }, []);
 
@@ -258,6 +277,9 @@ function AccountsItem({navigation, route}: Props) {
   const budget = +account[0]?.budget;
   const total = totalIncomeByAccount - totalExpenseByAccount;
   const balance = total + budget;
+
+  console.log(accountId);
+  console.log(selectedDurationExpenseData);
 
   // Combine expense and income data sum by custom
   const sumExpenseByCustomDate = sumByCustomDate(
@@ -373,6 +395,7 @@ function AccountsItem({navigation, route}: Props) {
   const renderItem = ({item}) => {
     // expense: item.Products[0]
     // income: item.Products[1]
+    // console.log(item);
     const expenseAmount = +item.Products[0]?.amount;
     const incomeAmount = +item.Products[1]?.amount;
 

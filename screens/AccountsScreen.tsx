@@ -19,7 +19,8 @@ const AccountsScreen = ({navigation}: Props) => {
     setIsModalVisible(pressed => !pressed);
   }
 
-  function onAccountsHandler(item) {
+  function onNavigate(item) {
+    console.log(item);
     navigation.navigate('AccountsItem', {
       account: item.title,
       accountId: item.id,
@@ -32,7 +33,7 @@ const AccountsScreen = ({navigation}: Props) => {
         navigation={navigation}
         isModalVisible={isModalVisible}
         setIsModalVisible={setIsModalVisible}
-        onNavigate={onAccountsHandler}
+        onNavigate={onNavigate}
       />
       <AddAccountBtn onPress={openAddAccountForm} />
     </View>
