@@ -1,4 +1,5 @@
 import {
+  Alert,
   Dimensions,
   FlatList,
   Pressable,
@@ -6,7 +7,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {v4 as uuidv4} from 'uuid';
 import moment from 'moment';
 // import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -18,7 +19,13 @@ import Export from '../Menu/Export';
 import {useAppDispatch, useAppSelector} from '../../hooks';
 import {useNavigation} from '@react-navigation/native';
 import {TransactionSummaryNavigationProp} from '../../types';
-
+import {fetchCashAccountsData} from '../../store/cash-action';
+import {fetchAccountsData} from '../../store/account-action';
+import {fetchExpensesData} from '../../store/expense-action';
+import {fetchIncomesData} from '../../store/income-action';
+import {fetchMonthlyTransactsData} from '../../store/monthlyTransact-action';
+import {fetchWeeklyTransactsData} from '../../store/weeklyTransact-action';
+import {fetchDailyTransactsData} from '../../store/dailyTransact-action';
 
 type Props = {
   monthlyPressed: boolean;
@@ -37,13 +44,14 @@ interface HeaderSummaryType {
   totalExpenses: number;
 }
 
-interface DailyItemType {
+export interface DailyItemType {
   incomeAmount: number;
   expenseAmount: number;
   day: number;
   dayLabel: string;
   monthLabel: string;
   year: number;
+  time: string;
   navigation: TransactionSummaryNavigationProp;
 }
 
@@ -205,17 +213,26 @@ const DailyItem = ({
   dayLabel,
   monthLabel,
   year,
+  time,
   navigation,
 }: DailyItemType) => {
   if (day < 10) {
     day = `0${day}`;
   }
 
+  const month = moment().month(monthLabel).format('MM');
+  const date = `${year}-${month}-${day}`;
+
   return (
     <View style={styles.list}>
       <Pressable
         style={({pressed}) => pressed && styles.pressed}
-        onPress={() => navigation.navigate('AddDetails')}>
+        onPress={() =>
+          navigation.navigate('IncomesDetails', {
+            date: date,
+            time: time,
+          })
+        }>
         <View
           style={{
             justifyContent: 'center',
@@ -231,7 +248,12 @@ const DailyItem = ({
 
       <Pressable
         style={({pressed}) => pressed && styles.pressed}
-        onPress={() => navigation.navigate('AddDetails')}>
+        onPress={() =>
+          navigation.navigate('ExpensesDetails', {
+            date: date,
+            time: time,
+          })
+        }>
         <View
           style={{
             justifyContent: 'center',
@@ -266,10 +288,7 @@ const TransactionSummary = ({
   toDate,
   exportPressed,
   year,
-}: // monthlyTransactions,
-// weeklyTransactions,
-// dailyTransactions,
-Props) => {
+}: Props) => {
   // Parameters
   let _renderItem = '';
   let _renderData = [];
@@ -312,9 +331,11 @@ Props) => {
   // const dailyData = dailyTransaction(String(fromDate), String(toDate), date);
   const dailyData = dataLoaded?.dailyTransacts?.dailyTransacts.filter(
     transact =>
-      new Date(transact?.date) >= new Date(fromDate) &&
-      new Date(transact?.date) <= new Date(toDate),
+      moment(transact?.date).format('YYYY-MM-DD') >= fromDate &&
+      moment(transact?.date).format('YYYY-MM-DD') <= toDate,
   );
+
+  // console.log('dailyData: ', dailyData);
 
   // on pressed
   if (monthlyPressed) {
@@ -336,8 +357,8 @@ Props) => {
 
   //sort Data
   _renderData?.sort((a: any, b: any) => {
-    const dateA = new Date(moment(a.date).format('YYYY-MM-DD'));
-    const dateB = new Date(moment(b.date).format('YYYY-MM-DD'));
+    const dateA = new Date(moment(a.date).format('YYYY-MM-DD HH:mm:ss'));
+    const dateB = new Date(moment(b.date).format('YYYY-MM-DD HH:mm:ss'));
     if (dateA > dateB) {
       return -1; // return -1 here for DESC order
     }
@@ -349,7 +370,14 @@ Props) => {
     const expenseAmount = currencyFormatter(item.expense_daily, {});
     const incomeAmount = currencyFormatter(item.income_daily, {});
 
-    if (customPressed && +expenseAmount === 0 && +incomeAmount === 0) {
+    console.log(customPressed);
+    console.log(+expenseAmount === 0);
+    console.log(incomeAmount);
+
+    // if (!customPressed && +expenseAmount === 0 && +incomeAmount === 0) {
+    //   return;
+    // }
+    if (+expenseAmount === 0 && +incomeAmount === 0) {
       return;
     }
 
@@ -358,6 +386,7 @@ Props) => {
     if (day < 10) {
       day = +`0${day}`;
     }
+    const time = moment(date).format('hh:mm A');
 
     const dayLabel = moment(date).format('ddd');
     const monthLabel = moment(date).format('MMM');
@@ -371,6 +400,7 @@ Props) => {
         dayLabel={dayLabel}
         monthLabel={monthLabel}
         year={year}
+        time={time}
         navigation={navigation}
       />
     );
@@ -463,6 +493,6 @@ const styles = StyleSheet.create({
     marginRight: 15,
   },
   pressed: {
-    opacity: 0.75,
+    opacity: 0.65,
   },
 });

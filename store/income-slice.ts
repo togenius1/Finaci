@@ -28,7 +28,7 @@ const incomeSlice = createSlice({
       }
     },
     deleteIncome(state, action) {
-      const id = action.payload;
+      const id = action.payload.incomeId;
       const existingItem = state.incomes.find(income => income.id === id);
       if (existingItem) {
         state.incomes = state.incomes.filter(income => income.id !== id);

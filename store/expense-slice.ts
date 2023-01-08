@@ -28,7 +28,7 @@ const expenseSlice = createSlice({
       }
     },
     deleteExpense(state, action) {
-      const id = action.payload;
+      const id = action.payload.expenseId;
       const existingItem = state.expenses.find(expense => expense.id === id);
       if (existingItem) {
         state.expenses = state.expenses.filter(expense => expense.id !== id);

@@ -19,9 +19,16 @@ import FinnerNavigator from './navigation/FinnerNavigator';
 import {User} from './src/models';
 
 import awsconfig from './src/aws-exports';
-import {useAppDispatch} from './hooks';
+import {useAppDispatch, useAppSelector} from './hooks';
 import {fetchCashAccountsData} from './store/cash-action';
 import {fetchAccountsData} from './store/account-action';
+import {fetchIncomeCategoriesData} from './store/income-category-action';
+import {fetchExpenseCategoriesData} from './store/expense-category-action';
+import {fetchExpensesData} from './store/expense-action';
+import {fetchIncomesData} from './store/income-action';
+import {fetchDailyTransactsData} from './store/dailyTransact-action';
+import {fetchMonthlyTransactsData} from './store/monthlyTransact-action';
+import {fetchWeeklyTransactsData} from './store/weeklyTransact-action';
 
 Amplify.configure(awsconfig);
 
@@ -37,13 +44,53 @@ const App = () => {
   // LogBox.ignoreAllLogs(); // Ignore all log notifications:
 
   const dispatch = useAppDispatch();
-  // const dataLoaded = useAppSelector(store => store);
+  const expenseCateData = useAppSelector(
+    state => state.expenseCategories.expenseCategories,
+    // shallowEqual,
+  );
+  const incomesCateData = useAppSelector(
+    state => state.incomeCategories.incomeCategories,
+    // shallowEqual,
+  );
+  const cashData = useAppSelector(
+    state => state.cashAccounts.cashAccounts,
+    // shallowEqual,
+  );
+  const accountsData = useAppSelector(
+    state => state.accounts.accounts,
+    // shallowEqual,
+  );
 
   const [currentUser, setCurrentUser] = useState<User | null>();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | undefined>();
   const [cloudPrivateKey, setCloudPrivateKey] = useState<string | null>();
   const [closedAds, setClosedAds] = useState<boolean>(false);
   // const [localPrivateKey, setLocalPrivateKey] = useState<string | null>();
+
+  //Reset Expense
+  // useEffect(() => {
+  //   dispatch(fetchExpensesData());
+  //   dispatch(fetchIncomesData());
+  //   dispatch(fetchMonthlyTransactsData());
+  //   dispatch(fetchWeeklyTransactsData());
+  //   dispatch(fetchDailyTransactsData());
+  // }, []);
+
+  // Load Existing Category
+  useEffect(() => {
+    if (expenseCateData.length === 0) {
+      dispatch(fetchExpenseCategoriesData());
+    }
+    if (incomesCateData.length === 0) {
+      dispatch(fetchIncomeCategoriesData());
+    }
+    if (cashData.length === 0) {
+      dispatch(fetchCashAccountsData());
+    }
+    if (accountsData.length === 0) {
+      dispatch(fetchAccountsData());
+    }
+  }, []);
 
   // Listening for Login events.
   useEffect(() => {

@@ -42,10 +42,10 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
   const categoryTitle = route.params?.transaction?.categoryTitle;
   const accountTitle = route.params?.transaction?.account;
   const d = route.params?.transaction?.date;
-  const createdDate = moment(d).format('YYYY-MM-DD');
+  const createdDate = moment(d).format('YYYY-MM-DD HH:mm:ss');
 
   const [textDate, setTextDate] = useState<string | null>(
-    String(moment().format('YYYY-MM-DD')),
+    String(moment().format('YYYY-MM-DD HH:mm:ss')),
   );
   const [categoryPressed, setCategoryPressed] = useState<boolean>(false);
   const [category, setCategory] = useState();
@@ -61,7 +61,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
   // set initial date: from Calculator route or from Account route
   const initialDate =
     createdDate !== undefined
-      ? moment(createdDate).format('YYYY-MM-DD')
+      ? moment(createdDate).format('YYYY-MM-DD HH:mm:ss')
       : textDate;
 
   const expenses = dataLoaded?.expenses?.expenses;
@@ -238,7 +238,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
   };
 
   const dailyTransactionsUpdate = () => {
-    const date = moment(textDate).format('YYYY-MM-DD');
+    const date = moment(textDate).format('YYYY-MM-DD HH:mm:ss');
     const day = moment(textDate).date();
 
     if (type === 'expense') {
@@ -290,9 +290,14 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     day: number,
   ) => {
     const transact_daily = dataLoaded?.dailyTransacts?.dailyTransacts;
-    const findDay = transact_daily?.filter(transact => transact?.date === date);
+    const findDay = transact_daily?.filter(
+      transact =>
+        moment(transact?.date).format('YYYY-MM-DD') ===
+        moment(date).format('YYYY-MM-DD'),
+    );
 
-    if (findDay[0]?.date !== undefined) {
+    if (findDay?.length !== 0) {
+      console.log('Update');
       dispatch(
         dailyTransactsActions.updateDailyTransacts({
           id: uuidv4(),
@@ -303,7 +308,8 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
         }),
       );
     }
-    if (findDay[0]?.date === undefined) {
+    if (findDay?.length === 0) {
+      console.log('add new');
       dispatch(
         dailyTransactsActions.addDailyTransacts({
           id: uuidv4(),

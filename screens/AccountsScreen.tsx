@@ -20,7 +20,7 @@ const AccountsScreen = ({navigation}: Props) => {
   }
 
   function onNavigate(item) {
-    console.log(item);
+    // console.log(item);
     navigation.navigate('AccountsItem', {
       account: item.title,
       accountId: item.id,

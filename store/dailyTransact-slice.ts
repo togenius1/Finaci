@@ -44,7 +44,7 @@ const dailyTransactsSlice = createSlice({
     },
     updateDailyTransacts(state, action) {
       const updatedTransactIndex = state.dailyTransacts.findIndex(
-        transact => transact.date === action.payload.date,
+        transact => transact.day === action.payload.day,
       );
 
       state.dailyTransacts[updatedTransactIndex] = action.payload;

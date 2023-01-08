@@ -10,6 +10,7 @@ import {fetchAccountsData} from '../../store/account-action';
 import {sumTotalBudget, sumTotalFunc} from '../../util/math';
 import AddAccountForm from '../../components/Form/AddAccountForm';
 import AccountElement from './AccountElement';
+import { fetchExpensesData } from '../../store/expense-action';
 
 // import {EXPENSES} from '../dummy/dummy';
 
@@ -27,7 +28,7 @@ const AccountComponents = ({
   setIsModalVisible,
   onNavigate,
 }: Props) => {
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
   const expenseData = useAppSelector(
     state => state.expenses.expenses,
     // shallowEqual,
@@ -56,19 +57,19 @@ const AccountComponents = ({
   const [addAccPressed, setAddAccPressed] = useState<boolean>(false);
   const [budget, setBudget] = useState<number | undefined>();
 
-  // Reset Storage
+  // // Reset Storage
   // useEffect(() => {
   //   dispatch(fetchCashAccountsData());
   //   dispatch(fetchAccountsData());
   //   dispatch(fetchExpensesData());
   // }, []);
 
-  useEffect(() => {
-    if (accountsData === null) {
-      dispatch(fetchCashAccountsData());
-      dispatch(fetchAccountsData());
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (accountsData === null) {
+  //     dispatch(fetchCashAccountsData());
+  //     dispatch(fetchAccountsData());
+  //   }
+  // }, []);
 
   useEffect(() => {
     const cashBudget = sumTotalBudget(cashData);

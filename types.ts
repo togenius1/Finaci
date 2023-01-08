@@ -13,6 +13,8 @@ export type RootStackParamList = {
   Backup: undefined;
   ExpenseGraphs: undefined;
   TransactionSummary: undefined;
+  IncomesDetails: undefined;
+  ExpensesDetails: undefined;
   Accounts: {
     account: string;
   };

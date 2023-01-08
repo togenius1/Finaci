@@ -57,7 +57,7 @@ function ExpenseForm({
     }
     setDATE(currentDate);
 
-    let fDate = moment(event).format('YYYY-MM-DD');
+    let fDate = moment(event).format('YYYY-MM-DD HH:mm:ss');
     setTextDate(fDate);
   }
 
@@ -70,14 +70,14 @@ function ExpenseForm({
   }
 
   const handleConfirm = date => {
-    setTextDate(moment(date).format('YYYY-MM-DD'));
+    setTextDate(moment(date).format('YYYY-MM-DD HH:mm:ss'));
     setDATE(date);
     hideDatePicker();
   };
 
   function onTodayHandler() {
     setDATE(new Date());
-    setTextDate(moment().format('YYYY-MM-DD'));
+    setTextDate(moment().format('YYYY-MM-DD HH:mm:ss'));
   }
 
   function selectsCategoryHandler() {

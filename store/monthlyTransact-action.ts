@@ -6,9 +6,9 @@ import {monthlyTransactsActions} from './monthlyTransact-slice';
 export const fetchMonthlyTransactsData = () => {
   return async dispatch => {
     const fetchData = async () => {
-      await AsyncStorage.removeItem('root');
       //   const response = await AsyncStorage.getItem('root');
       // const response = MonthTransactions;
+      await AsyncStorage.removeItem('root');
       const response = null;
 
       // return response !== null ? JSON.stringify(response) : null;

@@ -29,7 +29,7 @@ const initialStartDate = moment(`${moment().year()}-01-01`).format(
 const initialToDate = moment(`${moment().year()}-12-31`).format('YYYY-MM-DD');
 
 const TransactionsScreen = ({navigation}: Props) => {
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
 
   const [fromDate, setFromDate] = useState<string | null>(initialStartDate);
   const [toDate, setToDate] = useState<string | null>(initialToDate);
@@ -196,14 +196,6 @@ const TransactionsScreen = ({navigation}: Props) => {
     hideDatePicker();
   };
 
-  // Clear data store.
-  // useEffect(() => {
-  //   dispatch(fetchExpensesData());
-  //   dispatch(fetchIncomesData());
-  //   dispatch(fetchMonthlyTransactsData());
-  //   dispatch(fetchWeeklyTransactsData());
-  //   dispatch(fetchDailyTransactsData());
-  // }, []);
 
   return (
     <View style={styles.container}>

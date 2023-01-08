@@ -10,6 +10,8 @@ import {RootStackParamList} from '../types';
 import AccountsItem from '../screens/screenComponents/AccountsItem';
 import RootNavigator from './RootNavigator';
 import MenuDrawer from './NavComponents/Drawer/MenuDrawer';
+import ExpensesDetailsScreen from '../screens/ExpensesDetailsScreen';
+import IncomesDetailsScreen from '../screens/IncomesDetailsScreen';
 
 type Props = {
   isAuthenticated: boolean | undefined;
@@ -43,6 +45,14 @@ const FinnerNavigator = ({isAuthenticated}: Props) => {
             />
             <Stack.Screen name="AddDetails" component={AddDetailsScreen} />
             <Stack.Screen name="AccountsItem" component={AccountsItem} />
+            <Stack.Screen
+              name="ExpensesDetails"
+              component={ExpensesDetailsScreen}
+            />
+            <Stack.Screen
+              name="IncomesDetails"
+              component={IncomesDetailsScreen}
+            />
           </Stack.Navigator>
         </NavigationContainer>
       ) : (

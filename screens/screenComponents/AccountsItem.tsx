@@ -439,7 +439,7 @@ function AccountsItem({navigation, route}: Props) {
 
     return (
       <View style={styles.list}>
-        <Pressable
+        {/* <Pressable
           style={({pressed}) => pressed && styles.pressed}
           onPress={() =>
             navigation.navigate('AddDetails', {
@@ -452,20 +452,21 @@ function AccountsItem({navigation, route}: Props) {
                 date: date,
               },
             })
-          }>
-          <View
-            style={{
-              justifyContent: 'center',
-              alignItems: 'flex-start',
-              width: width / 4,
-              marginLeft: -25,
-              // backgroundColor: '#e1f3cd',
-            }}>
-            <Text style={{fontSize: 14, color: 'blue', alignSelf: 'center'}}>
-              {currencyFormatter(+incomeAmount, {})}
-            </Text>
-          </View>
-        </Pressable>
+          }
+          > */}
+        <View
+          style={{
+            justifyContent: 'center',
+            alignItems: 'flex-start',
+            width: width / 4,
+            marginLeft: -25,
+            // backgroundColor: '#e1f3cd',
+          }}>
+          <Text style={{fontSize: 14, color: 'blue', alignSelf: 'center'}}>
+            {currencyFormatter(+incomeAmount, {})}
+          </Text>
+        </View>
+        {/* </Pressable> */}
 
         {/* <Pressable
           style={({pressed}) => pressed && styles.pressed}
@@ -481,19 +482,19 @@ function AccountsItem({navigation, route}: Props) {
               },
             })
           }> */}
-          <View
-            style={{
-              justifyContent: 'center',
-              alignItems: 'flex-start',
-              width: width / 4,
-              marginLeft: -50,
-              // backgroundColor: '#f5bebe',
-            }}>
-            <Text style={{fontSize: 14, color: 'red', alignSelf: 'center'}}>
-              {currencyFormatter(+expenseAmount, {})}
-            </Text>
-            {/* <Text style={{fontSize: 10, color: 'grey'}}>{expenseCategory}</Text> */}
-          </View>
+        <View
+          style={{
+            justifyContent: 'center',
+            alignItems: 'flex-start',
+            width: width / 4,
+            marginLeft: -50,
+            // backgroundColor: '#f5bebe',
+          }}>
+          <Text style={{fontSize: 14, color: 'red', alignSelf: 'center'}}>
+            {currencyFormatter(+expenseAmount, {})}
+          </Text>
+          {/* <Text style={{fontSize: 10, color: 'grey'}}>{expenseCategory}</Text> */}
+        </View>
         {/* </Pressable> */}
 
         <View style={styles.dateContainer}>
