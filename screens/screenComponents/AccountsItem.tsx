@@ -23,12 +23,12 @@ import {
 } from '../../util/math';
 import MonthYearList from '../../components/Menu/MonthYearList';
 import {AccountsItemNavigationType, AccountsItemRouteProp} from '../../types';
-import {ExpenseType} from '../../models/expense';
-import {AccountType, CashType} from '../../models/account';
-import {IncomeType} from '../../models/income';
+// import {ExpenseType} from '../../models/expense';
+// import {AccountType, CashType} from '../../models/account';
+// import {IncomeType} from '../../models/income';
 import {currencyFormatter} from '../../util/currencyFormatter';
 import {AccountCategory, CashCategory} from '../../dummy/account';
-import {useAppDispatch, useAppSelector} from '../../hooks';
+import {useAppSelector} from '../../hooks';
 
 type Props = {
   navigation: AccountsItemNavigationType;
@@ -278,9 +278,6 @@ function AccountsItem({navigation, route}: Props) {
   const total = totalIncomeByAccount - totalExpenseByAccount;
   const balance = total + budget;
 
-  console.log(accountId);
-  console.log(selectedDurationExpenseData);
-
   // Combine expense and income data sum by custom
   const sumExpenseByCustomDate = sumByCustomDate(
     expenseOfAccount,
@@ -470,7 +467,7 @@ function AccountsItem({navigation, route}: Props) {
           </View>
         </Pressable>
 
-        <Pressable
+        {/* <Pressable
           style={({pressed}) => pressed && styles.pressed}
           onPress={() =>
             navigation.navigate('AddDetails', {
@@ -483,7 +480,7 @@ function AccountsItem({navigation, route}: Props) {
                 date: date,
               },
             })
-          }>
+          }> */}
           <View
             style={{
               justifyContent: 'center',
@@ -497,7 +494,7 @@ function AccountsItem({navigation, route}: Props) {
             </Text>
             {/* <Text style={{fontSize: 10, color: 'grey'}}>{expenseCategory}</Text> */}
           </View>
-        </Pressable>
+        {/* </Pressable> */}
 
         <View style={styles.dateContainer}>
           <View style={styles.dateLabel}>

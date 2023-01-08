@@ -1,15 +1,7 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  FlatList,
-  Pressable,
-  Dimensions,
-  Alert,
-} from 'react-native';
+import {StyleSheet, View, Dimensions} from 'react-native';
 import React, {useEffect, useMemo, useState} from 'react';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import {v4 as uuidv4} from 'uuid';
+// import Ionicons from 'react-native-vector-icons/Ionicons';
+// import {v4 as uuidv4} from 'uuid';
 
 import {AccountNavigationType} from '../../types';
 import {useAppDispatch, useAppSelector} from '../../hooks';
@@ -27,7 +19,7 @@ type Props = {
   setIsModalVisible: (value: boolean) => void;
 };
 
-const {width, height} = Dimensions.get('window');
+// const {width, height} = Dimensions.get('window');
 
 const AccountComponents = ({
   navigation,
