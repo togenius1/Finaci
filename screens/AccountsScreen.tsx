@@ -4,7 +4,7 @@ import React, {useState} from 'react';
 
 import {AccountNavigationType} from '../types';
 import AccountComponents from './screenComponents/AccountComponents';
-import AddAccountBtn from '../components/UI/AddAccountBtn';
+import AddBtn from '../components/UI/AddBtn';
 
 type Props = {
   navigation: AccountNavigationType;
@@ -35,7 +35,7 @@ const AccountsScreen = ({navigation}: Props) => {
         setIsModalVisible={setIsModalVisible}
         onNavigate={onNavigate}
       />
-      <AddAccountBtn onPress={openAddAccountForm} />
+      <AddBtn onPress={openAddAccountForm} />
     </View>
   );
 };

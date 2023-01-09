@@ -8,21 +8,21 @@ type Props = {
 
 const {width, height} = Dimensions.get('window');
 
-const AddAccountBtn = ({onPress, style}: Props) => {
+const AddBtn = ({onPress, style, size}: Props) => {
   return (
     <View style={[styles.addButton, style]}>
       <Pressable
         onPress={onPress}
         style={({pressed}) => pressed && styles.pressed}>
         <View style={styles.icon}>
-          <Ionicons name="add-circle" size={width * 0.15} color="#3683e2" />
+          <Ionicons name="add-circle" size={size} color="#3683e2" />
         </View>
       </Pressable>
     </View>
   );
 };
 
-export default AddAccountBtn;
+export default AddBtn;
 
 const styles = StyleSheet.create({
   addButton: {
@@ -30,9 +30,12 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'center',
     width: width * 0.8,
+    // height: height * 0.8,
     marginTop: height * 0.77,
     marginBottom: 5,
     marginLeft: width * 0.15,
+
+    position: 'absolute',
   },
   icon: {
     marginRight: 10,

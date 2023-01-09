@@ -15,7 +15,7 @@ import IconButton from '../components/UI/iconButton';
 import TransactionOutput from '../components/Output/TransactionOutput';
 import MonthYearList from '../components/Menu/MonthYearList';
 import {TransactionNavigationProp} from '../types';
-import {useAppDispatch, useAppSelector} from '../hooks';
+import AddBtn from '../components/UI/AddBtn';
 
 type Props = {
   navigation: TransactionNavigationProp;
@@ -196,7 +196,6 @@ const TransactionsScreen = ({navigation}: Props) => {
     hideDatePicker();
   };
 
-
   return (
     <View style={styles.container}>
       <TransactionOutput
@@ -242,13 +241,18 @@ const TransactionsScreen = ({navigation}: Props) => {
         style={styles.datePicker}
       />
 
-      <View style={styles.addButtonContainer}>
+      <AddBtn
+        onPress={() => navigation.navigate('AddExpenses')}
+        style={{bottom: -20}}
+        size={width * 0.2}
+      />
+      {/* <View style={styles.addButtonContainer}>
         <IconButton
           name="add"
           size={15}
           onPress={() => navigation.navigate('AddExpenses')}
         />
-      </View>
+      </View> */}
     </View>
   );
 };
@@ -259,24 +263,24 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  addButtonContainer: {
-    backgroundColor: '#5d91f0',
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    borderWidth: 0.5,
-    borderColor: '#fff',
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowOffset: {width: 0, height: 0},
-    shadowOpacity: 0.7,
-    shadowRadius: 3,
-    elevation: 3,
+  // addButtonContainer: {
+  //   backgroundColor: '#5d91f0',
+  //   width: 40,
+  //   height: 40,
+  //   borderRadius: 20,
+  //   borderWidth: 0.5,
+  //   borderColor: '#fff',
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  //   shadowOffset: {width: 0, height: 0},
+  //   shadowOpacity: 0.7,
+  //   shadowRadius: 3,
+  //   elevation: 3,
 
-    position: 'absolute',
-    right: 20,
-    bottom: 20,
-  },
+  //   position: 'absolute',
+  //   right: 20,
+  //   bottom: 20,
+  // },
 
   pressed: {
     opacity: 0.65,

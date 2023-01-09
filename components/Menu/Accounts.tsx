@@ -24,7 +24,7 @@ import {currencyFormatter} from '../../util/currencyFormatter';
 import {sumTotalBudget, sumTotalFunc} from '../../util/math';
 // import {EXPENSES} from '../../dummy/dummy';
 // import {AccountCategory, CashCategory} from '../../dummy/account';
-import AddAccountBtn from '../UI/AddAccountBtn';
+import AddBtn from '../UI/AddBtn';
 import {useNavigation} from '@react-navigation/native';
 import AccountHeader from '../AccountHeader';
 
@@ -170,7 +170,7 @@ const Accounts = ({setAccount, setAccountPressed}: Props) => {
         </View>
       </View>
 
-      <AddAccountBtn
+      <AddBtn
         onPress={openAddAccountForm}
         style={{position: 'absolute', bottom: -15}}
       />

@@ -17,6 +17,11 @@ import {expenseActions} from '../../store/expense-slice';
 import {dailyTransaction} from '../../util/transaction';
 import {dailyTransactsActions} from '../../store/dailyTransact-slice';
 import {incomeActions} from '../../store/income-slice';
+import {weekTransactions} from '../../dummy/transactions/weeklyTransact';
+import {getWeekInMonth} from '../../util/date';
+import moment from 'moment';
+import {weeklyTransactsActions} from '../../store/weeklyTransact-slice';
+import {monthlyTransactsActions} from '../../store/monthlyTransact-slice';
 
 // import {DailyItemType} from '../../components/Output/TransactionSummary';
 
@@ -52,6 +57,9 @@ const DailyItemElement = ({
   const Expenses = dataLoaded?.expenses?.expenses;
   const Incomes = dataLoaded?.incomes?.incomes;
   const DailyTransactionsData = dataLoaded?.dailyTransacts?.dailyTransacts;
+  const WeeklyTransactionsData = dataLoaded?.weeklyTransacts?.weeklyTransacts;
+  const MonthlyTransactionsData =
+    dataLoaded?.monthlyTransacts?.monthlyTransacts;
 
   const filteredExpenses = ExpensesCate.filter(exp => exp.id === cateId);
   const filteredIncomes = IncomesCate.filter(income => income.id === cateId);
@@ -63,6 +71,21 @@ const DailyItemElement = ({
     filteredAccounts = Accounts.filter(acc => acc.id === accountId);
   }
 
+  const removeIncomeHandler = (incomeId: string) => {
+    dispatch(
+      incomeActions.deleteIncome({
+        incomeId,
+      }),
+    );
+
+    // Update Daily Transaction
+    updateDailyTransactsHandler(incomeId, 'income');
+    // Update Weekly Transaction
+    updateWeeklyTransactionsHandler(incomeId, 'income');
+    // Update Monthly Transaction
+    updateMonthlyTransactionsHandler(incomeId, 'income');
+  };
+
   const removeExpenseHandler = (expenseId: string) => {
     dispatch(
       expenseActions.deleteExpense({
@@ -70,9 +93,24 @@ const DailyItemElement = ({
       }),
     );
     // Update Daily Transaction
-    const filteredExpense = Expenses?.filter(exp => exp?.id === expenseId);
+    updateDailyTransactsHandler(expenseId, 'expense');
+    // Update Weekly Transaction
+    updateWeeklyTransactionsHandler(expenseId, 'expense');
+    // Update Monthly Transaction
+    updateMonthlyTransactionsHandler(expenseId, 'expense');
+  };
+
+  const updateDailyTransactsHandler = (itemId, type) => {
+    let deletedObj;
+    if (type === 'expense') {
+      deletedObj = Expenses?.filter(exp => exp?.id === itemId);
+    }
+    if (type === 'income') {
+      deletedObj = Incomes?.filter(income => income?.id === itemId);
+    }
+
     const filteredDailyTransactions = DailyTransactionsData?.filter(
-      tran => `0${tran.day}` === day,
+      tran => `0${tran.day}` === String(day),
     );
     dispatch(
       dailyTransactsActions.updateDailyTransacts({
@@ -80,42 +118,85 @@ const DailyItemElement = ({
         date: filteredDailyTransactions[0]?.date,
         day: filteredDailyTransactions[0]?.day,
         expense_daily:
-          +filteredDailyTransactions[0]?.expense_daily -
-          +filteredExpense[0].amount,
-        income_daily: filteredDailyTransactions[0]?.income_daily,
+          type === 'expense'
+            ? +filteredDailyTransactions[0]?.expense_daily -
+              +deletedObj[0]?.amount
+            : filteredDailyTransactions[0]?.expense_daily,
+        income_daily:
+          type === 'income'
+            ? +filteredDailyTransactions[0]?.income_daily -
+              +deletedObj[0]?.amount
+            : filteredDailyTransactions[0]?.income_daily,
       }),
     );
-
-    // Update Weekly Transaction
-    // Update Monthly Transaction
   };
 
-  const removeIncomeHandler = (incomeId: string) => {
+  const updateWeeklyTransactionsHandler = (itemId, type) => {
+    const month = moment().month(monthLabel).format('M');
+    const week = getWeekInMonth(year, month, day);
+    let deletedObj;
+    if (type === 'expense') {
+      deletedObj = Expenses?.filter(exp => exp?.id === itemId);
+    }
+    if (type === 'income') {
+      deletedObj = Incomes?.filter(income => income?.id === itemId);
+    }
+    const filteredWeeklyTransactions = WeeklyTransactionsData?.filter(
+      tran => +tran.week === +week,
+    );
     dispatch(
-      incomeActions.deleteIncome({
-        incomeId,
+      weeklyTransactsActions.updateWeeklyTransacts({
+        id: filteredWeeklyTransactions[0]?.id,
+        date: filteredWeeklyTransactions[0]?.date,
+        week: filteredWeeklyTransactions[0]?.week,
+        expense_weekly:
+          type === 'expense'
+            ? +filteredWeeklyTransactions[0]?.expense_weekly -
+              +deletedObj[0]?.amount
+            : filteredWeeklyTransactions[0]?.expense_weekly,
+        income_weekly:
+          type === 'income'
+            ? +filteredWeeklyTransactions[0]?.income_weekly -
+              +deletedObj[0]?.amount
+            : filteredWeeklyTransactions[0]?.income_weekly,
       }),
     );
-    // Update Daily Transaction
-    const filteredIncome = Incomes?.filter(income => income?.id === incomeId);
-    const filteredDailyTransactions = DailyTransactionsData?.filter(
-      tran => `0${tran.day}` === day,
-    );
+  };
 
-    console.log(filteredDailyTransactions);
+  // Update Monthly transactions
+  const updateMonthlyTransactionsHandler = (itemId, type) => {
+    const month = moment().month(monthLabel).format('M');
+    // const week = getWeekInMonth(year, month, day);
+    let deletedObj;
+    if (type === 'expense') {
+      deletedObj = Expenses?.filter(exp => exp?.id === itemId);
+    }
+    if (type === 'income') {
+      deletedObj = Incomes?.filter(income => income?.id === itemId);
+    }
+    const filteredMonthlyTransactions = MonthlyTransactionsData?.filter(
+      tran => +tran.month === +month,
+    );
+    console.log('month: ', month);
+    console.log('monthly tr: ', MonthlyTransactionsData);
+    console.log('filtered ', filteredMonthlyTransactions);
     dispatch(
-      dailyTransactsActions.updateDailyTransacts({
-        id: filteredDailyTransactions[0]?.id,
-        date: filteredDailyTransactions[0]?.date,
-        day: filteredDailyTransactions[0]?.day,
-        expense_daily: +filteredDailyTransactions[0]?.expense_daily,
-        income_daily:
-          +filteredDailyTransactions[0]?.income_daily -
-          +filteredIncome[0].amount,
+      monthlyTransactsActions.updateMonthlyTransactions({
+        id: filteredMonthlyTransactions[0]?.id,
+        date: filteredMonthlyTransactions[0]?.date,
+        month: filteredMonthlyTransactions[0]?.month,
+        expense_monthly:
+          type === 'expense'
+            ? +filteredMonthlyTransactions[0]?.expense_monthly -
+              +deletedObj[0]?.amount
+            : filteredMonthlyTransactions[0]?.expense_monthly,
+        income_monthly:
+          type === 'income'
+            ? +filteredMonthlyTransactions[0]?.income_monthly -
+              +deletedObj[0]?.amount
+            : filteredMonthlyTransactions[0]?.income_monthly,
       }),
     );
-     // Update Weekly Transaction
-    // Update Monthly Transaction
   };
 
   return (
@@ -165,14 +246,7 @@ const DailyItemElement = ({
               <Text style={{fontSize: 14, color: 'blue'}}>{amount}</Text>
             </View>
           </Pressable>
-          <View
-            style={{
-              justifyContent: 'center',
-              alignItems: 'flex-start',
-              width: width / 3.5,
-              marginRight: 40,
-              // backgroundColor: '#f5bebe',
-            }}>
+          <View style={styles.amount}>
             <Text style={{fontSize: width * 0.045, color: 'black'}}>
               {filteredIncomes[0]?.title}
             </Text>
@@ -217,14 +291,7 @@ const DailyItemElement = ({
                 },
               )
             }>
-            <View
-              style={{
-                justifyContent: 'center',
-                alignItems: 'flex-start',
-                width: width / 4,
-                marginRight: 20,
-                // backgroundColor: '#f5bebe',
-              }}>
+            <View style={styles.amount}>
               <Text style={{fontSize: width * 0.045, color: 'red'}}>
                 {amount}
               </Text>
@@ -295,6 +362,14 @@ const styles = StyleSheet.create({
     marginRight: 5,
     borderWidth: 0.5,
     borderColor: '#black',
+  },
+  amount: {
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    width: width / 4,
+    // marginHorizontal: 20,
+    // marginLeft:20,
+    // backgroundColor: '#f5bebe',
   },
   time: {
     marginTop: 5,

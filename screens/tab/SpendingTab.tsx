@@ -10,6 +10,7 @@ import IconButton from '../../components/UI/iconButton';
 import {SpendingTabRouteProp} from '../../types';
 // import {ExpenseType} from '../../models/expense';
 import {useAppSelector} from '../../hooks';
+import AddBtn from '../../components/UI/AddBtn';
 // import {fetchExpensesData} from '../../store/expense-action';
 
 type Props = {
@@ -56,14 +57,20 @@ const SpendingTab = ({route}: Props) => {
       {/* <RenderBarchartTab /> */}
       <BarchartTab data={filteredData} fromDate={fromDate} toDate={toDate} />
 
-      <View style={styles.addButtonContainer}>
+      {/* <AddBtn
+        onPress={() => navigation.navigate('AddExpenses')}
+        style={{bottom: -20}}
+        size={width * 0.2}
+      /> */}
+
+      {/* <View style={styles.addButtonContainer}>
         <IconButton
           name="add"
           size={30}
           color="white"
           onPress={() => navigation.navigate('AddExpenses')}
         />
-      </View>
+      </View> */}
     </View>
   );
 };
@@ -74,24 +81,24 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  addButtonContainer: {
-    backgroundColor: '#5ca3f6',
-    width: width * 0.15,
-    height: width * 0.15,
-    borderRadius: (width * 0.2) / 2,
-    borderWidth: 0.5,
-    borderColor: '#fff',
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowOffset: {width: 0, height: 0},
-    shadowOpacity: 0.7,
-    shadowRadius: 3,
-    elevation: 3,
+  // addButtonContainer: {
+  //   backgroundColor: '#5ca3f6',
+  //   width: width * 0.15,
+  //   height: width * 0.15,
+  //   borderRadius: (width * 0.2) / 2,
+  //   borderWidth: 0.5,
+  //   borderColor: '#fff',
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  //   shadowOffset: {width: 0, height: 0},
+  //   shadowOpacity: 0.7,
+  //   shadowRadius: 3,
+  //   elevation: 3,
 
-    position: 'absolute',
-    right: 20,
-    bottom: 30,
-  },
+  //   position: 'absolute',
+  //   right: 20,
+  //   bottom: 30,
+  // },
   pressed: {
     opacity: 0.75,
   },

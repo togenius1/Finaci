@@ -19,6 +19,7 @@ import MonthYearList from '../components/Menu/MonthYearList';
 // import BarchartTab from './screenComponents/BarChartTab';
 // import {EXPENSES} from '../dummy/dummy';
 import {OverviewNavigationProp} from '../types';
+import AddBtn from '../components/UI/AddBtn';
 
 type Props = {
   navigation: OverviewNavigationProp;
@@ -408,6 +409,12 @@ const OverviewScreen = ({navigation}: Props) => {
           setYear={setYear}
         />
       )}
+
+      <AddBtn
+        onPress={() => navigation.navigate('AddExpenses')}
+        style={{bottom: -20}}
+        size={width * 0.2}
+      />
     </View>
   );
 };

@@ -1,5 +1,5 @@
 import {Dimensions, StyleSheet, Text, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {useNavigation} from '@react-navigation/native';
 // import {v4 as uuidv4} from 'uuid';
 // import moment from 'moment';
@@ -11,8 +11,9 @@ import {
   sumTotalFunc,
   sumEachCategoryId,
 } from '../../util/math';
-import IconButton from '../UI/iconButton';
+// import IconButton from '../UI/iconButton';
 import {ExpenseCategory} from '../../dummy/categoryItems';
+// import AddBtn from '../UI/AddBtn';
 
 type Props = {};
 
@@ -59,14 +60,21 @@ const ExpenseOutput = ({data, fromDate, toDate}: Props) => {
         <OverviewList data={pctEachCateObj} />
       </View>
 
-      <View style={styles.addButtonContainer}>
+      {/* <AddBtn
+        onPress={() => navigation.navigate('AddExpenses')}
+        style={{bottom: -20}}
+        size={width * 0.2}
+      /> */}
+
+
+      {/* <View style={styles.addButtonContainer}>
         <IconButton
           name="add"
           size={30}
           color="white"
           onPress={() => navigation.navigate('AddExpenses')}
         />
-      </View>
+      </View> */}
     </View>
   );
 };
@@ -89,22 +97,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 5,
   },
-  addButtonContainer: {
-    backgroundColor: '#5ca3f6',
-    width: width * 0.15,
-    height: width * 0.15,
-    borderRadius: (width * 0.2) / 2,
-    borderWidth: 0.5,
-    borderColor: '#fff',
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowOffset: {width: 0, height: 0},
-    shadowOpacity: 0.7,
-    shadowRadius: 3,
-    elevation: 3,
+  // addButtonContainer: {
+  //   backgroundColor: '#5ca3f6',
+  //   width: width * 0.15,
+  //   height: width * 0.15,
+  //   borderRadius: (width * 0.2) / 2,
+  //   borderWidth: 0.5,
+  //   borderColor: '#fff',
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  //   shadowOffset: {width: 0, height: 0},
+  //   shadowOpacity: 0.7,
+  //   shadowRadius: 3,
+  //   elevation: 3,
 
-    position: 'absolute',
-    right: 20,
-    bottom: 30,
-  },
+  //   position: 'absolute',
+  //   right: 20,
+  //   bottom: 30,
+  // },
 });

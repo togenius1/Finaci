@@ -1,5 +1,4 @@
 import {
-  Alert,
   Dimensions,
   FlatList,
   Pressable,
@@ -7,7 +6,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import React, {useEffect} from 'react';
+import React from 'react';
 import {v4 as uuidv4} from 'uuid';
 import moment from 'moment';
 // import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -16,16 +15,9 @@ import {sumTotalFunc} from '../../util/math';
 import {currencyFormatter} from '../../util/currencyFormatter';
 import {getDaysInWeek} from '../../util/date';
 import Export from '../Menu/Export';
-import {useAppDispatch, useAppSelector} from '../../hooks';
 import {useNavigation} from '@react-navigation/native';
 import {TransactionSummaryNavigationProp} from '../../types';
-import {fetchCashAccountsData} from '../../store/cash-action';
-import {fetchAccountsData} from '../../store/account-action';
-import {fetchExpensesData} from '../../store/expense-action';
-import {fetchIncomesData} from '../../store/income-action';
-import {fetchMonthlyTransactsData} from '../../store/monthlyTransact-action';
-import {fetchWeeklyTransactsData} from '../../store/weeklyTransact-action';
-import {fetchDailyTransactsData} from '../../store/dailyTransact-action';
+import { useAppSelector } from '../../hooks';
 
 type Props = {
   monthlyPressed: boolean;
@@ -88,6 +80,10 @@ function MonthlyRenderItem({item}) {
   const expenseAmount = currencyFormatter(item?.expense_monthly, {});
   const incomeAmount = currencyFormatter(item?.income_monthly, {});
 
+  if (+expenseAmount === 0 && +incomeAmount === 0) {
+    return;
+  }
+
   return (
     <View style={styles.list}>
       <View
@@ -122,6 +118,10 @@ function WeeklyRenderItem({item}) {
   const expenseAmount = currencyFormatter(+item.expense_weekly, {});
   const incomeAmount = currencyFormatter(+item.income_weekly, {});
   const weekNum = item?.week;
+
+  if (+expenseAmount === 0 && +incomeAmount === 0) {
+    return;
+  }
 
   const date = new Date(item.date);
   let month = moment(item.date).month() + 1;
@@ -369,10 +369,6 @@ const TransactionSummary = ({
   function DailyRenderItem({item}) {
     const expenseAmount = currencyFormatter(item.expense_daily, {});
     const incomeAmount = currencyFormatter(item.income_daily, {});
-
-    console.log(customPressed);
-    console.log(+expenseAmount === 0);
-    console.log(incomeAmount);
 
     // if (!customPressed && +expenseAmount === 0 && +incomeAmount === 0) {
     //   return;
