@@ -110,8 +110,9 @@ const DailyItemElement = ({
     }
 
     const filteredDailyTransactions = DailyTransactionsData?.filter(
-      tran => `0${tran.day}` === String(day),
+      tran => tran.day === day,
     );
+
     dispatch(
       dailyTransactsActions.updateDailyTransacts({
         id: filteredDailyTransactions[0]?.id,
@@ -177,9 +178,6 @@ const DailyItemElement = ({
     const filteredMonthlyTransactions = MonthlyTransactionsData?.filter(
       tran => +tran.month === +month,
     );
-    console.log('month: ', month);
-    console.log('monthly tr: ', MonthlyTransactionsData);
-    console.log('filtered ', filteredMonthlyTransactions);
     dispatch(
       monthlyTransactsActions.updateMonthlyTransactions({
         id: filteredMonthlyTransactions[0]?.id,

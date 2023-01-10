@@ -17,7 +17,7 @@ import {getDaysInWeek} from '../../util/date';
 import Export from '../Menu/Export';
 import {useNavigation} from '@react-navigation/native';
 import {TransactionSummaryNavigationProp} from '../../types';
-import { useAppSelector } from '../../hooks';
+import {useAppSelector} from '../../hooks';
 
 type Props = {
   monthlyPressed: boolean;
@@ -334,8 +334,6 @@ const TransactionSummary = ({
       moment(transact?.date).format('YYYY-MM-DD') >= fromDate &&
       moment(transact?.date).format('YYYY-MM-DD') <= toDate,
   );
-
-  // console.log('dailyData: ', dailyData);
 
   // on pressed
   if (monthlyPressed) {
