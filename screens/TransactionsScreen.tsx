@@ -47,6 +47,8 @@ const TransactionsScreen = ({navigation}: Props) => {
   const [mode, setMode] = useState<string | null>('date');
   const [fromDateClicked, setFromDateClicked] = useState<boolean>(false);
   const [toDateClicked, setToDateClicked] = useState<boolean>(false);
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+
 
   // Initial from date, to date
   useEffect(() => {
@@ -125,7 +127,6 @@ const TransactionsScreen = ({navigation}: Props) => {
     navigation,
     duration,
     year,
-    setShowMonthYearListMenu,
     showMonthYearListMenuHandler,
   ]);
 
@@ -140,7 +141,7 @@ const TransactionsScreen = ({navigation}: Props) => {
       setToDate(String(todate));
       setDuration(String(time));
       setMonth(String(moment().month() + 1));
-      setShowMonthYearListMenu(false);
+      setIsModalVisible(false);
     }
     if (!monthlyPressed) {
       const mm = moment().month(String(time)).format('M');
@@ -156,12 +157,12 @@ const TransactionsScreen = ({navigation}: Props) => {
       setToDate(String(todate));
       setDuration(String(time));
       setMonth(String(month));
-      setShowMonthYearListMenu(false);
+      setIsModalVisible(false);
     }
   }
 
   function showMonthYearListMenuHandler() {
-    setShowMonthYearListMenu(!showMonthYearListMenu);
+    setIsModalVisible(!isModalVisible);
   }
 
   function onFromDateHandler() {
@@ -219,14 +220,14 @@ const TransactionsScreen = ({navigation}: Props) => {
         // dailyTransactions={dailyTransactions}
       />
 
-      {showMonthYearListMenu && (
-        <MonthYearList
-          monthlyPressed={monthlyPressed}
-          onMonthYearSelectedHandler={onMonthYearSelectedHandler}
-          year={year}
-          setYear={setYear}
-        />
-      )}
+      <MonthYearList
+        monthlyPressed={monthlyPressed}
+        onMonthYearSelectedHandler={onMonthYearSelectedHandler}
+        year={year}
+        setYear={setYear}
+        setIsModalVisible={setIsModalVisible}
+        isModalVisible={isModalVisible}
+      />
 
       <DateTimePickerModal
         isVisible={isDatePickerVisible}

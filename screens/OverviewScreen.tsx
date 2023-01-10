@@ -116,6 +116,7 @@ function HeaderRightComponent({
   toDateClickedHandler,
   rightMenuClickedHandler,
   showMonthYearListMenuHandler,
+  setIsModalVisible = {setIsModalVisible},
 }) {
   const month = moment.monthsShort(moment(toDate).month());
   const year = moment(toDate).year();
@@ -124,7 +125,7 @@ function HeaderRightComponent({
     <View style={styles.headerRightContainer}>
       <Pressable
         style={({pressed}) => pressed && styles.pressed}
-        onPress={() => showMonthYearListMenuHandler()}>
+        onPress={() => setIsModalVisible(true)}>
         {!showCustomDate && (
           <View
             style={{
@@ -191,6 +192,7 @@ const OverviewScreen = ({navigation}: Props) => {
   const [showMonthYearListMenu, setShowMonthYearListMenu] =
     useState<boolean>(false);
   const [year, setYear] = useState<string | null>(String(moment().year()));
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   // const [duration, setDuration] = useState(moment().year());
   // const [month, setMonth] = useState();
 
@@ -212,6 +214,7 @@ const OverviewScreen = ({navigation}: Props) => {
           toDateClickedHandler={toDateClickedHandler}
           rightMenuClickedHandler={rightMenuClickedHandler}
           showMonthYearListMenuHandler={showMonthYearListMenuHandler}
+          setIsModalVisible={setIsModalVisible}
         />
       ),
     });
@@ -256,7 +259,7 @@ const OverviewScreen = ({navigation}: Props) => {
     setToDate(moment(todate).format('YYYY-MM-DD'));
     // setDuration(time);
     // setMonth(month);
-    setShowMonthYearListMenu(false);
+    setIsModalVisible(false);
   }
 
   function showMonthYearListMenuHandler() {
@@ -401,14 +404,14 @@ const OverviewScreen = ({navigation}: Props) => {
         />
       )}
 
-      {showMonthYearListMenu && (
-        <MonthYearList
-          // monthlyPressed={false}
-          onMonthYearSelectedHandler={onMonthYearSelectedHandler}
-          year={year}
-          setYear={setYear}
-        />
-      )}
+      <MonthYearList
+        // monthlyPressed={false}
+        onMonthYearSelectedHandler={onMonthYearSelectedHandler}
+        year={year}
+        setYear={setYear}
+        setIsModalVisible={setIsModalVisible}
+        isModalVisible={isModalVisible}
+      />
 
       <AddBtn
         onPress={() => navigation.navigate('AddExpenses')}

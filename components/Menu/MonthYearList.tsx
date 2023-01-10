@@ -1,11 +1,22 @@
-import {Dimensions, Pressable, StyleSheet, Text, View} from 'react-native';
+import {
+  Dimensions,
+  Modal,
+  Pressable,
+  StyleSheet,
+  Text,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import React from 'react';
 import moment from 'moment';
 // import {v4 as uuidv4} from 'uuid';
 
-type Props = {};
+type Props = {
+  isModalVisible: boolean;
+  setIsModalVisible: (value: boolean) => void;
+};
 
-const {width} = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
 const monthObj = [
   {id: 1, MY: 'Jan'},
@@ -65,6 +76,8 @@ export default function MonthYearList({
   setYear,
   decrementYearHandle,
   incrementYearHandle,
+  isModalVisible,
+  setIsModalVisible,
 }: Props) {
   let obj;
   if (monthlyPressed) {
@@ -82,64 +95,75 @@ export default function MonthYearList({
   }
 
   return (
-    <View style={styles.listMenu}>
-      {!monthlyPressed && (
-        <View
-          style={{
-            justifyContent: 'space-evenly',
-            flexDirection: 'row',
-            borderWidth: 1,
-            borderColor: '#d3d3d3',
-            paddingVertical: 6,
-            marginTop: -5,
-            backgroundColor: '#94f5fa',
-          }}>
-          <Pressable
-            style={({pressed}) => pressed && styles.pressed}
-            onPress={decrementYearHandle}>
-            <View style={{backgroundColor: '#e9a5a5', paddingHorizontal: 10}}>
-              <Text style={{fontSize: 16}}>{`<`}</Text>
+    <Modal
+      animationType="fade"
+      transparent={true}
+      visible={isModalVisible}
+      onDismiss={() => setIsModalVisible(false)}
+      onRequestClose={() => setIsModalVisible(false)}>
+      <Pressable
+        style={styles.outSide}
+        onPress={() => setIsModalVisible(false)}>
+        <View style={styles.listMenu}>
+          <View
+            style={{
+              justifyContent: 'space-evenly',
+              flexDirection: 'row',
+              borderWidth: 1,
+              borderColor: '#d3d3d3',
+              paddingVertical: 6,
+              marginTop: -5,
+              backgroundColor: '#94f5fa',
+            }}>
+            <Pressable
+              style={({pressed}) => pressed && styles.pressed}
+              onPress={decrementYearHandle}>
+              <View style={{backgroundColor: '#e9a5a5', paddingHorizontal: 10}}>
+                <Text style={{fontSize: 16}}>{`<`}</Text>
+              </View>
+            </Pressable>
+            <View>
+              <Text style={{fontSize: 16, fontWeight: '800'}}>{year}</Text>
             </View>
-          </Pressable>
-          <View>
-            <Text style={{fontSize: 16, fontWeight: '800'}}>{year}</Text>
+            <Pressable
+              style={({pressed}) => pressed && styles.pressed}
+              onPress={incrementYearHandle}>
+              <View style={{backgroundColor: '#e7a7a7', paddingHorizontal: 10}}>
+                <Text style={{fontSize: 16}}>{`>`}</Text>
+              </View>
+            </Pressable>
           </View>
-          <Pressable
-            style={({pressed}) => pressed && styles.pressed}
-            onPress={incrementYearHandle}>
-            <View style={{backgroundColor: '#e7a7a7', paddingHorizontal: 10}}>
-              <Text style={{fontSize: 16}}>{`>`}</Text>
-            </View>
-          </Pressable>
+
+          <View
+            style={{
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              // marginTop: -10,
+              marginLeft: 15,
+            }}>
+            {obj.map((item, index) => {
+              return (
+                <View
+                  key={index}
+                  style={{
+                    width: 85,
+                    marginHorizontal: 5,
+                    marginVertical: 10,
+                  }}>
+                  <MonthList
+                    item={item}
+                    onYearSelectedHandler={
+                      () => onMonthYearSelectedHandler(item?.MY)
+                      // && setIsModalVisible(false)
+                    }
+                  />
+                </View>
+              );
+            })}
+          </View>
         </View>
-      )}
-      <View
-        style={{
-          flexDirection: 'row',
-          flexWrap: 'wrap',
-          // marginTop: -10,
-          marginLeft: 15,
-        }}>
-        {obj.map((item, index) => {
-          return (
-            <View
-              key={index}
-              style={{
-                width: 85,
-                marginHorizontal: 5,
-                marginVertical: 10,
-              }}>
-              <MonthList
-                item={item}
-                onYearSelectedHandler={() =>
-                  onMonthYearSelectedHandler(item?.MY)
-                }
-              />
-            </View>
-          );
-        })}
-      </View>
-    </View>
+      </Pressable>
+    </Modal>
   );
 }
 
@@ -148,7 +172,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-around',
     width: width * 0.8,
-    height: 200,
+    height: height * 0.25,
     borderWidth: 0.8,
     borderRadius: 5,
     borderColor: '#d4d4d4',
@@ -158,8 +182,12 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 2,
     position: 'absolute',
-    top: 5,
-    right: 50,
+    top: 85,
+    right: width * 0.1,
+  },
+  outSide: {
+    flex: 1,
+    backgroundColor: 'transparent',
   },
   pressed: {
     opacity: 0.65,

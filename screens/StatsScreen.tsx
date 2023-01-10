@@ -36,9 +36,9 @@ const initToDate = moment().format('YYYY-MM-DD');
 
 function HeaderRightComponent({
   indicatorIndex,
-  showMonthYearListMenuHandler,
   year,
   month,
+  setIsModalVisible,
 }) {
   const monthName = moment.monthsShort(month - 1);
 
@@ -46,7 +46,7 @@ function HeaderRightComponent({
     <View>
       <Pressable
         style={({pressed}) => pressed && styles.pressed}
-        onPress={() => showMonthYearListMenuHandler()}>
+        onPress={() => setIsModalVisible(true)}>
         <View
           style={{
             justifyContent: 'center',
@@ -64,7 +64,7 @@ function HeaderRightComponent({
 }
 
 const StatsScreen = ({navigation}: Props) => {
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
   const dataLoaded = useAppSelector(store => store);
   // const navigation = useNavigation();
 
@@ -96,13 +96,9 @@ const StatsScreen = ({navigation}: Props) => {
       setFromToDateExpenseIncomeHandler();
     }
   }, []);
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
   useEffect(() => {
-    // setExpenseData(EXPENSES);
-    // setIncomeData(INCOME);
-    // dispatch(fetchExpensesData());
-    // dispatch(fetchIncomesData());
-
     onMonthYearSelectedHandler(moment().month());
   }, []);
 
@@ -114,16 +110,14 @@ const StatsScreen = ({navigation}: Props) => {
           year={year}
           month={month}
           indicatorIndex={indicatorIndex}
-          showMonthYearListMenuHandler={() =>
-            setShowMonthYearListMenu(show => !show)
-          }
+          setIsModalVisible={setIsModalVisible}
         />
       ),
     });
     if (indicatorIndex === 1 || indicatorIndex === 2) {
       setFromToDateExpenseIncomeHandler();
     }
-  }, [navigation, showMonthYearListMenu, year, month, indicatorIndex, ,]);
+  }, [navigation, year, month, indicatorIndex, ,]);
 
   if (
     expenseData === null ||
@@ -179,7 +173,7 @@ const StatsScreen = ({navigation}: Props) => {
     setFromDate(fromdate);
     setToDate(todate);
     setMonth(month);
-    setShowMonthYearListMenu(false);
+    setIsModalVisible(false);
   }
 
   // Filter Expense Data
@@ -275,14 +269,15 @@ const StatsScreen = ({navigation}: Props) => {
       {indicatorIndex === 0 && <RenderBudgetsTab />}
       {indicatorIndex === 1 && <RenderExpenseTab />}
       {indicatorIndex === 2 && <RenderIncomeTab />}
-      {showMonthYearListMenu && (
-        <MonthYearList
-          monthlyPressed={indicatorIndex !== 0 ? true : false}
-          onMonthYearSelectedHandler={onMonthYearSelectedHandler}
-          year={year}
-          setYear={setYear}
-        />
-      )}
+
+      <MonthYearList
+        monthlyPressed={indicatorIndex !== 0 ? true : false}
+        onMonthYearSelectedHandler={onMonthYearSelectedHandler}
+        year={year}
+        setYear={setYear}
+        isModalVisible={isModalVisible}
+        setIsModalVisible={setIsModalVisible}
+      />
 
       {/* <View style={styles.addButtonContainer}>
         <IconButton
@@ -302,24 +297,6 @@ const styles = StyleSheet.create({
     flex: 1,
     marginBottom: 50,
   },
-  // addButtonContainer: {
-  //   backgroundColor: '#5ca3f6',
-  //   width: 40,
-  //   height: 40,
-  //   borderRadius: 20,
-  //   borderWidth: 0.5,
-  //   borderColor: '#fff',
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  //   shadowOffset: {width: 0, height: 0},
-  //   shadowOpacity: 0.7,
-  //   shadowRadius: 3,
-  //   elevation: 3,
-
-  //   position: 'absolute',
-  //   right: 15,
-  //   bottom: 30,
-  // },
   pressed: {
     opacity: 0.75,
   },
