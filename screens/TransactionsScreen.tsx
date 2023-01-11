@@ -14,7 +14,6 @@ import moment from 'moment';
 import TransactionOutput from '../components/Output/TransactionOutput';
 import MonthYearList from '../components/Menu/MonthYearList';
 import {TransactionNavigationProp} from '../types';
-import AddBtn from '../components/UI/AddBtn';
 
 type Props = {
   navigation: TransactionNavigationProp;
@@ -33,8 +32,8 @@ const TransactionsScreen = ({navigation}: Props) => {
   const [fromDate, setFromDate] = useState<string | null>(initialStartDate);
   const [toDate, setToDate] = useState<string | null>(initialToDate);
   const [monthlyPressed, setMonthlyPressed] = useState<boolean>(true);
-  const [showMonthYearListMenu, setShowMonthYearListMenu] =
-    useState<boolean>(false);
+  // const [showMonthYearListMenu, setShowMonthYearListMenu] =
+  //   useState<boolean>(false);
   const [weeklyPressed, setWeeklyPressed] = useState<boolean>(false);
   const [dailyPressed, setDailyPressed] = useState<boolean>(false);
   const [customPressed, setCustomPressed] = useState<boolean>(false);
@@ -48,6 +47,8 @@ const TransactionsScreen = ({navigation}: Props) => {
   const [toDateClicked, setToDateClicked] = useState<boolean>(false);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
+  console.log('year: ', year);
+
   // Initial from date, to date
   useEffect(() => {
     onMonthYearSelectedHandler(moment().year());
@@ -55,7 +56,7 @@ const TransactionsScreen = ({navigation}: Props) => {
 
   useEffect(() => {
     navigation.setOptions({
-      title: '',
+      title: !customPressed ? 'Transactions' : '',
       headerRight: () => (
         <View
           style={{
@@ -121,14 +122,23 @@ const TransactionsScreen = ({navigation}: Props) => {
         </View>
       ),
     });
-  }, [navigation, duration, year, showMonthYearListMenuHandler]);
+  }, [
+    navigation,
+    duration,
+    year,
+    showMonthYearListMenuHandler,
+    monthlyPressed,
+    weeklyPressed,
+    dailyPressed,
+  ]);
 
   function onMonthYearSelectedHandler(time) {
     if (monthlyPressed) {
-      const mm = moment().month(time).format('M');
+      // const mm = moment().month(time).format('M');
       // const daysInMonth = moment(`${year}-0${mm}`, 'YYYY-MM').daysInMonth();
       const fromdate = moment([time, 0]).format('YYYY-MM-DD');
       const todate = moment(`${time}-12-31`).endOf('year').format('YYYY-MM-DD');
+      setYear(time);
 
       setFromDate(String(fromdate));
       setToDate(String(todate));
@@ -208,9 +218,6 @@ const TransactionsScreen = ({navigation}: Props) => {
         customPressed={customPressed}
         year={year}
         month={month}
-        // monthlyTransactions={monthlyTransactions}
-        // weeklyTransactions={weeklyTransactions}
-        // dailyTransactions={dailyTransactions}
       />
 
       <MonthYearList

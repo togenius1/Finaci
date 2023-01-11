@@ -14,7 +14,7 @@ type Props = {
   isModalVisible: boolean;
   setIsModalVisible: (value: boolean) => void;
   year: number;
-  setYear: (value: number) => void;
+  setYear: (value: string | null) => void;
 };
 
 const {width, height} = Dimensions.get('window');
@@ -51,10 +51,10 @@ yearObj.sort((a: any, b: any) => {
   return 1; // return 1 here for DESC Order
 });
 
-function MonthList({item, onYearSelectedHandler}) {
-  const currentYear = moment().year();
-  const textColor = currentYear === item.MY ? '#02905e' : '';
-  const textWeight = currentYear === item.MY ? '700' : '';
+function MonthList({item, onYearSelectedHandler, selectedMY}) {
+  // const currentYear = moment().year();
+  const textColor = +selectedMY === +item.MY ? '#02905e' : '';
+  const textWeight = +selectedMY === +item.MY ? '700' : '';
 
   return (
     <Pressable
@@ -94,8 +94,6 @@ export default function MonthYearList({
   function decrementYearHandle() {
     setYear(year => +year - 1);
   }
-
-  console.log('year: ', year);
 
   return (
     <Modal
@@ -155,6 +153,7 @@ export default function MonthYearList({
                   }}>
                   <MonthList
                     item={item}
+                    selectedMY={year}
                     onYearSelectedHandler={
                       () => onMonthYearSelectedHandler(item?.MY)
                       // && setIsModalVisible(false)
@@ -186,7 +185,7 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 2,
     position: 'absolute',
-    top: height * 0.10,
+    top: height * 0.1,
     right: 0,
   },
   outSide: {
