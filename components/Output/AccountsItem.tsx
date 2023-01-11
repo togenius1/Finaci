@@ -7,6 +7,7 @@ import {
   Pressable,
   ActivityIndicator,
   Platform,
+
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
@@ -23,12 +24,10 @@ import {
 } from '../../util/math';
 import MonthYearList from '../Menu/MonthYearList';
 import {AccountsItemNavigationType, AccountsItemRouteProp} from '../../types';
-// import {ExpenseType} from '../../models/expense';
-// import {AccountType, CashType} from '../../models/account';
-// import {IncomeType} from '../../models/income';
 import {currencyFormatter} from '../../util/currencyFormatter';
 import {AccountCategory, CashCategory} from '../../dummy/account';
 import {useAppSelector} from '../../hooks';
+import Menu from '../Menu/Menu';
 
 type Props = {
   navigation: AccountsItemNavigationType;
@@ -38,6 +37,8 @@ type Props = {
 interface MenuHandlerType {
   monthlyClickedHandler: () => void;
   customClickedHandler: () => void;
+  setIsMenuOpen: (value: boolean) => void;
+  isMenuOpen: boolean;
 }
 
 interface HeaderRightComponentType {
@@ -51,47 +52,13 @@ interface HeaderRightComponentType {
 }
 
 // CONSTANT
-const {width} = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 let month = moment().month() + 1;
 if (month < 10) {
   month = +`0${month}`;
 }
 const initFromDate = `${moment().year()}-${month}-01`;
 const initToDate = moment().format('YYYY-MM-DD');
-
-// Menu Function
-function MenuHandler({
-  monthlyClickedHandler,
-  customClickedHandler,
-}: MenuHandlerType) {
-  return (
-    <View style={styles.listMenu}>
-      <Pressable
-        style={({pressed}) => pressed && styles.pressed}
-        onPress={() => monthlyClickedHandler()}>
-        <View
-          style={{
-            marginLeft: 10,
-          }}>
-          <Text>Monthly</Text>
-        </View>
-      </Pressable>
-
-      <Pressable
-        style={({pressed}) => pressed && styles.pressed}
-        onPress={() => {
-          customClickedHandler();
-        }}>
-        <View
-          style={{
-            marginLeft: 10,
-          }}>
-          <Text>Custom</Text>
-        </View>
-      </Pressable>
-    </View>
-  );
-}
 
 function HeaderRightComponent({
   fromDate,
@@ -168,10 +135,6 @@ function HeaderRightComponent({
 }
 
 function AccountsItem({navigation, route}: Props) {
-  // const [expensesData, setExpensesData] = useState<ExpenseType>();
-  // const [accountsData, setAccountsData] = useState<AccountType>();
-  // const [cashData, setCashData] = useState<CashType>();
-  // const [incomesData, setIncomesData] = useState<IncomeType>();
   const [mode, setMode] = useState<string | null>('date');
   const [fromDate, setFromDate] = useState<string | null>(initFromDate);
   const [toDate, setToDate] = useState<string | null>(initToDate);
@@ -185,6 +148,8 @@ function AccountsItem({navigation, route}: Props) {
     React.useState<boolean>(false);
   const [fromDateClicked, setFromDateClicked] = React.useState<boolean>(false);
   const [showCustomDate, setShowCustomDate] = React.useState<boolean>(false);
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
   // const dispatch = useAppDispatch();
   const expensesData = useAppSelector(
@@ -205,10 +170,6 @@ function AccountsItem({navigation, route}: Props) {
   );
 
   useEffect(() => {
-    // setExpensesData(expenseData);
-    // setIncomesData(incomeData);
-    // setCashData(cashData);
-    // setAccountsData(accountsData);
     onMonthYearSelectedHandler(String(moment().month()));
   }, []);
 
@@ -333,15 +294,18 @@ function AccountsItem({navigation, route}: Props) {
     setFromDate(fromdate);
     setToDate(todate);
     setShowMonthYearListMenu(false);
+    setIsModalVisible(false);
   }
 
   function showMonthYearListMenuHandler(): void {
-    setShowMonthYearListMenu(show => !show);
+    // setShowMonthYearListMenu(show => !show);
+    setIsModalVisible(true);
   }
 
   function customClickedHandler(): void {
     setShowCustomDate(true);
     setRightMenuClicked(false);
+    setIsMenuOpen(false);
   }
 
   function monthlyClickedHandler(): void {
@@ -350,10 +314,12 @@ function AccountsItem({navigation, route}: Props) {
 
     setShowCustomDate(false);
     setRightMenuClicked(false);
+    setIsMenuOpen(false);
   }
 
   function rightMenuClickedHandler(): void {
-    setRightMenuClicked(clicked => !clicked);
+    // setRightMenuClicked(clicked => !clicked);
+    setIsMenuOpen(true);
   }
 
   function fromDateClickedHandler(): void {
@@ -390,9 +356,6 @@ function AccountsItem({navigation, route}: Props) {
   };
 
   const renderItem = ({item}) => {
-    // expense: item.Products[0]
-    // income: item.Products[1]
-    // console.log(item);
     const expenseAmount = +item.Products[0]?.amount;
     const incomeAmount = +item.Products[1]?.amount;
 
@@ -439,21 +402,6 @@ function AccountsItem({navigation, route}: Props) {
 
     return (
       <View style={styles.list}>
-        {/* <Pressable
-          style={({pressed}) => pressed && styles.pressed}
-          onPress={() =>
-            navigation.navigate('AddDetails', {
-              amount: incomeAmount,
-              transaction: {
-                categoryTitle: incomeCategory[0]?.title,
-                type: 'income',
-                // note: note,
-                account: incomeCateAcc[0]?.title,
-                date: date,
-              },
-            })
-          }
-          > */}
         <View
           style={{
             justifyContent: 'center',
@@ -466,22 +414,7 @@ function AccountsItem({navigation, route}: Props) {
             {currencyFormatter(+incomeAmount, {})}
           </Text>
         </View>
-        {/* </Pressable> */}
 
-        {/* <Pressable
-          style={({pressed}) => pressed && styles.pressed}
-          onPress={() =>
-            navigation.navigate('AddDetails', {
-              amount: expenseAmount,
-              transaction: {
-                categoryTitle: expenseCategory[0]?.title,
-                type: 'expense',
-                // note: note,
-                account: expenseCateAcc[0]?.title,
-                date: date,
-              },
-            })
-          }> */}
         <View
           style={{
             justifyContent: 'center',
@@ -493,9 +426,7 @@ function AccountsItem({navigation, route}: Props) {
           <Text style={{fontSize: 14, color: 'red', alignSelf: 'center'}}>
             {currencyFormatter(+expenseAmount, {})}
           </Text>
-          {/* <Text style={{fontSize: 10, color: 'grey'}}>{expenseCategory}</Text> */}
         </View>
-        {/* </Pressable> */}
 
         <View style={styles.dateContainer}>
           <View style={styles.dateLabel}>
@@ -552,21 +483,22 @@ function AccountsItem({navigation, route}: Props) {
         />
       </View>
 
-      {rightMenuClicked && (
-        <MenuHandler
-          monthlyClickedHandler={monthlyClickedHandler}
-          customClickedHandler={customClickedHandler}
-        />
-      )}
+      <Menu
+        setIsMenuOpen={setIsMenuOpen}
+        isMenuOpen={isMenuOpen}
+        monthlyClickedHandler={monthlyClickedHandler}
+        customClickedHandler={customClickedHandler}
+        focusedTabIndex={1}
+      />
 
-      {showMonthYearListMenu && (
-        <MonthYearList
-          monthlyPressed={false}
-          onMonthYearSelectedHandler={onMonthYearSelectedHandler}
-          year={year}
-          setYear={setYear}
-        />
-      )}
+      <MonthYearList
+        setIsModalVisible={setIsModalVisible}
+        isModalVisible={isModalVisible}
+        monthlyPressed={false}
+        onMonthYearSelectedHandler={onMonthYearSelectedHandler}
+        year={year}
+        setYear={setYear}
+      />
 
       <DateTimePickerModal
         isVisible={isDatePickerVisible}
@@ -607,6 +539,7 @@ const styles = StyleSheet.create({
     shadowRadius: 1,
     elevation: 1,
   },
+
   headerMenuText: {
     fontSize: 14,
   },
@@ -656,23 +589,6 @@ const styles = StyleSheet.create({
     marginRight: 5,
     borderWidth: 0.5,
     borderColor: '#black',
-  },
-  listMenu: {
-    flexDirection: 'column',
-    justifyContent: 'space-around',
-    width: 120,
-    height: 100,
-    borderWidth: 0.8,
-    borderRadius: 5,
-    borderColor: '#d4d4d4',
-    backgroundColor: '#ffffff',
-    shadowOffset: {width: 1, height: 1},
-    shadowOpacity: 0.5,
-    shadowRadius: 2,
-    elevation: 2,
-    position: 'absolute',
-    top: 0,
-    right: 2,
   },
   customDate: {
     marginRight: 20,

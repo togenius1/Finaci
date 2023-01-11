@@ -15,17 +15,15 @@ import Spending from '../components/tab/SpendingTab';
 import Expense from '../components/tab/ExpenseTab';
 import Income from '../components/tab/IncomeTab';
 import MonthYearList from '../components/Menu/MonthYearList';
-// import BarChartScreen from './screenComponents/BarChartTab';
-// import BarchartTab from './screenComponents/BarChartTab';
-// import {EXPENSES} from '../dummy/dummy';
 import {OverviewNavigationProp} from '../types';
 import AddBtn from '../components/UI/AddBtn';
+import Menu from '../components/Menu/Menu';
 
 type Props = {
   navigation: OverviewNavigationProp;
 };
 
-const {width} = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
 let month = moment().month() + 1;
 if (month < 10) {
@@ -68,43 +66,6 @@ function OverviewTab({setFocusedTabIndex, fromDate, toDate}) {
         initialParams={{fromDate: fromDate, toDate: toDate}}
       />
     </TopTab.Navigator>
-  );
-}
-
-function MenuHandler({
-  monthlyClickedHandler,
-  customClickedHandler,
-  focusedTabIndex,
-}) {
-  return (
-    <View style={styles.listMenu}>
-      <Pressable
-        style={({pressed}) => pressed && styles.pressed}
-        onPress={() => {
-          monthlyClickedHandler();
-        }}>
-        <View
-          style={{
-            marginLeft: 10,
-          }}>
-          <Text>Monthly</Text>
-        </View>
-      </Pressable>
-      {focusedTabIndex !== 0 && (
-        <Pressable
-          style={({pressed}) => pressed && styles.pressed}
-          onPress={() => {
-            customClickedHandler();
-          }}>
-          <View
-            style={{
-              marginLeft: 10,
-            }}>
-            <Text>Custom</Text>
-          </View>
-        </Pressable>
-      )}
-    </View>
   );
 }
 
@@ -193,6 +154,7 @@ const OverviewScreen = ({navigation}: Props) => {
     useState<boolean>(false);
   const [year, setYear] = useState<string | null>(String(moment().year()));
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   // const [duration, setDuration] = useState(moment().year());
   // const [month, setMonth] = useState();
 
@@ -267,7 +229,8 @@ const OverviewScreen = ({navigation}: Props) => {
   }
 
   function rightMenuClickedHandler() {
-    setRightMenuClicked(!rightMenuClicked);
+    // setRightMenuClicked(!rightMenuClicked);
+    setIsMenuOpen(true);
   }
 
   function monthlyClickedHandler() {
@@ -285,13 +248,15 @@ const OverviewScreen = ({navigation}: Props) => {
 
     setShowCustomDate(false);
     setRightMenuClicked(false);
-    // setFocusedExpenseTab(false);
+    // setFocusedExpenseTab(false)
+    setIsMenuOpen(false);
   }
 
   function customClickedHandler() {
     setShowCustomDate(true);
     setRightMenuClicked(false);
     // setFocusedExpenseTab(true);
+    setIsMenuOpen(false);
   }
 
   function fromDateClickedHandler() {
@@ -348,11 +313,6 @@ const OverviewScreen = ({navigation}: Props) => {
     hideDatePicker();
   };
 
-  // function onTodayHandler() {
-  // setDATE(new Date());
-  // setFromDate(moment().format('YYYY-MM-DD'));
-  // }
-
   const sendParamsToSpendingTabHandler = () => {
     navigation.navigate('Spending', {
       fromDate: fromDate,
@@ -396,13 +356,23 @@ const OverviewScreen = ({navigation}: Props) => {
         style={styles.datePicker}
       />
 
-      {rightMenuClicked && (
-        <MenuHandler
-          monthlyClickedHandler={monthlyClickedHandler}
-          customClickedHandler={customClickedHandler}
-          focusedTabIndex={focusedTabIndex}
-        />
-      )}
+      {/* {rightMenuClicked && ( */}
+      {/* <MenuHandler
+        setIsMenuOpen={setIsMenuOpen}
+        isMenuOpen={isMenuOpen}
+        monthlyClickedHandler={monthlyClickedHandler}
+        customClickedHandler={customClickedHandler}
+        focusedTabIndex={focusedTabIndex}
+      /> */}
+      {/* )} */}
+
+      <Menu
+        setIsMenuOpen={setIsMenuOpen}
+        isMenuOpen={isMenuOpen}
+        monthlyClickedHandler={monthlyClickedHandler}
+        customClickedHandler={customClickedHandler}
+        focusedTabIndex={focusedTabIndex}
+      />
 
       <MonthYearList
         // monthlyPressed={false}
@@ -449,23 +419,6 @@ const styles = StyleSheet.create({
   },
   headerMenuText: {
     fontSize: 14,
-  },
-  listMenu: {
-    flexDirection: 'column',
-    justifyContent: 'space-around',
-    width: 120,
-    height: 100,
-    borderWidth: 0.8,
-    borderRadius: 5,
-    borderColor: '#d4d4d4',
-    backgroundColor: '#ffffff',
-    shadowOffset: {width: 1, height: 1},
-    shadowOpacity: 0.5,
-    shadowRadius: 2,
-    elevation: 2,
-    position: 'absolute',
-    top: 0,
-    right: 2,
   },
   customDate: {
     marginRight: 20,

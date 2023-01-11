@@ -235,13 +235,13 @@ const TransactionsScreen = ({navigation}: Props) => {
         style={styles.datePicker}
       />
 
-      <AddBtn
+      {/* <AddBtn
         onPress={() => navigation.navigate('AddExpenses')}
         style={{bottom: -0}}
         icon={'plus-circle'}
         size={width * 0.18}
         color={'#b6482a'}
-      />
+      /> */}
     </View>
   );
 };
