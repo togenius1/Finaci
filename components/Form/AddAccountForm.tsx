@@ -63,6 +63,7 @@ const AddAccountForm = ({
   const [btnAccColor, setAccBtnColor] = useState<string | undefined>(
     btnAccCashColor,
   );
+  // const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
   useEffect(() => {
     setFilteredData(accountsData);
@@ -233,17 +234,20 @@ const AddAccountForm = ({
       visible={isModalVisible}
       onDismiss={() => setIsModalVisible(false)}
       onRequestClose={() => setIsModalVisible(false)}>
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Pressable
-            style={({pressed}) => pressed && styles.pressed}
-            onPress={() => closeHandler()}>
-            <View style={styles.close}>
-              <Ionicons name="close" size={width * 0.07} color="#454545" />
-            </View>
-          </Pressable>
+      <Pressable
+        style={styles.outSide}
+        onPress={() => setIsModalVisible(false)}>
+        <View style={styles.container}>
+          <View style={styles.header}>
+            <Pressable
+              style={({pressed}) => pressed && styles.pressed}
+              onPress={() => closeHandler()}>
+              <View style={styles.close}>
+                <Ionicons name="close" size={width * 0.07} color="#454545" />
+              </View>
+            </Pressable>
 
-          {/* <Pressable
+            {/* <Pressable
             style={({pressed}) => pressed && styles.pressed}
             onPress={() => saveFormHandler()}>
             <View>
@@ -257,114 +261,116 @@ const AddAccountForm = ({
               </Text>
             </View>
           </Pressable> */}
-        </View>
-
-        <View style={styles.accountsBtn}>
-          <Pressable
-            style={({pressed}) => pressed && styles.pressed}
-            onPress={() => cashBtnPressedHandler()}>
-            <View style={[styles.accountBtn, {backgroundColor: btnCashColor}]}>
-              <Text>Cash</Text>
-            </View>
-          </Pressable>
-          <Pressable
-            style={({pressed}) => pressed && styles.pressed}
-            onPress={() => accBtnPressedHandler()}>
-            <View style={[styles.accountBtn, {backgroundColor: btnAccColor}]}>
-              <Text>Accounts</Text>
-            </View>
-          </Pressable>
-        </View>
-
-        {selectedCash && (
-          <View style={{marginLeft: 20}}>
-            <Text
-              style={{
-                fontSize: width * 0.05,
-                fontWeight: '800',
-                marginLeft: 20,
-                marginTop: 20,
-              }}>
-              Cash
-            </Text>
-            <View style={styles.searchContainer}>
-              <TextInput
-                style={styles.textInput}
-                placeholder="Please Enter budget amount."
-                keyboardType="numeric"
-                // onChange={event => {
-                //   searchFilterHandler(event.nativeEvent.text);
-                // }}
-                onChangeText={setBudget}
-                value={budget}
-              />
-              <Pressable
-                style={({pressed}) => pressed && styles.pressed}
-                onPress={() => saveCashHandler()}>
-                <Text style={styles.add}>save</Text>
-              </Pressable>
-            </View>
           </View>
-        )}
 
-        {!selectedCash && (
-          <>
+          <View style={styles.accountsBtn}>
+            <Pressable
+              style={({pressed}) => pressed && styles.pressed}
+              onPress={() => cashBtnPressedHandler()}>
+              <View
+                style={[styles.accountBtn, {backgroundColor: btnCashColor}]}>
+                <Text>Cash</Text>
+              </View>
+            </Pressable>
+            <Pressable
+              style={({pressed}) => pressed && styles.pressed}
+              onPress={() => accBtnPressedHandler()}>
+              <View style={[styles.accountBtn, {backgroundColor: btnAccColor}]}>
+                <Text>Accounts</Text>
+              </View>
+            </Pressable>
+          </View>
+
+          {selectedCash && (
             <View style={{marginLeft: 20}}>
-              <Text style={{fontWeight: '800', fontSize: height * 0.02}}>
-                Search:
+              <Text
+                style={{
+                  fontSize: width * 0.05,
+                  fontWeight: '800',
+                  marginLeft: 20,
+                  marginTop: 20,
+                }}>
+                Cash
               </Text>
+              <View style={styles.searchContainer}>
+                <TextInput
+                  style={styles.textInput}
+                  placeholder="Please Enter budget amount."
+                  keyboardType="numeric"
+                  // onChange={event => {
+                  //   searchFilterHandler(event.nativeEvent.text);
+                  // }}
+                  onChangeText={setBudget}
+                  value={budget}
+                />
+                <Pressable
+                  style={({pressed}) => pressed && styles.pressed}
+                  onPress={() => saveCashHandler()}>
+                  <Text style={styles.add}>save</Text>
+                </Pressable>
+              </View>
             </View>
+          )}
 
-            <View style={styles.searchContainer}>
-              <TextInput
-                style={styles.textInput}
-                placeholder="search or add category"
-                onChange={event => {
-                  searchFilterHandler(event.nativeEvent.text);
-                }}
-                onChangeText={setAccountText}
-                value={addAccPressed ? accountText : filteredData}
-              />
-              <Pressable
-                style={({pressed}) => pressed && styles.pressed}
-                onPress={() => addAccHandler()}>
-                <Text style={styles.add}>add</Text>
-              </Pressable>
-            </View>
-          </>
-        )}
+          {!selectedCash && (
+            <>
+              <View style={{marginLeft: 20}}>
+                <Text style={{fontWeight: '800', fontSize: height * 0.02}}>
+                  Search:
+                </Text>
+              </View>
 
-        {addAccPressed && !selectedCash && (
-          <>
-            <View style={styles.searchContainer}>
-              <TextInput
-                style={styles.textInput}
-                placeholder="Please enter budget amount."
-                keyboardType="numeric"
-                // onChange={event => {
-                //   searchFilterHandler(event.nativeEvent.text);
-                // }}
-                onChangeText={setBudget}
-                value={budget}
-              />
-              <Pressable
-                style={({pressed}) => pressed && styles.pressed}
-                onPress={() => saveAccountHandler()}>
-                <Text style={styles.add}>save</Text>
-              </Pressable>
-            </View>
-          </>
-        )}
+              <View style={styles.searchContainer}>
+                <TextInput
+                  style={styles.textInput}
+                  placeholder="search or add category"
+                  onChange={event => {
+                    searchFilterHandler(event.nativeEvent.text);
+                  }}
+                  onChangeText={setAccountText}
+                  value={addAccPressed ? accountText : filteredData}
+                />
+                <Pressable
+                  style={({pressed}) => pressed && styles.pressed}
+                  onPress={() => addAccHandler()}>
+                  <Text style={styles.add}>add</Text>
+                </Pressable>
+              </View>
+            </>
+          )}
 
-        {!selectedCash && (
-          <FlatList
-            keyExtractor={item => item.title + uuidv4()}
-            data={filteredData}
-            renderItem={renderItem}
-            bounces={false}
-          />
-        )}
-      </View>
+          {addAccPressed && !selectedCash && (
+            <>
+              <View style={styles.searchContainer}>
+                <TextInput
+                  style={styles.textInput}
+                  placeholder="Please enter budget amount."
+                  keyboardType="numeric"
+                  // onChange={event => {
+                  //   searchFilterHandler(event.nativeEvent.text);
+                  // }}
+                  onChangeText={setBudget}
+                  value={budget}
+                />
+                <Pressable
+                  style={({pressed}) => pressed && styles.pressed}
+                  onPress={() => saveAccountHandler()}>
+                  <Text style={styles.add}>save</Text>
+                </Pressable>
+              </View>
+            </>
+          )}
+
+          {!selectedCash && (
+            <FlatList
+              keyExtractor={item => item.title + uuidv4()}
+              data={filteredData}
+              renderItem={renderItem}
+              bounces={false}
+            />
+          )}
+        </View>
+      </Pressable>
     </Modal>
   );
 };
@@ -391,6 +397,10 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 25,
     // backgroundColor: 'magenta',
+  },
+  outSide: {
+    flex: 1,
+    backgroundColor: 'transparent',
   },
   close: {
     backgroundColor: '#e6e6e6',

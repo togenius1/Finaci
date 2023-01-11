@@ -4,13 +4,12 @@ import {useNavigation} from '@react-navigation/native';
 // import moment from 'moment';
 
 // import {EXPENSES} from '../../dummy/dummy';
-import BarchartTab from '../screenComponents/BarChartTab';
-import IconButton from '../../components/UI/iconButton';
+import BarchartTab from './BarChartTab';
+import IconButton from '../UI/iconButton';
 // import {sumByCustomDate, sumByDate} from '../../util/math';
 import {SpendingTabRouteProp} from '../../types';
 // import {ExpenseType} from '../../models/expense';
 import {useAppSelector} from '../../hooks';
-import AddBtn from '../../components/UI/AddBtn';
 // import {fetchExpensesData} from '../../store/expense-action';
 
 type Props = {
@@ -54,23 +53,7 @@ const SpendingTab = ({route}: Props) => {
 
   return (
     <View style={styles.container}>
-      {/* <RenderBarchartTab /> */}
       <BarchartTab data={filteredData} fromDate={fromDate} toDate={toDate} />
-
-      {/* <AddBtn
-        onPress={() => navigation.navigate('AddExpenses')}
-        style={{bottom: -20}}
-        size={width * 0.2}
-      /> */}
-
-      {/* <View style={styles.addButtonContainer}>
-        <IconButton
-          name="add"
-          size={30}
-          color="white"
-          onPress={() => navigation.navigate('AddExpenses')}
-        />
-      </View> */}
     </View>
   );
 };

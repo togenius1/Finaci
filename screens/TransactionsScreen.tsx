@@ -11,7 +11,6 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import moment from 'moment';
 
-import IconButton from '../components/UI/iconButton';
 import TransactionOutput from '../components/Output/TransactionOutput';
 import MonthYearList from '../components/Menu/MonthYearList';
 import {TransactionNavigationProp} from '../types';
@@ -48,7 +47,6 @@ const TransactionsScreen = ({navigation}: Props) => {
   const [fromDateClicked, setFromDateClicked] = useState<boolean>(false);
   const [toDateClicked, setToDateClicked] = useState<boolean>(false);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-
 
   // Initial from date, to date
   useEffect(() => {
@@ -123,12 +121,7 @@ const TransactionsScreen = ({navigation}: Props) => {
         </View>
       ),
     });
-  }, [
-    navigation,
-    duration,
-    year,
-    showMonthYearListMenuHandler,
-  ]);
+  }, [navigation, duration, year, showMonthYearListMenuHandler]);
 
   function onMonthYearSelectedHandler(time) {
     if (monthlyPressed) {
@@ -244,16 +237,11 @@ const TransactionsScreen = ({navigation}: Props) => {
 
       <AddBtn
         onPress={() => navigation.navigate('AddExpenses')}
-        style={{bottom: -20}}
-        size={width * 0.2}
+        style={{bottom: -0}}
+        icon={'plus-circle'}
+        size={width * 0.18}
+        color={'#b6482a'}
       />
-      {/* <View style={styles.addButtonContainer}>
-        <IconButton
-          name="add"
-          size={15}
-          onPress={() => navigation.navigate('AddExpenses')}
-        />
-      </View> */}
     </View>
   );
 };

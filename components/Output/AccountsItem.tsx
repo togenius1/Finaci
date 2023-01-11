@@ -14,14 +14,14 @@ import moment from 'moment';
 import {v4 as uuidv4} from 'uuid';
 
 import {ExpenseCategory, IncomeCategory} from '../../dummy/categoryItems';
-import {EXPENSES, INCOME} from '../../dummy/dummy';
+// import {EXPENSES, INCOME} from '../../dummy/dummy';
 import {
   // sortDataByDay,
   sumByCustomDate,
   // sumByDate,
   sumTotalFunc,
 } from '../../util/math';
-import MonthYearList from '../../components/Menu/MonthYearList';
+import MonthYearList from '../Menu/MonthYearList';
 import {AccountsItemNavigationType, AccountsItemRouteProp} from '../../types';
 // import {ExpenseType} from '../../models/expense';
 // import {AccountType, CashType} from '../../models/account';

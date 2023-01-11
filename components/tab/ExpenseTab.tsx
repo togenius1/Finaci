@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 
-import ExpenseOutput from '../../components/Output/ExpenseOutput';
+import ExpenseOutput from '../Output/ExpenseOutput';
 // import {EXPENSES} from '../../dummy/dummy';
 import {useAppDispatch, useAppSelector} from '../../hooks';
 // import {ExpenseType} from '../../models/expense';

@@ -13,7 +13,6 @@ import {
 } from '../../util/math';
 // import IconButton from '../UI/iconButton';
 import {ExpenseCategory} from '../../dummy/categoryItems';
-// import AddBtn from '../UI/AddBtn';
 
 type Props = {};
 
@@ -60,21 +59,7 @@ const ExpenseOutput = ({data, fromDate, toDate}: Props) => {
         <OverviewList data={pctEachCateObj} />
       </View>
 
-      {/* <AddBtn
-        onPress={() => navigation.navigate('AddExpenses')}
-        style={{bottom: -20}}
-        size={width * 0.2}
-      /> */}
-
-
-      {/* <View style={styles.addButtonContainer}>
-        <IconButton
-          name="add"
-          size={30}
-          color="white"
-          onPress={() => navigation.navigate('AddExpenses')}
-        />
-      </View> */}
+     
     </View>
   );
 };

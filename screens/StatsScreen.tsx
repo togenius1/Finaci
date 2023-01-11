@@ -4,7 +4,7 @@ import moment from 'moment';
 
 // import IconButton from '../components/UI/iconButton';
 // import BarChartTab from './screenComponents/BarChartTab';
-import TimeLineTab from './screenComponents/TimeLineScreen';
+import TimeLineTab from '../components/Graph/TimeLineScreen';
 import Tabs from '../components/UI/Tabs';
 import LineChart from '../components/Graph/LineChart';
 import {sumByCustomMonth} from '../util/math';

@@ -8,7 +8,7 @@ import {useAppDispatch, useAppSelector} from '../../hooks';
 import {fetchCashAccountsData} from '../../store/cash-action';
 import {fetchAccountsData} from '../../store/account-action';
 import {sumTotalBudget, sumTotalFunc} from '../../util/math';
-import AddAccountForm from '../../components/Form/AddAccountForm';
+import AddAccountForm from '../Form/AddAccountForm';
 import AccountElement from './AccountElement';
 import { fetchExpensesData } from '../../store/expense-action';
 

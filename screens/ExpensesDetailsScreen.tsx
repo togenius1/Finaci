@@ -5,7 +5,7 @@ import moment from 'moment';
 
 import {currencyFormatter} from '../util/currencyFormatter';
 import {useAppSelector} from '../hooks';
-import DailyItemElement from './screenComponents/DailyItemElement';
+import DailyItemElement from '../components/Output/DailyItemElement';
 
 type Props = {};
 

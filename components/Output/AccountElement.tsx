@@ -13,7 +13,7 @@ import {v4 as uuidv4} from 'uuid';
 import {currencyFormatter} from '../../util/currencyFormatter';
 import {accountActions} from '../../store/account-slice';
 import {useAppDispatch} from '../../hooks';
-import AccountHeader from '../../components/AccountHeader';
+import AccountHeader from '../AccountHeader';
 
 type Props = {
   setIsModalVisible: (value: boolean) => void;

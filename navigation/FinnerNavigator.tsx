@@ -7,7 +7,7 @@ import AddDetailsScreen from '../screens/AddDetailsScreen';
 
 import {GlobalStyles} from '../constants/styles';
 import {RootStackParamList} from '../types';
-import AccountsItem from '../screens/screenComponents/AccountsItem';
+import AccountsItem from '../components/Output/AccountsItem';
 import RootNavigator from './RootNavigator';
 import MenuDrawer from './NavComponents/Drawer/MenuDrawer';
 import ExpensesDetailsScreen from '../screens/ExpensesDetailsScreen';

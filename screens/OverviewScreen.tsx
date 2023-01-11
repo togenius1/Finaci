@@ -11,9 +11,9 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import moment from 'moment';
 
-import Spending from './tab/SpendingTab';
-import Expense from './tab/ExpenseTab';
-import Income from './tab/IncomeTab';
+import Spending from '../components/tab/SpendingTab';
+import Expense from '../components/tab/ExpenseTab';
+import Income from '../components/tab/IncomeTab';
 import MonthYearList from '../components/Menu/MonthYearList';
 // import BarChartScreen from './screenComponents/BarChartTab';
 // import BarchartTab from './screenComponents/BarChartTab';
@@ -415,8 +415,10 @@ const OverviewScreen = ({navigation}: Props) => {
 
       <AddBtn
         onPress={() => navigation.navigate('AddExpenses')}
-        style={{bottom: -20}}
-        size={width * 0.2}
+        style={{bottom: -0}}
+        icon={'plus-circle'}
+        size={width * 0.18}
+        color={'#b6482a'}
       />
     </View>
   );

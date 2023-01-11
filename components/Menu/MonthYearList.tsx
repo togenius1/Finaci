@@ -4,7 +4,6 @@ import {
   Pressable,
   StyleSheet,
   Text,
-  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import React from 'react';
@@ -14,6 +13,8 @@ import moment from 'moment';
 type Props = {
   isModalVisible: boolean;
   setIsModalVisible: (value: boolean) => void;
+  year: number;
+  setYear: (value: number) => void;
 };
 
 const {width, height} = Dimensions.get('window');
@@ -87,12 +88,14 @@ export default function MonthYearList({
   }
 
   function incrementYearHandle() {
-    setYear(year => year + 1);
+    setYear(year => +year + 1);
   }
 
   function decrementYearHandle() {
-    setYear(year => year - 1);
+    setYear(year => +year - 1);
   }
+
+  console.log('year: ', year);
 
   return (
     <Modal
@@ -174,16 +177,17 @@ const styles = StyleSheet.create({
     width: width * 0.8,
     height: height * 0.25,
     borderWidth: 0.8,
+    backgroundColor: '#ffffff',
     borderRadius: 5,
     borderColor: '#d4d4d4',
-    backgroundColor: '#ffffff',
+
     shadowOffset: {width: 1, height: 1},
     shadowOpacity: 0.5,
     shadowRadius: 2,
     elevation: 2,
     position: 'absolute',
-    top: 85,
-    right: width * 0.1,
+    top: height * 0.10,
+    right: 0,
   },
   outSide: {
     flex: 1,

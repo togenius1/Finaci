@@ -1,21 +1,25 @@
 import {Dimensions, Pressable, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+// import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 type Props = {
   onPress: () => void;
+  icon: string;
+  size: number;
+  color: string;
 };
 
 const {width, height} = Dimensions.get('window');
 
-const AddBtn = ({onPress, style, size}: Props) => {
+const AddBtn = ({onPress, style, icon, size, color}: Props) => {
   return (
     <View style={[styles.addButton, style]}>
       <Pressable
         onPress={onPress}
         style={({pressed}) => pressed && styles.pressed}>
         <View style={styles.icon}>
-          <Ionicons name="add-circle" size={size} color="#3683e2" />
+          <MaterialCommunityIcons name={icon} size={size} color={color} />
         </View>
       </Pressable>
     </View>

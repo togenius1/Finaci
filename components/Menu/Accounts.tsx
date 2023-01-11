@@ -170,10 +170,13 @@ const Accounts = ({setAccount, setAccountPressed}: Props) => {
         </View>
       </View>
 
-      <AddBtn
+      {/* <AddBtn
         onPress={openAddAccountForm}
-        style={{position: 'absolute', bottom: -15}}
-      />
+        style={{bottom: -0}}
+        icon={'plus-circle'}
+        size={width * 0.18}
+        color="#3683e2"
+      /> */}
 
       <AddAccountForm
         setIsModalVisible={setIsModalVisible}

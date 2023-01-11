@@ -2,7 +2,7 @@ import {StyleSheet} from 'react-native';
 import React, {useEffect} from 'react';
 // import {useIsFocused} from '@react-navigation/native';
 
-import IncomeOutput from '../../components/Output/IncomeOutput';
+import IncomeOutput from '../Output/IncomeOutput';
 // import {INCOME} from '../../dummy/dummy';
 import {IncomeTabRouteProp} from '../../types';
 // import {IncomeType} from '../../models/income';

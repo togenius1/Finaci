@@ -6,7 +6,7 @@ import StatsScreen from '../../../screens/StatsScreen';
 import TransactionsScreen from '../../../screens/TransactionsScreen';
 import AccountsScreen from '../../../screens/AccountsScreen';
 import SettingsScreen from '../../../screens/SettingsScreen';
-import DrawerContent from '../../../screens/drawer/DrawerContent';
+import DrawerContent from '../../../components/drawer/DrawerContent';
 import ReportsScreen from '../../../screens/ReportsScreen';
 import BackupScreen from '../../../screens/BackupScreen';
 import RecommendScreen from '../../../screens/RecommendScreen';

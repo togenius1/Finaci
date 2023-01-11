@@ -12,7 +12,7 @@ import {
 import IconButton from '../UI/iconButton';
 import IncomeList from './IncomeList';
 import {IncomeCategory} from '../../dummy/categoryItems';
-import AddBtn from '../UI/AddBtn';
+
 
 type Props = {};
 
@@ -59,21 +59,6 @@ const IncomeOutput = ({data, fromDate, toDate}: Props) => {
       <View style={styles.transactContainer}>
         <IncomeList data={pctEachCateObj} />
       </View>
-
-      {/* <AddBtn
-        onPress={() => navigation.navigate('AddExpenses')}
-        style={{bottom: -20}}
-        size={width * 0.2}
-      /> */}
-
-      {/* <View style={styles.addButtonContainer}>
-        <IconButton
-          name="add"
-          size={30}
-          color="white"
-          onPress={() => navigation.navigate('AddExpenses')}
-        />
-      </View> */}
     </View>
   );
 };
