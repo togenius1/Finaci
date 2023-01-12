@@ -132,6 +132,8 @@ const TransactionsScreen = ({navigation}: Props) => {
     dailyPressed,
   ]);
 
+  console.log('Outside func ----', duration);
+
   function onMonthYearSelectedHandler(time) {
     if (monthlyPressed) {
       // const mm = moment().month(time).format('M');
@@ -155,6 +157,8 @@ const TransactionsScreen = ({navigation}: Props) => {
       );
 
       const month = moment(fromdate).month() + 1;
+
+      console.log('Inside func ----', duration);
 
       setFromDate(String(fromdate));
       setToDate(String(todate));
