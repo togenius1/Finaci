@@ -26,7 +26,7 @@ const {width, height} = Dimensions.get('window');
 function ExpenseForm({
   type,
   amount,
-  setAmount,
+  // setAmount,
   category,
   categoryTitle,
   note,
@@ -43,8 +43,8 @@ function ExpenseForm({
 
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [DATE, setDATE] = useState(initialDate);
-  const [mode, setMode] = useState('date');
-  const [show, setShow] = useState(false);
+  const [mode, setMode] = useState('datetime');
+  // const [show, setShow] = useState(false);
 
   useEffect(() => {
     setTextDate(initialDate);
