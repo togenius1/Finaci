@@ -1,17 +1,21 @@
-import {Dimensions, FlatList, View} from 'react-native';
-import React from 'react';
+import {FlatList, View} from 'react-native';
+import React, {useEffect} from 'react';
 import {v4 as uuidv4} from 'uuid';
 import moment from 'moment';
 
-import {currencyFormatter} from '../util/currencyFormatter';
+// import {currencyFormatter} from '../util/currencyFormatter';
 import {useAppSelector} from '../hooks';
 import DailyItemElement from '../components/Output/DailyItemElement';
+import {IncomesDetailsNavigationProp, IncomesDetailsRouteProp} from '../types';
 
-type Props = {};
+type Props = {
+  navigation: IncomesDetailsNavigationProp;
+  route: IncomesDetailsRouteProp;
+};
 
-const {width, height} = Dimensions.get('window');
+// const {width, height} = Dimensions.get('window');
 
-const IncomesDetailsScreen = ({route}: Props) => {
+const IncomesDetailsScreen = ({route, navigation}: Props) => {
   // Get Category name in Storage
   const dataLoaded = useAppSelector(store => store);
 
@@ -19,6 +23,14 @@ const IncomesDetailsScreen = ({route}: Props) => {
 
   const date = route.params.date;
   const time = route.params.time;
+
+  useEffect(() => {
+    navigation.setOptions({
+      title: 'Incomes',
+      // headerTitleAlign: 'left',
+      // headerTitleContainerStyle: {marginLeft: 0},
+    });
+  }, []);
 
   const filteredExpenses = Incomes.filter(
     income => moment(income.date).format('YYYY-MM-DD') === date,

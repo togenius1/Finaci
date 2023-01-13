@@ -11,16 +11,7 @@ import {useAppDispatch, useAppSelector} from '../hooks';
 import Note from '../components/Menu/Note';
 import Accounts from '../components/Menu/Accounts';
 import Category from '../components/Form/Category';
-// import {
-//   ExpenseCategory,
-//   IncomeCategory,
-//   TransferCategory,
-// } from '../dummy/categoryItems';
-// import {AccountCategory} from '../dummy/account';
-import {CategoryType} from '../models/category';
-// import {fetchTransferCategoriesData} from '../store/transfer-category-action';
 import {sumByDate, sumByMonth, sumByWeek} from '../util/math';
-
 import {monthlyTransactsActions} from '../store/monthlyTransact-slice';
 import {getWeekInMonth} from '../util/date';
 import {weeklyTransactsActions} from '../store/weeklyTransact-slice';
@@ -32,6 +23,12 @@ type Props = {
 };
 
 const {width, height} = Dimensions.get('window');
+const initialAccount = {
+  budget: 0,
+  date: new Date(),
+  id: 'cash1',
+  title: 'Cash',
+};
 
 const AddDetailsScreen = ({route, navigation}: Props) => {
   const dispatch = useAppDispatch();
@@ -50,13 +47,11 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
   const [categoryPressed, setCategoryPressed] = useState<boolean>(false);
   const [category, setCategory] = useState();
   const [accountPressed, setAccountPressed] = useState<boolean>(false);
-  const [account, setAccount] = useState();
+  const [account, setAccount] = useState(initialAccount);
   const [notePressed, setNotePressed] = useState<boolean>(false);
   const [note, setNote] = useState<Note>({
     note: '',
   });
-  // const [cateData, setCateData] = useState<CategoryType>();
-  // const [date, setDate] = useState<string | null>();
 
   // set initial date: from Calculator route or from Account route
   const initialDate =
@@ -67,32 +62,28 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
   const expenses = dataLoaded?.expenses?.expenses;
   const incomes = dataLoaded?.incomes?.incomes;
   const AccountCategory = dataLoaded?.accounts?.accounts;
-  const CashAccountCategory = dataLoaded?.cashAccounts?.cashAccounts;
+  // const CashAccountCategory = dataLoaded?.cashAccounts?.cashAccounts;
   const ExpenseCategory = dataLoaded?.expenseCategories?.expenseCategories;
   const IncomeCategory = dataLoaded?.incomeCategories?.incomeCategories;
   // const TransferCategory = dataLoaded?.transferCategories?.transferCategories;
 
-  const cashAccountCategoryById = CashAccountCategory.find(
+  // const cashAccountCategoryById = CashAccountCategory?.find(
+  //   acc => acc.id === account?.id,
+  // );
+  const accountCategoryById = AccountCategory?.find(
     acc => acc.id === account?.id,
   );
-  const accountCategoryById = AccountCategory.find(
-    acc => acc.id === account?.id,
-  );
-  const expenseCategoryById = ExpenseCategory.find(
+  const expenseCategoryById = ExpenseCategory?.find(
     cate => cate?.id === category?.id,
   );
-  const incomeCategoryById = IncomeCategory.find(
+  const incomeCategoryById = IncomeCategory?.find(
     cate => cate.id === category?.id,
   );
-  // const transferCategoryById = TransferCategory.find(
-  //   tr => tr.id === category?.id,
-  // );
+
 
   // Cash or other accounts
   const selectedAccount =
-    account?.title === 'Cash'
-      ? cashAccountCategoryById?.id
-      : accountCategoryById?.id;
+    account?.title === 'Cash' ? 'cash1' : accountCategoryById?.id;
 
   useEffect(() => {
     navigation.setOptions({
@@ -109,18 +100,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     });
   }, [navigation, amount, category, note, textDate, account]);
 
-  // useEffect(() => {
-  //   if (type === 'expense') {
-  //     setCateData(ExpenseCategory);
-  //   }
-  //   if (type === 'income') {
-  //     setCateData(IncomeCategory);
-  //   }
-  //   // if (type === 'transfer') {
-  //   //   setCateData(TransferCategory);
-  //   // }
-  // }, []);
-
+  // Save
   const saveHandler = () => {
     if (type === 'expense') {
       dispatch(
@@ -297,7 +277,6 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     );
 
     if (findDay?.length !== 0) {
-      console.log('Update');
       dispatch(
         dailyTransactsActions.updateDailyTransacts({
           id: uuidv4(),
@@ -309,7 +288,6 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
       );
     }
     if (findDay?.length === 0) {
-      console.log('add new');
       dispatch(
         dailyTransactsActions.addDailyTransacts({
           id: uuidv4(),

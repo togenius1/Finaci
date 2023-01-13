@@ -47,8 +47,6 @@ const TransactionsScreen = ({navigation}: Props) => {
   const [toDateClicked, setToDateClicked] = useState<boolean>(false);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
-  console.log('year: ', year);
-
   // Initial from date, to date
   useEffect(() => {
     onMonthYearSelectedHandler(moment().year());
@@ -132,8 +130,6 @@ const TransactionsScreen = ({navigation}: Props) => {
     dailyPressed,
   ]);
 
-  console.log('Outside func ----', duration);
-
   function onMonthYearSelectedHandler(time) {
     if (monthlyPressed) {
       // const mm = moment().month(time).format('M');
@@ -157,8 +153,6 @@ const TransactionsScreen = ({navigation}: Props) => {
       );
 
       const month = moment(fromdate).month() + 1;
-
-      console.log('Inside func ----', duration);
 
       setFromDate(String(fromdate));
       setToDate(String(todate));

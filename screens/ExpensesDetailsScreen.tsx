@@ -1,23 +1,37 @@
 import {FlatList, View} from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {v4 as uuidv4} from 'uuid';
 import moment from 'moment';
 
-import {currencyFormatter} from '../util/currencyFormatter';
 import {useAppSelector} from '../hooks';
 import DailyItemElement from '../components/Output/DailyItemElement';
+import {
+  ExpensesDetailsNavigationProp,
+  ExpensesDetailsRouteProp,
+} from '../types';
 
-type Props = {};
+type Props = {
+  navigation: ExpensesDetailsNavigationProp;
+  route: ExpensesDetailsRouteProp;
+};
 
 // const {width, height} = Dimensions.get('window');
 
-const ExpensesDetailsScreen = ({route}: Props) => {
+const ExpensesDetailsScreen = ({route, navigation}: Props) => {
   const dataLoaded = useAppSelector(store => store);
 
   const Expenses = dataLoaded?.expenses?.expenses;
 
   const date = route.params.date;
   const time = route.params.time;
+
+  useEffect(() => {
+    navigation.setOptions({
+      title: 'Expenses',
+      // headerTitleAlign: 'left',
+      // headerTitleContainerStyle: {marginLeft: 0},
+    });
+  }, []);
 
   const filteredExpenses = Expenses.filter(
     exp => moment(exp.date).format('YYYY-MM-DD') === date,

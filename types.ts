@@ -13,8 +13,14 @@ export type RootStackParamList = {
   Backup: undefined;
   ExpenseGraphs: undefined;
   TransactionSummary: undefined;
-  IncomesDetails: undefined;
-  ExpensesDetails: undefined;
+  IncomesDetails: {
+    date: string;
+    time: string;
+  };
+  ExpensesDetails: {
+    date: string;
+    time: string;
+  };
   Accounts: {
     account: string;
   };
@@ -65,6 +71,16 @@ export type TransactionNavigationProp = NativeStackNavigationProp<
 export type TransactionSummaryNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
   'TransactionSummary'
+>;
+
+export type ExpensesDetailsNavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  'ExpensesDetails'
+>;
+
+export type IncomesDetailsNavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  'IncomesDetails'
 >;
 
 export type StatsNavigationProp = NativeStackNavigationProp<
@@ -120,6 +136,15 @@ export type AccountsRouteProp = RouteProp<RootStackParamList, 'Accounts'>;
 export type AccountsItemRouteProp = RouteProp<
   RootStackParamList,
   'AccountsItem'
+>;
+
+export type ExpensesDetailsRouteProp = RouteProp<
+  RootStackParamList,
+  'ExpensesDetails'
+>;
+export type IncomesDetailsRouteProp = RouteProp<
+  RootStackParamList,
+  'IncomesDetails'
 >;
 
 export type ExpenseTabRouteProp = RouteProp<RootStackParamList, 'ExpenseTab'>;

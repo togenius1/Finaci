@@ -1,16 +1,16 @@
-import {StyleSheet, View, Dimensions} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import React, {useEffect, useMemo, useState} from 'react';
 // import Ionicons from 'react-native-vector-icons/Ionicons';
 // import {v4 as uuidv4} from 'uuid';
 
 import {AccountNavigationType} from '../../types';
-import {useAppDispatch, useAppSelector} from '../../hooks';
-import {fetchCashAccountsData} from '../../store/cash-action';
-import {fetchAccountsData} from '../../store/account-action';
+import {useAppSelector} from '../../hooks';
+// import {fetchCashAccountsData} from '../../store/cash-action';
+// import {fetchAccountsData} from '../../store/account-action';
 import {sumTotalBudget, sumTotalFunc} from '../../util/math';
 import AddAccountForm from '../Form/AddAccountForm';
 import AccountElement from './AccountElement';
-import { fetchExpensesData } from '../../store/expense-action';
+// import {fetchExpensesData} from '../../store/expense-action';
 
 // import {EXPENSES} from '../dummy/dummy';
 
@@ -23,7 +23,6 @@ type Props = {
 // const {width, height} = Dimensions.get('window');
 
 const AccountComponents = ({
-  navigation,
   isModalVisible,
   setIsModalVisible,
   onNavigate,

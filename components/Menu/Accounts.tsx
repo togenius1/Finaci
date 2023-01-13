@@ -19,20 +19,19 @@ import {v4 as uuidv4} from 'uuid';
 import AddAccountForm from '../Form/AddAccountForm';
 import {useAppSelector} from '../../hooks';
 
-import {AccountType} from '../../models/account';
+// import {AccountType} from '../../models/account';
 import {currencyFormatter} from '../../util/currencyFormatter';
 import {sumTotalBudget, sumTotalFunc} from '../../util/math';
 // import {EXPENSES} from '../../dummy/dummy';
 // import {AccountCategory, CashCategory} from '../../dummy/account';
 import AddBtn from '../UI/AddBtn';
-import {useNavigation} from '@react-navigation/native';
+// import {useNavigation} from '@react-navigation/native';
 import AccountHeader from '../AccountHeader';
 
 type Dispatcher<S> = Dispatch<SetStateAction<S>>;
 
 type Props = {
   // navigation: AccountNavigationType;
-  setAccount: Dispatcher<AccountType>;
   setAccountPressed: Dispatcher<boolean>;
 };
 
@@ -63,13 +62,6 @@ const Accounts = ({setAccount, setAccountPressed}: Props) => {
   const [addAccPressed, setAddAccPressed] = useState<boolean>(false);
   const [budget, setBudget] = useState<number | undefined>();
 
-  // useEffect(() => {
-  //   if (accountsData === null) {
-  //     dispatch(fetchCashAccountsData());
-  //     dispatch(fetchAccountsData());
-  //   }
-  // }, []);
-
   useEffect(() => {
     const cashBudget = sumTotalBudget(cashData);
     const accountsBudget = sumTotalBudget(accountsData);
@@ -89,16 +81,17 @@ const Accounts = ({setAccount, setAccountPressed}: Props) => {
   }
 
   function onAccountsHandler(item) {
+    // console.log('item: ', item);
     setAccountPressed(false);
-    setAccount(item === undefined ? 0 : item);
+    setAccount(item === undefined ? null : item);
   }
 
   const totalAssets = Number(cashBudget) + Number(accountsBudget);
   const total = totalAssets - +totalExpenses;
 
-  function openAddAccountForm() {
-    setIsModalVisible(pressed => !pressed);
-  }
+  // function openAddAccountForm() {
+  //   setIsModalVisible(pressed => !pressed);
+  // }
 
   // Sort Data
   const getSortedState = data =>
