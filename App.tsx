@@ -6,15 +6,7 @@ import {Amplify, Auth, DataStore, Hub} from 'aws-amplify';
 import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import {
-  generateKeyPair,
-  generatePublicKeyFromSecretKey,
-  getMySecretKey,
-  PRIVATE_KEY,
-  PRNG,
-  PUBLIC_KEY,
-  stringToUint8Array,
-} from './util/crypto';
+import {generateKeyPair, PRIVATE_KEY, PRNG, PUBLIC_KEY} from './util/crypto';
 import FinnerNavigator from './navigation/FinnerNavigator';
 import {User} from './src/models';
 
@@ -68,13 +60,13 @@ const App = () => {
   // const [localPrivateKey, setLocalPrivateKey] = useState<string | null>();
 
   //Reset Expense
-  useEffect(() => {
-    dispatch(fetchExpensesData());
-    dispatch(fetchIncomesData());
-    dispatch(fetchMonthlyTransactsData());
-    dispatch(fetchWeeklyTransactsData());
-    dispatch(fetchDailyTransactsData());
-  }, []);
+  // useEffect(() => {
+  //   dispatch(fetchExpensesData());
+  //   dispatch(fetchIncomesData());
+  //   dispatch(fetchMonthlyTransactsData());
+  //   dispatch(fetchWeeklyTransactsData());
+  //   dispatch(fetchDailyTransactsData());
+  // }, []);
 
   // Load Existing Category
   useEffect(() => {

@@ -25,7 +25,6 @@ const DateTimePick = ({
 }: Props) => {
   return (
     <View style={styles.container}>
-      {/* {true && ( */}
       <View style={{position: 'absolute', bottom: 0}}>
         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
           <Pressable
@@ -44,21 +43,20 @@ const DateTimePick = ({
             <Text>Done</Text>
           </Pressable>
         </View>
-        <DateTimePickerModal
-          testID="dateTimePicker"
-          isVisible={isVisible}
-          value={value}
-          mode={mode}
-          is24Hour={true}
-          display={Platform.OS === 'ios' ? 'inline' : 'default'}
-          onChange={onChange}
-          onConfirm={onConfirm}
-          onCancel={onCancel}
-          style={styles.datePicker}
-          supportedOrientations="portrait-upside-down"
-        />
       </View>
-      {/* )} */}
+      <DateTimePickerModal
+        testID="dateTimePicker"
+        isVisible={isVisible}
+        value={value}
+        mode={mode}
+        is24Hour={true}
+        display={Platform.OS === 'ios' ? 'inline' : 'default'}
+        onChange={onChange}
+        onConfirm={onConfirm}
+        onCancel={onCancel}
+        style={styles.datePicker}
+        // supportedOrientations="portrait-upside-down"
+      />
     </View>
   );
 };
@@ -82,7 +80,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: width * 0.8,
-    height: 260,
+    height: height * 0.4,
     // display: 'flex',
     borderBottomWidth: 1,
     borderColor: '#ba4646',

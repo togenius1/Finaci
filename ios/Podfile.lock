@@ -443,7 +443,7 @@ PODS:
     - React-Core
   - RNCAsyncStorage (1.17.11):
     - React-Core
-  - RNDateTimePicker (6.7.0):
+  - RNDateTimePicker (6.7.1):
     - React-Core
   - RNFS (2.20.0):
     - React-Core
@@ -767,7 +767,7 @@ SPEC CHECKSUMS:
   ReactCommon: 349be31adeecffc7986a0de875d7fb0dcf4e251c
   RNAWSCognito: 8b90597e928a8e336af19c879aff0e9142afe9ff
   RNCAsyncStorage: 8616bd5a58af409453ea4e1b246521bb76578d60
-  RNDateTimePicker: c6b404647f45472443b0fdcdd31296fc3516b0eb
+  RNDateTimePicker: 0530a73a6f3a1a85814cbde0802736993b9e675e
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: 62232ba8f562f7dea5ba1b3383494eb5bf97a4d3
   RNGoogleMobileAds: 6e399a1b02f3d493f6b0ec7cf7f37623cc997034
