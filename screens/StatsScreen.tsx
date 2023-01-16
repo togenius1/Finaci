@@ -272,7 +272,7 @@ const StatsScreen = ({navigation}: Props) => {
 
       <MonthYearList
         monthlyPressed={indicatorIndex !== 0 ? true : false}
-        onMonthYearSelectedHandler={onMonthYearSelectedHandler}
+        onMYSelectedHandler={onMonthYearSelectedHandler}
         year={year}
         setYear={setYear}
         isModalVisible={isModalVisible}

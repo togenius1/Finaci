@@ -221,7 +221,7 @@ const TransactionsScreen = ({navigation}: Props) => {
 
       <MonthYearList
         monthlyPressed={monthlyPressed}
-        onMonthYearSelectedHandler={onMonthYearSelectedHandler}
+        onMYSelectedHandler={onMonthYearSelectedHandler}
         year={year}
         setYear={setYear}
         month={month}

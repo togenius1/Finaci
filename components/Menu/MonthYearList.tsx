@@ -58,9 +58,6 @@ function MonthList({item, onYearSelectedHandler, selectedMY, monthlyPressed}) {
     MY = +moment().month(item.MY).format('M');
   }
 
-  console.log(MY);
-  console.log('MY: ', selectedMY);
-
   const textColor = +selectedMY === +MY ? '#02905e' : '';
   const textWeight = +selectedMY === +MY ? '700' : '';
 
@@ -80,7 +77,7 @@ function MonthList({item, onYearSelectedHandler, selectedMY, monthlyPressed}) {
 
 export default function MonthYearList({
   monthlyPressed,
-  onMonthYearSelectedHandler,
+  onMYSelectedHandler,
   year,
   setYear,
   month,
@@ -167,7 +164,7 @@ export default function MonthYearList({
                     selectedMY={selectedMY}
                     monthlyPressed={monthlyPressed}
                     onYearSelectedHandler={
-                      () => onMonthYearSelectedHandler(item?.MY)
+                      () => onMYSelectedHandler(item?.MY)
                       // && setIsModalVisible(false)
                     }
                   />

@@ -25,11 +25,11 @@ type Props = {
 
 const {width, height} = Dimensions.get('window');
 
-let month = moment().month() + 1;
-if (month < 10) {
-  month = +`0${month}`;
+let MONTH = moment().month() + 1;
+if (MONTH < 10) {
+  MONTH = +`0${MONTH}`;
 }
-const initFromDateString = `${moment().year()}-${month}-01`;
+const initFromDateString = `${moment().year()}-${MONTH}-01`;
 const initFromDate = moment(initFromDateString).format('YYYY-MM-DD');
 const initToDate = moment().format('YYYY-MM-DD');
 
@@ -76,8 +76,8 @@ function HeaderRightComponent({
   fromDateClickedHandler,
   toDateClickedHandler,
   rightMenuClickedHandler,
-  showMonthYearListMenuHandler,
-  setIsModalVisible = {setIsModalVisible},
+  // showMonthYearListMenuHandler,
+  setIsModalVisible,
 }) {
   const month = moment.monthsShort(moment(toDate).month());
   const year = moment(toDate).year();
@@ -150,13 +150,13 @@ const OverviewScreen = ({navigation}: Props) => {
   const [rightMenuClicked, setRightMenuClicked] = useState<boolean>(false);
   const [showCustomDate, setShowCustomDate] = useState(false);
   const [focusedTabIndex, setFocusedTabIndex] = useState<number | undefined>(0);
-  const [showMonthYearListMenu, setShowMonthYearListMenu] =
-    useState<boolean>(false);
+  // const [showMonthYearListMenu, setShowMonthYearListMenu] =
+  //   useState<boolean>(false);
   const [year, setYear] = useState<string | null>(String(moment().year()));
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   // const [duration, setDuration] = useState(moment().year());
-  // const [month, setMonth] = useState();
+  const [month, setMonth] = useState<string | null>(String(MONTH));
 
   useEffect(() => {
     onMonthYearSelectedHandler(moment().month());
@@ -175,8 +175,8 @@ const OverviewScreen = ({navigation}: Props) => {
           fromDateClickedHandler={fromDateClickedHandler}
           toDateClickedHandler={toDateClickedHandler}
           rightMenuClickedHandler={rightMenuClickedHandler}
-          showMonthYearListMenuHandler={showMonthYearListMenuHandler}
           setIsModalVisible={setIsModalVisible}
+          // showMonthYearListMenuHandler={showMonthYearListMenuHandler}
         />
       ),
     });
@@ -186,7 +186,7 @@ const OverviewScreen = ({navigation}: Props) => {
     toDate,
     showCustomDate,
     navigation,
-    showMonthYearListMenu,
+    // showMonthYearListMenu,
   ]);
 
   useEffect(() => {
@@ -219,14 +219,15 @@ const OverviewScreen = ({navigation}: Props) => {
 
     setFromDate(moment(fromdate).format('YYYY-MM-DD'));
     setToDate(moment(todate).format('YYYY-MM-DD'));
-    // setDuration(time);
-    // setMonth(month);
+
+    const MONTH = moment(todate).format('M');
+    setMonth(MONTH);
     setIsModalVisible(false);
   }
 
-  function showMonthYearListMenuHandler() {
-    setShowMonthYearListMenu(show => !show);
-  }
+  // function showMonthYearListMenuHandler() {
+  //   setShowMonthYearListMenu(show => !show);
+  // }
 
   function rightMenuClickedHandler() {
     // setRightMenuClicked(!rightMenuClicked);
@@ -356,16 +357,6 @@ const OverviewScreen = ({navigation}: Props) => {
         style={styles.datePicker}
       />
 
-      {/* {rightMenuClicked && ( */}
-      {/* <MenuHandler
-        setIsMenuOpen={setIsMenuOpen}
-        isMenuOpen={isMenuOpen}
-        monthlyClickedHandler={monthlyClickedHandler}
-        customClickedHandler={customClickedHandler}
-        focusedTabIndex={focusedTabIndex}
-      /> */}
-      {/* )} */}
-
       <Menu
         setIsMenuOpen={setIsMenuOpen}
         isMenuOpen={isMenuOpen}
@@ -375,10 +366,11 @@ const OverviewScreen = ({navigation}: Props) => {
       />
 
       <MonthYearList
-        // monthlyPressed={false}
-        onMonthYearSelectedHandler={onMonthYearSelectedHandler}
+        monthlyPressed={false}
+        onMYSelectedHandler={onMonthYearSelectedHandler}
         year={year}
         setYear={setYear}
+        month={month}
         setIsModalVisible={setIsModalVisible}
         isModalVisible={isModalVisible}
       />

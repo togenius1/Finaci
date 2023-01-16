@@ -493,7 +493,7 @@ function AccountsItem({navigation, route}: Props) {
 
       <MonthYearList
         monthlyPressed={false}
-        onMonthYearSelectedHandler={onMonthYearSelectedHandler}
+        onMYSelectedHandler={onMonthYearSelectedHandler}
         year={year}
         setYear={setYear}
         month={month}
