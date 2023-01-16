@@ -73,8 +73,8 @@ const StatsScreen = ({navigation}: Props) => {
 
   // const [expenseData, setExpenseData] = useState<ExpenseType>();
   // const [incomeData, setIncomeData] = useState<IncomeType>();
-  const [showMonthYearListMenu, setShowMonthYearListMenu] =
-    useState<boolean>(false);
+  // const [showMonthYearListMenu, setShowMonthYearListMenu] =
+  //   useState<boolean>(false);
   const [fromDate, setFromDate] = useState<string | null>(initFromDate);
   const [toDate, setToDate] = useState<string | null>(initToDate);
   const [indicatorIndex, setIndicatorIndex] = useState<number | undefined>(0);
@@ -100,7 +100,7 @@ const StatsScreen = ({navigation}: Props) => {
 
   useEffect(() => {
     onMonthYearSelectedHandler(moment().month());
-  }, []);
+  }, [indicatorIndex]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -141,7 +141,7 @@ const StatsScreen = ({navigation}: Props) => {
   // }
 
   function setFromToDateExpenseIncomeHandler() {
-    if (year === moment().year()) {
+    if (year === String(moment().year())) {
       setFromDate(moment().format(`${year}-01-01`));
       setToDate(moment().format(`${year}-MM-DD`));
     } else {
@@ -158,27 +158,27 @@ const StatsScreen = ({navigation}: Props) => {
     const mm = moment().month(time).format('MM');
     const daysInMonth = moment(moment().format(`YYYY-${mm}`)).daysInMonth();
 
-    if (indicatorIndex !== 0) {
-      fromdate = moment().startOf('year').format(`${time}-01-01`);
-      todate = moment().endOf('year').format(`${time}-12-31`);
+    if (indicatorIndex === 1 || indicatorIndex === 2) {
+      fromdate = `${year}-01-01`;
+      todate = `${year}-12-31`;
       month = moment().month() + 1;
-      setYear(moment(fromdate)?.year());
+      setYear(String(moment(fromdate)?.year()));
     }
     if (indicatorIndex === 0) {
-      fromdate = moment(new Date(`${year}-${mm}-01`), 'YYYY-MM-DD');
-      todate = moment(new Date(`${year}-${mm}-${daysInMonth}`), 'YYYY-MM-DD');
+      fromdate = `${year}-${mm}-01`;
+      todate = `${year}-${mm}-${daysInMonth}`;
       month = moment(fromdate).month() + 1;
     }
 
-    setFromDate(fromdate);
-    setToDate(todate);
+    setFromDate(String(fromdate));
+    setToDate(String(todate));
     setMonth(month);
     setIsModalVisible(false);
   }
 
   // Filter Expense Data
   const filteredDataExpense = expenseData?.filter(
-    d => d.date >= new Date(fromDate) && d.date <= new Date(toDate),
+    d => moment(d.date) >= moment(fromDate) && moment(d.date) <= moment(toDate),
   );
   const sumExpenseByMonthObj = sumByCustomMonth(
     filteredDataExpense,
@@ -186,6 +186,9 @@ const StatsScreen = ({navigation}: Props) => {
     fromDate,
     toDate,
   );
+
+  console.log(filteredDataExpense);
+  console.log(sumExpenseByMonthObj);
 
   // data for expense line chart
   const filteredDataIncome = incomeData?.filter(
