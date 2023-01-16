@@ -6,18 +6,18 @@ import {
   Text,
   View,
 } from 'react-native';
-import React, {useEffect} from 'react';
+import React from 'react';
 import {useAppDispatch, useAppSelector} from '../../hooks';
-import {fetchCashAccountsData} from '../../store/cash-action';
-import {fetchAccountsData} from '../../store/account-action';
-import {fetchExpensesData} from '../../store/expense-action';
-import {fetchIncomesData} from '../../store/income-action';
-import {accountActions} from '../../store/account-slice';
+// import {fetchCashAccountsData} from '../../store/cash-action';
+// import {fetchAccountsData} from '../../store/account-action';
+// import {fetchExpensesData} from '../../store/expense-action';
+// import {fetchIncomesData} from '../../store/income-action';
+// import {accountActions} from '../../store/account-slice';
 import {expenseActions} from '../../store/expense-slice';
-import {dailyTransaction} from '../../util/transaction';
+// import {dailyTransaction} from '../../util/transaction';
 import {dailyTransactsActions} from '../../store/dailyTransact-slice';
 import {incomeActions} from '../../store/income-slice';
-import {weekTransactions} from '../../dummy/transactions/weeklyTransact';
+// import {weekTransactions} from '../../dummy/transactions/weeklyTransact';
 import {getWeekInMonth} from '../../util/date';
 import moment from 'moment';
 import {weeklyTransactsActions} from '../../store/weeklyTransact-slice';
@@ -25,7 +25,18 @@ import {monthlyTransactsActions} from '../../store/monthlyTransact-slice';
 
 // import {DailyItemType} from '../../components/Output/TransactionSummary';
 
-type Props = {};
+type Props = {
+  type: string | null;
+  amount: number | undefined;
+  day: string | null;
+  dayLabel: string | null;
+  monthLabel: string | null;
+  year: number | undefined;
+  time: string | null;
+  accountId: string | null;
+  cateId: string | null;
+  itemId: string | null;
+};
 
 const {width, height} = Dimensions.get('window');
 
@@ -41,7 +52,7 @@ const DailyItemElement = ({
   cateId,
   itemId,
 }: Props) => {
-  if (day < 10) {
+  if (Number(day) < 10) {
     day = `0${day}`;
   }
 

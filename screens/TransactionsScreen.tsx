@@ -55,6 +55,7 @@ const TransactionsScreen = ({navigation}: Props) => {
   useEffect(() => {
     navigation.setOptions({
       title: !customPressed ? 'Transactions' : '',
+      headerTitleAlign: 'left',
       headerRight: () => (
         <View
           style={{
@@ -239,14 +240,6 @@ const TransactionsScreen = ({navigation}: Props) => {
         display={Platform.OS === 'ios' ? 'inline' : 'default'}
         style={styles.datePicker}
       />
-
-      {/* <AddBtn
-        onPress={() => navigation.navigate('AddExpenses')}
-        style={{bottom: -0}}
-        icon={'plus-circle'}
-        size={width * 0.18}
-        color={'#b6482a'}
-      /> */}
     </View>
   );
 };
@@ -257,24 +250,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  // addButtonContainer: {
-  //   backgroundColor: '#5d91f0',
-  //   width: 40,
-  //   height: 40,
-  //   borderRadius: 20,
-  //   borderWidth: 0.5,
-  //   borderColor: '#fff',
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  //   shadowOffset: {width: 0, height: 0},
-  //   shadowOpacity: 0.7,
-  //   shadowRadius: 3,
-  //   elevation: 3,
-
-  //   position: 'absolute',
-  //   right: 20,
-  //   bottom: 20,
-  // },
 
   pressed: {
     opacity: 0.65,

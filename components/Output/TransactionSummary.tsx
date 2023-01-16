@@ -213,7 +213,7 @@ const DailyItem = ({
   dayLabel,
   monthLabel,
   year,
-  time,
+  // time,
   navigation,
 }: DailyItemType) => {
   if (day < 10) {
@@ -230,7 +230,7 @@ const DailyItem = ({
         onPress={() =>
           navigation.navigate('IncomesDetails', {
             date: date,
-            time: time,
+            // time: time,
           })
         }>
         <View
@@ -251,7 +251,7 @@ const DailyItem = ({
         onPress={() =>
           navigation.navigate('ExpensesDetails', {
             date: date,
-            time: time,
+            // time: time,
           })
         }>
         <View
@@ -380,7 +380,7 @@ const TransactionSummary = ({
     if (day < 10) {
       day = +`0${day}`;
     }
-    const time = moment(date).format('hh:mm A');
+    // const time = moment(date).format('hh:mm A');
 
     const dayLabel = moment(date).format('ddd');
     const monthLabel = moment(date).format('MMM');
@@ -394,7 +394,7 @@ const TransactionSummary = ({
         dayLabel={dayLabel}
         monthLabel={monthLabel}
         year={year}
-        time={time}
+        // time={time}
         navigation={navigation}
       />
     );

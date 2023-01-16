@@ -6,7 +6,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import moment from 'moment';
+import moment, {duration} from 'moment';
 import {useInterstitialAd, TestIds} from 'react-native-google-mobile-ads';
 // import {useNavigation} from '@react-navigation/native';
 
@@ -131,8 +131,8 @@ Props) => {
     setDailyPressed(false);
     setCustomPressed(false);
     setExportPressed(false);
-    setDuration(String(moment(toDate).year()));
-    // setYear(moment(toDate).year());
+    setDuration(year);
+    // setDuration(String(moment(toDate).year()));
   };
 
   const setWeeklyHandler = () => {

@@ -23,7 +23,7 @@ const ExpensesDetailsScreen = ({route, navigation}: Props) => {
   const Expenses = dataLoaded?.expenses?.expenses;
 
   const date = route.params.date;
-  const time = route.params.time;
+  // const time = route.params.time;
 
   useEffect(() => {
     navigation.setOptions({
@@ -46,7 +46,7 @@ const ExpensesDetailsScreen = ({route, navigation}: Props) => {
     const accountId = item.accountId;
     const cateId = item.cateId;
     const itemId = item.id;
-    // console.log(item);
+    const time = moment(item.date).format('LT');
 
     if (+expenseAmount === 0) {
       return;

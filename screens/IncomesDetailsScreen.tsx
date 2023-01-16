@@ -22,7 +22,7 @@ const IncomesDetailsScreen = ({route, navigation}: Props) => {
   const Incomes = dataLoaded?.incomes?.incomes;
 
   const date = route.params.date;
-  const time = route.params.time;
+  // const time = route.params.time;
 
   useEffect(() => {
     navigation.setOptions({
@@ -45,6 +45,7 @@ const IncomesDetailsScreen = ({route, navigation}: Props) => {
     const accountId = item.accountId;
     const cateId = item.cateId;
     const itemId = item.id;
+    const time = moment(item.date).format('LT');
 
     if (+incomeAmount === 0) {
       return;
