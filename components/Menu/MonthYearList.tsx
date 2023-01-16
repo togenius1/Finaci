@@ -51,10 +51,18 @@ yearObj.sort((a: any, b: any) => {
   return 1; // return 1 here for DESC Order
 });
 
-function MonthList({item, onYearSelectedHandler, selectedMY}) {
+function MonthList({item, onYearSelectedHandler, selectedMY, monthlyPressed}) {
   // const currentYear = moment().year();
-  const textColor = +selectedMY === +item.MY ? '#02905e' : '';
-  const textWeight = +selectedMY === +item.MY ? '700' : '';
+  let MY = item.MY;
+  if (!monthlyPressed) {
+    MY = +moment().month(item.MY).format('M');
+  }
+
+  console.log(MY);
+  console.log('MY: ', selectedMY);
+
+  const textColor = +selectedMY === +MY ? '#02905e' : '';
+  const textWeight = +selectedMY === +MY ? '700' : '';
 
   return (
     <Pressable
@@ -75,11 +83,14 @@ export default function MonthYearList({
   onMonthYearSelectedHandler,
   year,
   setYear,
+  month,
   decrementYearHandle,
   incrementYearHandle,
   isModalVisible,
   setIsModalVisible,
 }: Props) {
+  //
+  const selectedMY = monthlyPressed ? year : month;
   let obj;
   if (monthlyPressed) {
     obj = yearObj;
@@ -153,7 +164,8 @@ export default function MonthYearList({
                   }}>
                   <MonthList
                     item={item}
-                    selectedMY={year}
+                    selectedMY={selectedMY}
+                    monthlyPressed={monthlyPressed}
                     onYearSelectedHandler={
                       () => onMonthYearSelectedHandler(item?.MY)
                       // && setIsModalVisible(false)

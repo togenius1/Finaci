@@ -12,7 +12,6 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 import {AccountNavigationType} from '../types';
 import AccountComponents from '../components/Output/AccountComponents';
-import AddBtn from '../components/UI/AddBtn';
 
 type Props = {
   navigation: AccountNavigationType;
@@ -102,14 +101,6 @@ const AccountsScreen = ({navigation}: Props) => {
           </View>
         </Pressable>
       </Modal>
-      {/* 
-      <AddBtn
-        onPress={openAddAccountForm}
-        style={{bottom: -0}}
-        icon={'bank-circle'}
-        size={width * 0.15}
-        color="#156dd9"
-      /> */}
     </View>
   );
 };

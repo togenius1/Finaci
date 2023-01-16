@@ -7,7 +7,6 @@ import {
   Pressable,
   ActivityIndicator,
   Platform,
-
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
@@ -492,12 +491,13 @@ function AccountsItem({navigation, route}: Props) {
       />
 
       <MonthYearList
-        setIsModalVisible={setIsModalVisible}
-        isModalVisible={isModalVisible}
         monthlyPressed={false}
         onMonthYearSelectedHandler={onMonthYearSelectedHandler}
         year={year}
         setYear={setYear}
+        month={month}
+        setIsModalVisible={setIsModalVisible}
+        isModalVisible={isModalVisible}
       />
 
       <DateTimePickerModal

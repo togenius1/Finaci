@@ -49,26 +49,12 @@ const AccountComponents = ({
   // const [removeAccount, setRemoveAccount] = useState<boolean>(false);
   const [isEditAccount, setIsEditAccount] = useState<boolean>(false);
   // const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-  const [editedAccountId, setEditedAccountId] = useState<string | null>();
+  // const [editedAccountId, setEditedAccountId] = useState<string | null>();
   const [cashBudget, setCashBudget] = useState<number | undefined>();
   const [accountsBudget, setAccountsBudget] = useState<number | undefined>();
   const [totalExpenses, setTotalExpenses] = useState<number | undefined>();
   const [addAccPressed, setAddAccPressed] = useState<boolean>(false);
   const [budget, setBudget] = useState<number | undefined>();
-
-  // // Reset Storage
-  // useEffect(() => {
-  //   dispatch(fetchCashAccountsData());
-  //   dispatch(fetchAccountsData());
-  //   dispatch(fetchExpensesData());
-  // }, []);
-
-  // useEffect(() => {
-  //   if (accountsData === null) {
-  //     dispatch(fetchCashAccountsData());
-  //     dispatch(fetchAccountsData());
-  //   }
-  // }, []);
 
   useEffect(() => {
     const cashBudget = sumTotalBudget(cashData);

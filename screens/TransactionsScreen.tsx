@@ -224,6 +224,7 @@ const TransactionsScreen = ({navigation}: Props) => {
         onMonthYearSelectedHandler={onMonthYearSelectedHandler}
         year={year}
         setYear={setYear}
+        month={month}
         setIsModalVisible={setIsModalVisible}
         isModalVisible={isModalVisible}
       />
