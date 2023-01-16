@@ -16,6 +16,8 @@ import {monthlyTransactsActions} from '../store/monthlyTransact-slice';
 import {getWeekInMonth} from '../util/date';
 import {weeklyTransactsActions} from '../store/weeklyTransact-slice';
 import {dailyTransactsActions} from '../store/dailyTransact-slice';
+import {accountActions} from '../store/account-slice';
+import {cashAccountsActions} from '../store/cash-slice';
 
 type Props = {
   navigation: AddDetailsNavigationType;
@@ -62,7 +64,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
   const expenses = dataLoaded?.expenses?.expenses;
   const incomes = dataLoaded?.incomes?.incomes;
   const AccountCategory = dataLoaded?.accounts?.accounts;
-  // const CashAccountCategory = dataLoaded?.cashAccounts?.cashAccounts;
+  const CashAccountCategory = dataLoaded?.cashAccounts?.cashAccounts;
   const ExpenseCategory = dataLoaded?.expenseCategories?.expenseCategories;
   const IncomeCategory = dataLoaded?.incomeCategories?.incomeCategories;
   // const TransferCategory = dataLoaded?.transferCategories?.transferCategories;
@@ -80,9 +82,8 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     cate => cate.id === category?.id,
   );
 
-
   // Cash or other accounts
-  const selectedAccount =
+  const selectedAccountId =
     account?.title === 'Cash' ? 'cash1' : accountCategoryById?.id;
 
   useEffect(() => {
@@ -106,7 +107,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
       dispatch(
         expenseActions.addExpense({
           id: 'expense-' + uuidv4(),
-          accountId: selectedAccount,
+          accountId: selectedAccountId,
           cateId: expenseCategoryById?.id,
           amount: amount,
           note: note.note,
@@ -118,7 +119,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
       dispatch(
         incomeActions.addIncome({
           id: 'income-' + uuidv4(),
-          accountId: selectedAccount,
+          accountId: selectedAccountId,
           cateId: incomeCategoryById?.id,
           amount: amount,
           note: note.note,
@@ -126,13 +127,50 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
         }),
       );
     }
+
+    // Update Accounts
+    accountsBudgetUpdate();
+
+    //Update Transactions
     monthlyTransactionsUpdate();
     weeklyTransactionsUpdate();
     dailyTransactionsUpdate();
     navigation.navigate('Overview');
   };
 
-  // monthly transactions should be updated in background
+  // Update Account budget
+  const accountsBudgetUpdate = () => {
+    if (type === 'expense') return;
+    // if (type === 'income') {
+    if (account?.title !== 'Cash') {
+      const prevAcc = AccountCategory.filter(
+        account => account?.id === selectedAccountId,
+      );
+      dispatch(
+        accountActions.updateAccount({
+          id: selectedAccountId,
+          title: account?.title,
+          budget: +prevAcc[0]?.budget + +amount,
+          date: textDate,
+        }),
+      );
+    } else {
+      const prevCash = CashAccountCategory.filter(
+        cash => cash?.id === selectedAccountId,
+      );
+      dispatch(
+        cashAccountsActions.updateCashAccount({
+          id: selectedAccountId,
+          title: account?.title,
+          budget: +prevCash[0]?.budget + +amount,
+          date: textDate,
+        }),
+      );
+    }
+    // }
+  };
+
+  //Update Monthly Transaction
   const monthlyTransactionsUpdate = () => {
     const month = moment(textDate).month() + 1;
 

@@ -78,7 +78,7 @@ const AccountsScreen = ({navigation}: Props) => {
         navigation={navigation}
         isModalVisible={isModalVisible}
         setIsModalVisible={setIsModalVisible}
-        onNavigate={onNavigate}
+        // onNavigate={onNavigate}
       />
 
       <Modal

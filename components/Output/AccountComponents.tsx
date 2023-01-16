@@ -25,7 +25,8 @@ type Props = {
 const AccountComponents = ({
   isModalVisible,
   setIsModalVisible,
-  onNavigate,
+  // onNavigate,
+  navigation,
 }: Props) => {
   // const dispatch = useAppDispatch();
   const expenseData = useAppSelector(
@@ -72,6 +73,14 @@ const AccountComponents = ({
     expenseData === undefined
   ) {
     return;
+  }
+
+  function onNavigate(item) {
+    // console.log(item);
+    navigation.navigate('AccountsItem', {
+      account: item.title,
+      accountId: item.id,
+    });
   }
 
   // Sort Data

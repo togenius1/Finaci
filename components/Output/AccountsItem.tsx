@@ -33,12 +33,12 @@ type Props = {
   route: AccountsItemRouteProp;
 };
 
-interface MenuHandlerType {
-  monthlyClickedHandler: () => void;
-  customClickedHandler: () => void;
-  setIsMenuOpen: (value: boolean) => void;
-  isMenuOpen: boolean;
-}
+// interface MenuHandlerType {
+//   monthlyClickedHandler: () => void;
+//   customClickedHandler: () => void;
+//   setIsMenuOpen: (value: boolean) => void;
+//   isMenuOpen: boolean;
+// }
 
 interface HeaderRightComponentType {
   fromDate: string | null;
@@ -221,6 +221,7 @@ function AccountsItem({navigation, route}: Props) {
   if (route?.params?.account === 'Cash') {
     accData = cashData;
   }
+
   const account = accData?.filter(acc => acc?.id === accountId);
   // Account expense
   const expenseOfAccount = selectedDurationExpenseData?.filter(
@@ -359,12 +360,12 @@ function AccountsItem({navigation, route}: Props) {
     const incomeAmount = +item.Products[1]?.amount;
 
     // get category
-    const expenseCategory = ExpenseCategory?.filter(
-      cate => cate.id === item?.Products[0]?.cateId,
-    );
-    const incomeCategory = IncomeCategory?.filter(
-      cate => cate.id === item?.Products[1]?.cateId,
-    );
+    // const expenseCategory = ExpenseCategory?.filter(
+    //   cate => cate.id === item?.Products[0]?.cateId,
+    // );
+    // const incomeCategory = IncomeCategory?.filter(
+    //   cate => cate.id === item?.Products[1]?.cateId,
+    // );
 
     // get account category
 

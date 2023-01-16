@@ -12,8 +12,9 @@ import {v4 as uuidv4} from 'uuid';
 
 import {currencyFormatter} from '../../util/currencyFormatter';
 import {accountActions} from '../../store/account-slice';
-import {useAppDispatch} from '../../hooks';
+import {useAppDispatch, useAppSelector} from '../../hooks';
 import AccountHeader from '../AccountHeader';
+import {sumTotalFunc} from '../../util/math';
 
 type Props = {
   setIsModalVisible: (value: boolean) => void;
@@ -28,6 +29,7 @@ type Props = {
   cashBudget: number | undefined;
   accountsBudget: number | undefined;
   totalExpenses: number | undefined;
+  onPress: () => void;
 };
 
 const {width, height} = Dimensions.get('window');
@@ -38,7 +40,6 @@ const AccountElement = ({
   setAddAccPressed,
   setBudget,
   setIsEditAccount,
-  // setRemoveAccount,
   cashData,
   accountsData,
   sortedItems,
@@ -49,8 +50,14 @@ const AccountElement = ({
 }: Props) => {
   const dispatch = useAppDispatch();
 
+  // const dispatch = useAppDispatch();
+  const expensesData = useAppSelector(
+    state => state.expenses.expenses,
+    // shallowEqual,
+  );
+
   const totalAssets = Number(cashBudget) + Number(accountsBudget);
-  const total = totalAssets - +totalExpenses;
+  const total = totalAssets - Number(totalExpenses);
 
   const editAccountPressedHandler = (accId: string) => {
     const findAcc = accountsData?.filter(acc => acc?.id === accId);
@@ -79,7 +86,19 @@ const AccountElement = ({
   };
 
   const renderItem = ({item}) => {
-    const accBalance = +item.budget - Number(totalExpenses);
+    // Account expense
+    const expenseOfCash = expensesData?.filter(
+      expense => expense?.accountId === item?.id,
+    );
+
+    const totalExpenseByCash = sumTotalFunc(expenseOfCash);
+
+    const accBalance = +item.budget - Number(totalExpenseByCash);
+
+    // if (item.id === 'cash1') {
+    //   accBalance = +item.budget - Number(totalExpenseByCash);
+    //   // console.log(item.budget);
+    // }
 
     if (+item.budget === 0) return;
 
