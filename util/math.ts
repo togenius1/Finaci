@@ -140,7 +140,12 @@ export function sumByMonth(object, type) {
 }
 
 // SUMMATION  by Custom MONTH
-export function sumByCustomMonth(object, type, fromDate, toDate) {
+export function sumByCustomMonth(
+  object: any[],
+  type: string,
+  fromDate: string,
+  toDate: string,
+) {
   let results = [];
 
   let objLength = moment(toDate).month() + 1;

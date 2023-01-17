@@ -301,13 +301,13 @@ const TransactionSummary = ({
   // FILTERED DATA (From date ----> To date)
   const selectedDurationExpenseData = dataLoaded?.expenses?.expenses?.filter(
     expense =>
-      new Date(expense.date) >= new Date(String(fromDate)) &&
-      new Date(expense.date) <= new Date(String(toDate)),
+      moment(expense.date).format('YYYY-MM-DD') >= fromDate &&
+      moment(expense.date).format('YYYY-MM-DD') <= toDate,
   );
   const selectedDurationIncomeData = dataLoaded?.incomes?.incomes.filter(
     income =>
-      new Date(income.date) >= new Date(String(fromDate)) &&
-      new Date(income.date) <= new Date(String(toDate)),
+      moment(income.date).format('YYYY-MM-DD') >= fromDate &&
+      moment(income.date).format('YYYY-MM-DD') <= toDate,
   );
 
   // TOTAL EXPENSE

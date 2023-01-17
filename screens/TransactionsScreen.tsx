@@ -139,26 +139,26 @@ const TransactionsScreen = ({navigation}: Props) => {
       const todate = moment(`${time}-12-31`).endOf('year').format('YYYY-MM-DD');
       setYear(time);
 
-      setFromDate(String(fromdate));
-      setToDate(String(todate));
-      setDuration(String(time));
-      setMonth(String(moment().month() + 1));
+      setFromDate(fromdate);
+      setToDate(todate);
+      setDuration(time);
+      setMonth(moment().month() + 1);
       setIsModalVisible(false);
     }
     if (!monthlyPressed) {
-      const mm = moment().month(String(time)).format('M');
+      const mm = moment().month(time).format('M');
       const daysInMonth = moment(`${year}-${mm}`, 'YYYY-M').daysInMonth();
-      const fromdate = moment([String(year), +mm - 1]).format('YYYY-MM-DD');
+      const fromdate = moment([year, +mm - 1]).format('YYYY-MM-DD');
       const todate = moment(`${year}-0${mm}-${daysInMonth}`).format(
         'YYYY-MM-DD',
       );
 
       const month = moment(fromdate).month() + 1;
 
-      setFromDate(String(fromdate));
-      setToDate(String(todate));
-      setDuration(String(time));
-      setMonth(String(month));
+      setFromDate(fromdate);
+      setToDate(todate);
+      setDuration(time);
+      setMonth(month);
       setIsModalVisible(false);
     }
   }

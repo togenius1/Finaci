@@ -78,7 +78,7 @@ const StatsScreen = ({navigation}: Props) => {
   const [fromDate, setFromDate] = useState<string | null>(initFromDate);
   const [toDate, setToDate] = useState<string | null>(initToDate);
   const [indicatorIndex, setIndicatorIndex] = useState<number | undefined>(0);
-  const [year, setYear] = useState<string | null>(String(moment().year()));
+  const [year, setYear] = useState<string>(moment().year());
   const [month, setMonth] = useState<number | undefined>(moment().month() + 1);
   // const [duration, setDuration] = useState(moment().year());
   const onItemPress = useCallback((itemIndex: number) => {
@@ -100,7 +100,7 @@ const StatsScreen = ({navigation}: Props) => {
 
   useEffect(() => {
     onMonthYearSelectedHandler(moment().month());
-  }, [indicatorIndex]);
+  }, []);
 
   useEffect(() => {
     navigation.setOptions({
@@ -117,38 +117,37 @@ const StatsScreen = ({navigation}: Props) => {
     if (indicatorIndex === 1 || indicatorIndex === 2) {
       setFromToDateExpenseIncomeHandler();
     }
-  }, [navigation, year, month, indicatorIndex, ,]);
+  }, [year, month, indicatorIndex]);
 
-  if (
-    expenseData === null ||
-    expenseData === undefined ||
-    incomeData === null ||
-    incomeData === undefined
-  ) {
-    return;
-  }
+  // Filter Expense Data
+  const filteredDataExpense = expenseData?.filter(
+    d =>
+      new Date(d?.date) >= new Date(fromDate) &&
+      new Date(d?.date) <= new Date(toDate),
+  );
 
-  // function setFromToDateBudgetHandler() {
-  //   if (month === moment().month() + 1) {
-  //     setFromDate(moment().format(`${year}-${`0${month}`}-01`));
-  //     setToDate(moment().format(`${year}-${`0${month}`}-DD`));
-  //   } else {
-  //     const mm = moment().month(month).format('MM');
-  //     const days = moment(moment().format(`YYYY-${mm}`)).daysInMonth();
-  //     setFromDate(moment().format(`${year}-${mm}-01`));
-  //     setToDate(moment().format(`${year}-${mm}-${days}`));
-  //   }
-  // }
+  // data for expense line chart
+  const filteredDataIncome = incomeData?.filter(
+    d =>
+      new Date(d.date) >= new Date(fromDate) &&
+      new Date(d.date) <= new Date(toDate),
+  );
 
-  function setFromToDateExpenseIncomeHandler() {
-    if (year === String(moment().year())) {
-      setFromDate(moment().format(`${year}-01-01`));
-      setToDate(moment().format(`${year}-MM-DD`));
-    } else {
-      setFromDate(moment().format(`${year}-01-01`));
-      setToDate(moment().format(`${year}-12-31`));
-    }
-  }
+  // Sum Expenses By Month
+  const sumExpenseByMonthObj = sumByCustomMonth(
+    filteredDataExpense,
+    'expense',
+    String(fromDate),
+    String(toDate),
+  );
+
+  // Sum Incomes By Month
+  const sumIncomeByMonthObj = sumByCustomMonth(
+    filteredDataIncome,
+    'income',
+    String(fromDate),
+    String(toDate),
+  );
 
   // Set Month Year
   function onMonthYearSelectedHandler(time) {
@@ -162,7 +161,7 @@ const StatsScreen = ({navigation}: Props) => {
       fromdate = `${year}-01-01`;
       todate = `${year}-12-31`;
       month = moment().month() + 1;
-      setYear(String(moment(fromdate)?.year()));
+      setYear(time);
     }
     if (indicatorIndex === 0) {
       fromdate = `${year}-${mm}-01`;
@@ -176,32 +175,17 @@ const StatsScreen = ({navigation}: Props) => {
     setIsModalVisible(false);
   }
 
-  // Filter Expense Data
-  const filteredDataExpense = expenseData?.filter(
-    d => moment(d.date) >= moment(fromDate) && moment(d.date) <= moment(toDate),
-  );
-  const sumExpenseByMonthObj = sumByCustomMonth(
-    filteredDataExpense,
-    'expense',
-    fromDate,
-    toDate,
-  );
+  function setFromToDateExpenseIncomeHandler() {
+    if (year === String(moment().year())) {
+      setFromDate(moment().format(`${year}-01-01`));
+      setToDate(moment().format(`${year}-MM-DD`));
+    } else {
+      setFromDate(moment().format(`${year}-01-01`));
+      setToDate(moment().format(`${year}-12-31`));
+    }
+  }
 
-  console.log(filteredDataExpense);
-  console.log(sumExpenseByMonthObj);
-
-  // data for expense line chart
-  const filteredDataIncome = incomeData?.filter(
-    d => d.date >= new Date(fromDate) && d.date <= new Date(toDate),
-  );
-  const sumIncomeByMonthObj = sumByCustomMonth(
-    filteredDataIncome,
-    'income',
-    fromDate,
-    toDate,
-  );
-
-  const renderTabs = () => {
+  const RenderTabs = () => {
     return (
       <View>
         <Tabs
@@ -268,7 +252,7 @@ const StatsScreen = ({navigation}: Props) => {
 
   return (
     <View style={styles.container}>
-      {renderTabs()}
+      <RenderTabs />
       {indicatorIndex === 0 && <RenderBudgetsTab />}
       {indicatorIndex === 1 && <RenderExpenseTab />}
       {indicatorIndex === 2 && <RenderIncomeTab />}
@@ -276,19 +260,12 @@ const StatsScreen = ({navigation}: Props) => {
       <MonthYearList
         monthlyPressed={indicatorIndex !== 0 ? true : false}
         onMYSelectedHandler={onMonthYearSelectedHandler}
-        year={year}
+        year={+year}
         setYear={setYear}
+        month={month}
         isModalVisible={isModalVisible}
         setIsModalVisible={setIsModalVisible}
       />
-
-      {/* <View style={styles.addButtonContainer}>
-        <IconButton
-          name="add-outline"
-          size={15}
-          onPress={() => navigation.navigate('AddExpenses')}
-        />
-      </View> */}
     </View>
   );
 };

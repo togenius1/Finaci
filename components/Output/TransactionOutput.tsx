@@ -100,16 +100,16 @@ Props) => {
     (itemIndex: number) => {
       setIndicatorIndex(itemIndex);
       if (itemIndex === 0) {
-        setMonthlyHandler();
+        monthlyHandler();
       }
       if (itemIndex === 1) {
-        setWeeklyHandler();
+        weeklyHandler();
       }
       if (itemIndex === 2) {
-        setDailyHandler();
+        dailyHandler();
       }
       if (itemIndex === 3) {
-        setCustomHandler();
+        customHandler();
       }
       if (itemIndex === 4) {
         exportsHandler();
@@ -118,7 +118,7 @@ Props) => {
     [monthlyPressed, weeklyPressed, dailyPressed, customPressed, exportPressed],
   );
 
-  const setMonthlyHandler = () => {
+  const monthlyHandler = () => {
     // const fromdate = moment(`${year}-01-01`);
     // const todate = moment(`${year}-12-31`);
     const fromdate = moment(`${year}-01-01`).format('YYYY-MM-DD');
@@ -135,7 +135,7 @@ Props) => {
     // setDuration(String(moment(toDate).year()));
   };
 
-  const setWeeklyHandler = () => {
+  const weeklyHandler = () => {
     if (+month < 10) {
       month = `0${month}`;
     }
@@ -148,7 +148,7 @@ Props) => {
 
     let currentDate = moment().date();
     if (currentDate < 10) {
-      currentDate = `0${currentDate}`;
+      currentDate = +`0${currentDate}`;
     }
     const date = moment(`${year}-${Month}-${currentDate}`).format('YYYY-MM-DD');
     const daysInMonth = moment(
@@ -160,22 +160,19 @@ Props) => {
       'YYYY-MM-DD',
     );
 
-    setFromDate(String(fromdate));
-    setToDate(String(todate));
+    setFromDate(fromdate);
+    setToDate(todate);
     setDuration(moment.monthsShort(moment(date).month()));
+
+    // Reset
     setMonthlyPressed(false);
     setWeeklyPressed(true);
     setDailyPressed(false);
     setCustomPressed(false);
     setExportPressed(false);
-
-    // show Ads
-    if (isLoaded) {
-      show();
-    }
   };
 
-  const setDailyHandler = () => {
+  const dailyHandler = () => {
     if (+month < 10) {
       month = `0${month}`;
     }
@@ -199,21 +196,21 @@ Props) => {
     setExportPressed(false);
   };
 
-  const setCustomHandler = () => {
+  const customHandler = () => {
     if (+month < 10) {
       month = `0${month}`;
     }
 
     let today = moment().date();
     if (+today < 10) {
-      today = `0${today}`;
+      today = +`0${today}`;
     }
 
     const fromdate = moment(`${year}-${month}-01`).format('YYYY-MM-DD');
     const todate = moment(`${year}-${month}-${today}`).format('YYYY-MM-DD');
 
-    setFromDate(String(fromdate));
-    setToDate(String(todate));
+    setFromDate(fromdate);
+    setToDate(todate);
     setMonthlyPressed(false);
     setWeeklyPressed(false);
     setDailyPressed(false);
@@ -227,6 +224,11 @@ Props) => {
     setWeeklyPressed(false);
     setDailyPressed(false);
     setCustomPressed(false);
+
+    // show Ads
+    if (isLoaded) {
+      show();
+    }
   }
 
   return (
@@ -234,7 +236,7 @@ Props) => {
       <Tabs
         TabsDataObject={TabsDataObject}
         onItemPress={onItemPress}
-        indicatorIndex={Number(indicatorIndex)}
+        indicatorIndex={indicatorIndex}
       />
 
       <TransactionSummary
@@ -245,7 +247,7 @@ Props) => {
         fromDate={fromDate}
         toDate={toDate}
         exportPressed={exportPressed}
-        year={String(year)}
+        year={year}
       />
     </View>
   );

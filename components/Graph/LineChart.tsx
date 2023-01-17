@@ -13,7 +13,7 @@ import {max} from 'd3-array';
 import moment from 'moment';
 
 type Props = {
-  lineChartData: [];
+  lineChartData: any[];
   containerHeight: number;
   circleColor: string;
   circleRadius: number;
@@ -54,6 +54,8 @@ const LineChart = ({
   const [yAxisLabels, setYAxisLabels] = useState([]);
   const [positionX, setPositionX] = useState(-1);
   const [positionY, setPositionY] = useState(-1);
+
+  // console.log('lineChartData: ', lineChartData);
 
   useEffect(() => {
     const yAxisData = lineChartData?.map((item, index) => {
@@ -340,7 +342,7 @@ const LineChart = ({
         (StyleSheet.absoluteFill,
         [styles.svgWrapper, {height: containerHeight}])
       }>
-      <Svg width="100%" height="100%" style={[styles.svgStyle]}>
+      <Svg width="100%" height="100%" style={[styles.svgStyle]} fill="none">
         {renderXYAxis()}
         {renderXAxisLabelsAndTicks()}
         {renderYAxisLabelsAndTicks()}
