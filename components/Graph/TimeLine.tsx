@@ -19,11 +19,17 @@ const TimeLine = ({
 }: Props) => {
   // const maxExp = max(data, d => parseFloat(d.amount));
 
-  const timeRamp = scaleTime().domain([0, item.budget]).range([0, barSpan]);
+  const timeRamp = scaleTime().domain([0, item?.budget]).range([0, barSpan]);
 
   const budget = currencyFormatter(+item?.budget, {});
   const spent = currencyFormatter(+totalExpense, {});
   const budgetLeft = currencyFormatter(+item.budget - +totalExpense, {});
+
+  const MARGINLEFT = -timeRamp(+item?.budget - +totalExpense);
+
+  // console.log('item ', item);
+  // console.log('totalExpense ', totalExpense);
+  // console.log('MARGINLEFT ', MARGINLEFT);
 
   return (
     <View style={styles.container}>
@@ -38,8 +44,8 @@ const TimeLine = ({
         style={{
           backgroundColor: barColor.remain,
           height: widthBar,
-          width: timeRamp(totalExpense),
-          marginLeft: -timeRamp(item.budget - totalExpense),
+          width: timeRamp(+totalExpense),
+          // marginLeft: -timeRamp(+item?.budget - +totalExpense),
         }}
       />
       {/* USED Budget Bar */}
@@ -48,7 +54,7 @@ const TimeLine = ({
           backgroundColor: barColor.used,
           height: widthBar,
           width: timeRamp(+item.budget - totalExpense),
-          marginLeft: timeRamp(totalExpense),
+          marginLeft: timeRamp(+totalExpense),
           marginTop: -widthBar,
           opacity: 0.75,
         }}

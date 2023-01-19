@@ -11,7 +11,7 @@ import {v4 as uuidv4} from 'uuid';
 
 type Props = {
   TabsDataObject: object;
-  onItemPress: () => void;
+  onItemPress: (itemIndex: number) => void;
   indicatorIndex: number;
 };
 

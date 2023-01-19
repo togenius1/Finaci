@@ -10,7 +10,6 @@ import TimeLine from './TimeLine';
 // import {useAppDispatch, useAppSelector} from '../../hooks';
 import {sumEachAccountId, sumTotalBudget, sumTotalFunc} from '../../util/math';
 import {useAppDispatch, useAppSelector} from '../../hooks';
-import {fetchAccountsData} from '../../store/account-action';
 
 type Props = {
   data: any[];
@@ -27,7 +26,7 @@ const TimeLineTab = ({data, fromDate, toDate}: Props) => {
   // const filteredData = data?.filter(
   //   d => d.date >= new Date(fromDate) && d.date <= new Date(toDate),
   // );
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
   const dataLoaded = useAppSelector(store => store);
 
   // useEffect(() => {
@@ -74,7 +73,7 @@ const TimeLineTab = ({data, fromDate, toDate}: Props) => {
     return 1; // return 1 here for DESC Order
   });
 
-  const renderHeader = () => {
+  const RenderHeader = () => {
     return (
       <View style={styles.header}>
         <Text style={{fontSize: 18, fontWeight: 'bold'}}>Budgets</Text>
@@ -106,7 +105,7 @@ const TimeLineTab = ({data, fromDate, toDate}: Props) => {
     );
   };
 
-  const renderCategoryList = () => {
+  const RenderCategoryList = () => {
     return (
       <View style={styles.budgetContainer}>
         {totalObj.map(item => {
@@ -141,8 +140,8 @@ const TimeLineTab = ({data, fromDate, toDate}: Props) => {
 
   return (
     <View style={styles.container}>
-      {renderHeader()}
-      {renderCategoryList()}
+      {<RenderHeader />}
+      {<RenderCategoryList />}
     </View>
   );
 };

@@ -11,20 +11,7 @@ import Svg, {
 import {scaleLinear} from 'd3-scale';
 import {max} from 'd3-array';
 import moment from 'moment';
-
-type Props = {
-  lineChartData: any[];
-  containerHeight: number;
-  circleColor: string;
-  circleRadius: number;
-  axisColor: string;
-  axisWidth: number;
-  gridColor: string;
-  gridWidth: number;
-  axisLabelFontSize: number;
-  lineChartColor: string;
-  lineChartWidth: number;
-};
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const {width, height} = Dimensions.get('window');
 // const AnimatedSvg = Animated.createAnimatedComponent(Svg);
@@ -39,6 +26,7 @@ const marginYFromBottom = 50;
 const paddingFromScreenBorder = 20;
 
 const LineChart = ({
+  type,
   lineChartData = [],
   containerHeight = width / 1.35,
   circleColor = 'red',
@@ -55,8 +43,6 @@ const LineChart = ({
   const [positionX, setPositionX] = useState(-1);
   const [positionY, setPositionY] = useState(-1);
 
-  // console.log('lineChartData: ', lineChartData);
-
   useEffect(() => {
     const yAxisData = lineChartData?.map((item, index) => {
       if (index === 0) {
@@ -67,13 +53,14 @@ const LineChart = ({
     });
     setYAxisLabels(yAxisData);
   }, []);
+
   // X-AXIS Point
   const xAxisX1Point = marginXFromLeft;
   const xAxisY1Point = containerHeight - marginYFromBottom;
   const xAxisX2Point = width - paddingFromScreenBorder;
   const xAxisY2Point = containerHeight - marginYFromBottom;
   const xAxisActualWidth = width - marginXFromLeft - paddingFromScreenBorder;
-  const gapBetweenXAxisAndTicks = xAxisActualWidth / lineChartData.length;
+  const gapBetweenXAxisAndTicks = xAxisActualWidth / lineChartData?.length;
 
   // Y-AXIS Point
   const yAxisX1Point = marginXFromLeft;
@@ -83,15 +70,19 @@ const LineChart = ({
 
   // Y-AXIS PARAMS
   const yMinValue = 0;
+
   const yMaxValue = Math.max.apply(
     Math,
-    lineChartData.map(item => item?.amount),
+    lineChartData?.map(item =>
+      type === 'expense' ? item?.expense_monthly : item?.income_monthly,
+    ),
   );
-  const gapBetweenYAxisValues =
-    (yMaxValue - yMinValue) / (lineChartData.length - 2);
+
+  const div = +lineChartData?.length - 2 > 0 ? +lineChartData?.length - 2 : 1;
+  const gapBetweenYAxisValues = (yMaxValue - yMinValue) / div;
   const yAxisActualHeight = yAxisY2Point - yAxisY1Point;
   const gapBetweenYAxisAndTicks =
-    (yAxisActualHeight - yMinValue) / lineChartData.length;
+    (yAxisActualHeight - yMinValue) / +lineChartData?.length;
 
   // X SCALE
   const thisMonth = moment().month() + 1;
@@ -125,7 +116,10 @@ const LineChart = ({
     let pos = parseInt(xScale(positionX)) - 1;
     let amount = 0;
     if (pos < thisMonth) {
-      amount = lineChartData[pos]?.amount?.toFixed(2);
+      amount =
+        type === 'expense'
+          ? lineChartData[pos]?.expense_monthly?.toFixed(2)
+          : lineChartData[pos]?.income_monthly?.toFixed(2);
     } else {
       pos = thisMonth - 1;
       amount = 0;
@@ -199,7 +193,7 @@ const LineChart = ({
   };
 
   const renderXAxisLabelsAndTicks = () => {
-    return lineChartData.map((item, index) => {
+    return lineChartData?.map((item, index) => {
       let xPoint = xAxisX1Point + gapBetweenXAxisAndTicks * (index + 1);
 
       const monthLabel = moment.monthsShort(item.month - 1);
@@ -282,8 +276,10 @@ const LineChart = ({
       let dPath = '';
       lineChartData?.map((item, index) => {
         let xPoint = xAxisX1Point + gapBetweenXAxisAndTicks * (index + 1);
+        const amount =
+          type === 'expense' ? item?.expense_monthly : item?.income_monthly;
         let yPoint =
-          (maxValueAtYAxis - item?.amount) *
+          (maxValueAtYAxis - +amount) *
             (gapBetweenYAxisAndTicks / gapBetweenYAxisValues) +
           paddingFromScreenBorder +
           gapBetweenYAxisAndTicks;
@@ -315,8 +311,10 @@ const LineChart = ({
     if (maxValueAtYAxis) {
       return lineChartData?.map((item, index) => {
         let xPoint = xAxisX1Point + gapBetweenXAxisAndTicks * (index + 1);
+        const amount =
+          type === 'expense' ? item?.expense_monthly : item?.income_monthly;
         let yPoint =
-          (maxValueAtYAxis - item.amount) *
+          (maxValueAtYAxis - +amount) *
             (gapBetweenYAxisAndTicks / gapBetweenYAxisValues) +
           paddingFromScreenBorder +
           gapBetweenYAxisAndTicks;
@@ -354,8 +352,6 @@ const LineChart = ({
   );
 };
 
-export default LineChart;
-
 const styles = StyleSheet.create({
   svgWrapper: {
     // marginTop: 20,
@@ -367,3 +363,20 @@ const styles = StyleSheet.create({
     // backgroundColor: '#cdcdcd',
   },
 });
+
+export default LineChart;
+
+type Props = {
+  type: string;
+  lineChartData: any[];
+  containerHeight: number;
+  circleColor: string;
+  circleRadius: number;
+  axisColor: string;
+  axisWidth: number;
+  gridColor: string;
+  gridWidth: number;
+  axisLabelFontSize: number;
+  lineChartColor: string;
+  lineChartWidth: number;
+};
