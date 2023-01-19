@@ -2,25 +2,12 @@ import {Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
 import moment from 'moment';
 
-// import IconButton from '../components/UI/iconButton';
-// import BarChartTab from './screenComponents/BarChartTab';
-import TimeLineTab from '../components/Graph/TimeLineScreen';
+import TimeLineTab from '../components/Graph/TimeLineComponent';
 import Tabs from '../components/UI/Tabs';
 import LineChart from '../components/Graph/LineChart';
-import {sumByCustomMonth} from '../util/math';
-// import {EXPENSES, INCOME} from '../dummy/dummy';
-// import {useNavigation} from '@react-navigation/native';
 import MonthYearList from '../components/Menu/MonthYearList';
 import {StatsNavigationProp} from '../types';
-import {ExpenseType} from '../models/expense';
-import {IncomeType} from '../models/income';
-import {useAppDispatch, useAppSelector} from '../hooks';
-import {fetchExpensesData} from '../store/expense-action';
-import {fetchIncomesData} from '../store/income-action';
-
-type Props = {
-  navigation: StatsNavigationProp;
-};
+import {useAppSelector} from '../hooks';
 
 // const {width, height} = Dimensions.get('window');
 
@@ -259,8 +246,6 @@ const StatsScreen = ({navigation}: Props) => {
   );
 };
 
-export default StatsScreen;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -270,3 +255,11 @@ const styles = StyleSheet.create({
     opacity: 0.75,
   },
 });
+
+export default StatsScreen;
+
+//================================================================
+// -------------------------  TYPE ------------------------------
+type Props = {
+  navigation: StatsNavigationProp;
+};
