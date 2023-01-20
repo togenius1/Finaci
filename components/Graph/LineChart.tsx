@@ -11,14 +11,8 @@ import Svg, {
 import {scaleLinear} from 'd3-scale';
 import {max} from 'd3-array';
 import moment from 'moment';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 const {width, height} = Dimensions.get('window');
-// const AnimatedSvg = Animated.createAnimatedComponent(Svg);
-// const AnimatedLine = Animated.createAnimatedComponent(Line);
-// const AnimatedCircle = Animated.createAnimatedComponent(Circle);
-// const AnimatedSvgText = Animated.createAnimatedComponent(SvgText);
-// const AnimatedPath = Animated.createAnimatedComponent(Path);
 
 // Margin
 const marginXFromLeft = 50;
@@ -39,9 +33,9 @@ const LineChart = ({
   lineChartColor = 'red',
   lineChartWidth = 1,
 }: Props) => {
-  const [yAxisLabels, setYAxisLabels] = useState([]);
-  const [positionX, setPositionX] = useState(-1);
-  const [positionY, setPositionY] = useState(-1);
+  const [yAxisLabels, setYAxisLabels] = useState<any[]>([]);
+  const [positionX, setPositionX] = useState<number>(-1);
+  const [positionY, setPositionY] = useState<number>(-1);
 
   useEffect(() => {
     const yAxisData = lineChartData?.map((item, index) => {
@@ -85,7 +79,7 @@ const LineChart = ({
     (yAxisActualHeight - yMinValue) / +lineChartData?.length;
 
   // X SCALE
-  const thisMonth = moment().month() + 1;
+  const thisMonth = +moment().month() + 1;
   const xWidth = gapBetweenXAxisAndTicks * thisMonth + gapBetweenXAxisAndTicks;
   const domain = [marginXFromLeft + paddingFromScreenBorder, xWidth];
   const range = [1, thisMonth];

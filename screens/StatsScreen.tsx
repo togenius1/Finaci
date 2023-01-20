@@ -26,7 +26,7 @@ function HeaderRightComponent({
   year,
   month,
   setIsModalVisible,
-}) {
+}: HeaderRight) {
   const monthName = moment.monthsShort(month - 1);
 
   return (
@@ -66,7 +66,7 @@ const StatsScreen = ({navigation}: Props) => {
   const [toDate, setToDate] = useState<string | null>(initToDate);
   const [indicatorIndex, setIndicatorIndex] = useState<number | undefined>(0);
   const [year, setYear] = useState<number>(moment().year());
-  const [month, setMonth] = useState<number | undefined>(moment().month() + 1);
+  const [month, setMonth] = useState<number>(moment().month() + 1);
   // const [duration, setDuration] = useState(moment().year());
   const onItemPress = useCallback((itemIndex: number) => {
     setIndicatorIndex(itemIndex);
@@ -262,4 +262,11 @@ export default StatsScreen;
 // -------------------------  TYPE ------------------------------
 type Props = {
   navigation: StatsNavigationProp;
+};
+
+type HeaderRight = {
+  indicatorIndex: number;
+  year: number;
+  month: number;
+  setIsModalVisible: (value: boolean) => boolean;
 };

@@ -1,13 +1,8 @@
 import {Dimensions, FlatList, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect} from 'react';
 import moment from 'moment';
-// import {v4 as uuidv4} from 'uuid';
-// import {max, sum} from 'd3-array';
 
-// import {EXPENSES} from '../../dummy/dummy';
-// import {AccountCategory} from '../../dummy/categoryItems';
 import TimeLine from './TimeLine';
-// import {useAppDispatch, useAppSelector} from '../../hooks';
 import {sumEachAccountId, sumTotalBudget, sumTotalFunc} from '../../util/math';
 import {useAppDispatch, useAppSelector} from '../../hooks';
 
@@ -20,26 +15,18 @@ type Props = {
 const {width} = Dimensions.get('window');
 
 const TimeLineTab = ({data, fromDate, toDate}: Props) => {
-  // current month data
-  // const fromDate = moment().startOf('month').format('YYYY-MM-DD');
-  // const toDate = moment().endOf('month').format('YYYY-MM-DD');
-  // const filteredData = data?.filter(
-  //   d => d.date >= new Date(fromDate) && d.date <= new Date(toDate),
-  // );
   // const dispatch = useAppDispatch();
   const dataLoaded = useAppSelector(store => store);
 
-  // useEffect(() => {
-  //   dispatch(fetchAccountsData());
-  // }, []);
-
   const sumExpenseByEachAccount = sumEachAccountId(data);
+
   const accountsFiltered = dataLoaded?.accounts?.accounts?.filter(account => {
     const findItem = sumExpenseByEachAccount?.find(
       sum => sum.accountId === account?.id,
     );
     return findItem;
   });
+
   const mergeObj = accountsFiltered?.map(acc => {
     const Obj = sumExpenseByEachAccount?.find(sum => sum.accountId === acc.id);
     const newObj = {...acc, ...Obj};
@@ -97,7 +84,7 @@ const TimeLineTab = ({data, fromDate, toDate}: Props) => {
           item={item}
           totalExpense={item?.amount}
           widthBar={8}
-          barColor={{remain: '#cecece', used: '#00b421'}}
+          barColor={{remain: '#1a1a1a50', used: '#00b421'}}
           titleStyle={{fontSize: 16, fontWeight: 'bold'}}
           budgetStyle={{fontSize: 14}}
         />
@@ -108,7 +95,7 @@ const TimeLineTab = ({data, fromDate, toDate}: Props) => {
   const RenderCategoryList = () => {
     return (
       <View style={styles.budgetContainer}>
-        {totalObj.map(item => {
+        {totalObj?.map(item => {
           return (
             <View
               key={item.accountId}
