@@ -2,25 +2,12 @@ import {Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
 import moment from 'moment';
 
-// import IconButton from '../components/UI/iconButton';
-// import BarChartTab from './screenComponents/BarChartTab';
-import TimeLineTab from '../components/Graph/TimeLineScreen';
+import TimeLineTab from '../components/Graph/TimeLineComponent';
 import Tabs from '../components/UI/Tabs';
 import LineChart from '../components/Graph/LineChart';
-import {sumByCustomMonth} from '../util/math';
-// import {EXPENSES, INCOME} from '../dummy/dummy';
-// import {useNavigation} from '@react-navigation/native';
 import MonthYearList from '../components/Menu/MonthYearList';
 import {StatsNavigationProp} from '../types';
-import {ExpenseType} from '../models/expense';
-import {IncomeType} from '../models/income';
-import {useAppDispatch, useAppSelector} from '../hooks';
-import {fetchExpensesData} from '../store/expense-action';
-import {fetchIncomesData} from '../store/income-action';
-
-type Props = {
-  navigation: StatsNavigationProp;
-};
+import {useAppSelector} from '../hooks';
 
 // const {width, height} = Dimensions.get('window');
 
@@ -69,7 +56,7 @@ const StatsScreen = ({navigation}: Props) => {
   // const navigation = useNavigation();
 
   const expenseData = dataLoaded?.expenses?.expenses;
-  const incomeData = dataLoaded?.incomes?.incomes;
+  const monthlyTransactsData = dataLoaded?.monthlyTransacts?.monthlyTransacts;
 
   // const [expenseData, setExpenseData] = useState<ExpenseType>();
   // const [incomeData, setIncomeData] = useState<IncomeType>();
@@ -78,7 +65,7 @@ const StatsScreen = ({navigation}: Props) => {
   const [fromDate, setFromDate] = useState<string | null>(initFromDate);
   const [toDate, setToDate] = useState<string | null>(initToDate);
   const [indicatorIndex, setIndicatorIndex] = useState<number | undefined>(0);
-  const [year, setYear] = useState<string>(moment().year());
+  const [year, setYear] = useState<number>(moment().year());
   const [month, setMonth] = useState<number | undefined>(moment().month() + 1);
   // const [duration, setDuration] = useState(moment().year());
   const onItemPress = useCallback((itemIndex: number) => {
@@ -120,33 +107,20 @@ const StatsScreen = ({navigation}: Props) => {
   }, [year, month, indicatorIndex]);
 
   // Filter Expense Data
-  const filteredDataExpense = expenseData?.filter(
-    d =>
-      new Date(d?.date) >= new Date(fromDate) &&
-      new Date(d?.date) <= new Date(toDate),
+  const filteredDataExpense = monthlyTransactsData?.filter(
+    d => +moment(d?.date).year() === year,
   );
 
   // data for expense line chart
-  const filteredDataIncome = incomeData?.filter(
+  const filteredDataIncome = monthlyTransactsData?.filter(
+    d => +moment(d?.date).year() === year,
+  );
+
+  // Filter Expense Data
+  const filteredDataTabExpense = expenseData?.filter(
     d =>
-      new Date(d.date) >= new Date(fromDate) &&
-      new Date(d.date) <= new Date(toDate),
-  );
-
-  // Sum Expenses By Month
-  const sumExpenseByMonthObj = sumByCustomMonth(
-    filteredDataExpense,
-    'expense',
-    String(fromDate),
-    String(toDate),
-  );
-
-  // Sum Incomes By Month
-  const sumIncomeByMonthObj = sumByCustomMonth(
-    filteredDataIncome,
-    'income',
-    String(fromDate),
-    String(toDate),
+      new Date(d?.date) >= new Date(fromDate) &&
+      new Date(d?.date) <= new Date(toDate),
   );
 
   // Set Month Year
@@ -169,9 +143,9 @@ const StatsScreen = ({navigation}: Props) => {
       month = moment(fromdate).month() + 1;
     }
 
-    setFromDate(String(fromdate));
-    setToDate(String(todate));
-    setMonth(month);
+    setFromDate(fromdate);
+    setToDate(todate);
+    setMonth(mm);
     setIsModalVisible(false);
   }
 
@@ -201,7 +175,7 @@ const StatsScreen = ({navigation}: Props) => {
     return (
       <View style={{flex: 1}}>
         <TimeLineTab
-          data={filteredDataExpense}
+          data={filteredDataTabExpense}
           fromDate={fromDate}
           toDate={toDate}
         />
@@ -222,7 +196,8 @@ const StatsScreen = ({navigation}: Props) => {
         </View>
 
         <LineChart
-          lineChartData={sumExpenseByMonthObj}
+          type="expense"
+          lineChartData={filteredDataExpense}
           lineChartColor="red"
           circleColor="red"
         />
@@ -242,7 +217,8 @@ const StatsScreen = ({navigation}: Props) => {
           <Text style={{fontSize: 18, fontWeight: 'bold'}}>Income</Text>
         </View>
         <LineChart
-          lineChartData={sumIncomeByMonthObj}
+          type="income"
+          lineChartData={filteredDataIncome}
           lineChartColor="#006057"
           circleColor="#006057"
         />
@@ -270,8 +246,6 @@ const StatsScreen = ({navigation}: Props) => {
   );
 };
 
-export default StatsScreen;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -281,3 +255,11 @@ const styles = StyleSheet.create({
     opacity: 0.75,
   },
 });
+
+export default StatsScreen;
+
+//================================================================
+// -------------------------  TYPE ------------------------------
+type Props = {
+  navigation: StatsNavigationProp;
+};
