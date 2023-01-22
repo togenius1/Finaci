@@ -1,5 +1,5 @@
 import {Dimensions, Pressable, StyleSheet, Text, View} from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {v4 as uuidv4} from 'uuid';
 import moment from 'moment';
 
@@ -88,7 +88,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
 
   useEffect(() => {
     navigation.setOptions({
-      title: 'Expenses',
+      title: type === 'expense' ? 'Expense' : 'Income',
       headerRight: () => (
         <Pressable
           style={({pressed}) => pressed && styles.pressed}

@@ -23,6 +23,7 @@ const cashAccountsSlice = createSlice({
           title: newCashAccount.title,
           budget: newCashAccount.budget,
           date: newCashAccount.date,
+          editedDate: newCashAccount.editedDate,
         });
       }
     },

@@ -23,7 +23,7 @@ const accountSlice = createSlice({
           title: newAccounts.title,
           budget: newAccounts.budget,
           date: newAccounts.date,
-     
+          editedDate: newAccounts.editedDate,
         });
       }
     },

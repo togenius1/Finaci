@@ -14,7 +14,7 @@ type Props = {
   isModalVisible: boolean;
   setIsModalVisible: (value: boolean) => void;
   year: number;
-  setYear: (value: string) => void;
+  setYear: (value: number) => void;
 };
 
 const {width, height} = Dimensions.get('window');

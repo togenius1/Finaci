@@ -10,23 +10,19 @@ import {useAppSelector} from '../../hooks';
 import {sumTotalBudget, sumTotalFunc} from '../../util/math';
 import AddAccountForm from '../Form/AddAccountForm';
 import AccountElement from './AccountElement';
+import moment from 'moment';
 // import {fetchExpensesData} from '../../store/expense-action';
 
 // import {EXPENSES} from '../dummy/dummy';
-
-type Props = {
-  navigation: AccountNavigationType;
-  isModalVisible: boolean;
-  setIsModalVisible: (value: boolean) => void;
-};
 
 // const {width, height} = Dimensions.get('window');
 
 const AccountComponents = ({
   isModalVisible,
   setIsModalVisible,
-  // onNavigate,
   navigation,
+  month,
+  year
 }: Props) => {
   // const dispatch = useAppDispatch();
   const expenseData = useAppSelector(
@@ -42,15 +38,8 @@ const AccountComponents = ({
     // shallowEqual,
   );
 
-  // const [expenseData, setExpenseData] = useState<ExpenseType>();
-  // const [cashData, setCashData] = useState<CashType>();
-  // const [accountsData, setAccountsData] = useState<AccountType>();
-  // const [addAccountPressed, setAddAccountPressed] = useState<boolean>(false);
   const [accountText, setAccountText] = useState<string | null>('');
-  // const [removeAccount, setRemoveAccount] = useState<boolean>(false);
   const [isEditAccount, setIsEditAccount] = useState<boolean>(false);
-  // const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-  // const [editedAccountId, setEditedAccountId] = useState<string | null>();
   const [cashBudget, setCashBudget] = useState<number | undefined>();
   const [accountsBudget, setAccountsBudget] = useState<number | undefined>();
   const [totalExpenses, setTotalExpenses] = useState<number | undefined>();
@@ -67,31 +56,32 @@ const AccountComponents = ({
     setTotalExpenses(totalExpenses);
   }, [totalExpenses, accountsBudget, cashBudget]);
 
-  if (
-    cashData === undefined ||
-    accountsData === undefined ||
-    expenseData === undefined
-  ) {
-    return;
-  }
-
   function onNavigate(item) {
-    // console.log(item);
     navigation.navigate('AccountsItem', {
       account: item.title,
       accountId: item.id,
     });
   }
 
+  // Filtered Accounts data
+  const filteredAccountsData = accountsData?.filter(
+    account => +moment(account.date).month() + 1 === +month,
+  );
+
+  // Filtered Cash data
+  const filteredCashData = cashData?.filter(
+    account => +moment(account.date).month() + 1 === +month,
+  );
+
   // Sort Data
   const getSortedState = data =>
     [...data]?.sort((a, b) => parseInt(b.budget) - parseInt(a.budget));
   const sortedItems = useMemo(() => {
-    if (accountsData) {
-      return getSortedState(accountsData);
+    if (filteredAccountsData) {
+      return getSortedState(filteredAccountsData);
     }
-    return accountsData;
-  }, [accountsData]);
+    return filteredAccountsData;
+  }, [filteredAccountsData]);
 
   return (
     <>
@@ -104,8 +94,8 @@ const AccountComponents = ({
           addAccPressed={addAccPressed}
           setBudget={setBudget}
           setIsEditAccount={setIsEditAccount}
-          cashData={cashData}
-          accountsData={accountsData}
+          cashData={filteredCashData}
+          accountsData={filteredAccountsData}
           sortedItems={sortedItems}
           cashBudget={cashBudget}
           accountsBudget={accountsBudget}
@@ -124,13 +114,13 @@ const AccountComponents = ({
           setBudget={setBudget}
           isEditAccount={isEditAccount}
           setIsEditAccount={setIsEditAccount}
+          month={month}
+          year={year}
         />
       </View>
     </>
   );
 };
-
-export default AccountComponents;
 
 const styles = StyleSheet.create({
   container: {
@@ -139,3 +129,13 @@ const styles = StyleSheet.create({
     // backgroundColor: 'red',
   },
 });
+
+export default AccountComponents;
+
+// ============================ TYPE =====================================
+type Props = {
+  navigation: AccountNavigationType;
+  isModalVisible: boolean;
+  month: number;
+  setIsModalVisible: (value: boolean) => void;
+};

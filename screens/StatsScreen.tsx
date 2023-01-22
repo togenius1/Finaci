@@ -2,7 +2,7 @@ import {Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
 import moment from 'moment';
 
-import TimeLineTab from '../components/Graph/TimeLineComponent';
+import TimeLineComponent from '../components/Graph/TimeLineComponent';
 import Tabs from '../components/UI/Tabs';
 import LineChart from '../components/Graph/LineChart';
 import MonthYearList from '../components/Menu/MonthYearList';
@@ -27,7 +27,7 @@ function HeaderRightComponent({
   month,
   setIsModalVisible,
 }: HeaderRight) {
-  const monthName = moment.monthsShort(month - 1);
+  const monthName = moment.monthsShort(+month - 1);
 
   return (
     <View>
@@ -174,7 +174,7 @@ const StatsScreen = ({navigation}: Props) => {
   const RenderBudgetsTab = () => {
     return (
       <View style={{flex: 1}}>
-        <TimeLineTab
+        <TimeLineComponent
           data={filteredDataTabExpense}
           fromDate={fromDate}
           toDate={toDate}

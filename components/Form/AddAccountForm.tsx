@@ -11,11 +11,12 @@ import {
 import React, {useEffect, useState} from 'react';
 import {v4 as uuidv4} from 'uuid';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-// import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {useAppDispatch, useAppSelector} from '../../hooks';
 import {accountActions} from '../../store/account-slice';
 import {cashAccountsActions} from '../../store/cash-slice';
+import moment from 'moment';
 
 type Props = {
   isModalVisible: boolean;
@@ -45,6 +46,8 @@ const AddAccountForm = ({
   setBudget,
   isEditAccount,
   setIsEditAccount,
+  month,
+  year,
 }: Props) => {
   //
 
@@ -90,8 +93,8 @@ const AddAccountForm = ({
   function searchFilterHandler(text: string | null) {
     if (text) {
       const newData = accountsData?.filter(item => {
-        const itemData = item.title
-          ? item.title.toUpperCase()
+        const itemData = item?.title
+          ? item?.title.toUpperCase()
           : ''.toUpperCase();
         const textData = text.toUpperCase();
         return itemData.indexOf(textData) > -1;
@@ -106,6 +109,7 @@ const AddAccountForm = ({
     setAddAccPressed(true);
   };
 
+  // Save budget to account
   const saveAccountHandler = () => {
     setSavedAcc(true);
     const findAcc = accountsData?.filter(acc => acc?.title === accountText);
@@ -119,6 +123,7 @@ const AddAccountForm = ({
           title: accountText,
           budget: +budget,
           date: new Date(),
+          editedDate: new Date(),
         }),
       );
     } else {
@@ -129,7 +134,8 @@ const AddAccountForm = ({
             id: findAcc[0]?.id,
             title: accountText,
             budget: +budget,
-            date: new Date(),
+            date: findAcc?.date,
+            editedDate: new Date(),
           }),
         );
         setIsEditAccount(false);
@@ -140,7 +146,8 @@ const AddAccountForm = ({
             id: findAcc[0]?.id,
             title: accountText,
             budget: +findAcc[0]?.budget + +budget,
-            date: new Date(),
+            date: findAcc?.date,
+            editedDate: new Date(),
           }),
         );
       }
@@ -148,6 +155,7 @@ const AddAccountForm = ({
     resetHandler();
   };
 
+  // Save cash account
   const saveCashHandler = () => {
     // Create new Cash Account
     if (cashData?.length === 0) {
@@ -158,6 +166,7 @@ const AddAccountForm = ({
           title: 'Cash',
           budget: +budget,
           date: new Date(),
+          editedDate: new Date(),
         }),
       );
     } else {
@@ -168,7 +177,8 @@ const AddAccountForm = ({
             id: cashData[0]?.id,
             title: 'Cash',
             budget: +budget,
-            date: new Date(),
+            date: cashData?.date,
+            editedDate: new Date(),
           }),
         );
         setIsEditAccount(false);
@@ -179,7 +189,8 @@ const AddAccountForm = ({
             id: cashData[0]?.id,
             title: 'Cash',
             budget: +cashData[0]?.budget + +budget,
-            date: new Date(),
+            date: cashData?.date,
+            editedDate: new Date(),
           }),
         );
       }
@@ -209,6 +220,10 @@ const AddAccountForm = ({
     setSavedAcc(false);
     setBudget(0);
     setAccountText(null);
+  };
+
+  const openCalendar = () => {
+    console.log('open calendar pressed');
   };
 
   // Render Item
@@ -356,6 +371,33 @@ const AddAccountForm = ({
                   style={({pressed}) => pressed && styles.pressed}
                   onPress={() => saveAccountHandler()}>
                   <Text style={styles.add}>save</Text>
+                </Pressable>
+              </View>
+
+              <View
+                style={{
+                  flexDirection: 'row',
+                  marginLeft: width / 2.5,
+                  marginBottom: 20,
+                  marginTop: 10,
+                }}>
+                <Text
+                  style={{
+                    marginRight: 20,
+                    fontSize: width * 0.05,
+                    fontWeight: '600',
+                    color: 'blue',
+                  }}>
+                  {moment.monthsShort(+month - 1)} {year}
+                </Text>
+                <Pressable
+                  style={({pressed}) => pressed && styles.pressed}
+                  onPress={() => openCalendar()}>
+                  <MaterialCommunityIcons
+                    name="calendar"
+                    size={width * 0.075}
+                    color={'#1c6bea'}
+                  />
                 </Pressable>
               </View>
             </>

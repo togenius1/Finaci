@@ -176,7 +176,6 @@ const OverviewScreen = ({navigation}: Props) => {
           toDateClickedHandler={toDateClickedHandler}
           rightMenuClickedHandler={rightMenuClickedHandler}
           setIsModalVisible={setIsModalVisible}
-          // showMonthYearListMenuHandler={showMonthYearListMenuHandler}
         />
       ),
     });

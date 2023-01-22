@@ -7,21 +7,51 @@ import {
   Modal,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
+import moment from 'moment';
 // import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {AccountNavigationType} from '../types';
 import AccountComponents from '../components/Output/AccountComponents';
+import MonthYearList from '../components/Menu/MonthYearList';
 
 type Props = {
   navigation: AccountNavigationType;
 };
 
 const {width, height} = Dimensions.get('window');
+let MONTH = moment().month() + 1;
+if (MONTH < 10) {
+  MONTH = +`0${MONTH}`;
+}
+const initFromDateString = `${moment().year()}-${MONTH}-01`;
+const initFromDate = moment(initFromDateString).format('YYYY-MM-DD');
+const initToDate = moment().format('YYYY-MM-DD');
 
-const HeaderRightComponent = ({setIsMenuOpen}) => {
+const HeaderRightComponent = ({
+  setIsMenuOpen,
+  setIsMYListVisible,
+  year,
+  month,
+}) => {
+  const monthLabel = moment.monthsShort(+month - 1);
+
   return (
-    <View>
+    <View style={styles.headerRight}>
+      <Pressable
+        style={({pressed}) => pressed && styles.pressed}
+        onPress={() => setIsMYListVisible(true)}>
+        <View
+          style={{
+            // backgroundColor: '#ffd3d3',
+            marginRight: 25,
+          }}>
+          <Text style={{fontSize: 16, color: '#2a8aff'}}>
+            {monthLabel} {year}
+          </Text>
+        </View>
+      </Pressable>
+
       <Pressable
         style={({pressed}) => pressed && styles.pressed}
         onPress={setIsMenuOpen}>
@@ -45,32 +75,60 @@ const HeaderRightComponent = ({setIsMenuOpen}) => {
 
 const AccountsScreen = ({navigation}: Props) => {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [isMYListVisible, setIsMYListVisible] = useState<boolean>(false);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+  const [year, setYear] = useState<number>(moment().year());
+  const [month, setMonth] = useState<number>(MONTH);
+  const [fromDate, setFromDate] = useState<string | null>(initFromDate);
+  const [toDate, setToDate] = useState<string | null>(initToDate);
+
+  useEffect(() => {
+    onMonthYearSelectedHandler(moment().month());
+  }, []);
 
   useEffect(() => {
     navigation.setOptions({
       title: 'Accounts',
+      headerTitleAlign: 'left',
       headerRight: () => (
         <HeaderRightComponent
           setIsMenuOpen={() => setIsMenuOpen(true)}
-          // setIsModalVisible={setIsModalVisible}
+          setIsMYListVisible={setIsMYListVisible}
+          year={year}
+          month={month}
         />
       ),
     });
-  }, []);
+  }, [year, month]);
+
+  // Set Month Year
+  function onMonthYearSelectedHandler(time) {
+    let fromdate;
+    let todate;
+    // let month;
+    const mm = moment().month(time).format('MM');
+
+    // const daysInMonth = moment(`YYYY-${mm}-DD`).daysInMonth();
+    const daysInMonth = moment(
+      moment().format(`YYYY-${mm}`),
+      'YYYY-MM',
+    ).daysInMonth();
+    fromdate = moment(`${year}-${mm}-01`).format('YYYY-MM-DD');
+    todate = moment(`${year}-${mm}-${daysInMonth}`).format('YYYY-MM-DD');
+    // month = moment(fromdate).month() + 1;
+
+    setFromDate(moment(fromdate).format('YYYY-MM-DD'));
+    setToDate(moment(todate).format('YYYY-MM-DD'));
+
+    const MONTH = moment(todate).format('M');
+    setMonth(MONTH);
+    setIsMYListVisible(false);
+  }
 
   const openAddAccountForm = () => {
     setIsModalVisible(true);
     setIsMenuOpen(false);
   };
-
-  function onNavigate(item) {
-    // console.log(item);
-    navigation.navigate('AccountsItem', {
-      account: item.title,
-      accountId: item.id,
-    });
-  }
 
   return (
     <View style={styles.container}>
@@ -78,7 +136,8 @@ const AccountsScreen = ({navigation}: Props) => {
         navigation={navigation}
         isModalVisible={isModalVisible}
         setIsModalVisible={setIsModalVisible}
-        // onNavigate={onNavigate}
+        month={month}
+        year={year}
       />
 
       <Modal
@@ -101,6 +160,16 @@ const AccountsScreen = ({navigation}: Props) => {
           </View>
         </Pressable>
       </Modal>
+
+      <MonthYearList
+        monthlyPressed={false}
+        onMYSelectedHandler={onMonthYearSelectedHandler}
+        year={+year}
+        setYear={setYear}
+        month={+month}
+        setIsModalVisible={setIsMYListVisible}
+        isModalVisible={isMYListVisible}
+      />
     </View>
   );
 };
@@ -110,6 +179,11 @@ export default AccountsScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  headerRight: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   menu: {
     width: width * 0.45,
