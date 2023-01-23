@@ -61,6 +61,7 @@ const App = () => {
 
   //Reset Expense
   // useEffect(() => {
+  //   // dispatch(fetchCashAccountsData());
   //   dispatch(fetchExpensesData());
   //   dispatch(fetchIncomesData());
   //   dispatch(fetchMonthlyTransactsData());

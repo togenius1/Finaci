@@ -5,7 +5,7 @@ export const CashCategory = [
     title: 'Cash',
     budget: 0,
     date: new Date(),
-    removable: false,
+    editedDate: new Date(),
   },
 ];
 

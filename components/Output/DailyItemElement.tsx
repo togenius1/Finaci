@@ -76,7 +76,8 @@ const DailyItemElement = ({
   const filteredIncomes = IncomesCate.filter(income => income.id === cateId);
 
   let filteredAccounts;
-  if (accountId === 'cash1') {
+  const id = accountId.split('-');
+  if (id[0] === 'cash') {
     filteredAccounts = Cash.filter(acc => acc.id === accountId);
   } else {
     filteredAccounts = Accounts.filter(acc => acc.id === accountId);

@@ -28,7 +28,7 @@ const cashAccountsSlice = createSlice({
       }
     },
     deleteCashAccount(state, action) {
-      const id = action.payload;
+      const id = action.payload.accountId;
       const existingItem = state.cashAccounts.find(cash => cash.id === id);
       if (existingItem) {
         state.cash = state.cashAccounts.filter(cash => cash.id !== id);

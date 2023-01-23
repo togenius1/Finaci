@@ -15,6 +15,7 @@ import {accountActions} from '../../store/account-slice';
 import {useAppDispatch, useAppSelector} from '../../hooks';
 import AccountHeader from '../AccountHeader';
 import {sumTotalFunc} from '../../util/math';
+import {cashAccountsActions} from '../../store/cash-slice';
 
 type Props = {
   setIsModalVisible: (value: boolean) => void;
@@ -70,18 +71,31 @@ const AccountElement = ({
   };
 
   const removeAccountHandler = (accountId: string) => {
-    // setRemoveAccount(true);
-    const findAcc = accountsData?.filter(acc => acc?.id === accountId);
-
-    if (findAcc?.length > 0) {
-      dispatch(
-        accountActions.deleteAccount({
-          accountId,
-        }),
-      );
+    const id = accountId?.split('-');
+    if (id[0] === 'cash') {
+      const findCash = cashData?.filter(cash => cash?.id === accountId);
+      if (findCash?.length > 0) {
+        dispatch(
+          cashAccountsActions.deleteCashAccount({
+            accountId,
+          }),
+        );
+      } else {
+        Alert.alert('Account Warning!', 'The account cannot be removed.');
+      }
     } else {
-      Alert.alert('Account Warning!', 'The account cannot be removed.');
+      const findAcc = accountsData?.filter(acc => acc?.id === accountId);
+      if (findAcc?.length > 0) {
+        dispatch(
+          accountActions.deleteAccount({
+            accountId,
+          }),
+        );
+      } else {
+        Alert.alert('Account Warning!', 'The account cannot be removed.');
+      }
     }
+
     // setRemoveAccount(false);
   };
 
