@@ -13,20 +13,11 @@ import moment from 'moment';
 import {GlobalStyles} from '../../constants/styles';
 import DateTimePick from '../UI/DateTimePick';
 
-type Props = {
-  amount: string;
-
-  note: string;
-  date: string;
-  account: string;
-};
-
 const {width, height} = Dimensions.get('window');
 
 function ExpenseForm({
   type,
   amount,
-  // setAmount,
   category,
   categoryTitle,
   note,
@@ -182,8 +173,6 @@ function ExpenseForm({
   );
 }
 
-export default ExpenseForm;
-
 const styles = StyleSheet.create({
   form: {
     marginTop: 50,
@@ -230,3 +219,23 @@ const styles = StyleSheet.create({
     opacity: 0.65,
   },
 });
+
+export default ExpenseForm;
+
+// ============================ TYPE =====================================
+type Props = {
+  type: string;
+  amount: string;
+  note: string;
+  category: string;
+  date: string;
+  account: string;
+  categoryTitle: string;
+  accountTitle: string;
+  textDate: string;
+  initialDate: string;
+  setTextDate: (value: string) => void;
+  setCategoryPressed: (value: boolean) => void;
+  setNotePressed: (value: boolean) => void;
+  setAccountPressed: (value: boolean) => void;
+};

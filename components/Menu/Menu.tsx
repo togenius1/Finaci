@@ -39,33 +39,35 @@ const Menu = ({
           backgroundColor: 'transparent',
         }}
         onPress={() => setIsMenuOpen(false)}>
-        <View style={styles.listMenu}>
-          <Pressable
-            style={({pressed}) => pressed && styles.pressed}
-            onPress={() => monthlyClickedHandler()}>
-            <View
-              style={{
-                marginLeft: 20,
-              }}>
-              <Text>Monthly</Text>
-            </View>
-          </Pressable>
-
-          {focusedTabIndex !== 0 && (
+        <Pressable onPress={() => setIsMenuOpen(true)}>
+          <View style={styles.listMenu}>
             <Pressable
               style={({pressed}) => pressed && styles.pressed}
-              onPress={() => {
-                customClickedHandler();
-              }}>
+              onPress={() => monthlyClickedHandler()}>
               <View
                 style={{
                   marginLeft: 20,
                 }}>
-                <Text>Custom</Text>
+                <Text>Monthly</Text>
               </View>
             </Pressable>
-          )}
-        </View>
+
+            {focusedTabIndex !== 0 && (
+              <Pressable
+                style={({pressed}) => pressed && styles.pressed}
+                onPress={() => {
+                  customClickedHandler();
+                }}>
+                <View
+                  style={{
+                    marginLeft: 20,
+                  }}>
+                  <Text>Custom</Text>
+                </View>
+              </Pressable>
+            )}
+          </View>
+        </Pressable>
       </Pressable>
     </Modal>
   );

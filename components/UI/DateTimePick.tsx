@@ -22,9 +22,10 @@ const DateTimePick = ({
   value,
   mode,
   today,
+  style
 }: Props) => {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container,style]}>
       <View style={{position: 'absolute', bottom: 0}}>
         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
           <Pressable

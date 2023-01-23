@@ -113,66 +113,70 @@ export default function MonthYearList({
       <Pressable
         style={styles.outSide}
         onPress={() => setIsModalVisible(false)}>
-        <View style={styles.listMenu}>
-          <View
-            style={{
-              justifyContent: 'space-evenly',
-              flexDirection: 'row',
-              borderWidth: 1,
-              borderColor: '#d3d3d3',
-              paddingVertical: 6,
-              marginTop: -5,
-              backgroundColor: '#94f5fa',
-            }}>
-            <Pressable
-              style={({pressed}) => pressed && styles.pressed}
-              onPress={decrementYearHandle}>
-              <View style={{backgroundColor: '#e9a5a5', paddingHorizontal: 10}}>
-                <Text style={{fontSize: 16}}>{`<`}</Text>
-              </View>
-            </Pressable>
-            <View>
-              <Text style={{fontSize: 16, fontWeight: '800'}}>{year}</Text>
-            </View>
-            <Pressable
-              style={({pressed}) => pressed && styles.pressed}
-              onPress={incrementYearHandle}>
-              <View style={{backgroundColor: '#e7a7a7', paddingHorizontal: 10}}>
-                <Text style={{fontSize: 16}}>{`>`}</Text>
-              </View>
-            </Pressable>
-          </View>
-
-          <View
-            style={{
-              flexDirection: 'row',
-              flexWrap: 'wrap',
-              // marginTop: -10,
-              marginLeft: 15,
-            }}>
-            {obj.map((item, index) => {
-              return (
+        <Pressable onPress={() => setIsModalVisible(true)}>
+          <View style={styles.listMenu}>
+            <View
+              style={{
+                justifyContent: 'space-evenly',
+                flexDirection: 'row',
+                borderWidth: 1,
+                borderColor: '#d3d3d3',
+                paddingVertical: 6,
+                marginTop: -5,
+                backgroundColor: '#94f5fa',
+              }}>
+              <Pressable
+                style={({pressed}) => pressed && styles.pressed}
+                onPress={decrementYearHandle}>
                 <View
-                  key={index}
-                  style={{
-                    width: 85,
-                    marginHorizontal: 5,
-                    marginVertical: 10,
-                  }}>
-                  <MonthList
-                    item={item}
-                    selectedMY={selectedMY}
-                    monthlyPressed={monthlyPressed}
-                    onYearSelectedHandler={
-                      () => onMYSelectedHandler(item?.MY)
-                      // && setIsModalVisible(false)
-                    }
-                  />
+                  style={{backgroundColor: '#e9a5a5', paddingHorizontal: 10}}>
+                  <Text style={{fontSize: 16}}>{`<`}</Text>
                 </View>
-              );
-            })}
+              </Pressable>
+              <View>
+                <Text style={{fontSize: 16, fontWeight: '800'}}>{year}</Text>
+              </View>
+              <Pressable
+                style={({pressed}) => pressed && styles.pressed}
+                onPress={incrementYearHandle}>
+                <View
+                  style={{backgroundColor: '#e7a7a7', paddingHorizontal: 10}}>
+                  <Text style={{fontSize: 16}}>{`>`}</Text>
+                </View>
+              </Pressable>
+            </View>
+
+            <View
+              style={{
+                flexDirection: 'row',
+                flexWrap: 'wrap',
+                // marginTop: -10,
+                marginLeft: 15,
+              }}>
+              {obj.map((item, index) => {
+                return (
+                  <View
+                    key={index}
+                    style={{
+                      width: 85,
+                      marginHorizontal: 5,
+                      marginVertical: 10,
+                    }}>
+                    <MonthList
+                      item={item}
+                      selectedMY={selectedMY}
+                      monthlyPressed={monthlyPressed}
+                      onYearSelectedHandler={
+                        () => onMYSelectedHandler(item?.MY)
+                        // && setIsModalVisible(false)
+                      }
+                    />
+                  </View>
+                );
+              })}
+            </View>
           </View>
-        </View>
+        </Pressable>
       </Pressable>
     </Modal>
   );

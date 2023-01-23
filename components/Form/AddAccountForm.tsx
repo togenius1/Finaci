@@ -42,7 +42,6 @@ const AddAccountForm = ({
   year,
 }: Props) => {
   //
-
   const dispatch = useAppDispatch();
   const dataLoaded = useAppSelector(store => store);
 
@@ -62,7 +61,6 @@ const AddAccountForm = ({
   const [isDatePickerVisible, setIsDatePickerVisible] =
     useState<boolean>(false);
   const [DATE, setDATE] = useState(initDate);
-
   const [textDate, setTextDate] = useState<string>(
     moment().format('YYYY-MM-DD HH:mm:ss'),
   );
@@ -94,7 +92,7 @@ const AddAccountForm = ({
     setAddAccPressed(true);
   }
 
-  function searchFilterHandler(text: string | null) {
+  function searchFilterHandler(text: string) {
     if (text) {
       const newData = accountsData?.filter(item => {
         const itemData = item?.title
@@ -121,7 +119,11 @@ const AddAccountForm = ({
     }
 
     setSavedAcc(true);
-    const findAcc = accountsData?.filter(acc => acc?.title === accountText);
+    const findAcc = accountsData?.filter(
+      acc =>
+        acc?.title === accountText &&
+        +moment(acc?.date).month() === +moment(textDate).month(),
+    );
     // add new account
     // if (accountsData?.length === 0 || findAccTitle === -1) {
     if (findAcc?.length === 0) {
@@ -132,7 +134,7 @@ const AddAccountForm = ({
           title: accountText,
           budget: +budget,
           date: textDate,
-          editedDate: new Date(),
+          editedDate: textDate,
         }),
       );
     } else {
@@ -144,7 +146,7 @@ const AddAccountForm = ({
             title: accountText,
             budget: +budget,
             date: findAcc?.date,
-            editedDate: new Date(),
+            editedDate: textDate,
           }),
         );
         setIsEditAccount(false);
@@ -156,7 +158,7 @@ const AddAccountForm = ({
             title: accountText,
             budget: +findAcc[0]?.budget + +budget,
             date: findAcc?.date,
-            editedDate: new Date(),
+            editedDate: textDate,
           }),
         );
       }
@@ -166,8 +168,11 @@ const AddAccountForm = ({
 
   // Save cash account
   const saveCashHandler = () => {
+    const findCash = cashData?.filter(
+      cash => +moment(cash.date).month() === +moment(textDate).month(),
+    );
     // Create new Cash Account
-    if (cashData?.length <= 0) {
+    if (findCash?.length <= 0) {
       const cashId = 'cash-' + uuidv4();
       dispatch(
         cashAccountsActions.addCashAccount({
@@ -179,16 +184,15 @@ const AddAccountForm = ({
         }),
       );
     } else {
-      const findCash = cashData?.filter(cash => cash.id === cashId);
       if (isEditAccount) {
         // Update Cash Account
         dispatch(
           cashAccountsActions.updateCashAccount({
-            id: cashData[0]?.id,
+            id: findCash[0]?.id,
             title: 'Cash',
             budget: +budget,
-            date: cashData?.date,
-            editedDate: new Date(),
+            date: findCash[0]?.date,
+            editedDate: textDate,
           }),
         );
         setIsEditAccount(false);
@@ -196,11 +200,11 @@ const AddAccountForm = ({
         // Update Cash Account
         dispatch(
           cashAccountsActions.updateCashAccount({
-            id: cashData[0]?.id,
+            id: findCash[0]?.id,
             title: 'Cash',
-            budget: +cashData[0]?.budget + +budget,
-            date: cashData?.date,
-            editedDate: new Date(),
+            budget: +findCash[0]?.budget + +budget,
+            date: findCash[0]?.date,
+            editedDate: textDate,
           }),
         );
       }
@@ -304,16 +308,16 @@ const AddAccountForm = ({
   };
 
   return (
-    <>
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={isModalVisible}
-        onDismiss={() => setIsModalVisible(false)}
-        onRequestClose={() => setIsModalVisible(false)}>
-        <Pressable
-          style={styles.outSide}
-          onPress={() => setIsModalVisible(false)}>
+    <Modal
+      animationType="fade"
+      transparent={true}
+      visible={isModalVisible}
+      onDismiss={() => setIsModalVisible(false)}
+      onRequestClose={() => setIsModalVisible(false)}>
+      <Pressable
+        style={styles.outSide}
+        onPress={() => setIsModalVisible(false)}>
+        <Pressable onPress={() => setIsModalVisible(true)}>
           <View style={styles.container}>
             <View style={styles.header}>
               <Pressable
@@ -428,7 +432,7 @@ const AddAccountForm = ({
                   <CalendarInput iconSize={width * 0.075} />
                 </View>
 
-                <View style={{alignItems: 'center', marginBottom: 10}}>
+                <View style={{alignItems: 'center', marginTop: 10}}>
                   <Pressable
                     style={({pressed}) => pressed && styles.pressed}
                     onPress={() => saveAccountHandler()}>
@@ -437,6 +441,17 @@ const AddAccountForm = ({
                 </View>
               </>
             )}
+
+            <DateTimePick
+              isVisible={isDatePickerVisible}
+              onChange={onChange}
+              onCancel={hideDatePicker}
+              onConfirm={handleConfirm}
+              value={DATE}
+              mode={mode}
+              today={onTodayHandler}
+              style={{position: 'absolute'}}
+            />
 
             {!selectedCash && (
               <FlatList
@@ -448,18 +463,8 @@ const AddAccountForm = ({
             )}
           </View>
         </Pressable>
-      </Modal>
-
-      <DateTimePick
-        isVisible={isDatePickerVisible}
-        onChange={onChange}
-        onCancel={hideDatePicker}
-        onConfirm={handleConfirm}
-        value={DATE}
-        mode={mode}
-        today={onTodayHandler}
-      />
-    </>
+      </Pressable>
+    </Modal>
   );
 };
 

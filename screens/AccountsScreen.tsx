@@ -147,17 +147,17 @@ const AccountsScreen = ({navigation}: Props) => {
         onDismiss={() => setIsMenuOpen(false)}
         onRequestClose={() => setIsMenuOpen(false)}>
         <Pressable style={styles.outSide} onPress={() => setIsMenuOpen(false)}>
-          <View style={styles.menu}>
-            <Pressable
-              onPress={openAddAccountForm}
-              style={({pressed}) => pressed && styles.pressed}>
-              <View style={{marginTop: 10, marginLeft: 10}}>
-                <Text style={{fontSize: width * 0.045, fontWeight: '500'}}>
-                  Add
-                </Text>
-              </View>
-            </Pressable>
-          </View>
+          <Pressable onPress={() => setIsMenuOpen(true)}>
+            <View style={styles.menu}>
+              <Pressable
+                onPress={openAddAccountForm}
+                style={({pressed}) => pressed && styles.pressed}>
+                <View style={styles.addContainer}>
+                  <Text style={styles.addText}>Add</Text>
+                </View>
+              </Pressable>
+            </View>
+          </Pressable>
         </Pressable>
       </Modal>
 
@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
   menu: {
     width: width * 0.45,
     height: height * 0.2,
-    backgroundColor: 'white',
+    backgroundColor: '#e2a9a9',
     borderRadius: 4,
     borderColor: '#d4d4d4',
 
@@ -200,6 +200,17 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 0,
     top: height / 16,
+  },
+  addContainer: {
+    marginTop: 25,
+    marginLeft: 15,
+    // borderWidth: 0.25,
+    // borderColor: 'grey',
+  },
+  addText: {
+    fontSize: width * 0.045,
+    fontWeight: '500',
+    color: '#0362de',
   },
   outSide: {
     flex: 1,
