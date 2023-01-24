@@ -4,8 +4,6 @@ import {scaleTime} from 'd3-scale';
 import {currencyFormatter} from '../../util/currencyFormatter';
 // import {max, sum} from 'd3-array';
 
-type Props = {};
-
 const {width, height} = Dimensions.get('window');
 const barSpan = width * 0.85;
 
@@ -23,37 +21,33 @@ const TimeLine = ({
 
   const budget = currencyFormatter(+item?.budget, {});
   const spent = currencyFormatter(+totalExpense, {});
-  const budgetLeft = currencyFormatter(+item.budget - +totalExpense, {});
+  const budgetLeft = currencyFormatter(+item?.budget - +totalExpense, {});
 
-  const MARGINLEFT = -timeRamp(+item?.budget - +totalExpense);
-
-  // console.log('item ', item);
-  // console.log('totalExpense ', totalExpense);
-  // console.log('MARGINLEFT ', MARGINLEFT);
+  // const MARGINLEFT = -timeRamp(+item?.budget - +totalExpense);
 
   return (
     <View style={styles.container}>
       {/* BUDGET */}
       <View style={styles.budget}>
-        <Text style={titleStyle}>{item.title}</Text>
+        <Text style={titleStyle}>{item?.title}</Text>
         <Text
           style={[styles.budgetText, budgetStyle]}>{`${budget} budgets`}</Text>
       </View>
-      {/* Remain Budget Bar */}
+      {/* Remain Bar */}
       <View
         style={{
           backgroundColor: barColor.remain,
           height: widthBar,
           width: timeRamp(+totalExpense),
-          // marginLeft: -timeRamp(+item?.budget - +totalExpense),
+          marginLeft: -timeRamp(+item?.budget - +totalExpense),
         }}
       />
-      {/* USED Budget Bar */}
+      {/* USED Bar */}
       <View
         style={{
-          backgroundColor: barColor.used,
+          backgroundColor: barColor?.used,
           height: widthBar,
-          width: timeRamp(+item.budget - totalExpense),
+          width: timeRamp(+item?.budget - totalExpense),
           marginLeft: timeRamp(+totalExpense),
           marginTop: -widthBar,
           opacity: 0.75,
@@ -65,8 +59,9 @@ const TimeLine = ({
           //   backgroundColor: '#e5e5e5',
           alignItems: 'center',
           marginTop: 8,
-          marginRight: timeRamp(item.budget - totalExpense),
-        }}></View>
+          marginRight: timeRamp(+item?.budget - +totalExpense),
+        }}
+      />
       <View
         style={{
           width: barSpan,
@@ -112,3 +107,27 @@ const styles = StyleSheet.create({
 });
 
 export default TimeLine;
+
+// ========================== TYPE =====================
+type Props = {
+  item: object;
+  widthBar: number;
+  barColor: BarColorType;
+  totalExpense: number;
+  titleStyle: TitleStyle;
+  budgetStyle: BudgetStyle;
+};
+
+interface BarColorType {
+  remain: string;
+  used: string;
+}
+
+interface TitleStyle {
+  fontSize: number;
+  fontWeight: string;
+}
+
+interface BudgetStyle {
+  fontSize: number;
+}

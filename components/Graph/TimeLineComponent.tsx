@@ -20,17 +20,12 @@ const TimeLineTab = ({data, fromDate, toDate}: Props) => {
 
   const sumExpenseByEachAccount = sumEachAccountId(data);
 
-  console.log('sumExpenseByEachAccount: ', sumExpenseByEachAccount);
-
   const accountsFiltered = dataLoaded?.accounts?.accounts?.filter(account => {
     const findItem = sumExpenseByEachAccount?.find(
       sum => sum.accountId === account?.id,
     );
     return findItem;
   });
-
-  console.log('accountsFiltered: ', accountsFiltered);
-  console.log('sumExpenseByEachAccount: ', sumExpenseByEachAccount);
 
   const mergeObj = accountsFiltered?.map(acc => {
     const Obj = sumExpenseByEachAccount?.find(sum => sum.accountId === acc.id);
@@ -138,8 +133,6 @@ const TimeLineTab = ({data, fromDate, toDate}: Props) => {
   );
 };
 
-export default TimeLineTab;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -161,3 +154,5 @@ const styles = StyleSheet.create({
     // backgroundColor: '#67e1cf',
   },
 });
+
+export default TimeLineTab;

@@ -58,10 +58,6 @@ const StatsScreen = ({navigation}: Props) => {
   const expenseData = dataLoaded?.expenses?.expenses;
   const monthlyTransactsData = dataLoaded?.monthlyTransacts?.monthlyTransacts;
 
-  // const [expenseData, setExpenseData] = useState<ExpenseType>();
-  // const [incomeData, setIncomeData] = useState<IncomeType>();
-  // const [showMonthYearListMenu, setShowMonthYearListMenu] =
-  //   useState<boolean>(false);
   const [fromDate, setFromDate] = useState<string | null>(initFromDate);
   const [toDate, setToDate] = useState<string | null>(initToDate);
   const [indicatorIndex, setIndicatorIndex] = useState<number | undefined>(0);
@@ -71,15 +67,12 @@ const StatsScreen = ({navigation}: Props) => {
   const onItemPress = useCallback((itemIndex: number) => {
     setIndicatorIndex(itemIndex);
     if (itemIndex === 0) {
-      // console.log(itemIndex);
-      // setFromToDateBudgetHandler();
+      setFromToDateExpenseIncomeHandler();
     }
     if (itemIndex === 1) {
-      // console.log(itemIndex);
       setFromToDateExpenseIncomeHandler();
     }
     if (itemIndex === 2) {
-      // console.log(itemIndex);
       setFromToDateExpenseIncomeHandler();
     }
   }, []);
@@ -150,7 +143,7 @@ const StatsScreen = ({navigation}: Props) => {
   }
 
   function setFromToDateExpenseIncomeHandler() {
-    if (year === String(moment().year())) {
+    if (year === moment().year()) {
       setFromDate(moment().format(`${year}-01-01`));
       setToDate(moment().format(`${year}-MM-DD`));
     } else {
