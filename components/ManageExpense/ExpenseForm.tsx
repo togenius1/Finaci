@@ -13,7 +13,7 @@ import moment from 'moment';
 import {GlobalStyles} from '../../constants/styles';
 import DateTimePick from '../UI/DateTimePick';
 
-const {width, height} = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 
 function ExpenseForm({
   type,
@@ -35,7 +35,6 @@ function ExpenseForm({
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [DATE, setDATE] = useState(initialDate);
   const [mode, setMode] = useState('datetime');
-  // const [show, setShow] = useState(false);
 
   useEffect(() => {
     setTextDate(initialDate);

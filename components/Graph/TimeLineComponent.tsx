@@ -20,6 +20,8 @@ const TimeLineTab = ({data, fromDate, toDate}: Props) => {
 
   const sumExpenseByEachAccount = sumEachAccountId(data);
 
+  console.log('sumExpenseByEachAccount: ', sumExpenseByEachAccount);
+
   const accountsFiltered = dataLoaded?.accounts?.accounts?.filter(account => {
     const findItem = sumExpenseByEachAccount?.find(
       sum => sum.accountId === account?.id,

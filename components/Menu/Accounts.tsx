@@ -22,10 +22,6 @@ import {useAppSelector} from '../../hooks';
 // import {AccountType} from '../../models/account';
 import {currencyFormatter} from '../../util/currencyFormatter';
 import {sumTotalBudget, sumTotalFunc} from '../../util/math';
-// import {EXPENSES} from '../../dummy/dummy';
-// import {AccountCategory, CashCategory} from '../../dummy/account';
-import AddBtn from '../UI/AddBtn';
-// import {useNavigation} from '@react-navigation/native';
 import AccountHeader from '../AccountHeader';
 
 type Dispatcher<S> = Dispatch<SetStateAction<S>>;
@@ -72,14 +68,8 @@ const Accounts = ({setAccount, setAccountPressed}: Props) => {
     setTotalExpenses(totalExpenses);
   }, [expenseData, accountsData, cashData]);
 
-  if (
-    cashData === undefined ||
-    accountsData === undefined ||
-    expenseData === undefined
-  ) {
-    return;
-  }
 
+  // Set account
   function onAccountsHandler(item) {
     // console.log('item: ', item);
     setAccountPressed(false);
@@ -89,9 +79,6 @@ const Accounts = ({setAccount, setAccountPressed}: Props) => {
   const totalAssets = Number(cashBudget) + Number(accountsBudget);
   const total = totalAssets - +totalExpenses;
 
-  // function openAddAccountForm() {
-  //   setIsModalVisible(pressed => !pressed);
-  // }
 
   // Sort Data
   const getSortedState = data =>
@@ -162,14 +149,6 @@ const Accounts = ({setAccount, setAccountPressed}: Props) => {
           />
         </View>
       </View>
-
-      {/* <AddBtn
-        onPress={openAddAccountForm}
-        style={{bottom: -0}}
-        icon={'plus-circle'}
-        size={width * 0.18}
-        color="#3683e2"
-      /> */}
 
       <AddAccountForm
         setIsModalVisible={setIsModalVisible}

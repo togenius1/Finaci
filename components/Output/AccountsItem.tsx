@@ -5,50 +5,20 @@ import {
   Dimensions,
   FlatList,
   Pressable,
-  ActivityIndicator,
   Platform,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
-import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import moment from 'moment';
 import {v4 as uuidv4} from 'uuid';
 
-import {ExpenseCategory, IncomeCategory} from '../../dummy/categoryItems';
-// import {EXPENSES, INCOME} from '../../dummy/dummy';
-import {
-  // sortDataByDay,
-  sumByCustomDate,
-  // sumByDate,
-  sumTotalFunc,
-} from '../../util/math';
+import {sumByCustomDate, sumTotalFunc} from '../../util/math';
 import MonthYearList from '../Menu/MonthYearList';
 import {AccountsItemNavigationType, AccountsItemRouteProp} from '../../types';
 import {currencyFormatter} from '../../util/currencyFormatter';
 import {AccountCategory, CashCategory} from '../../dummy/account';
 import {useAppSelector} from '../../hooks';
 import Menu from '../Menu/Menu';
-
-type Props = {
-  navigation: AccountsItemNavigationType;
-  route: AccountsItemRouteProp;
-};
-
-// interface MenuHandlerType {
-//   monthlyClickedHandler: () => void;
-//   customClickedHandler: () => void;
-//   setIsMenuOpen: (value: boolean) => void;
-//   isMenuOpen: boolean;
-// }
-
-interface HeaderRightComponentType {
-  fromDate: string | null;
-  toDate: string | null;
-  showCustomDate: boolean;
-  fromDateClickedHandler: () => void;
-  toDateClickedHandler: () => void;
-  rightMenuClickedHandler: () => void;
-  showMonthYearListMenuHandler: () => void;
-}
+import DateTimePicker from 'react-native-modal-datetime-picker';
 
 // CONSTANT
 const {width, height} = Dimensions.get('window');
@@ -59,7 +29,7 @@ if (month < 10) {
 const initFromDate = `${moment().year()}-${month}-01`;
 const initToDate = moment().format('YYYY-MM-DD');
 
-function HeaderRightComponent({
+const HeaderRightComponent = ({
   fromDate,
   toDate,
   showCustomDate,
@@ -67,7 +37,7 @@ function HeaderRightComponent({
   toDateClickedHandler,
   rightMenuClickedHandler,
   showMonthYearListMenuHandler,
-}: HeaderRightComponentType) {
+}: HeaderRightComponentType) => {
   const m = new Date(toDate).getMonth();
   const month = moment.monthsShort(m);
   const year = moment(toDate).year();
@@ -131,7 +101,7 @@ function HeaderRightComponent({
       </Pressable>
     </View>
   );
-}
+};
 
 function AccountsItem({navigation, route}: Props) {
   const [mode, setMode] = useState<string | null>('date');
@@ -150,7 +120,7 @@ function AccountsItem({navigation, route}: Props) {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
-  // const dispatch = useAppDispatch();
+  // DATA from storage
   const expensesData = useAppSelector(
     state => state.expenses.expenses,
     // shallowEqual,
@@ -190,19 +160,6 @@ function AccountsItem({navigation, route}: Props) {
     });
   }, [navigation, showCustomDate, fromDate, toDate]);
 
-  if (
-    expensesData === null ||
-    expensesData === undefined ||
-    incomesData === null ||
-    incomesData === undefined ||
-    accountsData === undefined ||
-    accountsData === null ||
-    cashData === undefined ||
-    cashData === null
-  ) {
-    return <ActivityIndicator />;
-  }
-
   // FILTERED DATA (From date ----> To date)
   const selectedDurationExpenseData = expensesData?.filter(
     expense =>
@@ -232,6 +189,8 @@ function AccountsItem({navigation, route}: Props) {
     income => income?.accountId === accountId,
   );
 
+  // console.log('expenseOfAccount: ', selectedDurationExpenseData);
+
   // sum total
   const totalIncomeByAccount = sumTotalFunc(incomeOfAccount);
   const totalExpenseByAccount = sumTotalFunc(expenseOfAccount);
@@ -252,6 +211,7 @@ function AccountsItem({navigation, route}: Props) {
     fromDate,
     toDate,
   );
+
   const data4 = [...sumExpenseByCustomDate, ...sumIncomeByCustomDate];
   let customData = Object.values(
     data4.reduce((acc, cur) => {
@@ -298,7 +258,6 @@ function AccountsItem({navigation, route}: Props) {
   }
 
   function showMonthYearListMenuHandler(): void {
-    // setShowMonthYearListMenu(show => !show);
     setIsModalVisible(true);
   }
 
@@ -358,16 +317,6 @@ function AccountsItem({navigation, route}: Props) {
   const renderItem = ({item}) => {
     const expenseAmount = +item.Products[0]?.amount;
     const incomeAmount = +item.Products[1]?.amount;
-
-    // get category
-    // const expenseCategory = ExpenseCategory?.filter(
-    //   cate => cate.id === item?.Products[0]?.cateId,
-    // );
-    // const incomeCategory = IncomeCategory?.filter(
-    //   cate => cate.id === item?.Products[1]?.cateId,
-    // );
-
-    // get account category
 
     const expenseCash = CashCategory?.filter(
       cate => cate.id === item?.Products[0]?.accountId,
@@ -501,7 +450,7 @@ function AccountsItem({navigation, route}: Props) {
         isModalVisible={isModalVisible}
       />
 
-      <DateTimePickerModal
+      <DateTimePicker
         isVisible={isDatePickerVisible}
         // onChange={onChange}
         onCancel={hideDatePicker}
@@ -612,3 +561,19 @@ const styles = StyleSheet.create({
     opacity: 0.75,
   },
 });
+
+// ========================== TYPE =======================================
+type Props = {
+  navigation: AccountsItemNavigationType;
+  route: AccountsItemRouteProp;
+};
+
+interface HeaderRightComponentType {
+  fromDate: string | null;
+  toDate: string | null;
+  showCustomDate: boolean;
+  fromDateClickedHandler: () => void;
+  toDateClickedHandler: () => void;
+  rightMenuClickedHandler: () => void;
+  showMonthYearListMenuHandler: () => void;
+}

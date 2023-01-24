@@ -18,23 +18,21 @@ import {weeklyTransactsActions} from '../store/weeklyTransact-slice';
 import {dailyTransactsActions} from '../store/dailyTransact-slice';
 import {accountActions} from '../store/account-slice';
 import {cashAccountsActions} from '../store/cash-slice';
-
-type Props = {
-  navigation: AddDetailsNavigationType;
-  route: AddDetailsRouteProp;
-};
+import {isEmpty} from '@aws-amplify/core';
 
 const {width, height} = Dimensions.get('window');
-const initialAccount = {
-  budget: 0,
-  date: new Date(),
-  id: 'cash1',
-  title: 'Cash',
-};
 
 const AddDetailsScreen = ({route, navigation}: Props) => {
   const dispatch = useAppDispatch();
   const dataLoaded = useAppSelector(store => store);
+
+  const expenses = dataLoaded?.expenses?.expenses;
+  const incomes = dataLoaded?.incomes?.incomes;
+  const AccountCategory = dataLoaded?.accounts?.accounts;
+  const cash = dataLoaded?.cashAccounts?.cashAccounts;
+  const ExpenseCategory = dataLoaded?.expenseCategories?.expenseCategories;
+  const IncomeCategory = dataLoaded?.incomeCategories?.incomeCategories;
+  // const TransferCategory = dataLoaded?.transferCategories?.transferCategories;
 
   const amount = route.params?.amount;
   const type = route.params?.transaction?.type;
@@ -49,42 +47,15 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
   const [categoryPressed, setCategoryPressed] = useState<boolean>(false);
   const [category, setCategory] = useState();
   const [accountPressed, setAccountPressed] = useState<boolean>(false);
-  const [account, setAccount] = useState(initialAccount);
+  const [account, setAccount] = useState();
   const [notePressed, setNotePressed] = useState<boolean>(false);
   const [note, setNote] = useState<Note>({
     note: '',
   });
 
-  // set initial date: from Calculator route or from Account route
-  const initialDate =
-    createdDate !== undefined
-      ? moment(createdDate).format('YYYY-MM-DD HH:mm:ss')
-      : textDate;
-
-  const expenses = dataLoaded?.expenses?.expenses;
-  const incomes = dataLoaded?.incomes?.incomes;
-  const AccountCategory = dataLoaded?.accounts?.accounts;
-  const CashAccountCategory = dataLoaded?.cashAccounts?.cashAccounts;
-  const ExpenseCategory = dataLoaded?.expenseCategories?.expenseCategories;
-  const IncomeCategory = dataLoaded?.incomeCategories?.incomeCategories;
-  // const TransferCategory = dataLoaded?.transferCategories?.transferCategories;
-
-  // const cashAccountCategoryById = CashAccountCategory?.find(
-  //   acc => acc.id === account?.id,
-  // );
-  const accountCategoryById = AccountCategory?.find(
-    acc => acc.id === account?.id,
-  );
-  const expenseCategoryById = ExpenseCategory?.find(
-    cate => cate?.id === category?.id,
-  );
-  const incomeCategoryById = IncomeCategory?.find(
-    cate => cate.id === category?.id,
-  );
-
-  // Cash or other accounts
-  const selectedAccountId =
-    account?.title === 'Cash' ? 'cash1' : accountCategoryById?.id;
+  useEffect(() => {
+    initialAccountHandler();
+  }, []);
 
   useEffect(() => {
     navigation.setOptions({
@@ -100,6 +71,47 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
       ),
     });
   }, [navigation, amount, category, note, textDate, account]);
+
+  // set initial date: from Calculator route or from Account route
+  const initialDate =
+    createdDate !== undefined
+      ? moment(createdDate).format('YYYY-MM-DD HH:mm:ss')
+      : textDate;
+
+  const cashAccountCategoryById = cash?.find(cash => cash.id === account?.id);
+  const accountCategoryById = AccountCategory?.find(
+    acc => acc.id === account?.id,
+  );
+  const expenseCategoryById = ExpenseCategory?.find(
+    cate => cate?.id === category?.id,
+  );
+  const incomeCategoryById = IncomeCategory?.find(
+    cate => cate.id === category?.id,
+  );
+
+  // Cash or other accounts
+  const selectedAccountId =
+    account?.title === 'Cash'
+      ? cashAccountCategoryById?.id
+      : accountCategoryById?.id;
+
+  // Initial account
+  const initialAccountHandler = () => {
+    if (isEmpty(cash) || +cash[0]?.budget === 0) {
+      const accId = 'cash-' + uuidv4();
+      dispatch(
+        cashAccountsActions.addCashAccount({
+          id: accId,
+          title: 'Cash',
+          budget: 10000,
+          date: new Date(),
+          editedDate: new Date(),
+        }),
+      );
+    }
+    const initialAccount = cash[0];
+    setAccount(initialAccount);
+  };
 
   // Save
   const saveHandler = () => {
@@ -155,9 +167,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
         }),
       );
     } else {
-      const prevCash = CashAccountCategory.filter(
-        cash => cash?.id === selectedAccountId,
-      );
+      const prevCash = cash.filter(cash => cash?.id === selectedAccountId);
       dispatch(
         cashAccountsActions.updateCashAccount({
           id: selectedAccountId,
@@ -501,3 +511,9 @@ const styles = StyleSheet.create({
     opacity: 0.75,
   },
 });
+
+// ============================ TYPE =====================================
+type Props = {
+  navigation: AddDetailsNavigationType;
+  route: AddDetailsRouteProp;
+};

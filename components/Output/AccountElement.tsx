@@ -17,22 +17,6 @@ import AccountHeader from '../AccountHeader';
 import {sumTotalFunc} from '../../util/math';
 import {cashAccountsActions} from '../../store/cash-slice';
 
-type Props = {
-  setIsModalVisible: (value: boolean) => void;
-  setAccountText: (value: string) => void;
-  setAddAccPressed: (value: boolean) => void;
-  setBudget: (value: number) => void;
-  setIsEditAccount: (value: boolean) => void;
-  setRemoveAccount: (value: boolean) => void;
-  cashData: any[];
-  accountsData: any[];
-  sortedItems: any[];
-  cashBudget: number | undefined;
-  accountsBudget: number | undefined;
-  totalExpenses: number | undefined;
-  onPress: () => void;
-};
-
 const {width, height} = Dimensions.get('window');
 
 const AccountElement = ({
@@ -202,8 +186,6 @@ const AccountElement = ({
   );
 };
 
-export default AccountElement;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -222,38 +204,32 @@ const styles = StyleSheet.create({
     marginTop: 20,
     // backgroundColor: 'red',
   },
-  // headerBox: {
-  //   // backgroundColor: 'red',
-  //   width: (width * 0.8) / 4,
-  //   alignSelf: 'center',
-  // },
-  // headerText: {
-  //   alignSelf: 'center',
-  //   fontSize: 14,
-  // },
-  // headerValueText: {
-  //   alignSelf: 'center',
-  //   fontSize: 15,
-  // },
   accountTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     marginLeft: 15,
     marginBottom: 5,
   },
-  // accounts: {
-  //   marginBottom: 50,
-  // },
-  // addButton: {
-  //   flexDirection: 'row',
-  //   justifyContent: 'flex-end',
-  //   alignItems: 'center',
-  //   width: width * 0.8,
-  //   marginTop: height * 0.78,
-  //   marginBottom: 5,
-  //   marginLeft: width * 0.14,
-  // },
   pressed: {
     opacity: 0.65,
   },
 });
+
+export default AccountElement;
+
+// ========================= TYPE ========================================
+type Props = {
+  setIsModalVisible: (value: boolean) => void;
+  setAccountText: (value: string) => void;
+  setAddAccPressed: (value: boolean) => void;
+  setBudget: (value: number) => void;
+  setIsEditAccount: (value: boolean) => void;
+  setRemoveAccount: (value: boolean) => void;
+  cashData: any[];
+  accountsData: any[];
+  sortedItems: any[];
+  cashBudget: number | undefined;
+  accountsBudget: number | undefined;
+  totalExpenses: number | undefined;
+  onPress: () => void;
+};
