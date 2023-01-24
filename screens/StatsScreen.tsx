@@ -63,6 +63,7 @@ const StatsScreen = ({navigation}: Props) => {
   const [indicatorIndex, setIndicatorIndex] = useState<number | undefined>(0);
   const [year, setYear] = useState<number>(moment().year());
   const [month, setMonth] = useState<number>(moment().month() + 1);
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   // const [duration, setDuration] = useState(moment().year());
   const onItemPress = useCallback((itemIndex: number) => {
     setIndicatorIndex(itemIndex);
@@ -76,7 +77,6 @@ const StatsScreen = ({navigation}: Props) => {
       setFromToDateExpenseIncomeHandler();
     }
   }, []);
-  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
   useEffect(() => {
     onMonthYearSelectedHandler(moment().month());
@@ -115,6 +115,9 @@ const StatsScreen = ({navigation}: Props) => {
       new Date(d?.date) >= new Date(fromDate) &&
       new Date(d?.date) <= new Date(toDate),
   );
+
+  console.log('expenseData ', expenseData);
+  console.log(filteredDataTabExpense);
 
   // Set Month Year
   function onMonthYearSelectedHandler(time) {

@@ -6,12 +6,6 @@ import TimeLine from './TimeLine';
 import {sumEachAccountId, sumTotalBudget, sumTotalFunc} from '../../util/math';
 import {useAppDispatch, useAppSelector} from '../../hooks';
 
-type Props = {
-  data: any[];
-  fromDate: string;
-  toDate: string;
-};
-
 const {width} = Dimensions.get('window');
 
 const TimeLineTab = ({data, fromDate, toDate}: Props) => {
@@ -156,3 +150,9 @@ const styles = StyleSheet.create({
 });
 
 export default TimeLineTab;
+
+// =========================== TYPE ======================================
+type Props = {
+  fromDate: string;
+  toDate: string;
+};
