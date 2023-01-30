@@ -17,15 +17,6 @@ import {CategoryType} from '../../models/category';
 import {expenseCategoriesActions} from '../../store/expense-category-slice';
 import {incomeCategoriesActions} from '../../store/income-category-slice';
 
-type Dispatcher<S> = Dispatch<SetStateAction<S>>;
-
-type Props = {
-  setCategoryPressed: Dispatcher<boolean>;
-  setCategory: Dispatcher<CategoryType>;
-  // data: any[];
-  type: string;
-};
-
 const {width, height} = Dimensions.get('window');
 
 const Category = ({setCategoryPressed, setCategory, type}: Props) => {
@@ -124,7 +115,7 @@ const Category = ({setCategoryPressed, setCategory, type}: Props) => {
         </View>
       </Pressable>
       <View style={{marginLeft: 20}}>
-        <Text style={{fontWeight: '800', fontSize: height * 0.020}}>
+        <Text style={{fontWeight: '800', fontSize: height * 0.02}}>
           Search:
         </Text>
       </View>
@@ -155,15 +146,13 @@ const Category = ({setCategoryPressed, setCategory, type}: Props) => {
   );
 };
 
-export default Category;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: width * 0.9,
-    height: height * 0.75,
+    height: height * 0.84,
     position: 'absolute',
-    top: 35,
+    top: 20,
     shadowOffset: {width: 0, height: 0},
     shadowOpacity: 0.7,
     shadowRadius: 3,
@@ -187,8 +176,9 @@ const styles = StyleSheet.create({
     borderColor: 'grey',
   },
   item: {
-    padding: 15,
+    padding: height * 0.017,
     marginTop: 5,
+    marginBottom: 5,
     marginHorizontal: 10,
     backgroundColor: 'white',
     borderWidth: 1,
@@ -198,3 +188,15 @@ const styles = StyleSheet.create({
     opacity: 0.65,
   },
 });
+
+export default Category;
+
+// ============================ TYPE =====================================
+type Dispatcher<S> = Dispatch<SetStateAction<S>>;
+
+type Props = {
+  setCategoryPressed: Dispatcher<boolean>;
+  setCategory: Dispatcher<CategoryType>;
+  // data: any[];
+  type: string;
+};

@@ -15,6 +15,7 @@ import React, {
 } from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {v4 as uuidv4} from 'uuid';
+import moment from 'moment';
 
 import AddAccountForm from '../Form/AddAccountForm';
 import {useAppSelector} from '../../hooks';
@@ -29,11 +30,13 @@ type Dispatcher<S> = Dispatch<SetStateAction<S>>;
 type Props = {
   // navigation: AccountNavigationType;
   setAccountPressed: Dispatcher<boolean>;
+  month: number;
+  year: number;
 };
 
 const {width, height} = Dimensions.get('window');
 
-const Accounts = ({setAccount, setAccountPressed}: Props) => {
+const Accounts = ({setAccount, setAccountPressed, month, year}: Props) => {
   // const navigation = useNavigation();
   // const dispatch = useAppDispatch();
   const expenseData = useAppSelector(
@@ -49,6 +52,18 @@ const Accounts = ({setAccount, setAccountPressed}: Props) => {
     // shallowEqual,
   );
 
+  // Filter Accounts and Cash with month and year
+  const filteredAccounts = accountsData?.filter(
+    account =>
+      +moment(account.date).month() === month &&
+      +moment(account.date).year() === year,
+  );
+  const filteredCash = cashData?.filter(
+    cash =>
+      +moment(cash.date).month() === month &&
+      +moment(cash.date).year() === year,
+  );
+
   const [accountText, setAccountText] = useState<string | null>('');
   const [isEditAccount, setIsEditAccount] = useState<boolean>(false);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
@@ -59,15 +74,28 @@ const Accounts = ({setAccount, setAccountPressed}: Props) => {
   const [budget, setBudget] = useState<number | undefined>();
 
   useEffect(() => {
-    const cashBudget = sumTotalBudget(cashData);
-    const accountsBudget = sumTotalBudget(accountsData);
+    const cashBudget = sumTotalBudget(filteredCash);
+    const accountsBudget = sumTotalBudget(filteredAccounts);
     const totalExpenses = sumTotalFunc(expenseData);
 
     setCashBudget(cashBudget);
     setAccountsBudget(accountsBudget);
     setTotalExpenses(totalExpenses);
-  }, [expenseData, accountsData, cashData]);
+  }, [expenseData, filteredAccounts, filteredCash]);
 
+  // Total expenses
+  const totalAssets = Number(cashBudget) + Number(accountsBudget);
+  const total = totalAssets - +totalExpenses;
+
+  // Sort Data
+  const getSortedState = data =>
+    [...data]?.sort((a, b) => parseInt(b.budget) - parseInt(a.budget));
+  const sortedItems = useMemo(() => {
+    if (filteredAccounts) {
+      return getSortedState(filteredAccounts);
+    }
+    return filteredAccounts;
+  }, [filteredAccounts]);
 
   // Set account
   function onAccountsHandler(item) {
@@ -75,20 +103,6 @@ const Accounts = ({setAccount, setAccountPressed}: Props) => {
     setAccountPressed(false);
     setAccount(item === undefined ? null : item);
   }
-
-  const totalAssets = Number(cashBudget) + Number(accountsBudget);
-  const total = totalAssets - +totalExpenses;
-
-
-  // Sort Data
-  const getSortedState = data =>
-    [...data]?.sort((a, b) => parseInt(b.budget) - parseInt(a.budget));
-  const sortedItems = useMemo(() => {
-    if (accountsData) {
-      return getSortedState(accountsData);
-    }
-    return accountsData;
-  }, [accountsData]);
 
   const renderItem = ({item}) => {
     const budgeted = currencyFormatter(+item.budget, {});
@@ -130,7 +144,7 @@ const Accounts = ({setAccount, setAccountPressed}: Props) => {
       <View style={{marginTop: 20}}>
         <Pressable
           style={({pressed}) => pressed && styles.pressed}
-          onPress={() => onAccountsHandler(cashData[0])}>
+          onPress={() => onAccountsHandler(filteredCash[0])}>
           <View style={styles.item}>
             <Text style={{fontSize: 16, fontWeight: 'bold'}}>Cash</Text>
             <Text>{currencyFormatter(cashBudget, {})}</Text>

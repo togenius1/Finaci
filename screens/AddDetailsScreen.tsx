@@ -451,6 +451,8 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
         <Accounts
           setAccount={setAccount}
           setAccountPressed={setAccountPressed}
+          month={+moment(textDate).month()}
+          year={+moment(textDate).year()}
         />
       )}
     </View>
@@ -463,12 +465,8 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
-    // backgroundColor: 'red',
   },
   amount: {
-    // alignItems: 'flex-end',
-    // backgroundColor: 'red',
-
     position: 'absolute',
     bottom: -height / 2,
     right: width / 8,
