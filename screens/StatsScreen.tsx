@@ -21,12 +21,12 @@ const dataTabsObject = {
 const initFromDate = `${moment().year()}-0${moment().month() + 1}-01`;
 const initToDate = moment().format('YYYY-MM-DD');
 
-function HeaderRightComponent({
+const HeaderRightComponent = ({
   indicatorIndex,
   year,
   month,
   setIsModalVisible,
-}: HeaderRight) {
+}: HeaderRight) => {
   const monthName = moment.monthsShort(+month - 1);
 
   return (
@@ -48,7 +48,7 @@ function HeaderRightComponent({
       </Pressable>
     </View>
   );
-}
+};
 
 const StatsScreen = ({navigation}: Props) => {
   // const dispatch = useAppDispatch();
@@ -81,6 +81,10 @@ const StatsScreen = ({navigation}: Props) => {
   useEffect(() => {
     onMonthYearSelectedHandler(moment().month());
   }, []);
+
+  useEffect(() => {
+    setFromToDateExpenseIncomeHandler();
+  }, [year]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -116,16 +120,13 @@ const StatsScreen = ({navigation}: Props) => {
       new Date(d?.date) <= new Date(toDate),
   );
 
-  console.log('expenseData ', expenseData);
-  console.log(filteredDataTabExpense);
-
   // Set Month Year
   function onMonthYearSelectedHandler(time) {
     let fromdate;
     let todate;
     let month;
     const mm = moment().month(time).format('MM');
-    const daysInMonth = moment(moment().format(`YYYY-${mm}`)).daysInMonth();
+    const daysInMonth = moment(moment().format(`${year}-${mm}`)).daysInMonth();
 
     if (indicatorIndex === 1 || indicatorIndex === 2) {
       fromdate = `${year}-01-01`;
