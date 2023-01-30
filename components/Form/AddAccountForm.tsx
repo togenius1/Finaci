@@ -122,7 +122,8 @@ const AddAccountForm = ({
     const findAcc = accountsData?.filter(
       acc =>
         acc?.title === accountText &&
-        +moment(acc?.date).month() === +moment(textDate).month(),
+        +moment(acc?.date).month() === +moment(textDate).month() &&
+        +moment(acc?.date).year() === +moment(textDate).year(),
     );
     // add new account
     // if (accountsData?.length === 0 || findAccTitle === -1) {
@@ -169,7 +170,9 @@ const AddAccountForm = ({
   // Save cash account
   const saveCashHandler = () => {
     const findCash = cashData?.filter(
-      cash => +moment(cash.date).month() === +moment(textDate).month(),
+      cash =>
+        +moment(cash.date).month() === +moment(textDate).month() &&
+        +moment(cash.date).year() === +moment(textDate).year(),
     );
     // Create new Cash Account
     if (findCash?.length <= 0) {

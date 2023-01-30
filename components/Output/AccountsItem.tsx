@@ -22,12 +22,6 @@ import DateTimePicker from 'react-native-modal-datetime-picker';
 
 // CONSTANT
 const {width, height} = Dimensions.get('window');
-let month = moment().month() + 1;
-if (month < 10) {
-  month = +`0${month}`;
-}
-const initFromDate = `${moment().year()}-${month}-01`;
-const initToDate = moment().format('YYYY-MM-DD');
 
 const HeaderRightComponent = ({
   fromDate,
@@ -38,9 +32,10 @@ const HeaderRightComponent = ({
   rightMenuClickedHandler,
   showMonthYearListMenuHandler,
 }: HeaderRightComponentType) => {
-  const m = new Date(toDate).getMonth();
+  const m = moment(fromDate).month();
   const month = moment.monthsShort(m);
-  const year = moment(toDate).year();
+  const year = moment(fromDate).year();
+
   return (
     <View style={styles.headerRightContainer}>
       <Pressable
@@ -71,9 +66,7 @@ const HeaderRightComponent = ({
               fromDateClickedHandler();
             }}>
             <View style={styles.customDate}>
-              <Text style={styles.customDateText}>
-                {moment(fromDate).format('YYYY-MM-DD')}
-              </Text>
+              <Text style={styles.customDateText}>{fromDate}</Text>
             </View>
           </Pressable>
           <Pressable
@@ -82,9 +75,7 @@ const HeaderRightComponent = ({
               toDateClickedHandler();
             }}>
             <View style={styles.customDate}>
-              <Text style={styles.customDateText}>
-                {moment(toDate).format('YYYY-MM-DD')}
-              </Text>
+              <Text style={styles.customDateText}>{toDate}</Text>
             </View>
           </Pressable>
         </>
@@ -104,14 +95,18 @@ const HeaderRightComponent = ({
 };
 
 function AccountsItem({navigation, route}: Props) {
-  const [mode, setMode] = useState<string | null>('date');
-  const [fromDate, setFromDate] = useState<string | null>(initFromDate);
-  const [toDate, setToDate] = useState<string | null>(initToDate);
-  const [year, setYear] = useState<string | null>(String(moment().year()));
-  const [showMonthYearListMenu, setShowMonthYearListMenu] =
-    React.useState<boolean>(false);
-  const [rightMenuClicked, setRightMenuClicked] =
-    React.useState<boolean>(false);
+  const yyyy = `${moment(route?.params?.date).year()}`;
+  const mm = `${moment(route?.params?.date).month()}`;
+  // console.log('mm: ', mm);
+
+  const initFromDate = `${yyyy}-0${mm + 1}-01`;
+  const initToDate = `${yyyy}-0${mm + 1}-${moment().date()}`;
+
+  const [mode, setMode] = useState<string>('date');
+  const [fromDate, setFromDate] = useState<string>(initFromDate);
+  const [toDate, setToDate] = useState<string>(initToDate);
+  const [year, setYear] = useState<string>(yyyy);
+  const [month, setMonth] = useState<string>(mm);
   const [toDateClicked, setToDateClicked] = React.useState<boolean>(false);
   const [isDatePickerVisible, setDatePickerVisibility] =
     React.useState<boolean>(false);
@@ -139,8 +134,8 @@ function AccountsItem({navigation, route}: Props) {
   );
 
   useEffect(() => {
-    onMonthYearSelectedHandler(String(moment().month()));
-  }, []);
+    onMonthYearSelectedHandler(mm);
+  }, [year]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -238,7 +233,7 @@ function AccountsItem({navigation, route}: Props) {
   function onMonthYearSelectedHandler(time: string): void {
     let fromdate;
     let todate;
-    // let month;
+    let month;
     const mm = moment().month(time).format('MM');
     const daysInMonth = moment(moment().format(`YYYY-${mm}`)).daysInMonth();
 
@@ -253,7 +248,7 @@ function AccountsItem({navigation, route}: Props) {
 
     setFromDate(fromdate);
     setToDate(todate);
-    setShowMonthYearListMenu(false);
+    setMonth(month);
     setIsModalVisible(false);
   }
 
@@ -263,7 +258,7 @@ function AccountsItem({navigation, route}: Props) {
 
   function customClickedHandler(): void {
     setShowCustomDate(true);
-    setRightMenuClicked(false);
+    // setRightMenuClicked(false);
     setIsMenuOpen(false);
   }
 
@@ -272,7 +267,7 @@ function AccountsItem({navigation, route}: Props) {
     setToDate(initToDate);
 
     setShowCustomDate(false);
-    setRightMenuClicked(false);
+    // setRightMenuClicked(false);
     setIsMenuOpen(false);
   }
 
@@ -443,7 +438,7 @@ function AccountsItem({navigation, route}: Props) {
       <MonthYearList
         monthlyPressed={false}
         onMYSelectedHandler={onMonthYearSelectedHandler}
-        year={year}
+        year={+year}
         setYear={setYear}
         month={month}
         setIsModalVisible={setIsModalVisible}

@@ -57,30 +57,18 @@ const AccountElement = ({
   const removeAccountHandler = (accountId: string) => {
     const id = accountId?.split('-');
     if (id[0] === 'cash') {
-      const findCash = cashData?.filter(cash => cash?.id === accountId);
-      if (findCash?.length > 0) {
-        dispatch(
-          cashAccountsActions.deleteCashAccount({
-            accountId,
-          }),
-        );
-      } else {
-        Alert.alert('Account Warning!', 'The account cannot be removed.');
-      }
+      dispatch(
+        cashAccountsActions.deleteCashAccount({
+          accountId,
+        }),
+      );
     } else {
-      const findAcc = accountsData?.filter(acc => acc?.id === accountId);
-      if (findAcc?.length > 0) {
-        dispatch(
-          accountActions.deleteAccount({
-            accountId,
-          }),
-        );
-      } else {
-        Alert.alert('Account Warning!', 'The account cannot be removed.');
-      }
+      dispatch(
+        accountActions.deleteAccount({
+          accountId,
+        }),
+      );
     }
-
-    // setRemoveAccount(false);
   };
 
   const renderItem = ({item}) => {

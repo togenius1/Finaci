@@ -15,10 +15,6 @@ import {AccountNavigationType} from '../types';
 import AccountComponents from '../components/Output/AccountComponents';
 import MonthYearList from '../components/Menu/MonthYearList';
 
-type Props = {
-  navigation: AccountNavigationType;
-};
-
 const {width, height} = Dimensions.get('window');
 let MONTH = moment().month() + 1;
 if (MONTH < 10) {
@@ -33,7 +29,7 @@ const HeaderRightComponent = ({
   setIsMYListVisible,
   year,
   month,
-}) => {
+}: HeaderRightComponent) => {
   const monthLabel = moment.monthsShort(+month - 1);
 
   return (
@@ -110,7 +106,7 @@ const AccountsScreen = ({navigation}: Props) => {
 
     // const daysInMonth = moment(`YYYY-${mm}-DD`).daysInMonth();
     const daysInMonth = moment(
-      moment().format(`YYYY-${mm}`),
+      moment().format(`${year}-${mm}`),
       'YYYY-MM',
     ).daysInMonth();
     fromdate = moment(`${year}-${mm}-01`).format('YYYY-MM-DD');
@@ -174,8 +170,6 @@ const AccountsScreen = ({navigation}: Props) => {
   );
 };
 
-export default AccountsScreen;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -188,14 +182,14 @@ const styles = StyleSheet.create({
   menu: {
     width: width * 0.45,
     height: height * 0.2,
-    backgroundColor: '#e2a9a9',
+    backgroundColor: 'white',
     borderRadius: 4,
-    borderColor: '#d4d4d4',
+    borderColor: 'black',
 
     shadowOffset: {width: 1, height: 1},
     shadowOpacity: 0.5,
     shadowRadius: 2,
-    elevation: 2,
+    elevation: 4,
 
     position: 'absolute',
     right: 0,
@@ -220,3 +214,17 @@ const styles = StyleSheet.create({
     opacity: 0.65,
   },
 });
+
+export default AccountsScreen;
+
+// =========================== TYPE ======================================
+type Props = {
+  navigation: AccountNavigationType;
+};
+
+type HeaderRightComponent = {
+  setIsMenuOpen: (value: boolean) => boolean;
+  setIsMYListVisible: (value: boolean) => boolean;
+  year: number;
+  month: number;
+};

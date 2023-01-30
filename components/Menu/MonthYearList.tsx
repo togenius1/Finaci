@@ -186,8 +186,8 @@ const styles = StyleSheet.create({
   listMenu: {
     flexDirection: 'column',
     justifyContent: 'space-around',
-    width: width * 0.80,
-    height: height * 0.30,
+    width: width * 0.8,
+    height: height * 0.3,
     borderWidth: 0.8,
     backgroundColor: '#ffffff',
     borderRadius: 5,

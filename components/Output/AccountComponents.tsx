@@ -22,7 +22,7 @@ const AccountComponents = ({
   setIsModalVisible,
   navigation,
   month,
-  year
+  year,
 }: Props) => {
   // const dispatch = useAppDispatch();
   const expenseData = useAppSelector(
@@ -44,7 +44,7 @@ const AccountComponents = ({
   const [accountsBudget, setAccountsBudget] = useState<number | undefined>();
   const [totalExpenses, setTotalExpenses] = useState<number | undefined>();
   const [addAccPressed, setAddAccPressed] = useState<boolean>(false);
-  const [budget, setBudget] = useState<number | undefined>();
+  const [budget, setBudget] = useState<number>();
 
   useEffect(() => {
     const cashBudget = sumTotalBudget(cashData);
@@ -56,21 +56,18 @@ const AccountComponents = ({
     setTotalExpenses(totalExpenses);
   }, [totalExpenses, accountsBudget, cashBudget]);
 
-  function onNavigate(item) {
-    navigation.navigate('AccountsItem', {
-      account: item.title,
-      accountId: item.id,
-    });
-  }
-
   // Filtered Accounts data
   const filteredAccountsData = accountsData?.filter(
-    account => +moment(account.date).month() + 1 === +month,
+    account =>
+      +moment(account?.date).month() + 1 === +month &&
+      +moment(account?.date).year() === year,
   );
 
   // Filtered Cash data
   const filteredCashData = cashData?.filter(
-    account => +moment(account.date).month() + 1 === +month,
+    account =>
+      +moment(account?.date).month() + 1 === +month &&
+      +moment(account?.date).year() === year,
   );
 
   // Sort Data
@@ -82,6 +79,15 @@ const AccountComponents = ({
     }
     return filteredAccountsData;
   }, [filteredAccountsData]);
+
+  // Navigation
+  function onNavigate(item) {
+    navigation.navigate('AccountsItem', {
+      account: item.title,
+      accountId: item.id,
+      date: item.date,
+    });
+  }
 
   return (
     <>
@@ -137,5 +143,6 @@ type Props = {
   navigation: AccountNavigationType;
   isModalVisible: boolean;
   month: number;
+  year: number;
   setIsModalVisible: (value: boolean) => void;
 };
