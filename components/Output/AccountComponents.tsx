@@ -44,7 +44,7 @@ const AccountComponents = ({
   const [accountsBudget, setAccountsBudget] = useState<number | undefined>();
   const [totalExpenses, setTotalExpenses] = useState<number | undefined>();
   const [addAccPressed, setAddAccPressed] = useState<boolean>(false);
-  const [budget, setBudget] = useState<number>();
+  const [budget, setBudget] = useState<number>(0);
 
   useEffect(() => {
     const cashBudget = sumTotalBudget(cashData);

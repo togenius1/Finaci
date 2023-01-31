@@ -6,6 +6,7 @@ import {
   TextInput,
   Pressable,
   Dimensions,
+  Alert,
 } from 'react-native';
 import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
 import moment from 'moment';
@@ -17,12 +18,13 @@ import {CategoryType} from '../../models/category';
 import {expenseCategoriesActions} from '../../store/expense-category-slice';
 import {incomeCategoriesActions} from '../../store/income-category-slice';
 
+// Constants
 const {width, height} = Dimensions.get('window');
 
 const Category = ({setCategoryPressed, setCategory, type}: Props) => {
-  const [categoryText, setCategoryText] = useState<string | null>('');
+  const [categoryText, setCategoryText] = useState<string>('');
   const [filterData, setFilterData] = useState<any[]>();
-  const [addedCategory, setAddedCategory] = useState<boolean>(false);
+  // const [addedCategory, setAddedCategory] = useState<boolean>(false);
 
   const dispatch = useAppDispatch();
   const dataLoaded = useAppSelector(store => store);
@@ -37,30 +39,16 @@ const Category = ({setCategoryPressed, setCategory, type}: Props) => {
 
   useEffect(() => {
     setFilterData(categoryData);
-  }, []);
+    searchFilterHandler(categoryText);
+  }, [categoryData]);
 
-  useEffect(() => {}, [addedCategory]);
-
-  const renderItem = ({item}) => {
-    return (
-      <View>
-        <Pressable
-          key={item.title + uuidv4()}
-          style={({pressed}) => pressed && styles.pressed}
-          onPress={() => categoryHandler(item)}>
-          <View style={styles.item}>
-            <Text>{item.title}</Text>
-          </View>
-        </Pressable>
-      </View>
-    );
-  };
-
+  // Category
   function categoryHandler(item) {
     setCategory(item);
     setCategoryPressed(false);
   }
 
+  // Add a category
   function addCategoryHandler() {
     const findCategory = categoryData?.filter(
       cate => cate.title === categoryText,
@@ -90,7 +78,7 @@ const Category = ({setCategoryPressed, setCategory, type}: Props) => {
     }
   }
 
-  function searchFilterHandler(text) {
+  function searchFilterHandler(text: string) {
     if (text) {
       const newData = categoryData?.filter(item => {
         const itemData = item.title
@@ -104,6 +92,66 @@ const Category = ({setCategoryPressed, setCategory, type}: Props) => {
       setFilterData(categoryData);
     }
   }
+
+  // Remove category
+  const removeCategoryHandler = (id: string) => {
+    dispatch(
+      expenseCategoriesActions.deleteExpenseCategories({
+        id,
+      }),
+    );
+  };
+
+  // Edit category
+  const editCategoryHandler = (id: string) => {
+    console.log('Edit: ', id);
+  };
+
+  // Render Item
+  const renderItem = ({item}) => {
+    return (
+      <View>
+        <Pressable
+          key={item.title + uuidv4()}
+          style={({pressed}) => pressed && styles.pressed}
+          onPress={() => categoryHandler(item)}
+          onLongPress={() =>
+            Alert.alert(
+              'Edit or Delete?',
+              'You can Edit or remove the account.',
+              [
+                // {
+                //   text: 'Edit',
+                //   onPress: () => editCategoryHandler(item?.id),
+                //   // style: 'cancel',
+                // },
+                {
+                  text: 'Delete',
+                  onPress: () => removeCategoryHandler(item?.id),
+                  // style: 'destructive',
+                },
+                {
+                  text: 'Cancel',
+                  // onPress: () => editAccountPressedHandler(item?.id),
+                  style: 'cancel',
+                },
+              ],
+              {
+                cancelable: true,
+                // onDismiss: () =>
+                //   Alert.alert(
+                //     'This alert was dismissed by tapping outside of the alert dialog.',
+                //   ),
+              },
+            )
+          }>
+          <View style={styles.item}>
+            <Text>{item.title}</Text>
+          </View>
+        </Pressable>
+      </View>
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -191,7 +239,7 @@ const styles = StyleSheet.create({
 
 export default Category;
 
-// ============================ TYPE =====================================
+//============================ TYPE =====================================
 type Dispatcher<S> = Dispatch<SetStateAction<S>>;
 
 type Props = {

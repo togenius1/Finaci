@@ -110,7 +110,6 @@ const AccountElement = ({
                 },
                 {
                   text: 'Cancel',
-                  // onPress: () => editAccountPressedHandler(item?.id),
                   style: 'cancel',
                 },
               ],

@@ -42,13 +42,14 @@ const AddAccountForm = ({
   year,
 }: Props) => {
   //
+
   const dispatch = useAppDispatch();
   const dataLoaded = useAppSelector(store => store);
 
   const accountsData = dataLoaded?.accounts?.accounts;
   const cashData = dataLoaded?.cashAccounts?.cashAccounts;
 
-  // const [budget, setBudget] = useState<number | undefined>(0);
+  // const [BUDGET, setBUDGET] = useState<number>(budget);
   const [filteredData, setFilteredData] = useState<any[]>();
   // const [addAccPressed, setAddAccPressed] = useState<boolean>(false);
   const [selectedCash, setSelectedCash] = useState<boolean>(false);
@@ -65,33 +66,21 @@ const AddAccountForm = ({
     moment().format('YYYY-MM-DD HH:mm:ss'),
   );
 
+  // useEffect
   useEffect(() => {
     setFilteredData(accountsData);
   }, []);
 
   useEffect(() => {
+    // setFilteredData(accountsData);
+    searchFilterHandler(accountText);
+  }, [accountText]);
+
+  useEffect(() => {
     searchFilterHandler(accountText);
   }, [savedAcc]);
 
-  // Filtered data
-  const filteredCashData = cashData?.filter(
-    cash => +moment(cash.date).month() === month - 1,
-  );
-
-  function resetHandler() {
-    // Reset State
-    setIsModalVisible(false);
-    setAddAccPressed(false);
-    setSavedAcc(false);
-    setBudget(0);
-    setAccountText(null);
-  }
-
-  function categoryHandler(item) {
-    setAccountText(item?.title);
-    setAddAccPressed(true);
-  }
-
+  // Search
   function searchFilterHandler(text: string) {
     if (text) {
       const newData = accountsData?.filter(item => {
@@ -105,6 +94,20 @@ const AddAccountForm = ({
     } else {
       setFilteredData(accountsData);
     }
+  }
+
+  function resetHandler() {
+    // Reset State
+    setIsModalVisible(false);
+    setAddAccPressed(false);
+    setSavedAcc(false);
+    setBudget(0);
+    setAccountText(null);
+  }
+
+  function categoryHandler(item) {
+    setAccountText(item?.title);
+    setAddAccPressed(true);
   }
 
   const addAccHandler = () => {
@@ -309,6 +312,8 @@ const AddAccountForm = ({
       // </View>
     );
   };
+
+  console.log('budget: ', budget);
 
   return (
     <Modal
@@ -571,7 +576,7 @@ const styles = StyleSheet.create({
 // =================================== TYPE ==========================================
 type Props = {
   isModalVisible: boolean;
-  accountText: string | null;
+  accountText: string;
   addAccPressed: boolean;
   budget: number;
   isEditAccount: boolean;
