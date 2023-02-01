@@ -25,6 +25,7 @@ const AccountElement = ({
   setAddAccPressed,
   setBudget,
   setIsEditAccount,
+  setIsEditCash,
   cashData,
   accountsData,
   sortedItems,
@@ -44,11 +45,20 @@ const AccountElement = ({
   const totalAssets = Number(cashBudget) + Number(accountsBudget);
   const total = totalAssets - Number(totalExpenses);
 
-  const editAccountPressedHandler = (accId: string) => {
-    const findAcc = accountsData?.filter(acc => acc?.id === accId);
+  const editAccountPressedHandler = (item: string) => {
+    const accType = item?.id.split('-');
+
+    let findAcc;
+    if (accType[0] === 'cash') {
+      findAcc = cashData?.filter(cash => cash?.id === item?.id);
+      setIsEditCash(true);
+    }
+    if (accType[0] === 'account') {
+      findAcc = accountsData?.filter(acc => acc?.id === item?.id);
+      setIsEditAccount(true);
+    }
 
     setIsModalVisible(true);
-    setIsEditAccount(true);
     setAddAccPressed(true);
     setAccountText(findAcc[0]?.title);
     setBudget(findAcc[0]?.budget);
@@ -101,7 +111,7 @@ const AccountElement = ({
               [
                 {
                   text: 'Edit',
-                  onPress: () => editAccountPressedHandler(item?.id),
+                  onPress: () => editAccountPressedHandler(item),
                   // style: 'cancel',
                 },
                 {

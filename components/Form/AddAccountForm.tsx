@@ -1,5 +1,6 @@
 import {
   Alert,
+  ColorValue,
   Dimensions,
   FlatList,
   Modal,
@@ -21,10 +22,10 @@ import {cashAccountsActions} from '../../store/cash-slice';
 import moment from 'moment';
 import DateTimePick from '../UI/DateTimePick';
 
+// Constant
 const {width, height} = Dimensions.get('window');
 const WIDTH = width * 0.9;
 const btnAccCashColor = '#ffe9b9';
-
 const initDate = moment().format('YYYY-MM-DD HH:mm:ss');
 
 const AddAccountForm = ({
@@ -38,6 +39,8 @@ const AddAccountForm = ({
   setBudget,
   isEditAccount,
   setIsEditAccount,
+  isEditCash,
+  setIsEditCash,
   month,
   year,
 }: Props) => {
@@ -49,13 +52,13 @@ const AddAccountForm = ({
   const accountsData = dataLoaded?.accounts?.accounts;
   const cashData = dataLoaded?.cashAccounts?.cashAccounts;
 
-  // const [BUDGET, setBUDGET] = useState<number>(budget);
+  // const [value, setValue] = useState<number>(budget);
   const [filteredData, setFilteredData] = useState<any[]>();
   // const [addAccPressed, setAddAccPressed] = useState<boolean>(false);
   const [selectedCash, setSelectedCash] = useState<boolean>(false);
   const [savedAcc, setSavedAcc] = useState<boolean>(false);
-  const [btnCashColor, setCashBtnColor] = useState<string | undefined>();
-  const [btnAccColor, setAccBtnColor] = useState<string | undefined>(
+  const [btnCashColor, setCashBtnColor] = useState<ColorValue | undefined>();
+  const [btnAccColor, setAccBtnColor] = useState<ColorValue | undefined>(
     btnAccCashColor,
   );
   const [mode, setMode] = useState('date');
@@ -190,7 +193,7 @@ const AddAccountForm = ({
         }),
       );
     } else {
-      if (isEditAccount) {
+      if (isEditCash) {
         // Update Cash Account
         dispatch(
           cashAccountsActions.updateCashAccount({
@@ -201,7 +204,7 @@ const AddAccountForm = ({
             editedDate: textDate,
           }),
         );
-        setIsEditAccount(false);
+        setIsEditCash(false);
       } else {
         // Update Cash Account
         dispatch(
@@ -297,6 +300,141 @@ const AddAccountForm = ({
     );
   };
 
+  // cash btn
+  const CashBtn = () => {
+    return (
+      <Pressable
+        style={({pressed}) => pressed && styles.pressed}
+        onPress={() => cashBtnPressedHandler()}>
+        <View style={[styles.accountBtn, {backgroundColor: btnCashColor}]}>
+          <Text>Cash</Text>
+        </View>
+      </Pressable>
+    );
+  };
+
+  // account btn
+  const AccountBtn = () => {
+    return (
+      <Pressable
+        style={({pressed}) => pressed && styles.pressed}
+        onPress={() => accBtnPressedHandler()}>
+        <View style={[styles.accountBtn, {backgroundColor: btnAccColor}]}>
+          <Text>Accounts</Text>
+        </View>
+      </Pressable>
+    );
+  };
+
+  // cash Input
+  const CashInput = () => {
+    return (
+      <View>
+        <Text
+          style={{
+            fontSize: width * 0.05,
+            fontWeight: '800',
+            marginLeft: 20,
+            marginTop: 20,
+          }}>
+          Cash
+        </Text>
+        <View style={styles.searchContainer}>
+          <TextInput
+            style={styles.textInput}
+            // placeholder="Please enter budget amount."
+            defaultValue={
+              isEditCash ? String(budget) : 'Please enter budget amount.'
+            }
+            keyboardType="numeric"
+            onChangeText={setBudget}
+            value={budget}
+          />
+        </View>
+        <CalendarInput iconSize={width * 0.075} />
+
+        <View
+          style={{
+            alignItems: 'center',
+            marginTop: 25,
+          }}>
+          <Pressable
+            style={({pressed}) => pressed && styles.pressed}
+            onPress={() => saveCashHandler()}>
+            <Text style={styles.save}>save</Text>
+          </Pressable>
+        </View>
+      </View>
+    );
+  };
+
+  // account Input
+  const AccountInput = () => {
+    return (
+      <>
+        <View style={styles.searchContainer}>
+          <TextInput
+            style={styles.textInput}
+            // placeholder="Please enter budget amount."
+            defaultValue={
+              isEditAccount ? String(budget) : 'Please enter budget amount.'
+            }
+            keyboardType="numeric"
+            onChangeText={setBudget}
+            value={budget}
+          />
+        </View>
+
+        <View
+          style={{
+            flexDirection: 'row',
+            marginBottom: 20,
+            marginTop: 10,
+          }}>
+          <CalendarInput iconSize={width * 0.075} />
+        </View>
+
+        <View style={{alignItems: 'center', marginTop: 10}}>
+          <Pressable
+            style={({pressed}) => pressed && styles.pressed}
+            onPress={() => saveAccountHandler()}>
+            <Text style={styles.save}>save</Text>
+          </Pressable>
+        </View>
+      </>
+    );
+  };
+
+  // Search
+  const Search = () => {
+    return (
+      <>
+        <View style={{marginLeft: 20}}>
+          <Text style={{fontWeight: '800', fontSize: height * 0.02}}>
+            Search:
+          </Text>
+        </View>
+
+        <View style={styles.searchContainer}>
+          <TextInput
+            style={styles.textInput}
+            placeholder="search or add category"
+            onChange={event => {
+              searchFilterHandler(event.nativeEvent.text);
+            }}
+            onChangeText={setAccountText}
+            value={addAccPressed ? accountText : filteredData}
+          />
+          <Pressable
+            style={({pressed}) => pressed && styles.pressed}
+            onPress={() => addAccHandler()}>
+            <Text style={styles.add}>add</Text>
+          </Pressable>
+        </View>
+      </>
+    );
+  };
+
   // Render Item
   const renderItem = ({item}) => {
     return (
@@ -337,118 +475,18 @@ const AddAccountForm = ({
               </Pressable>
             </View>
 
+            {/* Cash and account button */}
             <View style={styles.accountsBtn}>
-              <Pressable
-                style={({pressed}) => pressed && styles.pressed}
-                onPress={() => cashBtnPressedHandler()}>
-                <View
-                  style={[styles.accountBtn, {backgroundColor: btnCashColor}]}>
-                  <Text>Cash</Text>
-                </View>
-              </Pressable>
-              <Pressable
-                style={({pressed}) => pressed && styles.pressed}
-                onPress={() => accBtnPressedHandler()}>
-                <View
-                  style={[styles.accountBtn, {backgroundColor: btnAccColor}]}>
-                  <Text>Accounts</Text>
-                </View>
-              </Pressable>
+              <CashBtn />
+              <AccountBtn />
             </View>
 
-            {selectedCash && (
-              <View>
-                <Text
-                  style={{
-                    fontSize: width * 0.05,
-                    fontWeight: '800',
-                    marginLeft: 20,
-                    marginTop: 20,
-                  }}>
-                  Cash
-                </Text>
-                <View style={styles.searchContainer}>
-                  <TextInput
-                    style={styles.textInput}
-                    placeholder="Please Enter budget amount."
-                    keyboardType="numeric"
-                    onChangeText={setBudget}
-                    value={budget}
-                  />
-                </View>
-                <CalendarInput iconSize={width * 0.075} />
+            {/* Cash inputs */}
+            {selectedCash && <CashInput />}
 
-                <View
-                  style={{
-                    alignItems: 'center',
-                    marginTop: 25,
-                  }}>
-                  <Pressable
-                    style={({pressed}) => pressed && styles.pressed}
-                    onPress={() => saveCashHandler()}>
-                    <Text style={styles.save}>save</Text>
-                  </Pressable>
-                </View>
-              </View>
-            )}
-
-            {!selectedCash && (
-              <>
-                <View style={{marginLeft: 20}}>
-                  <Text style={{fontWeight: '800', fontSize: height * 0.02}}>
-                    Search:
-                  </Text>
-                </View>
-
-                <View style={styles.searchContainer}>
-                  <TextInput
-                    style={styles.textInput}
-                    placeholder="search or add category"
-                    onChange={event => {
-                      searchFilterHandler(event.nativeEvent.text);
-                    }}
-                    onChangeText={setAccountText}
-                    value={addAccPressed ? accountText : filteredData}
-                  />
-                  <Pressable
-                    style={({pressed}) => pressed && styles.pressed}
-                    onPress={() => addAccHandler()}>
-                    <Text style={styles.add}>add</Text>
-                  </Pressable>
-                </View>
-              </>
-            )}
-
-            {addAccPressed && !selectedCash && (
-              <>
-                <View style={styles.searchContainer}>
-                  <TextInput
-                    style={styles.textInput}
-                    placeholder="Please enter budget amount."
-                    keyboardType="numeric"
-                    onChangeText={setBudget}
-                    value={budget}
-                  />
-                </View>
-
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    marginBottom: 20,
-                    marginTop: 10,
-                  }}>
-                  <CalendarInput iconSize={width * 0.075} />
-                </View>
-
-                <View style={{alignItems: 'center', marginTop: 10}}>
-                  <Pressable
-                    style={({pressed}) => pressed && styles.pressed}
-                    onPress={() => saveAccountHandler()}>
-                    <Text style={styles.save}>save</Text>
-                  </Pressable>
-                </View>
-              </>
-            )}
+            {/* Account inputs */}
+            {!selectedCash && <Search />}
+            {!selectedCash && addAccPressed && <AccountInput />}
 
             <DateTimePick
               isVisible={isDatePickerVisible}
@@ -481,9 +519,9 @@ export default AddAccountForm;
 const styles = StyleSheet.create({
   container: {
     width: WIDTH,
-    height: height * 0.75,
-    marginHorizontal: 20,
-    marginTop: 100,
+    height: height * 0.8,
+    marginHorizontal: 18,
+    marginTop: height / 7,
 
     shadowOffset: {width: 0.5, height: 0.5},
     shadowOpacity: 0.7,
@@ -580,10 +618,12 @@ type Props = {
   addAccPressed: boolean;
   budget: number;
   isEditAccount: boolean;
+  isEditCash: boolean;
   year: number;
   month: number;
   setBudget: (value: number | undefined) => void;
   setIsEditAccount: (value: boolean) => void;
+  setIsEditCash: (value: boolean) => void;
   setAddAccPressed: (value: boolean) => void;
   setIsModalVisible: (value: boolean) => void;
   setAccountText: (value: string | null) => void;

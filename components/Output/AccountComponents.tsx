@@ -40,11 +40,12 @@ const AccountComponents = ({
 
   const [accountText, setAccountText] = useState<string | null>('');
   const [isEditAccount, setIsEditAccount] = useState<boolean>(false);
+  const [isEditCash, setIsEditCash] = useState<boolean>(false);
   const [cashBudget, setCashBudget] = useState<number | undefined>();
   const [accountsBudget, setAccountsBudget] = useState<number | undefined>();
   const [totalExpenses, setTotalExpenses] = useState<number | undefined>();
   const [addAccPressed, setAddAccPressed] = useState<boolean>(false);
-  const [budget, setBudget] = useState<number>(0);
+  const [budget, setBudget] = useState<number>();
 
   useEffect(() => {
     const cashBudget = sumTotalBudget(cashData);
@@ -100,6 +101,7 @@ const AccountComponents = ({
           addAccPressed={addAccPressed}
           setBudget={setBudget}
           setIsEditAccount={setIsEditAccount}
+          setIsEditCash={setIsEditCash}
           cashData={filteredCashData}
           accountsData={filteredAccountsData}
           sortedItems={sortedItems}
@@ -109,20 +111,24 @@ const AccountComponents = ({
           onPress={onNavigate}
         />
 
-        <AddAccountForm
-          setIsModalVisible={setIsModalVisible}
-          isModalVisible={isModalVisible}
-          setAccountText={setAccountText}
-          accountText={accountText}
-          addAccPressed={addAccPressed}
-          setAddAccPressed={setAddAccPressed}
-          budget={budget}
-          setBudget={setBudget}
-          isEditAccount={isEditAccount}
-          setIsEditAccount={setIsEditAccount}
-          month={month}
-          year={year}
-        />
+        <View style={styles.form}>
+          <AddAccountForm
+            setIsModalVisible={setIsModalVisible}
+            isModalVisible={isModalVisible}
+            setAccountText={setAccountText}
+            accountText={accountText}
+            addAccPressed={addAccPressed}
+            setAddAccPressed={setAddAccPressed}
+            budget={budget}
+            setBudget={setBudget}
+            isEditAccount={isEditAccount}
+            setIsEditAccount={setIsEditAccount}
+            isEditCash={isEditCash}
+            setIsEditCash={setIsEditCash}
+            month={month}
+            year={year}
+          />
+        </View>
       </View>
     </>
   );
@@ -133,6 +139,10 @@ const styles = StyleSheet.create({
     // flex: 1,
     position: 'absolute',
     // backgroundColor: 'red',
+  },
+  form: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 
