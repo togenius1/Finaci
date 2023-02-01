@@ -52,10 +52,12 @@ const AccountElement = ({
     if (accType[0] === 'cash') {
       findAcc = cashData?.filter(cash => cash?.id === item?.id);
       setIsEditCash(true);
+      setIsEditAccount(false);
     }
     if (accType[0] === 'account') {
       findAcc = accountsData?.filter(acc => acc?.id === item?.id);
       setIsEditAccount(true);
+      setIsEditCash(false);
     }
 
     setIsModalVisible(true);

@@ -115,12 +115,16 @@ const AddAccountForm = ({
 
   const addAccHandler = () => {
     setAddAccPressed(true);
+    if (accountText === null) {
+      Alert.alert('Please enter or select an account');
+      return;
+    }
   };
 
   // Save budget to account
   const saveAccountHandler = () => {
-    if (budget <= 0 || accountText === '') {
-      Alert.alert('Category or budget must not be empty!');
+    if (budget <= 0 || accountText === null) {
+      Alert.alert('Please enter a category or budget!');
       return;
     }
 
@@ -326,6 +330,36 @@ const AddAccountForm = ({
     );
   };
 
+  // Search
+  const Search = () => {
+    return (
+      <>
+        <View style={{marginLeft: 20}}>
+          <Text style={{fontWeight: '800', fontSize: height * 0.02}}>
+            Search:
+          </Text>
+        </View>
+
+        <View style={styles.searchContainer}>
+          <TextInput
+            style={styles.textInput}
+            placeholder="search or add category"
+            onChange={event => {
+              searchFilterHandler(event.nativeEvent.text);
+            }}
+            onChangeText={setAccountText}
+            value={addAccPressed ? accountText : filteredData}
+          />
+          <Pressable
+            style={({pressed}) => pressed && styles.pressed}
+            onPress={() => addAccHandler()}>
+            <Text style={styles.add}>add</Text>
+          </Pressable>
+        </View>
+      </>
+    );
+  };
+
   // cash Input
   const CashInput = () => {
     return (
@@ -405,36 +439,6 @@ const AddAccountForm = ({
     );
   };
 
-  // Search
-  const Search = () => {
-    return (
-      <>
-        <View style={{marginLeft: 20}}>
-          <Text style={{fontWeight: '800', fontSize: height * 0.02}}>
-            Search:
-          </Text>
-        </View>
-
-        <View style={styles.searchContainer}>
-          <TextInput
-            style={styles.textInput}
-            placeholder="search or add category"
-            onChange={event => {
-              searchFilterHandler(event.nativeEvent.text);
-            }}
-            onChangeText={setAccountText}
-            value={addAccPressed ? accountText : filteredData}
-          />
-          <Pressable
-            style={({pressed}) => pressed && styles.pressed}
-            onPress={() => addAccHandler()}>
-            <Text style={styles.add}>add</Text>
-          </Pressable>
-        </View>
-      </>
-    );
-  };
-
   // Render Item
   const renderItem = ({item}) => {
     return (
@@ -482,7 +486,7 @@ const AddAccountForm = ({
             </View>
 
             {/* Cash inputs */}
-            {selectedCash && <CashInput />}
+            {(selectedCash || isEditCash) && <CashInput />}
 
             {/* Account inputs */}
             {!selectedCash && <Search />}
