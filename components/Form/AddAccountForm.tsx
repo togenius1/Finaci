@@ -344,10 +344,10 @@ const AddAccountForm = ({
           <TextInput
             style={styles.textInput}
             placeholder="search or add category"
-            onChange={event => {
-              searchFilterHandler(event.nativeEvent.text);
-            }}
-            onChangeText={setAccountText}
+            // onChange={event => {
+            //   searchFilterHandler(event.nativeEvent.text);
+            // }}
+            // onEndEditing={() => setAccountText}
             value={addAccPressed ? accountText : filteredData}
           />
           <Pressable
@@ -376,13 +376,11 @@ const AddAccountForm = ({
         <View style={styles.searchContainer}>
           <TextInput
             style={styles.textInput}
-            // placeholder="Please enter budget amount."
-            defaultValue={
-              isEditCash ? String(budget) : 'Please enter budget amount.'
-            }
+            placeholder="Please enter budget amount."
             keyboardType="numeric"
-            onChangeText={setBudget}
+            defaultValue={String(budget)}
             value={budget}
+            onChangeText={() => setBudget}
           />
         </View>
         <CalendarInput iconSize={width * 0.075} />
@@ -409,13 +407,11 @@ const AddAccountForm = ({
         <View style={styles.searchContainer}>
           <TextInput
             style={styles.textInput}
-            // placeholder="Please enter budget amount."
-            defaultValue={
-              isEditAccount ? String(budget) : 'Please enter budget amount.'
-            }
+            placeholder="Please enter budget amount."
             keyboardType="numeric"
-            onChangeText={setBudget}
+            defaultValue={String(budget)}
             value={budget}
+            onChangeText={() => setBudget}
           />
         </View>
 
@@ -486,7 +482,7 @@ const AddAccountForm = ({
             </View>
 
             {/* Cash inputs */}
-            {(selectedCash || isEditCash) && <CashInput />}
+            {selectedCash && <CashInput />}
 
             {/* Account inputs */}
             {!selectedCash && <Search />}

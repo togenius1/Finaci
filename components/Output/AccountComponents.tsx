@@ -37,7 +37,7 @@ const AccountComponents = ({
     state => state.accounts.accounts,
     // shallowEqual,
   );
-
+0
   const [accountText, setAccountText] = useState<string | null>('');
   const [isEditAccount, setIsEditAccount] = useState<boolean>(false);
   const [isEditCash, setIsEditCash] = useState<boolean>(false);

@@ -52,15 +52,14 @@ const AccountElement = ({
     if (accType[0] === 'cash') {
       findAcc = cashData?.filter(cash => cash?.id === item?.id);
       setIsEditCash(true);
-      setIsEditAccount(false);
     }
     if (accType[0] === 'account') {
       findAcc = accountsData?.filter(acc => acc?.id === item?.id);
       setIsEditAccount(true);
-      setIsEditCash(false);
     }
 
     setIsModalVisible(true);
+
     setAddAccPressed(true);
     setAccountText(findAcc[0]?.title);
     setBudget(findAcc[0]?.budget);
@@ -223,6 +222,7 @@ type Props = {
   setAddAccPressed: (value: boolean) => void;
   setBudget: (value: number) => void;
   setIsEditAccount: (value: boolean) => void;
+  setIsEditCash: (value: boolean) => void;
   setRemoveAccount: (value: boolean) => void;
   cashData: any[];
   accountsData: any[];
