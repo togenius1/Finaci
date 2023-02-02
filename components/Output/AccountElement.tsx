@@ -33,6 +33,7 @@ const AccountElement = ({
   accountsBudget,
   totalExpenses,
   onPress,
+  setLastEditedDate,
 }: Props) => {
   const dispatch = useAppDispatch();
 
@@ -51,18 +52,19 @@ const AccountElement = ({
     let findAcc;
     if (accType[0] === 'cash') {
       findAcc = cashData?.filter(cash => cash?.id === item?.id);
+      setAccountText('');
       setIsEditCash(true);
     }
     if (accType[0] === 'account') {
       findAcc = accountsData?.filter(acc => acc?.id === item?.id);
+      setAccountText(findAcc[0]?.title);
       setIsEditAccount(true);
     }
 
-    setIsModalVisible(true);
-
-    setAddAccPressed(true);
-    setAccountText(findAcc[0]?.title);
     setBudget(findAcc[0]?.budget);
+    setLastEditedDate(item?.editedDate);
+    setIsModalVisible(true);
+    setAddAccPressed(true);
   };
 
   const removeAccountHandler = (accountId: string) => {

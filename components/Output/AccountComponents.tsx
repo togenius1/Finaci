@@ -37,7 +37,7 @@ const AccountComponents = ({
     state => state.accounts.accounts,
     // shallowEqual,
   );
-0
+  0;
   const [accountText, setAccountText] = useState<string | null>('');
   const [isEditAccount, setIsEditAccount] = useState<boolean>(false);
   const [isEditCash, setIsEditCash] = useState<boolean>(false);
@@ -45,7 +45,8 @@ const AccountComponents = ({
   const [accountsBudget, setAccountsBudget] = useState<number | undefined>();
   const [totalExpenses, setTotalExpenses] = useState<number | undefined>();
   const [addAccPressed, setAddAccPressed] = useState<boolean>(false);
-  const [budget, setBudget] = useState<number>();
+  const [budget, setBudget] = useState<number | undefined>();
+  const [lastEditedDate, setLastEditedDate] = useState<string>();
 
   useEffect(() => {
     const cashBudget = sumTotalBudget(cashData);
@@ -109,6 +110,7 @@ const AccountComponents = ({
           accountsBudget={accountsBudget}
           totalExpenses={totalExpenses}
           onPress={onNavigate}
+          setLastEditedDate={setLastEditedDate}
         />
 
         <View style={styles.form}>
@@ -127,6 +129,7 @@ const AccountComponents = ({
             setIsEditCash={setIsEditCash}
             month={month}
             year={year}
+            lastEditedDate={lastEditedDate}
           />
         </View>
       </View>
