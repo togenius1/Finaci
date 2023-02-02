@@ -83,7 +83,7 @@ const AddAccountForm = ({
     searchFilterHandler(accountText);
   }, [savedAcc]);
 
-  // Search
+  // Search Filtered Data
   function searchFilterHandler(text: string) {
     if (text) {
       const newData = accountsData?.filter(item => {
@@ -99,6 +99,7 @@ const AddAccountForm = ({
     }
   }
 
+  // Reset
   function resetHandler() {
     // Reset State
     setIsModalVisible(false);
@@ -330,36 +331,6 @@ const AddAccountForm = ({
     );
   };
 
-  // Search
-  const Search = () => {
-    return (
-      <>
-        <View style={{marginLeft: 20}}>
-          <Text style={{fontWeight: '800', fontSize: height * 0.02}}>
-            Search:
-          </Text>
-        </View>
-
-        <View style={styles.searchContainer}>
-          <TextInput
-            style={styles.textInput}
-            placeholder="search or add category"
-            // onChange={event => {
-            //   searchFilterHandler(event.nativeEvent.text);
-            // }}
-            // onEndEditing={() => setAccountText}
-            value={addAccPressed ? accountText : filteredData}
-          />
-          <Pressable
-            style={({pressed}) => pressed && styles.pressed}
-            onPress={() => addAccHandler()}>
-            <Text style={styles.add}>add</Text>
-          </Pressable>
-        </View>
-      </>
-    );
-  };
-
   // cash Input
   const CashInput = () => {
     return (
@@ -451,7 +422,7 @@ const AddAccountForm = ({
     );
   };
 
-  console.log('budget: ', budget);
+  // console.log('budget: ', budget);
 
   return (
     <Modal
@@ -485,7 +456,29 @@ const AddAccountForm = ({
             {selectedCash && <CashInput />}
 
             {/* Account inputs */}
-            {!selectedCash && <Search />}
+            <>
+              <View style={{marginLeft: 20}}>
+                <Text style={{fontWeight: '800', fontSize: height * 0.02}}>
+                  Search:
+                </Text>
+              </View>
+              <View style={styles.searchContainer}>
+                <TextInput
+                  style={styles.textInput}
+                  placeholder="search or add category"
+                  onChange={event => {
+                    searchFilterHandler(event.nativeEvent.text);
+                  }}
+                  onChangeText={() => setAccountText}
+                  value={addAccPressed ? accountText : filteredData}
+                />
+                <Pressable
+                  style={({pressed}) => pressed && styles.pressed}
+                  onPress={() => addAccHandler()}>
+                  <Text style={styles.add}>add</Text>
+                </Pressable>
+              </View>
+            </>
             {!selectedCash && addAccPressed && <AccountInput />}
 
             <DateTimePick
