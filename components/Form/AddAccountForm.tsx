@@ -91,6 +91,15 @@ const AddAccountForm = ({
     searchFilterHandler(accountText);
   }, [savedAcc]);
 
+  useEffect(() => {
+    if (isEditAccount) {
+      accBtnPressedHandler();
+    }
+    if (isEditCash) {
+      cashBtnPressedHandler();
+    }
+  }, [isEditCash, isEditAccount]);
+
   // Search Filtered Data
   function searchFilterHandler(text: string) {
     if (text) {
