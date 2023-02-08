@@ -18,7 +18,8 @@ const dataTabsObject = {
   income: 'Income',
 };
 
-const initFromDate = `${moment().year()}-0${moment().month() + 1}-01`;
+// const initFromDate = `${moment().year()}-${moment().month() + 1}-01`;
+const initFromDate = moment().startOf('year').format('YYYY-MM-DD');
 const initToDate = moment().format('YYYY-MM-DD');
 
 const HeaderRightComponent = ({
@@ -58,7 +59,7 @@ const StatsScreen = ({navigation}: Props) => {
   const expenseData = dataLoaded?.expenses?.expenses;
   const monthlyTransactsData = dataLoaded?.monthlyTransacts?.monthlyTransacts;
 
-  const [fromDate, setFromDate] = useState<string | null>(initFromDate);
+  const [fromDate, setFromDate] = useState<string | null>();
   const [toDate, setToDate] = useState<string | null>(initToDate);
   const [indicatorIndex, setIndicatorIndex] = useState<number | undefined>(0);
   const [year, setYear] = useState<number>(moment().year());
@@ -125,18 +126,19 @@ const StatsScreen = ({navigation}: Props) => {
     let fromdate;
     let todate;
     let month;
-    const mm = moment().month(time).format('MM');
+
+    const mm = +moment().month(time).format('MM');
     const daysInMonth = moment(moment().format(`${year}-${mm}`)).daysInMonth();
 
     if (indicatorIndex === 1 || indicatorIndex === 2) {
-      fromdate = `${year}-01-01`;
-      todate = `${year}-12-31`;
+      fromdate = moment(`${year}-01-01`).format('YYYY-MM-DD');
+      todate = moment(`${year}-12-31`).format('YYYY-MM-DD');
       month = moment().month() + 1;
       setYear(time);
     }
     if (indicatorIndex === 0) {
-      fromdate = `${year}-${mm}-01`;
-      todate = `${year}-${mm}-${daysInMonth}`;
+      fromdate = moment(`${year}-${mm}-01`).format('YYYY-MM-DD');
+      todate = moment(`${year}-${mm}-${daysInMonth}`).format('YYYY-MM-DD');
       month = moment(fromdate).month() + 1;
     }
 
@@ -148,11 +150,11 @@ const StatsScreen = ({navigation}: Props) => {
 
   function setFromToDateExpenseIncomeHandler() {
     if (year === moment().year()) {
-      setFromDate(moment().format(`${year}-01-01`));
-      setToDate(moment().format(`${year}-MM-DD`));
+      setFromDate(moment(`${year}-01-01`).format('YYYY-MM-DD'));
+      setToDate(moment(`${year}-MM-DD`).format('YYYY-MM-DD'));
     } else {
-      setFromDate(moment().format(`${year}-01-01`));
-      setToDate(moment().format(`${year}-12-31`));
+      setFromDate(moment(`${year}-01-01`).format('YYYY-MM-DD'));
+      setToDate(moment(`${year}-12-31`).format('YYYY-MM-DD'));
     }
   }
 

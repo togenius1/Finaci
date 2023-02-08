@@ -12,14 +12,18 @@ const TimeLineTab = ({data, fromDate, toDate}: Props) => {
   // const dispatch = useAppDispatch();
   const dataLoaded = useAppSelector(store => store);
 
+  const accountData = dataLoaded?.accounts?.accounts;
+
   const sumExpenseByEachAccount = sumEachAccountId(data);
 
-  const accountsFiltered = dataLoaded?.accounts?.accounts?.filter(account => {
+  const accountsFiltered = accountData?.filter(account => {
     const findItem = sumExpenseByEachAccount?.find(
       sum => sum.accountId === account?.id,
     );
     return findItem;
   });
+
+  console.log('accountData: ', accountData);
 
   const mergeObj = accountsFiltered?.map(acc => {
     const Obj = sumExpenseByEachAccount?.find(sum => sum.accountId === acc.id);
