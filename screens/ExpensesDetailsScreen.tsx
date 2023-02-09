@@ -10,11 +10,6 @@ import {
   ExpensesDetailsRouteProp,
 } from '../types';
 
-type Props = {
-  navigation: ExpensesDetailsNavigationProp;
-  route: ExpensesDetailsRouteProp;
-};
-
 // const {width, height} = Dimensions.get('window');
 
 const ExpensesDetailsScreen = ({route, navigation}: Props) => {
@@ -93,3 +88,9 @@ const ExpensesDetailsScreen = ({route, navigation}: Props) => {
 export default ExpensesDetailsScreen;
 
 // const styles = StyleSheet.create({});
+
+// ============================== TYPE ===================================
+type Props = {
+  navigation: ExpensesDetailsNavigationProp;
+  route: ExpensesDetailsRouteProp;
+};

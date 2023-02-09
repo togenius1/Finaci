@@ -6,7 +6,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import moment, {duration} from 'moment';
+import moment from 'moment';
 import {useInterstitialAd, TestIds} from 'react-native-google-mobile-ads';
 // import {useNavigation} from '@react-navigation/native';
 
@@ -14,28 +14,6 @@ import TransactionSummary from './TransactionSummary';
 import Tabs from '../UI/Tabs';
 import {IncomeType} from '../../models/income';
 import {ExpenseType} from '../../models/expense';
-
-type Dispatcher<S> = Dispatch<SetStateAction<S>>;
-
-type Props = {
-  expenseData: ExpenseType | undefined;
-  incomeData: IncomeType | undefined;
-  setDuration: Dispatcher<string | null>;
-  setFromDate: Dispatcher<string | null>;
-  setToDate: Dispatcher<string | null>;
-  setMonthlyPressed: Dispatcher<boolean>;
-  setWeeklyPressed: Dispatcher<boolean>;
-  setDailyPressed: Dispatcher<boolean>;
-  setCustomPressed: Dispatcher<boolean>;
-  fromDate: string;
-  toDate: string;
-  monthlyPressed: boolean;
-  weeklyPressed: boolean;
-  dailyPressed: boolean;
-  customPressed: boolean;
-  year: string;
-  month: string;
-};
 
 const {width} = Dimensions.get('window');
 
@@ -291,3 +269,24 @@ const styles = StyleSheet.create({
     opacity: 0.75,
   },
 });
+
+//============================= TYPE ===================================
+type Dispatcher<S> = Dispatch<SetStateAction<S>>;
+
+type Props = {
+  setDuration: Dispatch<SetStateAction<string | null | undefined>>;
+  setFromDate: Dispatch<React.SetStateAction<string | null>>;
+  setToDate: Dispatcher<string | null>;
+  setMonthlyPressed: Dispatch<SetStateAction<boolean>>;
+  setWeeklyPressed: Dispatch<SetStateAction<boolean>>;
+  setDailyPressed: Dispatch<SetStateAction<boolean>>;
+  setCustomPressed: Dispatch<SetStateAction<boolean>>;
+  fromDate: string | null;
+  toDate: string | null;
+  monthlyPressed: boolean;
+  weeklyPressed: boolean;
+  dailyPressed: boolean;
+  customPressed: boolean;
+  year: string;
+  month: string;
+};

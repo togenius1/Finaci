@@ -6,7 +6,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {v4 as uuidv4} from 'uuid';
 import moment from 'moment';
 // import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -19,36 +19,9 @@ import {useNavigation} from '@react-navigation/native';
 import {TransactionSummaryNavigationProp} from '../../types';
 import {useAppSelector} from '../../hooks';
 
-type Props = {
-  monthlyPressed: boolean;
-  weeklyPressed: boolean;
-  dailyPressed: boolean;
-  customPressed: boolean;
-  fromDate: string | null;
-  toDate: string | null;
-  exportPressed: boolean;
-  year: string | null;
-};
-
-interface HeaderSummaryType {
-  total: number;
-  totalIncome: number;
-  totalExpenses: number;
-}
-
-export interface DailyItemType {
-  incomeAmount: number;
-  expenseAmount: number;
-  day: number;
-  dayLabel: string;
-  monthLabel: string;
-  year: number;
-  time: string;
-  navigation: TransactionSummaryNavigationProp;
-}
-
 const {width} = Dimensions.get('window');
 
+// Header
 function HeaderSummary({total, totalIncome, totalExpenses}: HeaderSummaryType) {
   return (
     <View style={styles.assetsContainer}>
@@ -279,6 +252,7 @@ const DailyItem = ({
   );
 };
 
+// Main function
 const TransactionSummary = ({
   monthlyPressed,
   weeklyPressed,
@@ -298,13 +272,17 @@ const TransactionSummary = ({
 
   const dataLoaded = useAppSelector(store => store);
 
+  const ExpenseData = dataLoaded?.expenses?.expenses;
+  const IncomeData = dataLoaded?.incomes?.incomes;
+  const DailyTransactionData = dataLoaded?.dailyTransacts?.dailyTransacts;
+
   // FILTERED DATA (From date ----> To date)
-  const selectedDurationExpenseData = dataLoaded?.expenses?.expenses?.filter(
+  const selectedDurationExpenseData = ExpenseData?.filter(
     expense =>
       moment(expense.date).format('YYYY-MM-DD') >= fromDate &&
       moment(expense.date).format('YYYY-MM-DD') <= toDate,
   );
-  const selectedDurationIncomeData = dataLoaded?.incomes?.incomes.filter(
+  const selectedDurationIncomeData = IncomeData?.filter(
     income =>
       moment(income.date).format('YYYY-MM-DD') >= fromDate &&
       moment(income.date).format('YYYY-MM-DD') <= toDate,
@@ -329,7 +307,7 @@ const TransactionSummary = ({
 
   // Combine data and sum by date
   // const dailyData = dailyTransaction(String(fromDate), String(toDate), date);
-  const dailyData = dataLoaded?.dailyTransacts?.dailyTransacts.filter(
+  const dailyData = DailyTransactionData?.filter(
     transact =>
       moment(transact?.date).format('YYYY-MM-DD') >= fromDate &&
       moment(transact?.date).format('YYYY-MM-DD') <= toDate,
@@ -353,15 +331,19 @@ const TransactionSummary = ({
     _renderData = dailyData;
   }
 
-  //sort Data
-  _renderData?.sort((a: any, b: any) => {
-    const dateA = new Date(moment(a.date).format('YYYY-MM-DD HH:mm:ss'));
-    const dateB = new Date(moment(b.date).format('YYYY-MM-DD HH:mm:ss'));
-    if (dateA > dateB) {
-      return -1; // return -1 here for DESC order
+  // Sort Data
+  const getSortedState = data =>
+    [...data]?.sort(
+      (a, b) =>
+        parseInt(moment(b.date).format('YYYY-MM-DD HH:mm:ss')) -
+        parseInt(moment(a.date).format('YYYY-MM-DD HH:mm:ss')),
+    );
+  const sortedItems = useMemo(() => {
+    if (_renderData) {
+      return getSortedState(_renderData);
     }
-    return 1; // return 1 here for DESC Order
-  });
+    return _renderData;
+  }, [_renderData]);
 
   // daily renderItem
   function DailyRenderItem({item}) {
@@ -411,7 +393,7 @@ const TransactionSummary = ({
       {!exportPressed && (
         <FlatList
           keyExtractor={item => item + uuidv4()}
-          data={_renderData}
+          data={sortedItems}
           renderItem={_renderItem}
           bounces={false}
         />
@@ -490,3 +472,32 @@ const styles = StyleSheet.create({
     opacity: 0.65,
   },
 });
+
+// ============================= TYPE and INTERFACE ====================================
+type Props = {
+  monthlyPressed: boolean;
+  weeklyPressed: boolean;
+  dailyPressed: boolean;
+  customPressed: boolean;
+  fromDate: string | null;
+  toDate: string | null;
+  exportPressed: boolean;
+  year: string | null;
+};
+
+interface HeaderSummaryType {
+  total: number;
+  totalIncome: number;
+  totalExpenses: number;
+}
+
+export interface DailyItemType {
+  incomeAmount: number;
+  expenseAmount: number;
+  day: number;
+  dayLabel: string;
+  monthLabel: string;
+  year: number;
+  time: string;
+  navigation: TransactionSummaryNavigationProp;
+}

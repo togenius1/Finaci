@@ -15,10 +15,6 @@ import TransactionOutput from '../components/Output/TransactionOutput';
 import MonthYearList from '../components/Menu/MonthYearList';
 import {TransactionNavigationProp} from '../types';
 
-type Props = {
-  navigation: TransactionNavigationProp;
-};
-
 const {width} = Dimensions.get('window');
 
 const initialStartDate = moment(`${moment().year()}-01-01`).format(
@@ -38,11 +34,11 @@ const TransactionsScreen = ({navigation}: Props) => {
   const [dailyPressed, setDailyPressed] = useState<boolean>(false);
   const [customPressed, setCustomPressed] = useState<boolean>(false);
   const [duration, setDuration] = useState<string | null>();
-  const [month, setMonth] = useState<string | null>();
-  const [year, setYear] = useState<string | null>(String(moment().year()));
+  const [month, setMonth] = useState<string>('');
+  const [year, setYear] = useState<string>(moment().year());
   const [isDatePickerVisible, setDatePickerVisibility] =
     useState<boolean>(false);
-  const [mode, setMode] = useState<string | null>('date');
+  const [mode, setMode] = useState<string>('date');
   const [fromDateClicked, setFromDateClicked] = useState<boolean>(false);
   const [toDateClicked, setToDateClicked] = useState<boolean>(false);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
@@ -204,9 +200,9 @@ const TransactionsScreen = ({navigation}: Props) => {
       <TransactionOutput
         setDuration={setDuration}
         setFromDate={setFromDate}
-        fromDate={String(fromDate)}
+        fromDate={fromDate}
         setToDate={setToDate}
-        toDate={String(toDate)}
+        toDate={toDate}
         monthlyPressed={monthlyPressed}
         setMonthlyPressed={setMonthlyPressed}
         weeklyPressed={weeklyPressed}
@@ -256,3 +252,8 @@ const styles = StyleSheet.create({
     opacity: 0.65,
   },
 });
+
+// ============================ TYPE =====================================
+type Props = {
+  navigation: TransactionNavigationProp;
+};

@@ -23,8 +23,7 @@ const TimeLineTab = ({data, fromDate, toDate}: Props) => {
     return findItem;
   });
 
-  console.log('accountData: ', accountData);
-
+  accountsFiltered;
   const mergeObj = accountsFiltered?.map(acc => {
     const Obj = sumExpenseByEachAccount?.find(sum => sum.accountId === acc.id);
     const newObj = {...acc, ...Obj};

@@ -376,9 +376,8 @@ const OverviewScreen = ({navigation}: Props) => {
 
       <AddBtn
         onPress={() => navigation.navigate('AddExpenses')}
-        style={{bottom: -0}}
         icon={'plus-circle'}
-        size={width * 0.18}
+        size={width * 0.25}
         color={'#b6482a'}
       />
     </View>

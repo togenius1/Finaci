@@ -8,11 +8,6 @@ import {useAppSelector} from '../hooks';
 import DailyItemElement from '../components/Output/DailyItemElement';
 import {IncomesDetailsNavigationProp, IncomesDetailsRouteProp} from '../types';
 
-type Props = {
-  navigation: IncomesDetailsNavigationProp;
-  route: IncomesDetailsRouteProp;
-};
-
 // const {width, height} = Dimensions.get('window');
 
 const IncomesDetailsScreen = ({route, navigation}: Props) => {
@@ -41,10 +36,10 @@ const IncomesDetailsScreen = ({route, navigation}: Props) => {
     // const expenseAmount = currencyFormatter(item.expense_daily, {});
     // const incomeAmount = currencyFormatter(item.income_daily, {});
     // const expenseAmount = item.amount;
-    const incomeAmount = item.amount;
-    const accountId = item.accountId;
-    const cateId = item.cateId;
-    const itemId = item.id;
+    const incomeAmount = item?.amount;
+    const accountId = item?.accountId;
+    const cateId = item?.cateId;
+    const itemId = item?.id;
     const time = moment(item.date).format('LT');
 
     if (+incomeAmount === 0) {
@@ -92,3 +87,9 @@ const IncomesDetailsScreen = ({route, navigation}: Props) => {
 export default IncomesDetailsScreen;
 
 // const styles = StyleSheet.create({});
+
+// =============================== TYPE ==================================
+type Props = {
+  navigation: IncomesDetailsNavigationProp;
+  route: IncomesDetailsRouteProp;
+};

@@ -116,9 +116,11 @@ const StatsScreen = ({navigation}: Props) => {
 
   // Filter Expense Data
   const filteredDataTabExpense = expenseData?.filter(
-    d =>
-      new Date(d?.date) >= new Date(fromDate) &&
-      new Date(d?.date) <= new Date(toDate),
+    expense =>
+      moment(expense?.date).format('YYYY-MM-DD') >=
+        moment(fromDate).format('YYYY-MM-DD') &&
+      moment(expense?.date).format('YYYY-MM-DD') <=
+        moment(toDate).format('YYYY-MM-DD'),
   );
 
   // Set Month Year
