@@ -166,6 +166,7 @@ const OverviewScreen = ({navigation}: Props) => {
       // Do something when the screen is focused
       setShowCustomDate(false);
       setFocusedTabIndex(0);
+
       return () => {
         // alert('Screen was unfocused');
         // Do something when the screen is unfocused
