@@ -81,7 +81,8 @@ const StatsScreen = ({navigation}: Props) => {
   }, []);
 
   useEffect(() => {
-    onMonthYearSelectedHandler(moment().month());
+    // onMonthYearSelectedHandler(moment().month());
+    onMonthYearSelectedHandler(moment().year());
   }, []);
 
   useEffect(() => {
@@ -100,9 +101,12 @@ const StatsScreen = ({navigation}: Props) => {
         />
       ),
     });
-    if (indicatorIndex === 1 || indicatorIndex === 2) {
-      setFromToDateExpenseIncomeHandler();
-    }
+    // if (indicatorIndex === 1 || indicatorIndex === 2) {
+    //   setFromToDateExpenseIncomeHandler();
+    // }
+    // if (indicatorIndex === 1 || indicatorIndex === 2) {
+    setFromToDateExpenseIncomeHandler();
+    // }
   }, [year, month, indicatorIndex]);
 
   // Filter Expense Data
@@ -133,17 +137,17 @@ const StatsScreen = ({navigation}: Props) => {
     const mm = +moment().month(time).format('MM');
     const daysInMonth = moment(moment().format(`${year}-${mm}`)).daysInMonth();
 
-    if (indicatorIndex === 1 || indicatorIndex === 2) {
-      fromdate = moment(`${year}-01-01`).format('YYYY-MM-DD');
-      todate = moment(`${year}-12-31`).format('YYYY-MM-DD');
-      month = moment().month() + 1;
-      setYear(time);
-    }
-    if (indicatorIndex === 0) {
-      fromdate = moment(`${year}-${mm}-01`).format('YYYY-MM-DD');
-      todate = moment(`${year}-${mm}-${daysInMonth}`).format('YYYY-MM-DD');
-      month = moment(fromdate).month() + 1;
-    }
+    // if (indicatorIndex === 1 || indicatorIndex === 2) {
+    fromdate = moment(`${year}-01-01`).format('YYYY-MM-DD');
+    todate = moment(`${year}-12-31`).format('YYYY-MM-DD');
+    month = moment().month() + 1;
+    setYear(time);
+    // }
+    // if (indicatorIndex === 0) {
+    //   fromdate = moment(`${year}-${mm}-01`).format('YYYY-MM-DD');
+    //   todate = moment(`${year}-${mm}-${daysInMonth}`).format('YYYY-MM-DD');
+    //   month = moment(fromdate).month() + 1;
+    // }
 
     setFromDate(fromdate);
     setToDate(todate);
@@ -173,17 +177,17 @@ const StatsScreen = ({navigation}: Props) => {
     );
   };
 
-  const RenderBudgetsTab = () => {
-    return (
-      <View style={{flex: 1}}>
-        <TimeLineComponent
-          data={filteredDataTabExpense}
-          fromDate={fromDate}
-          toDate={toDate}
-        />
-      </View>
-    );
-  };
+  // const RenderBudgetsTab = () => {
+  //   return (
+  //     <View style={{flex: 1}}>
+  //       <TimeLineComponent
+  //         data={filteredDataTabExpense}
+  //         fromDate={fromDate}
+  //         toDate={toDate}
+  //       />
+  //     </View>
+  //   );
+  // };
 
   const RenderExpenseTab = () => {
     return (
