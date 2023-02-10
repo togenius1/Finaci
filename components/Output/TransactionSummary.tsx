@@ -483,6 +483,7 @@ type Props = {
   toDate: string | null;
   exportPressed: boolean;
   year: string | null;
+  setIndicatorIndex: React.Dispatch<React.SetStateAction<number | undefined>>;
 };
 
 interface HeaderSummaryType {

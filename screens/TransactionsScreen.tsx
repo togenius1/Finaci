@@ -34,7 +34,9 @@ const TransactionsScreen = ({navigation}: Props) => {
   const [weeklyPressed, setWeeklyPressed] = useState<boolean>(false);
   const [dailyPressed, setDailyPressed] = useState<boolean>(false);
   const [customPressed, setCustomPressed] = useState<boolean>(false);
-  const [duration, setDuration] = useState<string | null>();
+  const [duration, setDuration] = useState<string | null>(
+    moment().format('MMM'),
+  );
   const [month, setMonth] = useState<string>('');
   const [year, setYear] = useState<string>(moment().year());
   const [isDatePickerVisible, setDatePickerVisibility] =
@@ -43,11 +45,33 @@ const TransactionsScreen = ({navigation}: Props) => {
   const [fromDateClicked, setFromDateClicked] = useState<boolean>(false);
   const [toDateClicked, setToDateClicked] = useState<boolean>(false);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [indicatorIndex, setIndicatorIndex] = useState<number | undefined>(0);
+  const [exportPressed, setExportPressed] = useState<boolean>(false);
 
   // Initial from date, to date
   useEffect(() => {
     onMonthYearSelectedHandler(moment().year());
   }, []);
+
+  // useEffect when focus
+  useFocusEffect(
+    useCallback(() => {
+      // alert('Screen was focused');
+      // Do something when the screen is focused
+
+      return () => {
+        // alert('Screen was unfocused');
+        // Do something when the screen is unfocused
+        // Useful for cleanup functions
+        setIndicatorIndex(2);
+        setMonthlyPressed(false);
+        setWeeklyPressed(false);
+        setDailyPressed(true);
+        setCustomPressed(false);
+        setExportPressed(false);
+      };
+    }, []),
+  );
 
   useEffect(() => {
     navigation.setOptions({
@@ -139,7 +163,7 @@ const TransactionsScreen = ({navigation}: Props) => {
       setFromDate(fromdate);
       setToDate(todate);
       setDuration(time);
-      setMonth(moment().month() + 1);
+      setMonth(+moment().month() + 1);
       setIsModalVisible(false);
     }
     if (!monthlyPressed) {
@@ -212,14 +236,18 @@ const TransactionsScreen = ({navigation}: Props) => {
         setDailyPressed={setDailyPressed}
         setCustomPressed={setCustomPressed}
         customPressed={customPressed}
+        setExportPressed={setExportPressed}
+        exportPressed={exportPressed}
         year={year}
         month={month}
+        setIndicatorIndex={setIndicatorIndex}
+        indicatorIndex={indicatorIndex}
       />
 
       <MonthYearList
         monthlyPressed={monthlyPressed}
         onMYSelectedHandler={onMonthYearSelectedHandler}
-        year={year}
+        year={+year}
         setYear={setYear}
         month={month}
         setIsModalVisible={setIsModalVisible}

@@ -12,7 +12,7 @@ import {v4 as uuidv4} from 'uuid';
 type Props = {
   TabsDataObject: object;
   onItemPress: (itemIndex: number) => void;
-  indicatorIndex: number;
+  indicatorIndex: number | undefined;
 };
 
 interface IndicatorType {

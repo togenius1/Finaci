@@ -47,14 +47,15 @@ const TransactionOutput = ({
   customPressed,
   year,
   month,
+  setIndicatorIndex,
+  indicatorIndex,
+  setExportPressed,
+  exportPressed,
 }: // monthlyTransactions,
 // weeklyTransactions,
 // dailyTransactions,
 Props) => {
-  const [exportPressed, setExportPressed] = useState<boolean>(false);
-  const [dailyItemPressed, setDailyItemPressed] = useState<boolean>(false);
   // const [customPressed, setCustomPressed] = useState(false);
-  const [indicatorIndex, setIndicatorIndex] = useState<number | undefined>(0);
 
   // const navigation = useNavigation();
 
@@ -75,27 +76,6 @@ Props) => {
       load();
     }
   }, [isClosed]);
-
-  // useEffect when focus
-  useFocusEffect(
-    useCallback(() => {
-      // alert('Screen was focused');
-      // Do something when the screen is focused
-
-      return () => {
-        // alert('Screen was unfocused');
-        // Do something when the screen is unfocused
-        // Useful for cleanup functions
-        setIndicatorIndex(2);
-        setMonthlyPressed(false);
-        setWeeklyPressed(false);
-        setDailyPressed(true);
-        setCustomPressed(false);
-        setExportPressed(false);
-
-      };
-    }, []),
-  );
 
   //
   const onItemPress = useCallback(
@@ -306,12 +286,17 @@ type Props = {
   setWeeklyPressed: Dispatch<SetStateAction<boolean>>;
   setDailyPressed: Dispatch<SetStateAction<boolean>>;
   setCustomPressed: Dispatch<SetStateAction<boolean>>;
+  setIndicatorIndex: Dispatch<React.SetStateAction<number | undefined>>;
+  setExportPressed: React.Dispatch<React.SetStateAction<boolean>>;
+  setYear: (value: number) => void;
   fromDate: string | null;
   toDate: string | null;
   monthlyPressed: boolean;
   weeklyPressed: boolean;
   dailyPressed: boolean;
   customPressed: boolean;
+  exportPressed: boolean;
+  indicatorIndex: number | undefined;
   year: string;
   month: string;
 };
