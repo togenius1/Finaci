@@ -14,6 +14,7 @@ import TransactionSummary from './TransactionSummary';
 import Tabs from '../UI/Tabs';
 import {IncomeType} from '../../models/income';
 import {ExpenseType} from '../../models/expense';
+import {useFocusEffect} from '@react-navigation/native';
 
 const {width} = Dimensions.get('window');
 
@@ -51,6 +52,7 @@ const TransactionOutput = ({
 // dailyTransactions,
 Props) => {
   const [exportPressed, setExportPressed] = useState<boolean>(false);
+  const [dailyItemPressed, setDailyItemPressed] = useState<boolean>(false);
   // const [customPressed, setCustomPressed] = useState(false);
   const [indicatorIndex, setIndicatorIndex] = useState<number | undefined>(0);
 
@@ -74,6 +76,28 @@ Props) => {
     }
   }, [isClosed]);
 
+  // useEffect when focus
+  useFocusEffect(
+    useCallback(() => {
+      // alert('Screen was focused');
+      // Do something when the screen is focused
+
+      return () => {
+        // alert('Screen was unfocused');
+        // Do something when the screen is unfocused
+        // Useful for cleanup functions
+        setIndicatorIndex(2);
+        setMonthlyPressed(false);
+        setWeeklyPressed(false);
+        setDailyPressed(true);
+        setCustomPressed(false);
+        setExportPressed(false);
+
+      };
+    }, []),
+  );
+
+  //
   const onItemPress = useCallback(
     (itemIndex: number) => {
       setIndicatorIndex(itemIndex);
@@ -226,6 +250,7 @@ Props) => {
         toDate={toDate}
         exportPressed={exportPressed}
         year={year}
+        setIndicatorIndex={setIndicatorIndex}
       />
     </View>
   );
