@@ -6,7 +6,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import moment from 'moment';
@@ -18,6 +18,7 @@ import MonthYearList from '../components/Menu/MonthYearList';
 import {OverviewNavigationProp} from '../types';
 import AddBtn from '../components/UI/AddBtn';
 import Menu from '../components/Menu/Menu';
+import {useFocusEffect} from '@react-navigation/native';
 
 type Props = {
   navigation: OverviewNavigationProp;
@@ -77,7 +78,7 @@ function HeaderRightComponent({
   toDateClickedHandler,
   rightMenuClickedHandler,
   // showMonthYearListMenuHandler,
-  setIsModalVisible,
+  setIsMYListVisible,
 }) {
   const month = moment.monthsShort(moment(toDate).month());
   const year = moment(toDate).year();
@@ -86,7 +87,7 @@ function HeaderRightComponent({
     <View style={styles.headerRightContainer}>
       <Pressable
         style={({pressed}) => pressed && styles.pressed}
-        onPress={() => setIsModalVisible(true)}>
+        onPress={() => setIsMYListVisible(true)}>
         {!showCustomDate && (
           <View
             style={{
@@ -148,15 +149,36 @@ const OverviewScreen = ({navigation}: Props) => {
   const [fromDateClicked, setFromDateClicked] = useState<boolean>(false);
   const [toDateClicked, setToDateClicked] = useState<boolean>(false);
   const [rightMenuClicked, setRightMenuClicked] = useState<boolean>(false);
-  const [showCustomDate, setShowCustomDate] = useState(false);
+  const [showCustomDate, setShowCustomDate] = useState<boolean>(false);
   const [focusedTabIndex, setFocusedTabIndex] = useState<number | undefined>(0);
   // const [showMonthYearListMenu, setShowMonthYearListMenu] =
   //   useState<boolean>(false);
   const [year, setYear] = useState<string | null>(String(moment().year()));
-  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [isMYListVisible, setIsMYListVisible] = useState<boolean>(false);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   // const [duration, setDuration] = useState(moment().year());
   const [month, setMonth] = useState<string | null>(String(MONTH));
+
+  // useEffect when focus
+  useFocusEffect(
+    useCallback(() => {
+      // alert('Screen was focused');
+      // Do something when the screen is focused
+      setShowCustomDate(false);
+      setFocusedTabIndex(0);
+      return () => {
+        // alert('Screen was unfocused');
+        // Do something when the screen is unfocused
+        // Useful for cleanup functions
+      };
+    }, []),
+  );
+
+  useEffect(() => {
+    if (focusedTabIndex === 0 || focusedTabIndex === 1) {
+      setShowCustomDate(false);
+    }
+  }, [focusedTabIndex]);
 
   useEffect(() => {
     onMonthYearSelectedHandler(moment().month());
@@ -175,7 +197,7 @@ const OverviewScreen = ({navigation}: Props) => {
           fromDateClickedHandler={fromDateClickedHandler}
           toDateClickedHandler={toDateClickedHandler}
           rightMenuClickedHandler={rightMenuClickedHandler}
-          setIsModalVisible={setIsModalVisible}
+          setIsMYListVisible={setIsMYListVisible}
         />
       ),
     });
@@ -221,7 +243,7 @@ const OverviewScreen = ({navigation}: Props) => {
 
     const MONTH = moment(todate).format('M');
     setMonth(MONTH);
-    setIsModalVisible(false);
+    setIsMYListVisible(false);
   }
 
   // function showMonthYearListMenuHandler() {
@@ -370,8 +392,8 @@ const OverviewScreen = ({navigation}: Props) => {
         year={year}
         setYear={setYear}
         month={month}
-        setIsModalVisible={setIsModalVisible}
-        isModalVisible={isModalVisible}
+        setIsModalVisible={setIsMYListVisible}
+        isModalVisible={isMYListVisible}
       />
 
       <AddBtn

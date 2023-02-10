@@ -2,12 +2,13 @@ import {Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
 import moment from 'moment';
 
-import TimeLineComponent from '../components/Graph/TimeLineComponent';
+// import TimeLineComponent from '../components/Graph/TimeLineComponent';
 import Tabs from '../components/UI/Tabs';
 import LineChart from '../components/Graph/LineChart';
 import MonthYearList from '../components/Menu/MonthYearList';
 import {StatsNavigationProp} from '../types';
 import {useAppSelector} from '../hooks';
+import {useFocusEffect} from '@react-navigation/native';
 
 // const {width, height} = Dimensions.get('window');
 
@@ -19,7 +20,7 @@ const dataTabsObject = {
 };
 
 // const initFromDate = `${moment().year()}-${moment().month() + 1}-01`;
-const initFromDate = moment().startOf('year').format('YYYY-MM-DD');
+// const initFromDate = moment().startOf('year').format('YYYY-MM-DD');
 const initToDate = moment().format('YYYY-MM-DD');
 
 const HeaderRightComponent = ({
@@ -67,6 +68,23 @@ const StatsScreen = ({navigation}: Props) => {
   const [month, setMonth] = useState<number>(moment().month() + 1);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   // const [duration, setDuration] = useState(moment().year());
+
+  // useEffect when focus
+  useFocusEffect(
+    useCallback(() => {
+      // alert('Screen was focused');
+      // Do something when the screen is focused
+
+      return () => {
+        // alert('Screen was unfocused');
+        // Do something when the screen is unfocused
+        // Useful for cleanup functions
+        setIndicatorIndex(0);
+      };
+    }, []),
+  );
+
+  // Item Tab Index
   const onItemPress = useCallback((itemIndex: number) => {
     setIndicatorIndex(itemIndex);
     if (itemIndex === 0) {
@@ -120,13 +138,13 @@ const StatsScreen = ({navigation}: Props) => {
   );
 
   // Filter Expense Data
-  const filteredDataTabExpense = expenseData?.filter(
-    expense =>
-      moment(expense?.date).format('YYYY-MM-DD') >=
-        moment(fromDate).format('YYYY-MM-DD') &&
-      moment(expense?.date).format('YYYY-MM-DD') <=
-        moment(toDate).format('YYYY-MM-DD'),
-  );
+  // const filteredDataTabExpense = expenseData?.filter(
+  //   expense =>
+  //     moment(expense?.date).format('YYYY-MM-DD') >=
+  //       moment(fromDate).format('YYYY-MM-DD') &&
+  //     moment(expense?.date).format('YYYY-MM-DD') <=
+  //       moment(toDate).format('YYYY-MM-DD'),
+  // );
 
   // Set Month Year
   function onMonthYearSelectedHandler(time) {
