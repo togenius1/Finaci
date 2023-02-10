@@ -13,7 +13,7 @@ import {useAppSelector} from '../hooks';
 
 const dataTabsObject = {
   // barchart: 'BarChart',
-  // budget: 'Budgets',
+  budget: 'Budgets',
   expense: 'Expense',
   income: 'Income',
 };
@@ -43,8 +43,7 @@ const HeaderRightComponent = ({
             marginRight: 25,
           }}>
           <Text style={{fontSize: 16, color: '#2a8aff'}}>
-            {/* {indicatorIndex !== 0 ? '' : monthName} {year} */}
-            {year}
+            {indicatorIndex !== 0 ? '' : monthName} {year}
           </Text>
         </View>
       </Pressable>
@@ -231,13 +230,12 @@ const StatsScreen = ({navigation}: Props) => {
   return (
     <View style={styles.container}>
       <RenderTabs />
-      {/* {indicatorIndex === 0 && <RenderBudgetsTab />} */}
-      {indicatorIndex === 0 && <RenderExpenseTab />}
-      {indicatorIndex === 1 && <RenderIncomeTab />}
+      {indicatorIndex === 0 && <RenderBudgetsTab />}
+      {indicatorIndex === 1 && <RenderExpenseTab />}
+      {indicatorIndex === 2 && <RenderIncomeTab />}
 
       <MonthYearList
-        // monthlyPressed={indicatorIndex !== 0 ? true : false}
-        monthlyPressed={true}
+        monthlyPressed={indicatorIndex !== 0 ? true : false}
         onMYSelectedHandler={onMonthYearSelectedHandler}
         year={+year}
         setYear={setYear}
