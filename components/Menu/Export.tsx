@@ -2,14 +2,8 @@ import React, {useEffect, useState} from 'react';
 import {Dimensions, Pressable, StyleSheet, Text, View} from 'react-native';
 import moment from 'moment';
 
-// import {ExpenseCategory} from '../../dummy/categoryItems';
-// import {EXPENSES} from '../../dummy/dummy';
-// import {AccountCategory, CashCategory} from '../../dummy/account';
 import {xport} from '../../util/xport';
 import {useAppSelector} from '../../hooks';
-// import {fetchExpensesData} from '../../store/expense-action';
-// import {fetchAccountsData} from '../../store/account-action';
-// import {fetchExpenseCategoriesData} from '../../store/expense-category-action';
 
 const {width} = Dimensions.get('window');
 
@@ -19,13 +13,6 @@ const Export = () => {
 
   const [jsonData, setJsonData] = useState();
   const [newJson, setNewJson] = useState();
-
-  // useEffect(() => {
-  // setJsonData(EXPENSES);
-  // dispatch(fetchExpensesData());
-  // dispatch(fetchAccountsData());
-  // dispatch(fetchExpenseCategoriesData());
-  // }, []);
 
   useEffect(() => {
     createNewObject();

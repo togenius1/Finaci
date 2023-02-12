@@ -24,15 +24,9 @@ import {
   stringToUint8Array,
 } from '../util/crypto';
 import {User} from '../src/models';
+import {useAppSelector} from '../hooks';
 
-interface AuthStateType {
-  hasLoggedInOnce: boolean;
-  provider: string;
-  accessToken: string;
-  accessTokenExpirationDate: string;
-  refreshToken: string;
-}
-
+// Constant
 const {width} = Dimensions.get('window');
 const sec_1 = 1000;
 const minute_1 = sec_1 * 60;
@@ -43,15 +37,19 @@ const day = hour * 24;
 const SevenDays = day * 7;
 const month = day * 30;
 
+// Main
 const BackupScreen = () => {
   const [authState, setAuthState] = useState<AuthStateType>(defaultAuthState);
   const [isLoading, setIsLoading] = useState<boolean | undefined>(false);
   const auth = useRef<string | null>('');
   const timerRef = useRef();
-  const [jsonData, setJsonData] = useState<ExpenseType>();
+  // const [jsonData, setJsonData] = useState<ExpenseType>();
+
+  const dataLoaded = useAppSelector(store => store);
+  const jsonData = dataLoaded?.expenses?.expenses;
 
   useEffect(() => {
-    setJsonData(EXPENSES);
+    // setJsonData(EXPENSES);
     setUpKey();
   }, []);
 
@@ -63,6 +61,7 @@ const BackupScreen = () => {
   //   });
   // }, []);
 
+  // Timer to backup
   useEffect(() => {
     timerRef.current = setInterval(() => {
       // console.log('timer running');
@@ -129,8 +128,8 @@ const BackupScreen = () => {
       });
 
     const decrypted = await decryption(String(encryptedData));
-    // console.log('decrypted: ', decrypted);
-    return decrypted;
+    console.log('decrypted: ', decrypted);
+    // return decrypted;
   };
 
   // Create folder
@@ -185,6 +184,8 @@ const BackupScreen = () => {
       const dbUser = await DataStore.query(User, authUser.attributes.sub);
       // setCurrentUser(dbUser);
 
+      console.log('dbUser: ', dbUser);
+
       // Remove Old Key
       await AsyncStorage.removeItem(PRIVATE_KEY);
       await AsyncStorage.removeItem(PUBLIC_KEY);
@@ -195,7 +196,7 @@ const BackupScreen = () => {
       const publicKey = generatePublicKeyFromSecretKey(
         stringToUint8Array(cloudPrivateKey),
       );
-      await AsyncStorage.setItem(PUBLIC_KEY, String(publicKey.publicKey));
+      await AsyncStorage.setItem(PUBLIC_KEY, String(publicKey?.publicKey));
     } catch (error) {
       console.error('Error:', error);
     }
@@ -221,7 +222,7 @@ const BackupScreen = () => {
 
         <Pressable
           style={({pressed}) => pressed && styles.pressed}
-          onPress={() => {}}>
+          onPress={() => restoreHandler()}>
           <View style={{marginTop: 20}}>
             <Text style={{fontSize: 18}}>
               Restore <Text style={{fontSize: 12}}>(Coming soon)</Text>
@@ -256,3 +257,12 @@ const styles = StyleSheet.create({
     opacity: 0.75,
   },
 });
+
+// ================================ TYPE Interface =============================================
+interface AuthStateType {
+  hasLoggedInOnce: boolean;
+  provider: string;
+  accessToken: string;
+  accessTokenExpirationDate: string;
+  refreshToken: string;
+}
