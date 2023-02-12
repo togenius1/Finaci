@@ -12,12 +12,8 @@ import {useInterstitialAd, TestIds} from 'react-native-google-mobile-ads';
 
 import TransactionSummary from './TransactionSummary';
 import Tabs from '../UI/Tabs';
-import {IncomeType} from '../../models/income';
-import {ExpenseType} from '../../models/expense';
-import {useFocusEffect} from '@react-navigation/native';
 
 const {width} = Dimensions.get('window');
-
 const TabsDataObject = {
   monthly: 'Monthly',
   weekly: 'Weekly',

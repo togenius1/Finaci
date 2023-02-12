@@ -9,6 +9,7 @@ import {
   ExpensesDetailsNavigationProp,
   ExpensesDetailsRouteProp,
 } from '../types';
+import {currencyFormatter} from '../util/currencyFormatter';
 
 // const {width, height} = Dimensions.get('window');
 
@@ -35,8 +36,9 @@ const ExpensesDetailsScreen = ({route, navigation}: Props) => {
   // daily renderItem
   function renderItem({item}) {
     // const expenseAmount = currencyFormatter(item.expense_daily, {});
-    // const incomeAmount = currencyFormatter(item.income_daily, {});
-    const expenseAmount = item.amount;
+    const expenseAmount = currencyFormatter(item.amount, {
+      significantDigits: 0,
+    });
     // const incomeAmount = item.amount;
     const accountId = item.accountId;
     const cateId = item.cateId;

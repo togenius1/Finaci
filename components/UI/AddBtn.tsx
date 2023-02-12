@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     position: 'absolute',
-    bottom: 25,
+    bottom: 45,
     right: 30,
     backgroundColor: '#ee7474', // Default background color
 

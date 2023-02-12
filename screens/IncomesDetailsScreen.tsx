@@ -7,6 +7,7 @@ import moment from 'moment';
 import {useAppSelector} from '../hooks';
 import DailyItemElement from '../components/Output/DailyItemElement';
 import {IncomesDetailsNavigationProp, IncomesDetailsRouteProp} from '../types';
+import {currencyFormatter} from '../util/currencyFormatter';
 
 // const {width, height} = Dimensions.get('window');
 
@@ -36,7 +37,9 @@ const IncomesDetailsScreen = ({route, navigation}: Props) => {
     // const expenseAmount = currencyFormatter(item.expense_daily, {});
     // const incomeAmount = currencyFormatter(item.income_daily, {});
     // const expenseAmount = item.amount;
-    const incomeAmount = item?.amount;
+    const incomeAmount = currencyFormatter(item?.amount, {
+      significantDigits: 0,
+    });
     const accountId = item?.accountId;
     const cateId = item?.cateId;
     const itemId = item?.id;

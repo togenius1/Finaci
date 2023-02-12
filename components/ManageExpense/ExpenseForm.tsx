@@ -83,6 +83,8 @@ function ExpenseForm({
     setAccountPressed(true);
   }
 
+  console.log('acc title: ', account?.title);
+
   return (
     <View style={styles.form}>
       <View style={styles.input}>
@@ -153,7 +155,7 @@ function ExpenseForm({
           onPress={() => PressedAccountHandler()}>
           <View style={styles.textContainer}>
             <Text style={{fontSize: 22}}>
-              {account ? account.title : accountTitle ? accountTitle : 'Cash'}
+              {account ? account?.title : accountTitle ? accountTitle : 'Cash'}
             </Text>
           </View>
         </Pressable>
