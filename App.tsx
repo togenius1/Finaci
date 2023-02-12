@@ -54,7 +54,7 @@ const App = () => {
   );
 
   const [currentUser, setCurrentUser] = useState<User | null>();
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | undefined>();
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>();
   const [cloudPrivateKey, setCloudPrivateKey] = useState<string | null>();
   const [closedAds, setClosedAds] = useState<boolean>(false);
   // const [localPrivateKey, setLocalPrivateKey] = useState<string | null>();
@@ -121,8 +121,10 @@ const App = () => {
       const dbUser = await DataStore.query(User, authUser.attributes.sub);
       setCurrentUser(dbUser);
 
-      const cloudPKey = String(dbUser?.backupKey);
+      const cloudPKey = dbUser?.backupKey;
       setCloudPrivateKey(cloudPKey);
+      console.log(cloudPKey);
+
       // let localPKey = String(await getMySecretKey());
       // setLocalPrivateKey(localPKey);
 
@@ -134,7 +136,7 @@ const App = () => {
 
   // Generate new key
   const generateNewKey = async () => {
-    if (cloudPrivateKey !== null || cloudPrivateKey !== undefined) {
+    if (cloudPrivateKey !== '' || cloudPrivateKey !== undefined) {
       return;
     }
     // Remove old key

@@ -128,8 +128,10 @@ const BackupScreen = () => {
       });
 
     const decrypted = await decryption(String(encryptedData));
+    console.log('encryptedData: ', encryptedData);
     console.log('decrypted: ', decrypted);
     // return decrypted;
+    // Replace data to local storage
   };
 
   // Create folder
