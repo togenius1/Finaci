@@ -87,10 +87,10 @@ const App = () => {
 
   // Listening for Login events.
   useEffect(() => {
-    const listener = data => {
+    const listener = async data => {
       if (data.payload.event === 'signIn') {
-        checkUser();
-        generateNewKey();
+        await checkUser();
+        await generateNewKey();
         setIsAuthenticated(true);
       }
       if (data.payload.event === 'signOut') {
@@ -123,7 +123,6 @@ const App = () => {
 
       const cloudPKey = dbUser?.backupKey;
       setCloudPrivateKey(cloudPKey);
-      console.log(cloudPKey);
 
       // let localPKey = String(await getMySecretKey());
       // setLocalPrivateKey(localPKey);
@@ -136,9 +135,10 @@ const App = () => {
 
   // Generate new key
   const generateNewKey = async () => {
-    if (cloudPrivateKey !== '' || cloudPrivateKey !== undefined) {
+    if (cloudPrivateKey !== null || cloudPrivateKey !== undefined) {
       return;
     }
+
     // Remove old key
     await AsyncStorage.removeItem(PRIVATE_KEY);
     await AsyncStorage.removeItem(PUBLIC_KEY);
@@ -149,6 +149,7 @@ const App = () => {
     //Save Key to local storage.
     await AsyncStorage.setItem(PRIVATE_KEY, secretKey.toString());
     await AsyncStorage.setItem(PUBLIC_KEY, publicKey.toString());
+    console.log('publicKey ', secretKey);
 
     // const originalUser = await DataStore.query(User, user?.id);
     await DataStore.save(

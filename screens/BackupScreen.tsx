@@ -128,8 +128,7 @@ const BackupScreen = () => {
       });
 
     const decrypted = await decryption(String(encryptedData));
-    console.log('encryptedData: ', encryptedData);
-    console.log('decrypted: ', decrypted);
+    // console.log('decrypted: ', decrypted);
     // return decrypted;
     // Replace data to local storage
   };
@@ -185,8 +184,6 @@ const BackupScreen = () => {
       const authUser = await Auth.currentAuthenticatedUser();
       const dbUser = await DataStore.query(User, authUser.attributes.sub);
       // setCurrentUser(dbUser);
-
-      console.log('dbUser: ', dbUser);
 
       // Remove Old Key
       await AsyncStorage.removeItem(PRIVATE_KEY);
