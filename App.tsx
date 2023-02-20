@@ -87,10 +87,10 @@ const App = () => {
 
   // Listening for Login events.
   useEffect(() => {
-    const listener = async data => {
+    const listener = data => {
       if (data.payload.event === 'signIn') {
-        await checkUser();
-        await generateNewKey();
+        checkUser();
+        generateNewKey();
         setIsAuthenticated(true);
       }
       if (data.payload.event === 'signOut') {
@@ -110,6 +110,7 @@ const App = () => {
         setIsAuthenticated(true);
       } catch (err) {}
     };
+
     isAuthenticated();
   }, []);
 
@@ -135,28 +136,28 @@ const App = () => {
 
   // Generate new key
   const generateNewKey = async () => {
-    if (cloudPrivateKey !== null || cloudPrivateKey !== undefined) {
-      return;
+    console.log('Before: ', cloudPrivateKey);
+    if (cloudPrivateKey === null || cloudPrivateKey === undefined) {
+      console.log('Generating new key: ', cloudPrivateKey);
+      // Remove old key
+      await AsyncStorage.removeItem(PRIVATE_KEY);
+      await AsyncStorage.removeItem(PUBLIC_KEY);
+
+      // Generate a new backup key.
+      const {publicKey, secretKey} = generateKeyPair();
+
+      //Save Key to local storage.
+      await AsyncStorage.setItem(PRIVATE_KEY, secretKey.toString());
+      await AsyncStorage.setItem(PUBLIC_KEY, publicKey.toString());
+
+      // const originalUser = await DataStore.query(User, user?.id);
+
+      await DataStore.save(
+        User.copyOf(currentUser, updated => {
+          updated.backupKey = secretKey.toString();
+        }),
+      );
     }
-
-    // Remove old key
-    await AsyncStorage.removeItem(PRIVATE_KEY);
-    await AsyncStorage.removeItem(PUBLIC_KEY);
-
-    // Generate a new backup key.
-    const {publicKey, secretKey} = generateKeyPair();
-
-    //Save Key to local storage.
-    await AsyncStorage.setItem(PRIVATE_KEY, secretKey.toString());
-    await AsyncStorage.setItem(PUBLIC_KEY, publicKey.toString());
-    console.log('publicKey ', secretKey);
-
-    // const originalUser = await DataStore.query(User, user?.id);
-    await DataStore.save(
-      User.copyOf(currentUser, updated => {
-        updated.backupKey = String(secretKey);
-      }),
-    );
   };
 
   // Load Key from Cloud

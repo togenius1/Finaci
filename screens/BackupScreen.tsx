@@ -8,14 +8,12 @@ import RNFS from 'react-native-fs';
 import {configs, defaultAuthState} from '../util/authConfig';
 import {decryption} from '../util/decrypt';
 import {encryption} from '../util/encrypt';
-import {EXPENSES} from '../dummy/dummy';
 import {
   fetchCreateFile,
   fetchCreateFolder,
   fetchFindFolder,
 } from '../util/fetchData';
 import {authorization, refreshAuthorize} from '../util/auth';
-import {ExpenseType} from '../models/expense';
 import {Auth, DataStore} from 'aws-amplify';
 import {
   generatePublicKeyFromSecretKey,
