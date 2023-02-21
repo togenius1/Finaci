@@ -120,10 +120,6 @@ const App = () => {
     const dbUser = await DataStore.query(User, c => c.id.eq(subId));
     setCurrentUser(dbUser);
 
-    console.log('subId:---- ', subId);
-    console.log('User:---- ', await DataStore.query(User));
-    console.log('dbUser:---- ', dbUser);
-
     const cloudPKey = dbUser?.backupKey;
     setCloudPrivateKey(cloudPKey);
     // let localPKey = String(await getMySecretKey());
@@ -144,8 +140,6 @@ const App = () => {
       //Save Key to local storage.
       await AsyncStorage.setItem(PRIVATE_KEY, secretKey.toString());
       await AsyncStorage.setItem(PUBLIC_KEY, publicKey.toString());
-
-      console.log('secretKey: ', secretKey);
 
       // const originalUser = await DataStore.query(User, user?.id);
 
