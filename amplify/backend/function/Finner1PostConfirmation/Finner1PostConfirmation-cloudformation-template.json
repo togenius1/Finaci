@@ -1,6 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "{\"createdOn\":\"Mac\",\"createdBy\":\"Amplify\",\"createdWith\":\"10.4.0\",\"stackType\":\"function-Lambda\",\"metadata\":{}}",
+  "Description": "{\"createdOn\":\"Windows\",\"createdBy\":\"Amplify\",\"createdWith\":\"10.8.0\",\"stackType\":\"function-Lambda\",\"metadata\":{}}",
   "Parameters": {
     "GROUP": {
       "Type": "String",
@@ -67,12 +67,12 @@
         "FunctionName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "FinnerVer1PostConfirmation",
+            "Finner1PostConfirmation",
             {
               "Fn::Join": [
                 "",
                 [
-                  "FinnerVer1PostConfirmation",
+                  "Finner1PostConfirmation",
                   "-",
                   {
                     "Ref": "env"
@@ -122,12 +122,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "FinnerVer1PostConfirmation",
+            "Finner1PostConfirmation",
             {
               "Fn::Join": [
                 "",
                 [
-                  "FinnerVer1PostConfirmation",
+                  "Finner1PostConfirmation",
                   "-",
                   {
                     "Ref": "env"
@@ -218,17 +218,17 @@
         "Ref": "LambdaExecutionRole"
       }
     },
-    "Region": {
-      "Value": {
-        "Ref": "AWS::Region"
-      }
-    },
     "LambdaExecutionRoleArn": {
       "Value": {
         "Fn::GetAtt": [
           "LambdaExecutionRole",
           "Arn"
         ]
+      }
+    },
+    "Region": {
+      "Value": {
+        "Ref": "AWS::Region"
       }
     }
   }

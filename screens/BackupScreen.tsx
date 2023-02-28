@@ -1,4 +1,11 @@
-import {Dimensions, Pressable, StyleSheet, Text, View} from 'react-native';
+import {
+  Alert,
+  Dimensions,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {prefetchConfiguration} from 'react-native-app-auth';
@@ -59,10 +66,37 @@ const BackupScreen = () => {
   //   });
   // }, []);
 
-  // Timer to backup
+  // Timer to backup. Should move to the App file?
   useEffect(() => {
     timerRef.current = setInterval(() => {
       // console.log('timer running');
+      Alert.alert(
+        'Backup data!',
+        'Do you want to backup your data now?',
+        [
+          {
+            text: 'Yes',
+            onPress: () => backupHandler(jsonData),
+            // style: 'cancel',
+          },
+          // {
+          //   text: 'Delete',
+          //   // onPress: () => removeAccountHandler(item?.id),
+          // },
+          {
+            text: 'No',
+            style: 'cancel',
+          },
+        ],
+        {
+          cancelable: true,
+          // onDismiss: () =>
+          //   Alert.alert(
+          //     'This alert was dismissed by tapping outside of the alert dialog.',
+          //   ),
+        },
+      );
+      // backupHandler(jsonData);
     }, SevenDays);
     () => clearInterval(timerRef.current);
   }, []);

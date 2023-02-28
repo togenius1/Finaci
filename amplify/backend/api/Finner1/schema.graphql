@@ -2,4 +2,4 @@ type User @model @auth(rules: [{allow: public}]) {
   id: ID!
   name: String
   backupKey: String
-} 
+}

@@ -1,3 +1,6 @@
+/**
+ * @type {import('@types/aws-lambda').APIGatewayProxyHandler}
+ */
 const aws = require('aws-sdk');
 const ddb = new aws.DynamoDB();
 

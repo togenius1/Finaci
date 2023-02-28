@@ -1,6 +1,6 @@
 {
   "api": {
-    "FinnerVer1": {
+    "Finner1": {
       "dependsOn": [],
       "output": {
         "authConfig": {
@@ -23,7 +23,7 @@
     }
   },
   "auth": {
-    "FinnerVer1": {
+    "Finner1": {
       "customAuth": false,
       "dependsOn": [
         {
@@ -32,7 +32,7 @@
             "Name"
           ],
           "category": "function",
-          "resourceName": "FinnerVer1PostConfirmation",
+          "resourceName": "Finner1PostConfirmation",
           "triggerProvider": "Cognito"
         }
       ],
@@ -57,26 +57,26 @@
     }
   },
   "function": {
-    "FinnerVer1PostConfirmation": {
+    "Finner1PostConfirmation": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     }
   },
   "parameters": {
-    "AMPLIFY_function_FinnerVer1PostConfirmation_deploymentBucketName": {
+    "AMPLIFY_function_Finner1PostConfirmation_deploymentBucketName": {
       "usedBy": [
         {
           "category": "function",
-          "resourceName": "FinnerVer1PostConfirmation"
+          "resourceName": "Finner1PostConfirmation"
         }
       ]
     },
-    "AMPLIFY_function_FinnerVer1PostConfirmation_s3Key": {
+    "AMPLIFY_function_Finner1PostConfirmation_s3Key": {
       "usedBy": [
         {
           "category": "function",
-          "resourceName": "FinnerVer1PostConfirmation"
+          "resourceName": "Finner1PostConfirmation"
         }
       ]
     }
