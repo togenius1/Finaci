@@ -8,8 +8,6 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 import {generateKeyPair, PRIVATE_KEY, PRNG, PUBLIC_KEY} from './util/crypto';
 import FinnerNavigator from './navigation/FinnerNavigator';
-
-import awsconfig from './src/aws-exports';
 import {useAppDispatch, useAppSelector} from './hooks';
 import {fetchCashAccountsData} from './store/cash-action';
 import {fetchAccountsData} from './store/account-action';
@@ -20,7 +18,8 @@ import {fetchIncomesData} from './store/income-action';
 import {fetchDailyTransactsData} from './store/dailyTransact-action';
 import {fetchMonthlyTransactsData} from './store/monthlyTransact-action';
 import {fetchWeeklyTransactsData} from './store/weeklyTransact-action';
-import {LazyUser, User} from './src/models';
+import awsconfig from './src/aws-exports';
+import { User } from './src/models';
 
 Amplify.configure(awsconfig);
 
@@ -53,9 +52,9 @@ const App = () => {
     // shallowEqual,
   );
 
-  const [currentUser, setCurrentUser] = useState([]);
+  const [currentUser, setCurrentUser] = useState();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>();
-  const [cloudPrivateKey, setCloudPrivateKey] = useState<string | null>();
+  const [cloudPrivateKey, setCloudPrivateKey] = useState<string | null>('');
   const [closedAds, setClosedAds] = useState<boolean>(false);
   // const [localPrivateKey, setLocalPrivateKey] = useState<string | null>();
 
@@ -83,14 +82,15 @@ const App = () => {
     if (accountsData.length === 0) {
       dispatch(fetchAccountsData());
     }
+    // generateNewKey();
   }, []);
 
   // Listening for Login events.
   useEffect(() => {
     const listener = async data => {
       if (data.payload.event === 'signIn') {
-        checkUser();
-        generateNewKey();
+        await checkUser();
+        await generateNewKey();
         setIsAuthenticated(true);
       }
       if (data.payload.event === 'signOut') {
@@ -116,19 +116,21 @@ const App = () => {
   const checkUser = async () => {
     // const authUser = await Auth.currentAuthenticatedUser({bypassCache: true});
     const authUser = await Auth.currentAuthenticatedUser();
-    const subId = authUser.attributes.sub.toString();
+    const subId = String(authUser.attributes.sub);
     const dbUser = await DataStore.query(User, c => c.id.eq(subId));
     setCurrentUser(dbUser);
 
-    const cloudPKey = dbUser?.backupKey;
+    const cloudPKey = dbUser[0]?.backupKey;
     setCloudPrivateKey(cloudPKey);
-    // let localPKey = String(await getMySecretKey());
-    // setLocalPrivateKey(localPKey);
-    // await generateNewKey();
+
+    console.log('dbUser: ', dbUser);
+    console.log('cloud key: ', cloudPKey);
   };
 
   // Generate new key
   const generateNewKey = async () => {
+    // Compare Cloud key with local key
+
     if (cloudPrivateKey === null || cloudPrivateKey === undefined) {
       // Remove old key
       await AsyncStorage.removeItem(PRIVATE_KEY);
@@ -144,7 +146,7 @@ const App = () => {
       // const originalUser = await DataStore.query(User, user?.id);
 
       await DataStore.save(
-        User.copyOf(currentUser[0], updated => {
+        User.copyOf(currentUser, updated => {
           updated.backupKey = String(secretKey);
         }),
       );
