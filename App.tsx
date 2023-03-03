@@ -19,7 +19,7 @@ import {fetchDailyTransactsData} from './store/dailyTransact-action';
 import {fetchMonthlyTransactsData} from './store/monthlyTransact-action';
 import {fetchWeeklyTransactsData} from './store/weeklyTransact-action';
 import awsconfig from './src/aws-exports';
-import { User } from './src/models';
+import {LazyUser, User} from './src/models';
 
 Amplify.configure(awsconfig);
 
@@ -52,7 +52,7 @@ const App = () => {
     // shallowEqual,
   );
 
-  const [currentUser, setCurrentUser] = useState();
+  const [currentUser, setCurrentUser] = useState<LazyUser[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>();
   const [cloudPrivateKey, setCloudPrivateKey] = useState<string | null>('');
   const [closedAds, setClosedAds] = useState<boolean>(false);
@@ -69,32 +69,35 @@ const App = () => {
   // }, []);
 
   // Load Existing Category
-  useEffect(() => {
-    if (expenseCateData.length === 0) {
-      dispatch(fetchExpenseCategoriesData());
-    }
-    if (incomesCateData.length === 0) {
-      dispatch(fetchIncomeCategoriesData());
-    }
-    if (cashData.length === 0) {
-      dispatch(fetchCashAccountsData());
-    }
-    if (accountsData.length === 0) {
-      dispatch(fetchAccountsData());
-    }
-    // generateNewKey();
-  }, []);
+  // useEffect(() => {
+
+  // }, []);
 
   // Listening for Login events.
   useEffect(() => {
     const listener = async data => {
       if (data.payload.event === 'signIn') {
-        await checkUser();
-        await generateNewKey();
+        // Load Existing Category
+        if (expenseCateData.length === 0) {
+          dispatch(fetchExpenseCategoriesData());
+        }
+        if (incomesCateData.length === 0) {
+          dispatch(fetchIncomeCategoriesData());
+        }
+        if (cashData.length === 0) {
+          dispatch(fetchCashAccountsData());
+        }
+        if (accountsData.length === 0) {
+          dispatch(fetchAccountsData());
+        }
+
+        // Check and generate a new key
+        await checkUserAndGenerateNewKey();
+        // generateNewKey();
         setIsAuthenticated(true);
       }
       if (data.payload.event === 'signOut') {
-        checkUser();
+        checkUserAndGenerateNewKey();
         setIsAuthenticated(false);
       }
     };
@@ -113,7 +116,7 @@ const App = () => {
   }, []);
 
   // Check if authenticated user.
-  const checkUser = async () => {
+  const checkUserAndGenerateNewKey = async () => {
     // const authUser = await Auth.currentAuthenticatedUser({bypassCache: true});
     const authUser = await Auth.currentAuthenticatedUser();
     const subId = String(authUser.attributes.sub);
@@ -121,17 +124,20 @@ const App = () => {
     setCurrentUser(dbUser);
 
     const cloudPKey = dbUser[0]?.backupKey;
-    setCloudPrivateKey(cloudPKey);
+    setCloudPrivateKey(cloudPKey!);
 
     console.log('dbUser: ', dbUser);
-    console.log('cloud key: ', cloudPKey);
+    console.log('cloudPKey: ', cloudPKey);
+
+    generateNewKey();
   };
 
   // Generate new key
   const generateNewKey = async () => {
     // Compare Cloud key with local key
-
-    if (cloudPrivateKey === null || cloudPrivateKey === undefined) {
+    console.log('Outside: ------------------', cloudPrivateKey);
+    if (cloudPrivateKey === null) {
+      console.log('Inside: ------------------', cloudPrivateKey);
       // Remove old key
       await AsyncStorage.removeItem(PRIVATE_KEY);
       await AsyncStorage.removeItem(PUBLIC_KEY);
@@ -146,7 +152,7 @@ const App = () => {
       // const originalUser = await DataStore.query(User, user?.id);
 
       await DataStore.save(
-        User.copyOf(currentUser, updated => {
+        User.copyOf(currentUser[0], updated => {
           updated.backupKey = String(secretKey);
         }),
       );

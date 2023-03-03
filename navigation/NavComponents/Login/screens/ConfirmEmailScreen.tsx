@@ -18,6 +18,10 @@ export default function ConfirmEmailScreen({navigation, route}: Props) {
   const onConfirmPressed = async data => {
     try {
       await Auth.confirmSignUp(data.username, data.code);
+
+      // Generate new key and upload to a local and cloud DB.
+      
+
       navigation.navigate('SignIn');
     } catch (e) {
       Alert.alert('Oops', e.message);
