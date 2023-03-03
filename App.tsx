@@ -126,18 +126,13 @@ const App = () => {
     const cloudPKey = dbUser[0]?.backupKey;
     setCloudPrivateKey(cloudPKey!);
 
-    console.log('dbUser: ', dbUser);
-    console.log('cloudPKey: ', cloudPKey);
-
     generateNewKey();
   };
 
   // Generate new key
   const generateNewKey = async () => {
     // Compare Cloud key with local key
-    console.log('Outside: ------------------', cloudPrivateKey);
     if (cloudPrivateKey === null) {
-      console.log('Inside: ------------------', cloudPrivateKey);
       // Remove old key
       await AsyncStorage.removeItem(PRIVATE_KEY);
       await AsyncStorage.removeItem(PUBLIC_KEY);

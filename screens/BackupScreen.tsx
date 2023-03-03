@@ -122,6 +122,32 @@ const BackupScreen = () => {
     await refreshAuthorize(authState, setAuthState);
   }, [authState]);
 
+  // Backup Alert
+  const backupAlert = obj => {
+    Alert.alert(
+      'Backup data!',
+      'Do you want to backup your data now?',
+      [
+        {
+          text: 'Yes',
+          onPress: () => backupHandler(obj),
+          // style: 'cancel',
+        },
+        {
+          text: 'No',
+          style: 'cancel',
+        },
+      ],
+      {
+        cancelable: true,
+        // onDismiss: () =>
+        //   Alert.alert(
+        //     'This alert was dismissed by tapping outside of the alert dialog.',
+        //   ),
+      },
+    );
+  };
+
   // Backup
   const backupHandler = async obj => {
     const encrypted = await encryption(obj);
@@ -244,7 +270,7 @@ const BackupScreen = () => {
 
         <Pressable
           style={({pressed}) => pressed && styles.pressed}
-          onPress={() => backupHandler(jsonData)}>
+          onPress={() => backupAlert(jsonData)}>
           <View style={{marginTop: 20}}>
             <Text style={{fontSize: 18}}>Backup</Text>
             <Text style={{fontSize: 14}}>Backup your data to cloud</Text>
