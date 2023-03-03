@@ -186,7 +186,7 @@ const BackupScreen = () => {
       });
 
     const decrypted = await decryption(String(encryptedData));
-    // console.log('decrypted: ', decrypted);
+    console.log('decrypted: ', decrypted);
     // return decrypted;
     // Replace data to local storage
   };
@@ -263,8 +263,14 @@ const BackupScreen = () => {
     <View style={styles.container}>
       <View style={styles.inner}>
         <View>
-          <Text style={{fontSize: 18, fontWeight: 'bold', color: 'black'}}>
-            Backup <Text style={{fontSize: 12}}>(Google drive)</Text>
+          <Text
+            style={{
+              fontSize: width * 0.058,
+              fontWeight: 'bold',
+              color: 'black',
+            }}>
+            Backup and Restore{' '}
+            <Text style={{fontSize: 12}}>(Google drive)</Text>
           </Text>
         </View>
 
@@ -272,8 +278,12 @@ const BackupScreen = () => {
           style={({pressed}) => pressed && styles.pressed}
           onPress={() => backupAlert(jsonData)}>
           <View style={{marginTop: 20}}>
-            <Text style={{fontSize: 18}}>Backup</Text>
-            <Text style={{fontSize: 14}}>Backup your data to cloud</Text>
+            <Text style={{fontSize: width * 0.048, fontWeight: 'bold'}}>
+              Backup
+            </Text>
+            <Text style={{fontSize: 14}}>
+              Backup your data to cloud storage
+            </Text>
           </View>
         </Pressable>
 
@@ -281,10 +291,12 @@ const BackupScreen = () => {
           style={({pressed}) => pressed && styles.pressed}
           onPress={() => restoreHandler()}>
           <View style={{marginTop: 20}}>
-            <Text style={{fontSize: 18}}>
-              Restore <Text style={{fontSize: 12}}>(Coming soon)</Text>
+            <Text style={{fontSize: width * 0.048, fontWeight: 'bold'}}>
+              Restore
             </Text>
-            <Text style={{fontSize: 14}}>Restore your data from cloud</Text>
+            <Text style={{fontSize: 14}}>
+              Restore your data from cloud storage
+            </Text>
           </View>
         </Pressable>
       </View>
