@@ -390,7 +390,7 @@ const OverviewScreen = ({navigation}: Props) => {
       <MonthYearList
         monthlyPressed={false}
         onMYSelectedHandler={onMonthYearSelectedHandler}
-        year={year}
+        year={Number(year)}
         setYear={setYear}
         month={month}
         setIsModalVisible={setIsMYListVisible}
@@ -398,10 +398,7 @@ const OverviewScreen = ({navigation}: Props) => {
       />
 
       <AddBtn
-        onPress={() => {
-          navigation.navigate('AddExpenses')
-        }
-      }
+        onPress={() => navigation.navigate('AddExpenses')}
         icon={'plus-circle'}
         size={width * 0.25}
         color={'#b6482a'}
