@@ -123,6 +123,11 @@ export type SpendingTabTabNavigationType = NativeStackNavigationProp<
   'SpendingTab'
 >;
 
+export type AddExpensesNavigationType = NativeStackNavigationProp<
+  RootStackParamList,
+  'AddExpenses'
+>;
+
 //------------------------------------------------------------------------
 //---------------------------Route Type------------------------------------
 

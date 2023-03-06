@@ -53,13 +53,6 @@ const BackupScreen = () => {
   const dataLoaded = useAppSelector(store => store);
   const jsonData = dataLoaded?.expenses?.expenses;
 
-  console.log('PRIVATE_KEY: ', PRIVATE_KEY);
-
-  useEffect(() => {
-    // setJsonData(EXPENSES);
-    setUpKey();
-  }, []);
-
   // useEffect(() => {
   //   prefetchConfiguration({
   //     warmAndPrefetchChrome: true,
@@ -67,6 +60,11 @@ const BackupScreen = () => {
   //     ...configs.auth0,
   //   });
   // }, []);
+
+  useEffect(() => {
+    // setJsonData(EXPENSES);
+    setUpKey();
+  }, []);
 
   // Timer to backup. Should move to the App file?
   useEffect(() => {

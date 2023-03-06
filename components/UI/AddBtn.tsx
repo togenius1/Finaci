@@ -3,6 +3,13 @@ import React from 'react';
 // import Ionicons from 'react-native-vector-icons/Ionicons';
 // import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
+type Props = {
+  onPress: () => void;
+  icon: string;
+  size: number;
+  color: string;
+};
+
 const {width, height} = Dimensions.get('window');
 
 const AddBtn = ({onPress, style, icon, size, color}: Props) => {
@@ -81,9 +88,3 @@ const styles = StyleSheet.create({
 });
 
 // ================================ Type =================================
-type Props = {
-  onPress: () => void;
-  icon: string;
-  size: number;
-  color: string;
-};

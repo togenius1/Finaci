@@ -20,10 +20,6 @@ import AddBtn from '../components/UI/AddBtn';
 import Menu from '../components/Menu/Menu';
 import {useFocusEffect} from '@react-navigation/native';
 
-type Props = {
-  navigation: OverviewNavigationProp;
-};
-
 const {width, height} = Dimensions.get('window');
 
 let MONTH = moment().month() + 1;
@@ -37,7 +33,7 @@ const initToDate = moment().format('YYYY-MM-DD');
 const TopTab = createMaterialTopTabNavigator();
 // const navigation = useNavigation();
 
-function OverviewTab({setFocusedTabIndex, fromDate, toDate}) {
+function OverviewTab({setFocusedTabIndex, fromDate, toDate}: OverviewTabType) {
   return (
     <TopTab.Navigator
       screenListeners={{
@@ -399,8 +395,6 @@ const OverviewScreen = ({navigation}: Props) => {
 
       <AddBtn
         onPress={() => navigation.navigate('AddExpenses')}
-        icon={'plus-circle'}
-        size={width * 0.25}
         color={'#b6482a'}
       />
     </View>
@@ -462,3 +456,14 @@ const styles = StyleSheet.create({
     opacity: 0.75,
   },
 });
+
+// ==================================== TYPE =========================================
+type Props = {
+  navigation: OverviewNavigationProp;
+};
+
+type OverviewTabType = {
+  setFocusedTabIndex: number;
+  fromDate: string;
+  toDate: string;
+};
