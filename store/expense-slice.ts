@@ -8,6 +8,7 @@ const expenseSlice = createSlice({
   reducers: {
     // Load data from DB to Mobile
     replaceExpenses(state, action) {
+      // console.log('action.payload.expenses: ', action.payload.expenses);
       state.expenses = action.payload.expenses;
     },
 

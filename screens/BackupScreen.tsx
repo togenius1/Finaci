@@ -11,6 +11,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {prefetchConfiguration} from 'react-native-app-auth';
 import DocumentPicker from 'react-native-document-picker';
 import RNFS from 'react-native-fs';
+import {v4 as uuidv4} from 'uuid';
 
 import {configs, defaultAuthState} from '../util/authConfig';
 import {decryption} from '../util/decrypt';
@@ -29,7 +30,12 @@ import {
   stringToUint8Array,
 } from '../util/crypto';
 import {User} from '../src/models';
-import {useAppSelector} from '../hooks';
+import {useAppDispatch, useAppSelector} from '../hooks';
+import {expenseActions} from '../store/expense-slice';
+import {incomeActions} from '../store/income-slice';
+import moment from 'moment';
+import {sumByDate} from '../util/math';
+import {dailyTransactsActions} from '../store/dailyTransact-slice';
 
 // Constant
 const {width} = Dimensions.get('window');
@@ -46,15 +52,20 @@ const month = day * 30;
 const BackupScreen = () => {
   const [authState, setAuthState] = useState<AuthStateType>(defaultAuthState);
   const [isLoading, setIsLoading] = useState<boolean | undefined>(false);
+  // const [isExpenseBoxChecked, setIsExpenseBoxChecked] = useState<boolean | undefined>(false);
   const auth = useRef<string | null>('');
   const timerRef = useRef();
-  // const [jsonData, setJsonData] = useState<ExpenseType>();
-
+  // const [expensesData, setexpensesData] = useState<ExpenseType>();
+  const dispatch = useAppDispatch();
   const dataLoaded = useAppSelector(store => store);
-  const jsonData = dataLoaded?.expenses?.expenses;
+  const expensesData = dataLoaded?.expenses?.expenses;
+  const incomesData = dataLoaded?.incomes?.incomes;
+
+  // [0] ==> incomesData, [1] ==> expensesData
+  const incomeAndExpenseObj = [incomesData, expensesData];
 
   useEffect(() => {
-    // setJsonData(EXPENSES);
+    // setexpensesData(EXPENSES);
     setUpKey();
   }, []);
 
@@ -76,7 +87,7 @@ const BackupScreen = () => {
         [
           {
             text: 'Yes',
-            onPress: () => backupHandler(jsonData),
+            onPress: () => backupHandler(incomeAndExpenseObj),
             // style: 'cancel',
           },
           // {
@@ -96,7 +107,7 @@ const BackupScreen = () => {
           //   ),
         },
       );
-      // backupHandler(jsonData);
+      // backupHandler(expensesData);
     }, SevenDays);
     () => clearInterval(timerRef.current);
   }, []);
@@ -172,6 +183,33 @@ const BackupScreen = () => {
     await findFolderAndInsertFile(encrypted, fileName);
   };
 
+  // Ask to import data
+  const askToRestoreData = () => {
+    // Ask to replace the old?
+    Alert.alert(
+      'Do you want to restore an expense data?',
+      'Your old data on your phone will be replaced with the new data!',
+      [
+        {
+          text: 'Yes',
+          onPress: () => restoreHandler(),
+          // style: 'cancel',
+        },
+        {
+          text: 'No',
+          style: 'cancel',
+        },
+      ],
+      {
+        cancelable: true,
+        // onDismiss: () =>
+        //   Alert.alert(
+        //     'This alert was dismissed by tapping outside of the alert dialog.',
+        //   ),
+      },
+    );
+  };
+
   // Restore data from google drive
   const restoreHandler = async () => {
     const pickedFile = await handleDocumentSelection();
@@ -186,14 +224,40 @@ const BackupScreen = () => {
       });
 
     const decrypted = await decryption(String(encryptedData));
-    console.log('decrypted: ', decrypted);
     // return decrypted;
+
     // Replace data to local storage
+    await replaceNewIncomeDataToStorage(decrypted[0]);
+    await replaceNewExpenseDataToStorage(decrypted[1]);
+
+    // Calculate new daily, weekly, monthly transactions and save it to local storage
+  };
+
+  // Replace the old expense data in storage with imported data
+  const replaceNewExpenseDataToStorage = async obj => {
+    dispatch(
+      expenseActions.replaceExpenses({
+        expenses: obj,
+      }),
+    );
+  };
+
+  // Replace the old income data in storage with imported data
+  const replaceNewIncomeDataToStorage = async obj => {
+    dispatch(
+      incomeActions.replaceIncome({
+        incomes: obj,
+      }),
+    );
   };
 
   // Create folder
   async function createFolder(fileName: string) {
-    const folderObj = await fetchCreateFolder(auth.current, jsonData, fileName);
+    const folderObj = await fetchCreateFolder(
+      auth.current,
+      expensesData,
+      fileName,
+    );
     return folderObj;
   }
 
@@ -276,7 +340,7 @@ const BackupScreen = () => {
 
         <Pressable
           style={({pressed}) => pressed && styles.pressed}
-          onPress={() => backupAlert(jsonData)}>
+          onPress={() => backupAlert(incomeAndExpenseObj)}>
           <View style={{marginTop: 20}}>
             <Text style={{fontSize: width * 0.048, fontWeight: 'bold'}}>
               Backup
@@ -289,7 +353,7 @@ const BackupScreen = () => {
 
         <Pressable
           style={({pressed}) => pressed && styles.pressed}
-          onPress={() => restoreHandler()}>
+          onPress={() => askToRestoreData()}>
           <View style={{marginTop: 20}}>
             <Text style={{fontSize: width * 0.048, fontWeight: 'bold'}}>
               Restore
