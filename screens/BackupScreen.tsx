@@ -261,15 +261,16 @@ const BackupScreen = () => {
   const monthlyTransactionsUpdate = object => {
     // if (type === 'expense') {
     // Previous monthly transactions values
-    const expenseMonthlyObj = sumByMonth(object[1], 'expense');
+    const expenseMonthlyTrObj = sumByMonth(object[1], 'expense');
 
-    const incomeMonthlyObj = sumByMonth(object[0], 'income');
+    const incomeMonthlyTrObj = sumByMonth(object[0], 'income');
 
     // const income_monthly = incomeMonthly === undefined ? 0 : incomeMonthly;
 
-    // Replace new monthly transaction cal to storage
-    console.log('cal expenseMonthlyObj', expenseMonthlyObj);
-    console.log('cal incomeMonthlyObj', incomeMonthlyObj);
+    // Change array to monthly transaction pattern and
+    // replace new monthly transaction cal to storage
+    console.log('cal expenseMonthlyObj', expenseMonthlyTrObj);
+    console.log('cal incomeMonthlyObj', incomeMonthlyTrObj);
   };
 
   // Calculate and update new weekly transaction,
