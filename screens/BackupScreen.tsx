@@ -34,7 +34,7 @@ import {useAppDispatch, useAppSelector} from '../hooks';
 import {expenseActions} from '../store/expense-slice';
 import {incomeActions} from '../store/income-slice';
 import moment from 'moment';
-import {sumByDate} from '../util/math';
+import {sumByDate, sumByMonth} from '../util/math';
 import {dailyTransactsActions} from '../store/dailyTransact-slice';
 
 // Constant
@@ -193,7 +193,7 @@ const BackupScreen = () => {
         {
           text: 'Yes',
           onPress: () => restoreHandler(),
-          // style: 'cancel',
+          style: 'destructive',
         },
         {
           text: 'No',
@@ -225,12 +225,18 @@ const BackupScreen = () => {
 
     const decrypted = await decryption(String(encryptedData));
     // return decrypted;
+    console.log('decrypted: ', decrypted);
 
     // Replace data to local storage
     await replaceNewIncomeDataToStorage(decrypted[0]);
     await replaceNewExpenseDataToStorage(decrypted[1]);
 
-    // Calculate new daily, weekly, monthly transactions and save it to local storage
+    // Calculate and update new monthly transaction,
+    monthlyTransactionsUpdate(decrypted);
+    // Calculate and update new weekly transaction,
+    // weeklyTransactionsUpdate();
+    // Calculate and update new daily transaction,
+    // dailyTransactionsUpdate();
   };
 
   // Replace the old expense data in storage with imported data
@@ -249,6 +255,31 @@ const BackupScreen = () => {
         incomes: obj,
       }),
     );
+  };
+
+  // Calculate and update new monthly transaction,
+  const monthlyTransactionsUpdate = object => {
+    // if (type === 'expense') {
+    // Previous monthly transactions values
+    const expenseMonthlyObj = sumByMonth(object[1], 'expense');
+
+    const incomeMonthlyObj = sumByMonth(object[0], 'income');
+
+    // const income_monthly = incomeMonthly === undefined ? 0 : incomeMonthly;
+
+    // Replace new monthly transaction cal to storage
+    console.log('cal expenseMonthlyObj', expenseMonthlyObj);
+    console.log('cal incomeMonthlyObj', incomeMonthlyObj);
+  };
+
+  // Calculate and update new weekly transaction,
+  const weeklyTransactionsUpdate = () => {
+    console.log('cal new weekly transact');
+  };
+
+  // Calculate and update new daily transaction,
+  const dailyTransactionsUpdate = () => {
+    console.log('cal new daily transact');
   };
 
   // Create folder

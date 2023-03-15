@@ -190,6 +190,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
         sumByMonth(expenses, 'expense')?.filter(
           expense => expense?.month === month,
         )[0]?.amount + amount;
+        
       const incomeMonthly = sumByMonth(incomes, 'income')?.filter(
         income => income?.month === month,
       )[0]?.amount;
