@@ -345,3 +345,103 @@ export function sumByCustomDate(object, type, fromDate, toDate) {
 
   return results;
 }
+
+// SUMMATION  by MONTHLY Transaction
+export function sumTransactionByMonth(object, type) {
+  let results = [];
+
+  const expenseId = Array.from({length: 12}, (_, i) => `e${i + 1}`);
+
+  const incomeId = Array.from({length: 12}, (_, i) => `i${i + 1}`);
+
+  const amount =
+    type === 'expense' ? 'expense_monthly' : 'income' ? 'income_monthly' : '';
+
+  if (type === 'expense') {
+    results = [
+      {month: 1, expense_monthly: 0},
+      {month: 2, expense_monthly: 0},
+      {month: 3, expense_monthly: 0},
+      {month: 4, expense_monthly: 0},
+      {month: 5, expense_monthly: 0},
+      {month: 6, expense_monthly: 0},
+      {month: 7, expense_monthly: 0},
+      {month: 8, expense_monthly: 0},
+      {month: 9, expense_monthly: 0},
+      {month: 10, expense_monthly: 0},
+      {month: 11, expense_monthly: 0},
+      {month: 12, expense_monthly: 0},
+    ];
+  }
+  if (type === 'income') {
+    results = [
+      {month: 1, income_monthly: 0},
+      {month: 2, income_monthly: 0},
+      {month: 3, income_monthly: 0},
+      {month: 4, income_monthly: 0},
+      {month: 5, income_monthly: 0},
+      {month: 6, income_monthly: 0},
+      {month: 7, income_monthly: 0},
+      {month: 8, income_monthly: 0},
+      {month: 9, income_monthly: 0},
+      {month: 10, income_monthly: 0},
+      {month: 11, income_monthly: 0},
+      {month: 12, income_monthly: 0},
+    ];
+  }
+
+  if (type === 'expense') {
+    results = results.map((result, index) => ({
+      ...result,
+      id: expenseId[index],
+    }));
+  }
+  if (type === 'income') {
+    results = results.map((result, index) => ({
+      ...result,
+      id: incomeId[index],
+    }));
+  }
+
+  let mapDayToMonth;
+  if (type === 'expense') {
+    mapDayToMonth = object?.map(obj => ({
+      ...obj,
+      id: obj.id,
+      month: moment(obj?.date).month(),
+      expense_monthly: Number(obj?.amount),
+    }));
+  }
+  if (type === 'income') {
+    mapDayToMonth = object?.map(obj => ({
+      ...obj,
+      id: obj.id,
+      month: moment(obj?.date).month(),
+      income_monthly: Number(obj?.amount),
+    }));
+  }
+
+  const sumPerMonth = mapDayToMonth?.reduce((acc, cur) => {
+    acc[cur.month] = acc[cur.month] + +cur.amount || cur.amount; // increment or initialize to cur.value
+    if (type === 'expense') {
+      results[cur.month] = {
+        id: results[cur.month].id,
+        date: new Date(),
+        month: cur.month + 1,
+        expense_monthly: acc[cur.month],
+      };
+    }
+    if (type === 'income') {
+      results[cur.month] = {
+        id: results[cur.month].id,
+        date: new Date(),
+        month: cur.month + 1,
+        income_monthly: acc[cur.month],
+      };
+    }
+
+    return acc;
+  }, new Array(12).fill(0));
+  const resultFiltered = results?.filter(result => result !== undefined);
+  return resultFiltered;
+}

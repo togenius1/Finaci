@@ -34,7 +34,7 @@ import {useAppDispatch, useAppSelector} from '../hooks';
 import {expenseActions} from '../store/expense-slice';
 import {incomeActions} from '../store/income-slice';
 import moment from 'moment';
-import {sumByDate, sumByMonth} from '../util/math';
+import {sumByDate, sumByMonth, sumTransactionByMonth} from '../util/math';
 import {dailyTransactsActions} from '../store/dailyTransact-slice';
 
 // Constant
@@ -225,7 +225,6 @@ const BackupScreen = () => {
 
     const decrypted = await decryption(String(encryptedData));
     // return decrypted;
-    console.log('decrypted: ', decrypted);
 
     // Replace data to local storage
     await replaceNewIncomeDataToStorage(decrypted[0]);
@@ -261,16 +260,17 @@ const BackupScreen = () => {
   const monthlyTransactionsUpdate = object => {
     // if (type === 'expense') {
     // Previous monthly transactions values
-    const expenseMonthlyTrObj = sumByMonth(object[1], 'expense');
+    const expenseMonthlyTrObj = sumTransactionByMonth(object[1], 'expense');
 
-    const incomeMonthlyTrObj = sumByMonth(object[0], 'income');
+    const incomeMonthlyTrObj = sumTransactionByMonth(object[0], 'income');
 
-    // const income_monthly = incomeMonthly === undefined ? 0 : incomeMonthly;
+    // Filter zero amount out.
 
     // Change array to monthly transaction pattern and
     // replace new monthly transaction cal to storage
     console.log('cal expenseMonthlyObj', expenseMonthlyTrObj);
     console.log('cal incomeMonthlyObj', incomeMonthlyTrObj);
+    
   };
 
   // Calculate and update new weekly transaction,
