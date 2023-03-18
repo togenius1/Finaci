@@ -292,11 +292,7 @@ const BackupScreen = () => {
 
   // Create folder
   async function createFolder(fileName: string) {
-    const folderObj = await fetchCreateFolder(
-      auth.current,
-      expensesData,
-      fileName,
-    );
+    const folderObj = await fetchCreateFolder(auth.current, expensesData, '');
     return folderObj;
   }
 
@@ -309,7 +305,10 @@ const BackupScreen = () => {
   }
 
   // Fin any folders in the local storage.
-  async function findFolderAndInsertFile(obj, fileName: string) {
+  async function findFolderAndInsertFile(
+    encryptedData: string,
+    fileName: string,
+  ) {
     let folderId: string | null;
     folderId = await AsyncStorage.getItem('@folderbackup_key');
     const folderInDrive = await FindFolderInGoogleDrive();
@@ -318,11 +317,19 @@ const BackupScreen = () => {
       fd => fd.id === folderId,
     )?.id;
 
-    if (folderId === null || foundFolderId === undefined) {
+    if (!folderId || !foundFolderId) {
       const folderObj = await createFolder(fileName);
       await AsyncStorage.setItem('@folderbackup_key', folderObj?.id);
+      folderId = folderObj?.id;
+
+      await fetchCreateFile(
+        auth.current,
+        encryptedData,
+        String(folderId),
+        fileName,
+      );
     } else {
-      await fetchCreateFile(auth.current, obj, folderId, fileName);
+      await fetchCreateFile(auth.current, encryptedData, folderId, fileName);
     }
   }
 

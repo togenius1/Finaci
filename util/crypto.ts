@@ -7,6 +7,7 @@ import {
   decode as decodeBase64,
   encode as encodeBase64,
 } from '@stablelib/base64';
+import {Alert} from 'react-native';
 
 export const PRIVATE_KEY = 'PRIVATE_KEY';
 export const PUBLIC_KEY = 'PUBLIC_KEY';
@@ -73,19 +74,19 @@ export const decrypt = (
 export const stringToUint8Array = (content: string) =>
   Uint8Array.from(content.split(',').map(str => parseInt(str)));
 
-export const getMySecretKey = async () => {
+export const getMySecretKey = async (): Promise<Uint8Array> => {
   const keyString = await AsyncStorage.getItem(PRIVATE_KEY);
   if (!keyString) {
-    // Alert.alert(
-    //   "You haven't set your keypair yet",
-    //   'Go to settings, and generate a new keypair',
-    //   [
-    //     {
-    //       text: 'Open setting',
-    //       // onPress: () => navigation.navigate('Settings'),
-    //     },
-    //   ],
-    // );
+    Alert.alert(
+      "You haven't set your keypair yet",
+      'Go to settings, and generate a new keypair',
+      [
+        {
+          text: 'Open setting',
+          // onPress: () => navigation.navigate('Settings'),
+        },
+      ],
+    );
     return;
   }
 

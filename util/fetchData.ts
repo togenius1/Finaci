@@ -2,7 +2,7 @@
 export async function fetchCreateFolder(
   auth: string | null,
   data: {},
-  fileName: string,
+  fileName: string | null,
 ) {
   const folderObj = await fetch('https://www.googleapis.com/drive/v3/files', {
     method: 'POST',
@@ -18,7 +18,11 @@ export async function fetchCreateFolder(
   })
     .then(response => response.json())
     .then(async folderData => {
-      await fetchCreateFile(auth, data, folderData?.id, fileName);
+      // Create Empty Folder for the first time
+      if (fileName === '') {
+        return folderData;
+      }
+      await fetchCreateFile(auth, data, folderData?.id, String(fileName));
       return folderData;
     })
     .catch(error => console.error('Error:', error));
