@@ -135,6 +135,7 @@ export function sumByMonth(object, type) {
     };
     return acc;
   }, new Array(12).fill(0));
+
   const resultFiltered = results?.filter(result => result !== undefined);
   return resultFiltered;
 }
@@ -352,58 +353,87 @@ export function sumByCustomDate(object, type, fromDate, toDate) {
 export function sumTransactionByMonth(object) {
   let results = [];
 
-  const Id_index = Array.from({length: 12}, (_, i) => `ei${i + 1}`);
+  // const Id_index = Array.from({length: 12}, (_, i) => `ei${i + 1}`);
 
   // const incomeId = Array.from({length: 12}, (_, i) => `i${i + 1}`);
 
   // if (type === 'expense') {
   results = [
-    {month: 1, expense_monthly: 0, income_monthly: 0},
-    {month: 2, expense_monthly: 0, income_monthly: 0},
-    {month: 3, expense_monthly: 0, income_monthly: 0},
-    {month: 4, expense_monthly: 0, income_monthly: 0},
-    {month: 5, expense_monthly: 0, income_monthly: 0},
-    {month: 6, expense_monthly: 0, income_monthly: 0},
-    {month: 7, expense_monthly: 0, income_monthly: 0},
-    {month: 8, expense_monthly: 0, income_monthly: 0},
-    {month: 9, expense_monthly: 0, income_monthly: 0},
-    {month: 10, expense_monthly: 0, income_monthly: 0},
-    {month: 11, expense_monthly: 0, income_monthly: 0},
-    {month: 12, expense_monthly: 0, income_monthly: 0},
+    {id: 'ei1', month: 1, expense_monthly: 0, income_monthly: 0},
+    {id: 'ei2', month: 2, expense_monthly: 0, income_monthly: 0},
+    {id: 'ei3', month: 3, expense_monthly: 0, income_monthly: 0},
+    {id: 'ei4', month: 4, expense_monthly: 0, income_monthly: 0},
+    {id: 'ei5', month: 5, expense_monthly: 0, income_monthly: 0},
+    {id: 'ei6', month: 6, expense_monthly: 0, income_monthly: 0},
+    {id: 'ei7', month: 7, expense_monthly: 0, income_monthly: 0},
+    {id: 'ei8', month: 8, expense_monthly: 0, income_monthly: 0},
+    {id: 'ei9', month: 9, expense_monthly: 0, income_monthly: 0},
+    {id: 'ei10', month: 10, expense_monthly: 0, income_monthly: 0},
+    {id: 'ei11', month: 11, expense_monthly: 0, income_monthly: 0},
+    {id: 'ei12', month: 12, expense_monthly: 0, income_monthly: 0},
   ];
 
   // if (type === 'expense') {
-  results = results.map((result, index) => ({
-    ...result,
-    id: Id_index[index],
-  }));
+  // results = results.map((result, index) => ({
+  //   ...result,
+  //   id: Id_index[index],
+  // }));
 
-  const mapDayToMonth = object?.map(obj => ({
-    ...obj[1],
-    id: obj[1].id,
+  // Income Month
+  const mapIncomeToMonth = object[0]?.map(obj => ({
+    ...obj,
+    // id: obj[0].id,
     month: moment(obj?.date).month(),
-    income_monthly: Number(obj[0]?.amount),
-    expense_monthly: Number(obj[1]?.amount),
+    // income_monthly: Number(obj[0]?.amount),
+    // expense_monthly: Number(obj[1]?.amount),
   }));
 
-  console.log('mapDayToMonth: ', mapDayToMonth);
-  console.log('Length1, Length2: ', object[0]?.length, object[1]?.length);
+  // Expense Month
+  const mapExpenseToMonth = object[1]?.map(obj => ({
+    ...obj,
+    // id: obj[0].id,
+    month: moment(obj?.date).month(),
+    // income_monthly: Number(obj[0]?.amount),
+    // expense_monthly: Number(obj[1]?.amount),
+  }));
 
-  const sumPerMonth = mapDayToMonth?.reduce((acc, cur) => {
-    acc[cur.month] =
-      acc[cur.month] + +cur?.expense_monthly || +cur?.expense_monthly; // increment or initialize to cur.value
+  // Sum by Month
+  const sumByMonthIncome = sumByMonth(mapIncomeToMonth, 'income');
+  const sumByMonthExpense = sumByMonth(mapExpenseToMonth, 'expense');
 
-    // console.log(acc[cur.month]);
-    // results[cur.month] = {
-    //   id: results[cur.month].id,
-    //   date: new Date(),
-    //   month: cur.month + 1,
-    //   income_monthly: acc[cur.month],
-    //   expense_monthly: acc[cur.month],
-    // };
+  // console.log('sumByMonthExpense: ', sumByMonthExpense);
+
+  // Combine expense and income arrays
+  const expenseIncome = [mapIncomeToMonth, mapExpenseToMonth];
+
+
+  // Sum income by month
+  // ******* Try This
+  // https://stackoverflow.com/questions/30667121/javascript-sum-multidimensional-array
+  
+  // const sumIncomePerMonth = expenseIncome[0]?.reduce((acc, cur, index) => {
+  //   // sum all incomes for month
+  //   acc[cur?.month] = acc[cur?.month] + +cur?.amount || cur?.amount;
+
+  //   // console.log('acc: ', acc[cur?.month]);
+
+  //   results[cur.month] = {
+  //     id: results[cur.month].id,
+  //     date: new Date(),
+  //     month: cur.month + 1,
+  //     income_monthly: acc[cur.month],
+  //     // expense_monthly: acc[cur.month],
+  //   };
 
     return acc;
   }, new Array(12).fill(0));
+
+  const result = array.map(subArr => {
+    return subArr.reduce((pre, item) => pre + item, 0)
+  })
+
+  console.log('results: ', results);
+
   const resultFiltered = results?.filter(result => result !== undefined);
   return resultFiltered;
 }

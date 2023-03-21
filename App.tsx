@@ -226,3 +226,75 @@ const styles = StyleSheet.create({
     opacity: 0.65,
   },
 });
+
+// ========================================================
+const obj = [
+  [
+    {
+      amount: 2000,
+      cateId: 'ic3',
+      date: '2023-02-01 13:23:00',
+      id: 'income-8a6dd677-cde5-4c63-869a-d7cdfcb92872',
+      note: '',
+    },
+    {
+      accountId: 'cash-ca069d57-a398-46fb-ab68-68a713449d4d',
+      amount: 3000,
+      cateId: 'ic4',
+      date: '2023-03-21 13:32:10',
+      id: 'income-db3278e3-b7bb-4354-b1b7-2154da1e4167',
+      note: '',
+    },
+    {
+      accountId: 'cash-ca069d57-a398-46fb-ab68-68a713449d4d',
+      amount: 3000,
+      cateId: 'ic5',
+      date: '2023-03-21 13:32:46',
+      id: 'income-d806f09f-9296-4108-8ff0-61ae9f9e7c3c',
+      note: '',
+    },
+    {
+      amount: 2000,
+      cateId: 'ic3',
+      date: '2023-02-02 13:23:00',
+      id: 'income-38ef6473-6ab5-44da-894a-1fff38d3ff4b',
+      note: '',
+    },
+  ],
+  [
+    {
+      accountId: 'cash-ca069d57-a398-46fb-ab68-68a713449d4d',
+      amount: 200,
+      cateId: 'ec1',
+      date: '2023-02-01 13:23:00',
+      id: 'expense-a8d1b2a6-a6cc-4821-aec9-fd00bf91717b',
+      note: '',
+    },
+    {
+      accountId: 'cash-ca069d57-a398-46fb-ab68-68a713449d4d',
+      amount: 300,
+      cateId: 'ec1',
+      date: '2023-03-21 13:31:55',
+      id: 'expense-95da8a83-af30-4a8c-bf2b-14e3785c657b',
+      note: '',
+    },
+    {
+      accountId: 'cash-ca069d57-a398-46fb-ab68-68a713449d4d',
+      amount: 300,
+      cateId: 'ec1',
+      date: '2023-03-21 13:23:00',
+      id: 'expense-36d10214-8a8b-4c75-815a-f18553a23f40',
+      note: '',
+    },
+    {
+      accountId: 'cash-ca069d57-a398-46fb-ab68-68a713449d4d',
+      amount: 200,
+      cateId: 'ec2',
+      date: '2023-02-02 13:23:00',
+      id: 'expense-c76ed3b4-f902-4c84-b1e3-9ed2c423ec06',
+      note: '',
+    },
+  ],
+];
+
+
