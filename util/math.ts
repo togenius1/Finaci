@@ -1,6 +1,7 @@
 import {v4 as uuidv4} from 'uuid';
 import moment from 'moment';
 import {getWeekInMonth} from './date';
+import {groupCollapsed} from 'console';
 
 //sort Data by day
 export function sortDataByDay(obj) {
@@ -384,8 +385,6 @@ export function sumTransactionByMonth(object) {
     ...obj,
     // id: obj[0].id,
     month: moment(obj?.date).month(),
-    // income_monthly: Number(obj[0]?.amount),
-    // expense_monthly: Number(obj[1]?.amount),
   }));
 
   // Expense Month
@@ -393,46 +392,51 @@ export function sumTransactionByMonth(object) {
     ...obj,
     // id: obj[0].id,
     month: moment(obj?.date).month(),
-    // income_monthly: Number(obj[0]?.amount),
-    // expense_monthly: Number(obj[1]?.amount),
   }));
-
-  // Sum by Month
-  const sumByMonthIncome = sumByMonth(mapIncomeToMonth, 'income');
-  const sumByMonthExpense = sumByMonth(mapExpenseToMonth, 'expense');
-
-  // console.log('sumByMonthExpense: ', sumByMonthExpense);
 
   // Combine expense and income arrays
   const expenseIncome = [mapIncomeToMonth, mapExpenseToMonth];
 
+  // console.log('expenseIncome: ', expenseIncome);
 
-  // Sum income by month
-  // ******* Try This
+  // ******* Try This:
   // https://stackoverflow.com/questions/30667121/javascript-sum-multidimensional-array
-  
-  // const sumIncomePerMonth = expenseIncome[0]?.reduce((acc, cur, index) => {
-  //   // sum all incomes for month
-  //   acc[cur?.month] = acc[cur?.month] + +cur?.amount || cur?.amount;
+  // Sum Expense and Income for each month
+  const sumExInForMonth = expenseIncome
+    .reduce((a, b) => a.concat(b))
+    .reduce((a, b) => {
+      const idx = a.findIndex(
+        elem =>
+          elem.month === b.month &&
+          moment(elem.date).year() === moment(b.date).year() &&
+          elem.id.split('-')[0] === b.id.split('-')[0],
+      );
 
-  //   // console.log('acc: ', acc[cur?.month]);
+      if (~idx) {
+        a[idx].amount += b.amount;
+      } else {
+        a.push(JSON.parse(JSON.stringify(b)));
+      }
+      return a;
+    }, []);
 
-  //   results[cur.month] = {
-  //     id: results[cur.month].id,
-  //     date: new Date(),
-  //     month: cur.month + 1,
-  //     income_monthly: acc[cur.month],
-  //     // expense_monthly: acc[cur.month],
-  //   };
+  // console.log('sumExInForMonth: ', sumExInForMonth);
 
-    return acc;
-  }, new Array(12).fill(0));
+  // Group
 
-  const result = array.map(subArr => {
-    return subArr.reduce((pre, item) => pre + item, 0)
-  })
+  const groupByMonth = sumExInForMonth.reduce(function (rv, x) {
+    (rv[x['month']] = rv[x['month']] || []).push(x);
+    return rv;
+  }, {});
 
-  console.log('results: ', results);
+  // console.log('groupBy: ', typeof groupByMonth);
+  // console.log('groupBy1: ', groupByMonth[1][0]);
+  // console.log('groupBy1: ', groupByMonth[1][0].amount);
+  // console.log('length: ', Object.keys(groupByMonth).length);
+
+  for (let i = 1; i <= Object.keys(groupByMonth).length; i++) {
+    console.log(groupByMonth[i][0]);
+  }
 
   const resultFiltered = results?.filter(result => result !== undefined);
   return resultFiltered;
