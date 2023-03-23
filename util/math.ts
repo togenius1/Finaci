@@ -348,17 +348,10 @@ export function sumByCustomDate(object, type, fromDate, toDate) {
   return results;
 }
 
-// SUMMATION  by MONTHLY Transaction
-// object[0] -> income
-// object[1] -> expense
+// MONTHLY Transaction
 export function sumTransactionByMonth(object) {
   let results = [];
 
-  // const Id_index = Array.from({length: 12}, (_, i) => `ei${i + 1}`);
-
-  // const incomeId = Array.from({length: 12}, (_, i) => `i${i + 1}`);
-
-  // if (type === 'expense') {
   results = [
     {id: 'ei1', month: 1, expense_monthly: 0, income_monthly: 0},
     {id: 'ei2', month: 2, expense_monthly: 0, income_monthly: 0},
@@ -374,30 +367,22 @@ export function sumTransactionByMonth(object) {
     {id: 'ei12', month: 12, expense_monthly: 0, income_monthly: 0},
   ];
 
-  // if (type === 'expense') {
-  // results = results.map((result, index) => ({
-  //   ...result,
-  //   id: Id_index[index],
-  // }));
-
   // Income Month
   const mapIncomeToMonth = object[0]?.map(obj => ({
     ...obj,
     // id: obj[0].id,
-    month: moment(obj?.date).month(),
+    month: +moment(obj?.date).month(),
   }));
 
   // Expense Month
   const mapExpenseToMonth = object[1]?.map(obj => ({
     ...obj,
     // id: obj[0].id,
-    month: moment(obj?.date).month(),
+    month: +moment(obj?.date).month(),
   }));
 
   // Combine expense and income arrays
   const expenseIncome = [mapIncomeToMonth, mapExpenseToMonth];
-
-  // console.log('expenseIncome: ', expenseIncome);
 
   // ******* Try This:
   // https://stackoverflow.com/questions/30667121/javascript-sum-multidimensional-array
@@ -420,24 +405,132 @@ export function sumTransactionByMonth(object) {
       return a;
     }, []);
 
-  // console.log('sumExInForMonth: ', sumExInForMonth);
-
   // Group
-
   const groupByMonth = sumExInForMonth.reduce(function (rv, x) {
     (rv[x['month']] = rv[x['month']] || []).push(x);
     return rv;
   }, {});
 
-  // console.log('groupBy: ', typeof groupByMonth);
-  // console.log('groupBy1: ', groupByMonth[1][0]);
-  // console.log('groupBy1: ', groupByMonth[1][0].amount);
-  // console.log('length: ', Object.keys(groupByMonth).length);
-
   for (let i = 1; i <= Object.keys(groupByMonth).length; i++) {
-    console.log(groupByMonth[i][0]);
+    results[groupByMonth[i][0].month] = {
+      id: 'transId' + `${groupByMonth[i][0].month + 1}`,
+      date: groupByMonth[i][0].date,
+      month: groupByMonth[i][0].month + 1,
+      expense_monthly: +groupByMonth[i][1].amount,
+      income_monthly: +groupByMonth[i][0].amount,
+      // };
+    };
   }
 
   const resultFiltered = results?.filter(result => result !== undefined);
   return resultFiltered;
 }
+
+// sum transactions by week
+export const sumTransactionByWeek = object => {
+  let results = [];
+
+  results = [
+    {id: 'ei1', week: 1, expense_weekly: 0, income_weekly: 0},
+    {id: 'ei2', week: 2, expense_weekly: 0, income_weekly: 0},
+    {id: 'ei3', week: 3, expense_weekly: 0, income_weekly: 0},
+    {id: 'ei4', week: 4, expense_weekly: 0, income_weekly: 0},
+    {id: 'ei5', week: 5, expense_weekly: 0, income_weekly: 0},
+  ];
+
+  // Income Week
+  const mapIncomeToWeek = object[0]?.map(obj => ({
+    ...obj,
+    // id: obj[0].id,
+    week: getWeekInMonth(
+      moment(obj.date).year(),
+      moment(obj.date).month(),
+      moment(obj.date).date(),
+    ),
+  }));
+
+  // Expense Week
+  const mapExpenseToWeek = object[1]?.map(obj => ({
+    ...obj,
+    // id: obj[0].id,
+    week: getWeekInMonth(
+      moment(obj.date).year(),
+      moment(obj.date).month(),
+      moment(obj.date).date(),
+    ),
+  }));
+
+  // Combine expense and income arrays
+  const expenseIncome = [mapIncomeToWeek, mapExpenseToWeek];
+
+  // ******* Try This:
+  // https://stackoverflow.com/questions/30667121/javascript-sum-multidimensional-array
+  // Sum Expense and Income for each month
+  const sumExInForWeek = expenseIncome
+    .reduce((a, b) => a.concat(b))
+    .reduce((a, b) => {
+      const idx = a.findIndex(
+        elem =>
+          elem.week === b.week &&
+          moment(elem.date).year() === moment(b.date).year() &&
+          moment(elem.date).month() === moment(b.date).month() &&
+          elem.id.split('-')[0] === b.id.split('-')[0],
+      );
+
+      if (~idx) {
+        a[idx].amount += b.amount;
+      } else {
+        a.push(JSON.parse(JSON.stringify(b)));
+      }
+      return a;
+    }, []);
+
+  // Group by Month
+  const groupByWeek = sumExInForWeek.reduce(function (acc, cur) {
+    // create a composed key: 'year-week'
+    const yearWeek = `${moment(cur.date).year()}-${moment(cur.date).week()}`;
+
+    // add this key as a property to the result object
+    if (!acc[yearWeek]) {
+      acc[yearWeek] = [];
+    }
+
+    // push the current date that belongs to the year-week calculated befor
+    acc[yearWeek].push(cur);
+
+    return acc;
+  }, {});
+
+  // for (let i = 1; i <= Object.keys(groupByWeek).length; i++) {
+  //   results[groupByWeek[i][0].month] = {
+  //     id: 'transId' + `${groupByWeek[i][0].month + 1}`,
+  //     date: groupByWeek[i][0].date,
+  //     month: groupByWeek[i][0].month + 1,
+  //     expense_monthly: +groupByWeek[i][1].amount,
+  //     income_monthly: +groupByWeek[i][0].amount,
+  //     // };
+  //   };
+  // }
+
+  Object.keys(groupByWeek).forEach(key => {
+    // console.log(groupByWeek[key][0]);
+    // console.log(groupByWeek[key][1]);
+
+    const week = key.split('-');
+
+    results[+week[1]-1] = {
+      id: 'transId' + `${+week[1]}`,
+      date: groupByWeek[key][0].date,
+      week: week[1],
+      expense_weekly: +groupByWeek[key][1].amount,
+      income_weekly: +groupByWeek[key][0].amount,
+      // };
+    };
+  });
+
+  const resultFiltered = results?.filter(result => result !== undefined);
+
+  console.log('resultFiltered: ', resultFiltered);
+
+  return resultFiltered;
+};

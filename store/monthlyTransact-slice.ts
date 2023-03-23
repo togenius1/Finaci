@@ -12,6 +12,7 @@ const monthlyTransactsSlice = createSlice({
   reducers: {
     // Load data from DB to Mobile
     replaceMonthlyTransacts(state, action) {
+      // console.log('payload: ', action.payload.monthlyTransacts);
       state.monthlyTransacts = action.payload.monthlyTransacts;
     },
 

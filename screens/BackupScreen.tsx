@@ -34,8 +34,14 @@ import {useAppDispatch, useAppSelector} from '../hooks';
 import {expenseActions} from '../store/expense-slice';
 import {incomeActions} from '../store/income-slice';
 import moment from 'moment';
-import {sumByDate, sumByMonth, sumTransactionByMonth} from '../util/math';
+import {
+  sumByDate,
+  sumByMonth,
+  sumTransactionByMonth,
+  sumTransactionByWeek,
+} from '../util/math';
 import {dailyTransactsActions} from '../store/dailyTransact-slice';
+import {monthlyTransactsActions} from '../store/monthlyTransact-slice';
 
 // Constant
 const {width} = Dimensions.get('window');
@@ -226,14 +232,14 @@ const BackupScreen = () => {
     const decrypted = await decryption(String(encryptedData));
     // return decrypted;
 
-    // Replace data to local storage
+    // Replace expense/income data to local storage
     await replaceNewIncomeDataToStorage(decrypted[0]);
     await replaceNewExpenseDataToStorage(decrypted[1]);
 
     // Calculate and update new monthly transaction,
-    monthlyTransactionsUpdate(decrypted);
+    // monthlyTransactionsUpdate(decrypted);
     // Calculate and update new weekly transaction,
-    // weeklyTransactionsUpdate();
+    weeklyTransactionsUpdate(decrypted);
     // Calculate and update new daily transaction,
     // dailyTransactionsUpdate();
   };
@@ -260,21 +266,20 @@ const BackupScreen = () => {
   const monthlyTransactionsUpdate = object => {
     // if (type === 'expense') {
     // Previous monthly transactions values
-    const expenseMonthlyTrObj = sumTransactionByMonth(object);
+    const monthlyTransact = sumTransactionByMonth(object);
 
-    // const incomeMonthlyTrObj = sumTransactionByMonth(object, 'income');
-
-    //Combine two array
-
-    // Change array to monthly transaction pattern and
-    // replace new monthly transaction cal to storage
-    // console.log('object: ', object);
-    // console.log('expenseMonthlyTrObj', expenseMonthlyTrObj);
+    // Replace new monthly transaction to storage
+    // console.log('monthlyTransact: ', monthlyTransact);
+    dispatch(
+      monthlyTransactsActions.replaceMonthlyTransacts({
+        monthlyTransacts: monthlyTransact,
+      }),
+    );
   };
 
   // Calculate and update new weekly transaction,
-  const weeklyTransactionsUpdate = () => {
-    console.log('cal new weekly transact');
+  const weeklyTransactionsUpdate = object => {
+    const weeklyTransact = sumTransactionByWeek(object);
   };
 
   // Calculate and update new daily transaction,
