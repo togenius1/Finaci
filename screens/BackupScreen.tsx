@@ -239,9 +239,9 @@ const BackupScreen = () => {
     await replaceNewExpenseDataToStorage(decrypted[1]);
 
     // Calculate and update new monthly transaction,
-    // monthlyTransactionsUpdate(decrypted);
+    monthlyTransactionsUpdate(decrypted);
     // Calculate and update new weekly transaction,
-    // weeklyTransactionsUpdate(decrypted);
+    weeklyTransactionsUpdate(decrypted);
     // Calculate and update new daily transaction,
     dailyTransactionsUpdate(decrypted);
   };
