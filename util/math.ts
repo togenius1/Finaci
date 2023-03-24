@@ -427,7 +427,7 @@ export function sumTransactionByMonth(object) {
 }
 
 // Weekly transactions
-export const sumTransactionByWeek = object => {
+export function sumTransactionByWeek(object) {
   let results: any = [];
 
   const Id = Array.from({length: 52}, (_, i) => `transId${i + 1}`);
@@ -442,15 +442,6 @@ export const sumTransactionByWeek = object => {
     income_weekly: 0,
     expense_weekly: 0,
   }));
-
-  // results = [
-  //   {id: 'ei1', week: 0, weekInYear: 1, expense_weekly: 0, income_weekly: 0},
-  //   {id: 'ei2',  week: 0, weekInYear: 2, expense_weekly: 0, income_weekly: 0},
-  //    .
-  //    .
-  //    .
-  //   {id: 'ei52',  week: 0, weekInYear: 52, expense_weekly: 0, income_weekly: 0},
-  // ];
 
   // Income Week
   const mapIncomeToWeek = object[0]?.map(obj => ({
@@ -499,7 +490,7 @@ export const sumTransactionByWeek = object => {
       return a;
     }, []);
 
-  // Group by Month
+  // Group by Week
   const groupByWeek = sumExInForWeek.reduce(function (acc, cur) {
     // create a composed key: 'year-week'
     // to group expenses and incomes
@@ -516,6 +507,7 @@ export const sumTransactionByWeek = object => {
     return acc;
   }, {});
 
+  // Final result that match with transaction-slice
   Object.keys(groupByWeek).forEach(key => {
     const weekInYear = key.split('-');
 
@@ -533,5 +525,99 @@ export const sumTransactionByWeek = object => {
   const resultFiltered = results?.filter(result => result !== undefined);
 
   return resultFiltered;
-};
+}
 
+// Daily transactions
+export function sumTransactionByDay(object) {
+  let results: any = [];
+
+  const Id = Array.from({length: 366}, (_, i) => `transId${i + 1}`);
+  const day = Array.from({length: 366}, (_, i) => `${i + 1}`);
+  results = Array.from({length: 366}, (_, i) => 0);
+
+  results = results?.map((result, index) => ({
+    ...result,
+    id: Id[index],
+    date: '',
+    day: 0,
+    dayInYear: +day[index],
+    income_weekly: 0,
+    expense_weekly: 0,
+  }));
+
+  // Income Week
+  const mapIncomeToDay = object[0]?.map(obj => ({
+    ...obj,
+    // id: obj[0].id,
+    day: moment(obj.date).date(),
+  }));
+
+  // Expense Week
+  const mapExpenseToDay = object[1]?.map(obj => ({
+    ...obj,
+    // id: obj[0].id,
+    day: moment(obj.date).date(),
+  }));
+
+  // Combine expense and income arrays
+  const expenseIncome = [mapIncomeToDay, mapExpenseToDay];
+
+  // ******* Try This:
+  // https://stackoverflow.com/questions/30667121/javascript-sum-multidimensional-array
+  // Sum Expense and Income for each month
+  const sumExInForDay = expenseIncome
+    .reduce((a, b) => a.concat(b))
+    .reduce((a, b) => {
+      const idx = a.findIndex(
+        elem =>
+          elem.day === b.day &&
+          moment(elem.date).year() === moment(b.date).year() &&
+          moment(elem.date).month() === moment(b.date).month() &&
+          elem.id.split('-')[0] === b.id.split('-')[0],
+      );
+
+      if (~idx) {
+        a[idx].amount += b.amount;
+      } else {
+        a.push(JSON.parse(JSON.stringify(b)));
+      }
+      return a;
+    }, []);
+
+  // Group by Day
+  const groupByDay = sumExInForDay.reduce(function (acc, cur) {
+    // create a composed key: 'year-month'
+    // to group expenses and incomes
+    const yearDay = `${moment(cur.date).year()}-${moment(
+      cur.date,
+    ).dayOfYear()}`;
+
+    // add this key as a property to the result object
+    if (!acc[yearDay]) {
+      acc[yearDay] = [];
+    }
+
+    // push the current date that belongs to the year-week calculated befor
+    acc[yearDay].push(cur);
+
+    return acc;
+  }, {});
+
+  // Final result that match with transaction-slice
+  Object.keys(groupByDay).forEach(key => {
+    const dayInYear = key.split('-');
+
+    results[+dayInYear[1] - 1] = {
+      id: 'transId' + `${groupByDay[key][0].day}`,
+      date: groupByDay[key][0].date,
+      day: groupByDay[key][0].day,
+      expense_daily: +groupByDay[key][1].amount,
+      income_daily: +groupByDay[key][0].amount,
+      // };
+    };
+  });
+
+  const resultFiltered = results?.filter(result => result !== undefined);
+
+  return resultFiltered;
+}

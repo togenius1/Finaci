@@ -37,6 +37,7 @@ import moment from 'moment';
 import {
   sumByDate,
   sumByMonth,
+  sumTransactionByDay,
   sumTransactionByMonth,
   sumTransactionByWeek,
 } from '../util/math';
@@ -240,9 +241,9 @@ const BackupScreen = () => {
     // Calculate and update new monthly transaction,
     // monthlyTransactionsUpdate(decrypted);
     // Calculate and update new weekly transaction,
-    weeklyTransactionsUpdate(decrypted);
+    // weeklyTransactionsUpdate(decrypted);
     // Calculate and update new daily transaction,
-    // dailyTransactionsUpdate();
+    dailyTransactionsUpdate(decrypted);
   };
 
   // Replace the old expense data in storage with imported data
@@ -289,8 +290,15 @@ const BackupScreen = () => {
   };
 
   // Calculate and update new daily transaction,
-  const dailyTransactionsUpdate = () => {
-    console.log('cal new daily transact');
+  const dailyTransactionsUpdate = object => {
+    const dailyTransacts = sumTransactionByDay(object);
+
+    // Replace new daily transaction to storage
+    dispatch(
+      dailyTransactsActions.replaceDailyTransacts({
+        dailyTransacts: dailyTransacts,
+      }),
+    );
   };
 
   // Create folder
