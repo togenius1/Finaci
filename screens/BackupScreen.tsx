@@ -42,6 +42,7 @@ import {
 } from '../util/math';
 import {dailyTransactsActions} from '../store/dailyTransact-slice';
 import {monthlyTransactsActions} from '../store/monthlyTransact-slice';
+import {weeklyTransactsActions} from '../store/weeklyTransact-slice';
 
 // Constant
 const {width} = Dimensions.get('window');
@@ -264,8 +265,6 @@ const BackupScreen = () => {
 
   // Calculate and update new monthly transaction,
   const monthlyTransactionsUpdate = object => {
-    // if (type === 'expense') {
-    // Previous monthly transactions values
     const monthlyTransact = sumTransactionByMonth(object);
 
     // Replace new monthly transaction to storage
@@ -279,7 +278,14 @@ const BackupScreen = () => {
 
   // Calculate and update new weekly transaction,
   const weeklyTransactionsUpdate = object => {
-    const weeklyTransact = sumTransactionByWeek(object);
+    const weeklyTransacts = sumTransactionByWeek(object);
+
+    // Replace new weekly transaction to storage
+    dispatch(
+      weeklyTransactsActions.replaceWeeklyTransacts({
+        weeklyTransacts: weeklyTransacts,
+      }),
+    );
   };
 
   // Calculate and update new daily transaction,

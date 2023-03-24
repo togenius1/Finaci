@@ -1,7 +1,7 @@
 import {v4 as uuidv4} from 'uuid';
 import moment from 'moment';
 import {getWeekInMonth} from './date';
-import {groupCollapsed} from 'console';
+// import {groupCollapsed} from 'console';
 
 //sort Data by day
 export function sortDataByDay(obj) {
@@ -426,17 +426,31 @@ export function sumTransactionByMonth(object) {
   return resultFiltered;
 }
 
-// sum transactions by week
+// Weekly transactions
 export const sumTransactionByWeek = object => {
-  let results = [];
+  let results: any = [];
 
-  results = [
-    {id: 'ei1', week: 1, expense_weekly: 0, income_weekly: 0},
-    {id: 'ei2', week: 2, expense_weekly: 0, income_weekly: 0},
-    {id: 'ei3', week: 3, expense_weekly: 0, income_weekly: 0},
-    {id: 'ei4', week: 4, expense_weekly: 0, income_weekly: 0},
-    {id: 'ei5', week: 5, expense_weekly: 0, income_weekly: 0},
-  ];
+  const Id = Array.from({length: 52}, (_, i) => `transId${i + 1}`);
+  const week = Array.from({length: 52}, (_, i) => `${i + 1}`);
+  results = Array.from({length: 52}, (_, i) => 0);
+
+  results = results?.map((result, index) => ({
+    ...result,
+    id: Id[index],
+    week: 0,
+    weekInYear: +week[index],
+    income_weekly: 0,
+    expense_weekly: 0,
+  }));
+
+  // results = [
+  //   {id: 'ei1', week: 0, weekInYear: 1, expense_weekly: 0, income_weekly: 0},
+  //   {id: 'ei2',  week: 0, weekInYear: 2, expense_weekly: 0, income_weekly: 0},
+  //    .
+  //    .
+  //    .
+  //   {id: 'ei52',  week: 0, weekInYear: 52, expense_weekly: 0, income_weekly: 0},
+  // ];
 
   // Income Week
   const mapIncomeToWeek = object[0]?.map(obj => ({
@@ -488,6 +502,7 @@ export const sumTransactionByWeek = object => {
   // Group by Month
   const groupByWeek = sumExInForWeek.reduce(function (acc, cur) {
     // create a composed key: 'year-week'
+    // to group expenses and incomes
     const yearWeek = `${moment(cur.date).year()}-${moment(cur.date).week()}`;
 
     // add this key as a property to the result object
@@ -501,27 +516,14 @@ export const sumTransactionByWeek = object => {
     return acc;
   }, {});
 
-  // for (let i = 1; i <= Object.keys(groupByWeek).length; i++) {
-  //   results[groupByWeek[i][0].month] = {
-  //     id: 'transId' + `${groupByWeek[i][0].month + 1}`,
-  //     date: groupByWeek[i][0].date,
-  //     month: groupByWeek[i][0].month + 1,
-  //     expense_monthly: +groupByWeek[i][1].amount,
-  //     income_monthly: +groupByWeek[i][0].amount,
-  //     // };
-  //   };
-  // }
-
   Object.keys(groupByWeek).forEach(key => {
-    // console.log(groupByWeek[key][0]);
-    // console.log(groupByWeek[key][1]);
+    const weekInYear = key.split('-');
 
-    const week = key.split('-');
-
-    results[+week[1]-1] = {
-      id: 'transId' + `${+week[1]}`,
+    results[+weekInYear[1] - 1] = {
+      id: 'transId' + `${+weekInYear[1]}`,
       date: groupByWeek[key][0].date,
-      week: week[1],
+      week: +groupByWeek[key][0].week, // week of month
+      // weekInYear: +weekInYear[1],
       expense_weekly: +groupByWeek[key][1].amount,
       income_weekly: +groupByWeek[key][0].amount,
       // };
@@ -530,7 +532,6 @@ export const sumTransactionByWeek = object => {
 
   const resultFiltered = results?.filter(result => result !== undefined);
 
-  console.log('resultFiltered: ', resultFiltered);
-
   return resultFiltered;
 };
+

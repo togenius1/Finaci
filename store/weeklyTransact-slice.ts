@@ -12,6 +12,7 @@ const weeklyTransactsSlice = createSlice({
   reducers: {
     // Load data from DB to Mobile
     replaceWeeklyTransacts(state, action) {
+      console.log('payload: ', action.payload.weeklyTransacts);
       state.weeklyTransacts = action.payload.weeklyTransacts;
     },
 
