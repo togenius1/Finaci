@@ -1,7 +1,6 @@
 import {v4 as uuidv4} from 'uuid';
 import moment from 'moment';
 import {getWeekInMonth} from './date';
-// import {groupCollapsed} from 'console';
 
 //sort Data by day
 export function sortDataByDay(obj) {

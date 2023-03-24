@@ -88,7 +88,6 @@ const BackupScreen = () => {
   // Timer to backup. Should move to the App file?
   useEffect(() => {
     timerRef.current = setInterval(() => {
-      // console.log('timer running');
       Alert.alert(
         'Backup data!',
         'Do you want to backup your data now?',
@@ -269,7 +268,6 @@ const BackupScreen = () => {
     const monthlyTransact = sumTransactionByMonth(object);
 
     // Replace new monthly transaction to storage
-    // console.log('monthlyTransact: ', monthlyTransact);
     dispatch(
       monthlyTransactsActions.replaceMonthlyTransacts({
         monthlyTransacts: monthlyTransact,
@@ -350,7 +348,6 @@ const BackupScreen = () => {
       const response = await DocumentPicker.pickSingle({
         presentationStyle: 'fullScreen',
       });
-      // console.log('response: ', response);
       return response;
     } catch (err) {
       console.warn(err);
