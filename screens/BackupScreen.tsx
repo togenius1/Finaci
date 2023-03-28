@@ -246,7 +246,7 @@ const BackupScreen = () => {
   };
 
   // Replace the old expense data in storage with imported data
-  const replaceNewExpenseDataToStorage = async obj => {
+  const replaceNewExpenseDataToStorage = obj => {
     dispatch(
       expenseActions.replaceExpenses({
         expenses: obj,
@@ -255,7 +255,7 @@ const BackupScreen = () => {
   };
 
   // Replace the old income data in storage with imported data
-  const replaceNewIncomeDataToStorage = async obj => {
+  const replaceNewIncomeDataToStorage = obj => {
     dispatch(
       incomeActions.replaceIncome({
         incomes: obj,
@@ -264,8 +264,8 @@ const BackupScreen = () => {
   };
 
   // Calculate and update new monthly transaction,
-  const monthlyTransactionsUpdate = async object => {
-    const monthlyTransact = await sumTransactionByMonth(object);
+  const monthlyTransactionsUpdate = object => {
+    const monthlyTransact = sumTransactionByMonth(object);
 
     // Replace new monthly transaction to storage
     dispatch(
