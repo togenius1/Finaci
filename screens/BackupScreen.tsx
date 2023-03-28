@@ -264,8 +264,8 @@ const BackupScreen = () => {
   };
 
   // Calculate and update new monthly transaction,
-  const monthlyTransactionsUpdate = object => {
-    const monthlyTransact = sumTransactionByMonth(object);
+  const monthlyTransactionsUpdate = async object => {
+    const monthlyTransact = await sumTransactionByMonth(object);
 
     // Replace new monthly transaction to storage
     dispatch(
@@ -276,7 +276,7 @@ const BackupScreen = () => {
   };
 
   // Calculate and update new weekly transaction,
-  const weeklyTransactionsUpdate = object => {
+  const weeklyTransactionsUpdate = async object => {
     const weeklyTransacts = sumTransactionByWeek(object);
 
     // Replace new weekly transaction to storage
@@ -288,7 +288,8 @@ const BackupScreen = () => {
   };
 
   // Calculate and update new daily transaction,
-  const dailyTransactionsUpdate = object => {
+  const dailyTransactionsUpdate = async object => {
+    console.log('daily: ');
     const dailyTransacts = sumTransactionByDay(object);
 
     // Replace new daily transaction to storage

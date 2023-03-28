@@ -348,7 +348,7 @@ export function sumByCustomDate(object, type, fromDate, toDate) {
 }
 
 // MONTHLY Transaction
-export function sumTransactionByMonth(object) {
+export function sumTransactionByMonth(object: any) {
   let results = [];
 
   results = [
@@ -405,19 +405,18 @@ export function sumTransactionByMonth(object) {
     }, []);
 
   // Group
-  const groupByMonth = sumExInForMonth.reduce(function (rv, x) {
+  const groupByMonth = sumExInForMonth?.reduce(function (rv, x) {
     (rv[x['month']] = rv[x['month']] || []).push(x);
     return rv;
   }, {});
 
-  for (let i = 1; i <= Object.keys(groupByMonth).length; i++) {
+  for (let i = 0; i < Object.keys(groupByMonth).length; i++) {
     results[groupByMonth[i][0].month] = {
       id: 'transId' + `${groupByMonth[i][0].month + 1}`,
       date: groupByMonth[i][0].date,
       month: groupByMonth[i][0].month + 1,
       expense_monthly: +groupByMonth[i][1].amount,
       income_monthly: +groupByMonth[i][0].amount,
-      // };
     };
   }
 
@@ -458,9 +457,9 @@ export function sumTransactionByWeek(object) {
     ...obj,
     // id: obj[0].id,
     week: getWeekInMonth(
-      moment(obj.date).year(),
-      moment(obj.date).month(),
-      moment(obj.date).date(),
+      moment(obj?.date).year(),
+      moment(obj?.date).month(),
+      moment(obj?.date).date(),
     ),
   }));
 
@@ -505,6 +504,8 @@ export function sumTransactionByWeek(object) {
 
     return acc;
   }, {});
+
+  // console.log('groupByWeek: ', sumExInForWeek);
 
   // Final result that match with transaction-slice
   Object.keys(groupByWeek).forEach(key => {
