@@ -24,7 +24,7 @@ export function dateDiffInDays(endDate: Date, startDate: Date) {
 export function getWeekInMonth(year, month, day) {
   let weekNum = 1; // we start at week 1
 
-  let weekDay = new Date(year, month, 1).getDay(); // we get the weekDay of day 1
+  let weekDay = new Date(year, month - 1, 1).getDay(); // we get the weekDay of day 1
   weekDay = weekDay === 0 ? 6 : weekDay - 1; // we recalculate the weekDay (Mon:0, Tue:1, Wed:2, Thu:3, Fri:4, Sat:5, Sun:6)
 
   let monday = 1 + (7 - weekDay); // we get the first monday of the month

@@ -200,20 +200,24 @@ export function sumByCustomMonth(
 
 // SUMMATION by WEEK
 export function sumByWeek(object, type, date) {
-  let month = moment(date).month() + 1;
-  if (month < 10) {
-    month = `0${month}`;
-  }
+  const yearOfWeek = moment(date).year();
+  const monthOfWeek = moment(date).month() + 1;
+  const day = moment(date).date();
+  const currentWeek = getWeekInMonth(yearOfWeek, monthOfWeek, day);
+  // let month = moment(date).month() + 1;
+  // if (month < 10) {
+  //   month = `0${month}`;
+  // }
 
   let results = [];
   const expenseId = ['e1', 'e2', 'e3', 'e4', 'e5'];
   const incomeId = ['i1', 'i2', 'i3', 'i4', 'i5'];
   results = [
-    {week: 1, amount: 0},
-    {week: 2, amount: 0},
-    {week: 3, amount: 0},
-    {week: 4, amount: 0},
-    {week: 5, amount: 0},
+    {week: 1, amount: 0, month: '', year: ''},
+    {week: 2, amount: 0, month: '', year: ''},
+    {week: 3, amount: 0, month: '', year: ''},
+    {week: 4, amount: 0, month: '', year: ''},
+    {week: 5, amount: 0, month: '', year: ''},
   ];
 
   if (type === 'expense') {
@@ -229,7 +233,7 @@ export function sumByWeek(object, type, date) {
     }));
   }
 
-  const mapDayToWeek = object.map(obj => ({
+  const mapDayToWeek = object?.map(obj => ({
     ...obj,
     // id: obj.id,
     week: getWeekInMonth(
@@ -237,18 +241,33 @@ export function sumByWeek(object, type, date) {
       moment(obj.date).month() + 1,
       moment(obj.date).date(),
     ),
-    // date: obj.date,
   }));
 
   const sumPerWeek = mapDayToWeek.reduce((acc, cur) => {
-    acc[cur.week - 1] = acc[cur.week - 1] + +cur.amount || +cur.amount; // increment or initialize to cur.value
+    console.log('cur date: ', cur.date);
+    console.log('month of week: ', monthOfWeek);
+    console.log('current week: ', currentWeek);
+
+    if (
+      moment(cur.date).year() === yearOfWeek &&
+      moment(cur.date).month() + 1 === monthOfWeek
+    ) {
+      acc[cur.week - 1] = acc[cur.week - 1] + +cur.amount || +cur.amount; // increment or initialize to cur.value
+    }
+
     results[cur.week - 1] = {
-      id: results[cur.week - 1]?.id,
+      id: 'week-' + cur.week,
       week: cur.week,
       amount: acc[cur.week - 1],
+      month: moment(cur.date).month() + 1,
+      year: moment(cur.date).year(),
     };
+
     return acc;
   }, {});
+
+  console.log('results:', results);
+
   const resultFiltered = results?.filter(result => result !== undefined);
   return resultFiltered;
 }

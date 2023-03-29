@@ -302,7 +302,10 @@ const TransactionSummary = ({
   //  Weekly Transaction
   // const weeklyData = weeklyTransaction(fromDate, toDate, date);
   const weeklyData = dataLoaded?.weeklyTransacts?.weeklyTransacts?.filter(
-    transact => moment(transact?.date).month() === moment(date).month(),
+    transact =>
+      // console.log(moment(transact?.date).month() + 1),
+      moment(transact?.date).month() === moment(date).month() &&
+      moment(transact?.date).year() === moment(date).year(),
   );
 
   // Combine data and sum by date

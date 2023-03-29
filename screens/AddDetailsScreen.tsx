@@ -190,7 +190,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
         sumByMonth(expenses, 'expense')?.filter(
           expense => expense?.month === month,
         )[0]?.amount + amount;
-        
+
       const incomeMonthly = sumByMonth(incomes, 'income')?.filter(
         income => income?.month === month,
       )[0]?.amount;
@@ -228,11 +228,22 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     const day = moment(textDate).date();
     const currentWeek = getWeekInMonth(year, month, day);
 
+    // Expense
     if (type === 'expense') {
-      const expenseWeekly =
-        sumByWeek(expenses, 'expense', textDate)?.filter(
-          expense => expense?.week === currentWeek,
-        )[0]?.amount + amount;
+      const expenseSumByWeekly = sumByWeek(expenses, 'expense', textDate);
+      const expenseWeekly = expenseSumByWeekly?.filter(
+        expense =>
+          expense?.week === currentWeek &&
+          moment(expense.date).month() + 1 === month &&
+          moment(expense.date).year() === year,
+      )[0];
+
+      const newExpenseAmount = expenseWeekly?.amount + amount;
+
+      // console.log('expenseSumByWeekly: ', expenseSumByWeekly);
+
+      const expense_weekly =
+        newExpenseAmount === undefined ? 0 : newExpenseAmount;
 
       const incomeWeekly = sumByWeek(incomes, 'income', textDate)?.filter(
         expense => expense?.week === currentWeek,
@@ -241,19 +252,26 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
       const income_weekly = incomeWeekly === undefined ? 0 : incomeWeekly;
 
       dispatchWeeklyTransactionsToStorage(
-        +expenseWeekly,
+        +expense_weekly,
         +income_weekly,
         +currentWeek,
       );
     }
+
+    // Income
     if (type === 'income') {
       const expenseWeekly = sumByWeek(expenses, 'expense', textDate)?.filter(
         expense => expense?.week === currentWeek,
       )[0]?.amount;
 
+      const incomeSumByWeekly = sumByWeek(incomes, 'income', textDate);
+
       const incomeWeekly =
-        sumByWeek(incomes, 'income', textDate)?.filter(
-          expense => expense?.week === currentWeek,
+        incomeSumByWeekly?.filter(
+          income => income?.week === currentWeek,
+          // &&
+          // moment(income.date).month() + 1 === month &&
+          // moment(income.date).year() === year,
         )[0]?.amount + amount;
 
       const expense_weekly = expenseWeekly === undefined ? 0 : expenseWeekly;
