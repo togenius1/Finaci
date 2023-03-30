@@ -11,7 +11,12 @@ import {useAppDispatch, useAppSelector} from '../hooks';
 import Note from '../components/Menu/Note';
 import Accounts from '../components/Menu/Accounts';
 import Category from '../components/Form/Category';
-import {sumByDate, sumByMonth, sumByWeek} from '../util/math';
+import {
+  sumByDate,
+  sumByMonth,
+  sumByWeek,
+  sumTransactionByWeek,
+} from '../util/math';
 import {monthlyTransactsActions} from '../store/monthlyTransact-slice';
 import {getWeekInMonth} from '../util/date';
 import {weeklyTransactsActions} from '../store/weeklyTransact-slice';
@@ -32,7 +37,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
   const cash = dataLoaded?.cashAccounts?.cashAccounts;
   const ExpenseCategory = dataLoaded?.expenseCategories?.expenseCategories;
   const IncomeCategory = dataLoaded?.incomeCategories?.incomeCategories;
-  // const TransferCategory = dataLoaded?.transferCategories?.transferCategories;
+  const weeklyTransacts = dataLoaded?.weeklyTransacts?.weeklyTransacts;
 
   const amount = route.params?.amount;
   const type = route.params?.transaction?.type;
@@ -114,7 +119,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
   };
 
   // Save
-  const saveHandler = () => {
+  const saveDataToStorage = async () => {
     if (type === 'expense') {
       dispatch(
         expenseActions.addExpense({
@@ -139,6 +144,12 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
         }),
       );
     }
+  };
+  //
+
+  const saveHandler = async () => {
+    //save
+    await saveDataToStorage();
 
     // Update Accounts
     accountsBudgetUpdate();
@@ -222,66 +233,80 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     }
   };
 
-  const weeklyTransactionsUpdate = () => {
+  const weeklyTransactionsUpdate = async () => {
     const year = moment(textDate).year();
     const month = moment(textDate).month() + 1;
     const day = moment(textDate).date();
     const currentWeek = getWeekInMonth(year, month, day);
 
+    let weeklyTransacts;
+    // IF Weekly Transactions is not empty
+    console.log('weekly transactions isEmpty: ', isEmpty(weeklyTransacts));
+    if (isEmpty(weeklyTransacts)) {
+      // console.log('expenses: ', expenses);
+      weeklyTransacts = await sumTransactionByWeek([incomes, expenses]);
+
+      // push weekly_sum to Storage
+      // Replace new weekly transaction to storage
+      // dispatch(weeklyTransactsActions.addWeeklyTransacts(weeklyTransacts));
+    }
+    // console.log('weeklyTransacts: ', weeklyTransacts);
+
+    // OLD CODING
     // Expense
-    if (type === 'expense') {
-      const expenseSumByWeekly = sumByWeek(expenses, 'expense', textDate);
-      const expenseWeekly = expenseSumByWeekly?.filter(
-        expense =>
-          expense?.week === currentWeek &&
-          moment(expense.date).month() + 1 === month &&
-          moment(expense.date).year() === year,
-      )[0];
+    // if (type === 'expense') {
+    //   const filteredExpenses = expenses?.filter(
+    //     expense =>
+    //       moment(expense.date).month() + 1 === month &&
+    //       moment(expense.date).year() === year,
+    //   );
 
-      const newExpenseAmount = expenseWeekly?.amount + amount;
+    //   const expenseWeekly = sumByWeek(filteredExpenses, 'expense')[0];
 
-      // console.log('expenseSumByWeekly: ', expenseSumByWeekly);
+    //   const newExpenseAmount = expenseWeekly?.amount + amount;
 
-      const expense_weekly =
-        newExpenseAmount === undefined ? 0 : newExpenseAmount;
+    //   // console.log('expenseWeekly: ', expenseWeekly);
 
-      const incomeWeekly = sumByWeek(incomes, 'income', textDate)?.filter(
-        expense => expense?.week === currentWeek,
-      )[0]?.amount;
+    //   const expense_weekly =
+    //     newExpenseAmount === undefined ? 0 : newExpenseAmount;
 
-      const income_weekly = incomeWeekly === undefined ? 0 : incomeWeekly;
+    //   const incomeWeekly = sumByWeek(incomes, 'income', textDate)?.filter(
+    //     expense => expense?.week === currentWeek,
+    //   )[0]?.amount;
 
-      dispatchWeeklyTransactionsToStorage(
-        +expense_weekly,
-        +income_weekly,
-        +currentWeek,
-      );
-    }
+    //   const income_weekly = incomeWeekly === undefined ? 0 : incomeWeekly;
 
-    // Income
-    if (type === 'income') {
-      const expenseWeekly = sumByWeek(expenses, 'expense', textDate)?.filter(
-        expense => expense?.week === currentWeek,
-      )[0]?.amount;
+    //   dispatchWeeklyTransactionsToStorage(
+    //     +expense_weekly,
+    //     +income_weekly,
+    //     +currentWeek,
+    //   );
+    // }
 
-      const incomeSumByWeekly = sumByWeek(incomes, 'income', textDate);
+    // // Income
+    // if (type === 'income') {
+    //   const expenseWeekly = sumByWeek(expenses, 'expense', textDate)?.filter(
+    //     expense => expense?.week === currentWeek,
+    //   )[0]?.amount;
 
-      const incomeWeekly =
-        incomeSumByWeekly?.filter(
-          income => income?.week === currentWeek,
-          // &&
-          // moment(income.date).month() + 1 === month &&
-          // moment(income.date).year() === year,
-        )[0]?.amount + amount;
+    //   const incomeSumByWeekly = sumByWeek(incomes, 'income', textDate);
 
-      const expense_weekly = expenseWeekly === undefined ? 0 : expenseWeekly;
+    //   const incomeWeekly =
+    //     incomeSumByWeekly?.filter(
+    //       income => income?.week === currentWeek,
+    //       // &&
+    //       // moment(income.date).month() + 1 === month &&
+    //       // moment(income.date).year() === year,
+    //     )[0]?.amount + amount;
 
-      dispatchWeeklyTransactionsToStorage(
-        +expense_weekly,
-        +incomeWeekly,
-        +currentWeek,
-      );
-    }
+    //   const expense_weekly = expenseWeekly === undefined ? 0 : expenseWeekly;
+
+    //   dispatchWeeklyTransactionsToStorage(
+    //     +expense_weekly,
+    //     +incomeWeekly,
+    //     +currentWeek,
+    //   );
+    // }
   };
 
   const dailyTransactionsUpdate = () => {
@@ -378,14 +403,14 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
       transact => Number(transact?.week) === week,
     );
 
-    if (findWeek[0]?.week !== undefined) {
+    if (findWeek[0]?.week !== undefined && findWeek[0].week === week) {
       dispatch(
         weeklyTransactsActions.updateWeeklyTransacts({
           id: 'weeklyTransaction-' + week,
           date: textDate,
           week: week,
-          expense_weekly: expenseWeekly,
-          income_weekly: incomeWeekly,
+          expense_weekly: findWeek[0].expense_weekly + expenseWeekly,
+          income_weekly: findWeek[0].income_weekly + incomeWeekly,
         }),
       );
     }

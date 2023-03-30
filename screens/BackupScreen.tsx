@@ -234,8 +234,8 @@ const BackupScreen = () => {
     // return decrypted;
 
     // Replace expense/income data to local storage
-    await replaceNewIncomeDataToStorage(decrypted[0]);
-    await replaceNewExpenseDataToStorage(decrypted[1]);
+    replaceNewIncomeDataToStorage(decrypted[0]);
+    replaceNewExpenseDataToStorage(decrypted[1]);
 
     // Calculate and update new monthly transaction,
     monthlyTransactionsUpdate(decrypted);
@@ -277,7 +277,7 @@ const BackupScreen = () => {
 
   // Calculate and update new weekly transaction,
   const weeklyTransactionsUpdate = async object => {
-    const weeklyTransacts = sumTransactionByWeek(object);
+    const weeklyTransacts = (await sumTransactionByWeek(object))[0];
 
     // Replace new weekly transaction to storage
     dispatch(

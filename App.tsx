@@ -228,32 +228,32 @@ const styles = StyleSheet.create({
 });
 
 // ========================================================
-
 const before = [
   {
-    accountId: 'cash-e1bca744-4046-4e84-aab0-74e58572b13e',
+    accountId: 'cash-2d44474f-c6a2-43c5-840a-ae12755c745f',
     amount: 100,
     cateId: 'ec1',
-    date: '2023-03-29 15:22:00',
-    id: 'expense-11564178-660a-421d-b52f-24895da939ff',
+    date: '2023-03-30 13:41:00',
+    id: 'expense-ab78aafc-9480-4073-a23b-7b163bf5206f',
     note: '',
-    week: 5,
   },
   {
-    accountId: 'cash-e1bca744-4046-4e84-aab0-74e58572b13e',
-    amount: 100,
-    cateId: 'ec1',
-    date: '2023-03-28 15:22:00',
-    id: 'expense-5d1f41cc-2fb8-49c7-9ade-56dc49ccefdc',
+    accountId: 'cash-2d44474f-c6a2-43c5-840a-ae12755c745f',
+    amount: 300,
+    cateId: 'ec2',
+    date: '2023-03-29 13:41:00',
+    id: 'expense-cdd92bd0-6ee4-47b8-8a81-b9d42922a3a2',
     note: '',
-    week: 5,
   },
 ];
 
-const after = [
-  {amount: 0, id: 'e1', week: 1},
-  {amount: 0, id: 'e2', week: 2},
-  {amount: 0, id: 'e3', week: 3},
-  {amount: 200, id: 'e4', week: 4},
-  {amount: 700, id: 'e5', week: 5},
-];
+// ========================================================
+const after = {
+  accountId: 'cash-42a26043-5996-4181-a227-1fd676c6bf8e',
+  amount: 100,
+  cateId: 'ec1',
+  date: '2023-03-30 13:21:09',
+  id: 'expense-7891be44-3e8c-4841-9989-25008542d2ce',
+  note: '',
+  week: 5,
+};

@@ -199,11 +199,16 @@ export function sumByCustomMonth(
 }
 
 // SUMMATION by WEEK
-export function sumByWeek(object, type, date) {
-  const yearOfWeek = moment(date).year();
-  const monthOfWeek = moment(date).month() + 1;
-  const day = moment(date).date();
-  const currentWeek = getWeekInMonth(yearOfWeek, monthOfWeek, day);
+// **** object have to be filtered by year and month first ****
+export function sumByWeek(object, type, date = '') {
+  // const yearOfAmount = moment(date).year();
+  // const monthOfAmount = moment(date).month() + 1;
+  // const dateOfAmount = moment(date).date();
+  // const weekOfAmount = getWeekInMonth(
+  //   yearOfAmount,
+  //   monthOfAmount,
+  //   dateOfAmount,
+  // );
   // let month = moment(date).month() + 1;
   // if (month < 10) {
   //   month = `0${month}`;
@@ -243,17 +248,12 @@ export function sumByWeek(object, type, date) {
     ),
   }));
 
-  const sumPerWeek = mapDayToWeek.reduce((acc, cur) => {
-    console.log('cur date: ', cur.date);
-    console.log('month of week: ', monthOfWeek);
-    console.log('current week: ', currentWeek);
+  console.log('mapDayToWeek: ', mapDayToWeek);
 
-    if (
-      moment(cur.date).year() === yearOfWeek &&
-      moment(cur.date).month() + 1 === monthOfWeek
-    ) {
-      acc[cur.week - 1] = acc[cur.week - 1] + +cur.amount || +cur.amount; // increment or initialize to cur.value
-    }
+  const sumPerWeek = mapDayToWeek.reduce((acc, cur) => {
+    console.log('cur date: ', cur);
+
+    acc[cur.week - 1] = acc[cur.week - 1] + +cur.amount || +cur.amount; // increment or initialize to cur.value
 
     results[cur.week - 1] = {
       id: 'week-' + cur.week,
@@ -266,7 +266,7 @@ export function sumByWeek(object, type, date) {
     return acc;
   }, {});
 
-  console.log('results:', results);
+  // console.log('results:', results);
 
   const resultFiltered = results?.filter(result => result !== undefined);
   return resultFiltered;
@@ -444,7 +444,7 @@ export function sumTransactionByMonth(object: any) {
 }
 
 // Weekly transactions
-export function sumTransactionByWeek(object) {
+export async function sumTransactionByWeek(object) {
   let results: any = [];
 
   const Id = Array.from({length: 52}, (_, i) => `transId${i + 1}`);
@@ -500,7 +500,7 @@ export function sumTransactionByWeek(object) {
       );
 
       if (~idx) {
-        a[idx].amount += b.amount;
+        a[idx].amount += b?.amount;
       } else {
         a.push(JSON.parse(JSON.stringify(b)));
       }
@@ -524,8 +524,6 @@ export function sumTransactionByWeek(object) {
     return acc;
   }, {});
 
-  // console.log('groupByWeek: ', sumExInForWeek);
-
   // Final result that match with transaction-slice
   Object.keys(groupByWeek).forEach(key => {
     const weekInYear = key.split('-');
@@ -535,13 +533,21 @@ export function sumTransactionByWeek(object) {
       date: groupByWeek[key][0].date,
       week: +groupByWeek[key][0].week, // week of month
       // weekInYear: +weekInYear[1],
-      expense_weekly: +groupByWeek[key][1].amount,
-      income_weekly: +groupByWeek[key][0].amount,
+      expense_weekly:
+        groupByWeek[key][1]?.amount !== undefined
+          ? +groupByWeek[key][1]?.amount
+          : 0,
+      income_weekly:
+        groupByWeek[key][0]?.amount !== undefined
+          ? +groupByWeek[key][0]?.amount
+          : 0,
       // };
     };
   });
 
   const resultFiltered = results?.filter(result => result !== undefined);
+
+  console.log('resultFiltered ', resultFiltered);
 
   return resultFiltered;
 }
