@@ -240,28 +240,27 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     const currentWeek = getWeekInMonth(year, month, day);
 
     let weeklyTransactions = weeklyTransactsData;
-    // IF Weekly Transactions is not empty
-    // console.log('weekly transactions isEmpty: ', isEmpty(weeklyTransactsData));
-    // if (isEmpty(weeklyTransactsData)) {
-    // Create a new weekly transaction
-    weeklyTransactions = await sumTransactionByWeek([incomes, expenses]);
 
-    const filteredWeeklyTransactions = weeklyTransactions?.filter(
-      wt => wt.expense_weekly !== 0 || wt.income_weekly !== 0,
-    );
+    if (isEmpty(weeklyTransactsData)) {
+      // Create a new weekly transaction
+      weeklyTransactions = await sumTransactionByWeek([incomes, expenses]);
 
-    console.log('weekly transactions: ', weeklyTransactions);
-    console.log('filteredWeeklyTransactions: ', filteredWeeklyTransactions);
+      const filteredWeeklyTransactions = weeklyTransactions?.filter(
+        wt => wt.expense_weekly !== 0 || wt.income_weekly !== 0,
+      );
 
-    // push weekly_sum to Storage
+      // push new weekly_sum to Storage
 
-    // Replace new weekly transaction to storage
+      // Replace new weekly transaction to storage
 
-    // dispatch(weeklyTransactsActions.addWeeklyTransacts(weeklyTransacts));
-    // } else {
-    // Update weekly transaction
-    // console.log('update weekly transaction');
-    // }
+      // dispatch(weeklyTransactsActions.addWeeklyTransacts(weeklyTransacts));
+      // } else {
+      // Update weekly transaction
+      // console.log('update weekly transaction');
+    } else {
+      console.log('update weekly transaction');
+      // Update weekly transaction
+    }
 
     // OLD CODING
     // Expense
