@@ -37,7 +37,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
   const cash = dataLoaded?.cashAccounts?.cashAccounts;
   const ExpenseCategory = dataLoaded?.expenseCategories?.expenseCategories;
   const IncomeCategory = dataLoaded?.incomeCategories?.incomeCategories;
-  const weeklyTransacts = dataLoaded?.weeklyTransacts?.weeklyTransacts;
+  const weeklyTransactsData = dataLoaded?.weeklyTransacts?.weeklyTransacts;
 
   const amount = route.params?.amount;
   const type = route.params?.transaction?.type;
@@ -239,18 +239,29 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     const day = moment(textDate).date();
     const currentWeek = getWeekInMonth(year, month, day);
 
-    let weeklyTransacts;
+    let weeklyTransactions = weeklyTransactsData;
     // IF Weekly Transactions is not empty
-    console.log('weekly transactions isEmpty: ', isEmpty(weeklyTransacts));
-    if (isEmpty(weeklyTransacts)) {
-      // console.log('expenses: ', expenses);
-      weeklyTransacts = await sumTransactionByWeek([incomes, expenses]);
+    // console.log('weekly transactions isEmpty: ', isEmpty(weeklyTransactsData));
+    // if (isEmpty(weeklyTransactsData)) {
+    // Create a new weekly transaction
+    weeklyTransactions = await sumTransactionByWeek([incomes, expenses]);
 
-      // push weekly_sum to Storage
-      // Replace new weekly transaction to storage
-      // dispatch(weeklyTransactsActions.addWeeklyTransacts(weeklyTransacts));
-    }
-    // console.log('weeklyTransacts: ', weeklyTransacts);
+    const filteredWeeklyTransactions = weeklyTransactions?.filter(
+      wt => wt.expense_weekly !== 0 || wt.income_weekly !== 0,
+    );
+
+    console.log('weekly transactions: ', weeklyTransactions);
+    console.log('filteredWeeklyTransactions: ', filteredWeeklyTransactions);
+
+    // push weekly_sum to Storage
+
+    // Replace new weekly transaction to storage
+
+    // dispatch(weeklyTransactsActions.addWeeklyTransacts(weeklyTransacts));
+    // } else {
+    // Update weekly transaction
+    // console.log('update weekly transaction');
+    // }
 
     // OLD CODING
     // Expense
@@ -398,7 +409,8 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     incomeWeekly: number,
     week: number,
   ) => {
-    const transact_weekly = dataLoaded?.weeklyTransacts?.weeklyTransacts;
+    const transact_weekly =
+      dataLoaded?.weeklyTransactsData?.weeklyTransactsData;
     const findWeek = transact_weekly?.filter(
       transact => Number(transact?.week) === week,
     );

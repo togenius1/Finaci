@@ -228,32 +228,25 @@ const styles = StyleSheet.create({
 });
 
 // ========================================================
-const before = [
-  {
-    accountId: 'cash-2d44474f-c6a2-43c5-840a-ae12755c745f',
-    amount: 100,
-    cateId: 'ec1',
-    date: '2023-03-30 13:41:00',
-    id: 'expense-ab78aafc-9480-4073-a23b-7b163bf5206f',
-    note: '',
-  },
-  {
-    accountId: 'cash-2d44474f-c6a2-43c5-840a-ae12755c745f',
-    amount: 300,
-    cateId: 'ec2',
-    date: '2023-03-29 13:41:00',
-    id: 'expense-cdd92bd0-6ee4-47b8-8a81-b9d42922a3a2',
-    note: '',
-  },
-];
-
-// ========================================================
-const after = {
-  accountId: 'cash-42a26043-5996-4181-a227-1fd676c6bf8e',
-  amount: 100,
-  cateId: 'ec1',
-  date: '2023-03-30 13:21:09',
-  id: 'expense-7891be44-3e8c-4841-9989-25008542d2ce',
-  note: '',
-  week: 5,
+const before = {
+  '2023-14': [
+    {
+      accountId: 'cash-a523c0e3-9e48-4e5a-9a83-4cfb1bff4ccf',
+      amount: 10000,
+      cateId: 'ic1',
+      date: '2023-04-07 15:41:22',
+      id: 'income-763b86af-0098-4232-b260-8c260beffec6',
+      note: '',
+      week: 2,
+    },
+    {
+      accountId: 'cash-a523c0e3-9e48-4e5a-9a83-4cfb1bff4ccf',
+      amount: 446,
+      cateId: 'ec1',
+      date: '2023-04-07 15:37:43',
+      id: 'expense-6967bc6c-a343-47ab-af62-a7a9f6a612de',
+      note: '',
+      week: 2,
+    },
+  ],
 };

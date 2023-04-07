@@ -533,23 +533,18 @@ export async function sumTransactionByWeek(object) {
       date: groupByWeek[key][0].date,
       week: +groupByWeek[key][0].week, // week of month
       // weekInYear: +weekInYear[1],
-      expense_weekly:
-        groupByWeek[key][1]?.amount !== undefined
-          ? +groupByWeek[key][1]?.amount
-          : 0,
       income_weekly:
         groupByWeek[key][0]?.amount !== undefined
           ? +groupByWeek[key][0]?.amount
           : 0,
-      // };
+      expense_weekly:
+        groupByWeek[key][1]?.amount !== undefined
+          ? +groupByWeek[key][1]?.amount
+          : 0,
     };
   });
 
-  const resultFiltered = results?.filter(result => result !== undefined);
-
-  console.log('resultFiltered ', resultFiltered);
-
-  return resultFiltered;
+  return results;
 }
 
 // Daily transactions
