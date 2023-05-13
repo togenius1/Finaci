@@ -10,7 +10,7 @@ const weeklyTransactsSlice = createSlice({
     weeklyTransacts: [],
   },
   reducers: {
-    // Load data from DB to Mobile
+    // Load data from DB or Backup storage to Mobile
     replaceWeeklyTransacts(state, action) {
       state.weeklyTransacts = action.payload.weeklyTransacts;
     },

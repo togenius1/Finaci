@@ -2,6 +2,7 @@ import {Dimensions, Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {v4 as uuidv4} from 'uuid';
 import moment from 'moment';
+import {isEmpty} from '@aws-amplify/core';
 
 import {AddDetailsNavigationType, AddDetailsRouteProp} from '../types';
 import ExpenseForm from '../components/ManageExpense/ExpenseForm';
@@ -23,7 +24,6 @@ import {weeklyTransactsActions} from '../store/weeklyTransact-slice';
 import {dailyTransactsActions} from '../store/dailyTransact-slice';
 import {accountActions} from '../store/account-slice';
 import {cashAccountsActions} from '../store/cash-slice';
-import {isEmpty} from '@aws-amplify/core';
 
 const {width, height} = Dimensions.get('window');
 
