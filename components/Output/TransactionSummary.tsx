@@ -316,6 +316,8 @@ const TransactionSummary = ({
       moment(transact?.date).format('YYYY-MM-DD') <= toDate,
   );
 
+  console.log('weeklyData:', weeklyData);
+
   // on pressed
   if (monthlyPressed) {
     _renderItem = MonthlyRenderItem;

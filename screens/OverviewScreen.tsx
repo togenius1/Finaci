@@ -407,6 +407,7 @@ const OverviewScreen = ({navigation}: Props) => {
 
 export default OverviewScreen;
 
+// Style
 const styles = StyleSheet.create({
   container: {
     flex: 1,

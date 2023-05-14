@@ -99,6 +99,7 @@ const AddExpensesScreen = () => {
 
 export default AddExpensesScreen;
 
+// Style
 const styles = StyleSheet.create({
   container: {
     flex: 1,
