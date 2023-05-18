@@ -102,12 +102,13 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
 
   // Initial account
   const initialAccountHandler = () => {
+    const SelectedTitle = account?.title === undefined ? 'Cash' : account?.title;
     if (isEmpty(cash) || +cash[0]?.budget === 0) {
       const accId = 'cash-' + uuidv4();
       dispatch(
         cashAccountsActions.addCashAccount({
           id: accId,
-          title: 'Cash',
+          title: SelectedTitle,
           budget: 10000,
           date: new Date(),
           editedDate: new Date(),
@@ -248,6 +249,9 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
       const filteredWeeklyTransactions = weeklyTransactions?.filter(
         wt => wt.expense_weekly !== 0 || wt.income_weekly !== 0,
       );
+
+      // console.log('weeklyTransactions: ', weeklyTransactions);
+      console.log('filteredWeeklyTransactions: ', filteredWeeklyTransactions);
 
       // push new weekly_sum to Storage
 

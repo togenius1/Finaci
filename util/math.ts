@@ -525,23 +525,40 @@ export async function sumTransactionByWeek(object) {
   }, {});
 
   // Final result that match with transaction-slice
+
   Object.keys(groupByWeek).forEach(key => {
     const weekInYear = key.split('-');
 
-    results[+weekInYear[1] - 1] = {
-      id: 'transId' + `${+weekInYear[1]}`,
-      date: groupByWeek[key][0].date,
-      week: +groupByWeek[key][0].week, // week of month
-      // weekInYear: +weekInYear[1],
-      income_weekly:
-        groupByWeek[key][0]?.amount !== undefined
-          ? +groupByWeek[key][0]?.amount
-          : 0,
-      expense_weekly:
-        groupByWeek[key][1]?.amount !== undefined
-          ? +groupByWeek[key][1]?.amount
-          : 0,
-    };
+    if (
+      groupByWeek[key][1] === undefined &&
+      groupByWeek[key][0] !== undefined
+    ) {
+      const Id = groupByWeek[key][0]?.id?.split('-');
+
+      results[+weekInYear[1] - 1] = {
+        id: 'transId' + `${+weekInYear[1]}`,
+        date: groupByWeek[key][0].date,
+        week: +groupByWeek[key][0].week, // week of month
+        // weekInYear: +weekInYear[1],
+        income_weekly: Id[0] === 'income' ? +groupByWeek[key][0]?.amount : 0,
+        expense_weekly: Id[0] === 'expense' ? +groupByWeek[key][0]?.amount : 0,
+      };
+    } else {
+      results[+weekInYear[1] - 1] = {
+        id: 'transId' + `${+weekInYear[1]}`,
+        date: groupByWeek[key][0].date,
+        week: +groupByWeek[key][0].week, // week of month
+        // weekInYear: +weekInYear[1],
+        income_weekly:
+          groupByWeek[key][0]?.amount !== undefined
+            ? +groupByWeek[key][0]?.amount
+            : 0,
+        expense_weekly:
+          groupByWeek[key][1]?.amount !== undefined
+            ? +groupByWeek[key][1]?.amount
+            : 0,
+      };
+    }
   });
 
   return results;

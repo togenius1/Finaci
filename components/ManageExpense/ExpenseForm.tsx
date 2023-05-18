@@ -83,7 +83,7 @@ function ExpenseForm({
     setAccountPressed(true);
   }
 
-  console.log('acc title: ', account?.title);
+  // console.log('acc title: ', account?.title);
 
   return (
     <View style={styles.form}>
