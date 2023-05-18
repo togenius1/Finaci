@@ -102,7 +102,8 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
 
   // Initial account
   const initialAccountHandler = () => {
-    const SelectedTitle = account?.title === undefined ? 'Cash' : account?.title;
+    const SelectedTitle =
+      account?.title === undefined ? 'Cash' : account?.title;
     if (isEmpty(cash) || +cash[0]?.budget === 0) {
       const accId = 'cash-' + uuidv4();
       dispatch(
@@ -234,95 +235,59 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     }
   };
 
+  // Update Weekly Transaction
   const weeklyTransactionsUpdate = async () => {
     const year = moment(textDate).year();
     const month = moment(textDate).month() + 1;
     const day = moment(textDate).date();
     const currentWeek = getWeekInMonth(year, month, day);
 
-    let weeklyTransactions = weeklyTransactsData;
+    const weeklyTransactions = await sumTransactionByWeek([incomes, expenses]);
 
-    if (isEmpty(weeklyTransactsData)) {
-      // Create a new weekly transaction
-      weeklyTransactions = await sumTransactionByWeek([incomes, expenses]);
+    const filteredWeeklyTransactions = weeklyTransactions?.filter(
+      wt => wt.expense_weekly !== 0 || wt.income_weekly !== 0,
+    );
 
-      const filteredWeeklyTransactions = weeklyTransactions?.filter(
-        wt => wt.expense_weekly !== 0 || wt.income_weekly !== 0,
+    if (type === 'expense') {
+      // Previous monthly transactions values
+      const expenseWeekly =
+        filteredWeeklyTransactions[0]?.expense_weekly + amount;
+
+      const incomeWeekly = filteredWeeklyTransactions[0]?.income_weekly;
+
+      const expense_weekly =
+        filteredWeeklyTransactions[0]?.expense_weekly === undefined
+          ? 0
+          : expenseWeekly;
+      const income_weekly = incomeWeekly === undefined ? 0 : incomeWeekly;
+
+      dispatchWeeklyTransactionsToStorage(
+        +expense_weekly,
+        +income_weekly,
+        currentWeek,
       );
-
-      // console.log('weeklyTransactions: ', weeklyTransactions);
-      console.log('filteredWeeklyTransactions: ', filteredWeeklyTransactions);
-
-      // push new weekly_sum to Storage
-
-      // Replace new weekly transaction to storage
-
-      // dispatch(weeklyTransactsActions.addWeeklyTransacts(weeklyTransacts));
-      // } else {
-      // Update weekly transaction
-      // console.log('update weekly transaction');
-    } else {
-      console.log('update weekly transaction');
-      // Update weekly transaction
     }
+    if (type === 'income') {
+      const expenseWeekly = filteredWeeklyTransactions[0]?.expense_weekly;
 
-    // OLD CODING
-    // Expense
-    // if (type === 'expense') {
-    //   const filteredExpenses = expenses?.filter(
-    //     expense =>
-    //       moment(expense.date).month() + 1 === month &&
-    //       moment(expense.date).year() === year,
-    //   );
+      const incomeWeekly =
+        filteredWeeklyTransactions[0]?.income_weekly + amount;
 
-    //   const expenseWeekly = sumByWeek(filteredExpenses, 'expense')[0];
+      const expense_weekly = expenseWeekly === undefined ? 0 : expenseWeekly;
+      const income_weekly =
+        filteredWeeklyTransactions[0]?.income_weekly === undefined
+          ? 0
+          : incomeWeekly;
 
-    //   const newExpenseAmount = expenseWeekly?.amount + amount;
-
-    //   // console.log('expenseWeekly: ', expenseWeekly);
-
-    //   const expense_weekly =
-    //     newExpenseAmount === undefined ? 0 : newExpenseAmount;
-
-    //   const incomeWeekly = sumByWeek(incomes, 'income', textDate)?.filter(
-    //     expense => expense?.week === currentWeek,
-    //   )[0]?.amount;
-
-    //   const income_weekly = incomeWeekly === undefined ? 0 : incomeWeekly;
-
-    //   dispatchWeeklyTransactionsToStorage(
-    //     +expense_weekly,
-    //     +income_weekly,
-    //     +currentWeek,
-    //   );
-    // }
-
-    // // Income
-    // if (type === 'income') {
-    //   const expenseWeekly = sumByWeek(expenses, 'expense', textDate)?.filter(
-    //     expense => expense?.week === currentWeek,
-    //   )[0]?.amount;
-
-    //   const incomeSumByWeekly = sumByWeek(incomes, 'income', textDate);
-
-    //   const incomeWeekly =
-    //     incomeSumByWeekly?.filter(
-    //       income => income?.week === currentWeek,
-    //       // &&
-    //       // moment(income.date).month() + 1 === month &&
-    //       // moment(income.date).year() === year,
-    //     )[0]?.amount + amount;
-
-    //   const expense_weekly = expenseWeekly === undefined ? 0 : expenseWeekly;
-
-    //   dispatchWeeklyTransactionsToStorage(
-    //     +expense_weekly,
-    //     +incomeWeekly,
-    //     +currentWeek,
-    //   );
-    // }
+      dispatchWeeklyTransactionsToStorage(
+        +expense_weekly,
+        +income_weekly,
+        currentWeek,
+      );
+    }
   };
 
+  // Update Daily Transaction
   const dailyTransactionsUpdate = () => {
     const date = moment(textDate).format('YYYY-MM-DD HH:mm:ss');
     const day = moment(textDate).date();
@@ -368,6 +333,74 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     }
   };
 
+  // Dispatch monthly transactions
+  const dispatchMonthlyTransactionsToStorage = (
+    expenseAmount: number,
+    incomeAmount: number,
+    month: number,
+  ) => {
+    const transact_monthly = dataLoaded.monthlyTransacts?.monthlyTransacts;
+    const findMonth = transact_monthly.filter(tr => Number(tr.month) === month);
+
+    if (findMonth[0]?.month !== undefined) {
+      dispatch(
+        monthlyTransactsActions.updateMonthlyTransactions({
+          id: 'monthlyTransaction-' + month,
+          date: textDate,
+          month: month,
+          expense_monthly: expenseAmount,
+          income_monthly: incomeAmount,
+        }),
+      );
+    }
+    if (findMonth[0]?.month === undefined) {
+      dispatch(
+        monthlyTransactsActions.addMonthlyTransactions({
+          id: 'monthlyTransaction-' + month,
+          date: textDate,
+          month: month,
+          expense_monthly: type === 'expense' ? amount : '',
+          income_monthly: type === 'income' ? amount : '',
+        }),
+      );
+    }
+  };
+
+  // Dispatch weekly transactions
+  const dispatchWeeklyTransactionsToStorage = (
+    expenseWeekly: number,
+    incomeWeekly: number,
+    week: number,
+  ) => {
+    const transact_weekly = dataLoaded?.weeklyTransacts?.weeklyTransacts;
+    const findWeek = transact_weekly?.filter(
+      transact => Number(transact?.week) === week,
+    );
+
+    if (findWeek[0]?.week !== undefined && findWeek[0].week === week) {
+      dispatch(
+        weeklyTransactsActions.updateWeeklyTransacts({
+          id: 'weeklyTransaction-' + week,
+          date: textDate,
+          week: week,
+          expense_weekly: findWeek[0].expense_weekly + expenseWeekly,
+          income_weekly: findWeek[0].income_weekly + incomeWeekly,
+        }),
+      );
+    }
+    if (findWeek[0]?.week === undefined) {
+      dispatch(
+        weeklyTransactsActions.addWeeklyTransacts({
+          id: 'weeklyTransaction-' + week,
+          date: textDate,
+          week: week,
+          expense_weekly: expenseWeekly,
+          income_weekly: incomeWeekly,
+        }),
+      );
+    }
+  };
+
   // Dispatch daily transactions
   const dispatchDailyTransactionsToStorage = (
     expenseDaily: number,
@@ -401,75 +434,6 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
           day: day,
           expense_daily: expenseDaily,
           income_daily: incomeDaily,
-        }),
-      );
-    }
-  };
-
-  // Dispatch weekly transactions
-  const dispatchWeeklyTransactionsToStorage = (
-    expenseWeekly: number,
-    incomeWeekly: number,
-    week: number,
-  ) => {
-    const transact_weekly =
-      dataLoaded?.weeklyTransactsData?.weeklyTransactsData;
-    const findWeek = transact_weekly?.filter(
-      transact => Number(transact?.week) === week,
-    );
-
-    if (findWeek[0]?.week !== undefined && findWeek[0].week === week) {
-      dispatch(
-        weeklyTransactsActions.updateWeeklyTransacts({
-          id: 'weeklyTransaction-' + week,
-          date: textDate,
-          week: week,
-          expense_weekly: findWeek[0].expense_weekly + expenseWeekly,
-          income_weekly: findWeek[0].income_weekly + incomeWeekly,
-        }),
-      );
-    }
-    if (findWeek[0]?.week === undefined) {
-      dispatch(
-        weeklyTransactsActions.addWeeklyTransacts({
-          id: 'weeklyTransaction-' + week,
-          date: textDate,
-          week: week,
-          expense_weekly: expenseWeekly,
-          income_weekly: incomeWeekly,
-        }),
-      );
-    }
-  };
-
-  // Dispatch monthly transactions
-  const dispatchMonthlyTransactionsToStorage = (
-    expenseAmount: number,
-    incomeAmount: number,
-    month: number,
-  ) => {
-    const transact_monthly = dataLoaded.monthlyTransacts?.monthlyTransacts;
-    const findMonth = transact_monthly.filter(tr => Number(tr.month) === month);
-
-    if (findMonth[0]?.month !== undefined) {
-      dispatch(
-        monthlyTransactsActions.updateMonthlyTransactions({
-          id: 'monthlyTransaction-' + month,
-          date: textDate,
-          month: month,
-          expense_monthly: expenseAmount,
-          income_monthly: incomeAmount,
-        }),
-      );
-    }
-    if (findMonth[0]?.month === undefined) {
-      dispatch(
-        monthlyTransactsActions.addMonthlyTransactions({
-          id: 'monthlyTransaction-' + month,
-          date: textDate,
-          month: month,
-          expense_monthly: type === 'expense' ? amount : '',
-          income_monthly: type === 'income' ? amount : '',
         }),
       );
     }
