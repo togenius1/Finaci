@@ -242,46 +242,44 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     const day = moment(textDate).date();
     const currentWeek = getWeekInMonth(year, month, day);
 
-    const weeklyTransactions = await sumTransactionByWeek([incomes, expenses]);
+    const weeklyTransactions = sumTransactionByWeek([incomes, expenses]);
 
     const filteredWeeklyTransactions = weeklyTransactions?.filter(
-      wt => wt.expense_weekly !== 0 || wt.income_weekly !== 0,
+      wt => +wt.expense_weekly !== 0 || +wt.income_weekly !== 0,
     );
 
     if (type === 'expense') {
       // Previous monthly transactions values
       const expenseWeekly =
-        filteredWeeklyTransactions[0]?.expense_weekly + amount;
-
-      const incomeWeekly = filteredWeeklyTransactions[0]?.income_weekly;
-
-      const expense_weekly =
         filteredWeeklyTransactions[0]?.expense_weekly === undefined
+          ? amount
+          : filteredWeeklyTransactions[0]?.expense_weekly + amount;
+
+      const incomeWeekly =
+        filteredWeeklyTransactions[0]?.income_weekly === undefined
           ? 0
-          : expenseWeekly;
-      const income_weekly = incomeWeekly === undefined ? 0 : incomeWeekly;
+          : filteredWeeklyTransactions[0]?.income_weekly;
 
       dispatchWeeklyTransactionsToStorage(
-        +expense_weekly,
-        +income_weekly,
+        +expenseWeekly,
+        +incomeWeekly,
         currentWeek,
       );
     }
     if (type === 'income') {
-      const expenseWeekly = filteredWeeklyTransactions[0]?.expense_weekly;
+      const expenseWeekly =
+        filteredWeeklyTransactions[0]?.expense_weekly === undefined
+          ? 0
+          : filteredWeeklyTransactions[0]?.expense_weekly;
 
       const incomeWeekly =
-        filteredWeeklyTransactions[0]?.income_weekly + amount;
-
-      const expense_weekly = expenseWeekly === undefined ? 0 : expenseWeekly;
-      const income_weekly =
         filteredWeeklyTransactions[0]?.income_weekly === undefined
-          ? 0
-          : incomeWeekly;
+          ? amount
+          : filteredWeeklyTransactions[0]?.income_weekly + amount;
 
       dispatchWeeklyTransactionsToStorage(
-        +expense_weekly,
-        +income_weekly,
+        +expenseWeekly,
+        +incomeWeekly,
         currentWeek,
       );
     }
@@ -373,22 +371,22 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     week: number,
   ) => {
     const transact_weekly = dataLoaded?.weeklyTransacts?.weeklyTransacts;
-    const findWeek = transact_weekly?.filter(
+    const findWeekT = transact_weekly?.filter(
       transact => Number(transact?.week) === week,
     );
 
-    if (findWeek[0]?.week !== undefined && findWeek[0].week === week) {
+    if (findWeekT[0]?.week !== undefined && findWeekT[0].week === week) {
       dispatch(
         weeklyTransactsActions.updateWeeklyTransacts({
           id: 'weeklyTransaction-' + week,
           date: textDate,
           week: week,
-          expense_weekly: findWeek[0].expense_weekly + expenseWeekly,
-          income_weekly: findWeek[0].income_weekly + incomeWeekly,
+          expense_weekly: expenseWeekly,
+          income_weekly: incomeWeekly,
         }),
       );
     }
-    if (findWeek[0]?.week === undefined) {
+    if (findWeekT[0]?.week === undefined) {
       dispatch(
         weeklyTransactsActions.addWeeklyTransacts({
           id: 'weeklyTransaction-' + week,

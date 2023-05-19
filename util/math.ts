@@ -444,7 +444,7 @@ export function sumTransactionByMonth(object: any) {
 }
 
 // Weekly transactions
-export async function sumTransactionByWeek(object) {
+export function sumTransactionByWeek(object) {
   let results: any = [];
 
   const Id = Array.from({length: 52}, (_, i) => `transId${i + 1}`);

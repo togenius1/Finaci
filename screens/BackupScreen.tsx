@@ -289,7 +289,6 @@ const BackupScreen = () => {
 
   // Calculate and update new daily transaction,
   const dailyTransactionsUpdate = async object => {
-    console.log('daily: ');
     const dailyTransacts = sumTransactionByDay(object);
 
     // Replace new daily transaction to storage
