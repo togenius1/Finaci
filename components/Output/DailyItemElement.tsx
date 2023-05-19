@@ -134,7 +134,7 @@ const DailyItemElement = ({
     );
   };
 
-  const updateWeeklyTransactionsHandler = (itemId, type) => {
+  const updateWeeklyTransactionsHandler = (itemId: string, type: string) => {
     const month = moment().month(monthLabel).format('M');
     const week = getWeekInMonth(year, month, day);
     let deletedObj;
