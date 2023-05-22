@@ -114,11 +114,7 @@ Props) => {
   };
 
   const weeklyHandler = () => {
-    if (+month < 10) {
-      month = `0${month}`;
-    }
-
-    let Month = month === undefined ? `${moment().month() + 1}` : month;
+    let Month = month === '' ? `${moment().month() + 1}` : month;
 
     if (+Month < 10) {
       Month = `0${Month}`;
@@ -129,6 +125,7 @@ Props) => {
       currentDate = +`0${currentDate}`;
     }
     const date = moment(`${year}-${Month}-${currentDate}`).format('YYYY-MM-DD');
+
     const daysInMonth = moment(
       moment().format(`YYYY-${Month}`),
       'YYYY-MM',
@@ -151,16 +148,19 @@ Props) => {
   };
 
   const dailyHandler = () => {
-    if (+month < 10) {
-      month = `0${month}`;
+    let Month = month === '' ? `${moment().month() + 1}` : month;
+
+    if (+Month < 10) {
+      Month = `0${Month}`;
     }
-    const date = moment().format(`${year}-${month}-DD`);
+
+    const date = moment().format(`${year}-${Month}-DD`);
     const daysInMonth = moment(
-      moment().format(`YYYY-${month}`),
+      moment().format(`YYYY-${Month}`),
       'YYYY-MM',
     ).daysInMonth();
-    const fromdate = moment(`${year}-${month}-01`).format('YYYY-MM-DD');
-    const todate = moment(`${year}-${month}-${daysInMonth}`).format(
+    const fromdate = moment(`${year}-${Month}-01`).format('YYYY-MM-DD');
+    const todate = moment(`${year}-${Month}-${daysInMonth}`).format(
       'YYYY-MM-DD',
     );
 
@@ -234,6 +234,7 @@ Props) => {
 
 export default TransactionOutput;
 
+// Style
 const styles = StyleSheet.create({
   container: {
     flex: 1,

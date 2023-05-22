@@ -147,6 +147,7 @@ const DailyItemElement = ({
     const filteredWeeklyTransactions = WeeklyTransactionsData?.filter(
       tran => +tran.week === +week,
     );
+
     dispatch(
       weeklyTransactsActions.updateWeeklyTransacts({
         id: filteredWeeklyTransactions[0]?.id,

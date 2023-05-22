@@ -50,7 +50,8 @@ const TransactionsScreen = ({navigation}: Props) => {
 
   // Initial from date, to date
   useEffect(() => {
-    onMonthYearSelectedHandler(moment().year());
+    let initTime = moment().year();
+    onMonthYearSelectedHandler(initTime);
   }, []);
 
   // useEffect when focus
@@ -72,6 +73,8 @@ const TransactionsScreen = ({navigation}: Props) => {
       };
     }, []),
   );
+
+  console.log('duration: ', duration);
 
   useEffect(() => {
     navigation.setOptions({
