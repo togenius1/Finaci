@@ -74,8 +74,6 @@ const TransactionsScreen = ({navigation}: Props) => {
     }, []),
   );
 
-  console.log('duration: ', duration);
-
   useEffect(() => {
     navigation.setOptions({
       title: !customPressed ? 'Transactions' : '',
@@ -227,6 +225,7 @@ const TransactionsScreen = ({navigation}: Props) => {
     <View style={styles.container}>
       <TransactionOutput
         setDuration={setDuration}
+        duration={duration}
         setFromDate={setFromDate}
         fromDate={fromDate}
         setToDate={setToDate}

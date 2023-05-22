@@ -29,6 +29,7 @@ const adUnitId = __DEV__
 
 const TransactionOutput = ({
   setDuration,
+  duration,
   setFromDate,
   fromDate,
   setToDate,
@@ -112,6 +113,9 @@ Props) => {
     setDuration(year);
     // setDuration(String(moment(toDate).year()));
   };
+
+  console.log('duration: ', duration);
+  console.log('typeof duration: ', typeof duration);
 
   const weeklyHandler = () => {
     let Month = month === '' ? `${moment().month() + 1}` : month;
@@ -286,6 +290,7 @@ type Props = {
   setIndicatorIndex: Dispatch<React.SetStateAction<number | undefined>>;
   setExportPressed: React.Dispatch<React.SetStateAction<boolean>>;
   setYear: (value: number) => void;
+  duration: any;
   fromDate: string | null;
   toDate: string | null;
   monthlyPressed: boolean;
