@@ -114,9 +114,6 @@ Props) => {
     // setDuration(String(moment(toDate).year()));
   };
 
-  console.log('duration: ', duration);
-  console.log('typeof duration: ', typeof duration);
-
   const weeklyHandler = () => {
     let Month = month === '' ? `${moment().month() + 1}` : month;
 
@@ -141,7 +138,9 @@ Props) => {
 
     setFromDate(fromdate);
     setToDate(todate);
-    setDuration(moment.monthsShort(moment(date).month()));
+    typeof duration === 'number'
+      ? setDuration(moment.monthsShort(moment(date).month()))
+      : '';
 
     // Reset
     setMonthlyPressed(false);
@@ -170,7 +169,11 @@ Props) => {
 
     setFromDate(fromdate);
     setToDate(todate);
-    setDuration(moment.monthsShort(moment(date).month()));
+
+    typeof duration === 'number'
+      ? setDuration(moment.monthsShort(moment(date).month()))
+      : '';
+
     setMonthlyPressed(false);
     setWeeklyPressed(false);
     setDailyPressed(true);
