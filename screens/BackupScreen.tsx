@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   Alert,
   Dimensions,
   Pressable,
@@ -58,6 +59,10 @@ const month = day * 30;
 
 // Main
 const BackupScreen = () => {
+  const [showBackupIndicator, setShowBackupIndicator] =
+    useState<boolean>(false);
+  const [showRestoreIndicator, setShowRestoreIndicator] =
+    useState<boolean>(false);
   const [authState, setAuthState] = useState<AuthStateType>(defaultAuthState);
   const [isLoading, setIsLoading] = useState<boolean | undefined>(false);
   // const [isExpenseBoxChecked, setIsExpenseBoxChecked] = useState<boolean | undefined>(false);
@@ -168,6 +173,7 @@ const BackupScreen = () => {
 
   // Backup
   const backupHandler = async obj => {
+    setShowBackupIndicator(true);
     const encrypted = await encryption(obj);
 
     const d = new Date();
@@ -188,6 +194,7 @@ const BackupScreen = () => {
       await handleRefresh();
     }
     await findFolderAndInsertFile(encrypted, fileName);
+    setShowBackupIndicator(false);
   };
 
   // Ask to import data
@@ -219,6 +226,7 @@ const BackupScreen = () => {
 
   // Restore data from google drive
   const restoreHandler = async () => {
+    setShowRestoreIndicator(true);
     const pickedFile = await handleDocumentSelection();
 
     const uri = pickedFile?.uri;
@@ -232,6 +240,9 @@ const BackupScreen = () => {
 
     const decrypted = await decryption(String(encryptedData));
     // return decrypted;
+
+    // indicator
+    setShowRestoreIndicator(false);
 
     // Replace expense/income data to local storage
     replaceNewIncomeDataToStorage(decrypted[0]);
@@ -392,31 +403,45 @@ const BackupScreen = () => {
           </Text>
         </View>
 
-        <Pressable
-          style={({pressed}) => pressed && styles.pressed}
-          onPress={() => backupAlert(incomeAndExpenseObj)}>
-          <View style={{marginTop: 20}}>
-            <Text style={{fontSize: width * 0.048, fontWeight: 'bold'}}>
-              Backup
-            </Text>
-            <Text style={{fontSize: 14}}>
-              Backup your data to cloud storage
-            </Text>
-          </View>
-        </Pressable>
+        <View style={{flexDirection: 'row'}}>
+          <Pressable
+            style={({pressed}) => pressed && styles.pressed}
+            onPress={() => backupAlert(incomeAndExpenseObj)}>
+            <View style={{marginTop: 20}}>
+              <Text style={{fontSize: width * 0.048, fontWeight: 'bold'}}>
+                Backup
+              </Text>
+              <Text style={{fontSize: 14}}>
+                Backup your data to cloud storage
+              </Text>
+            </View>
+          </Pressable>
+          <ActivityIndicator
+            size="small"
+            color="#0000ff"
+            animating={showBackupIndicator}
+          />
+        </View>
 
-        <Pressable
-          style={({pressed}) => pressed && styles.pressed}
-          onPress={() => askToRestoreData()}>
-          <View style={{marginTop: 20}}>
-            <Text style={{fontSize: width * 0.048, fontWeight: 'bold'}}>
-              Restore
-            </Text>
-            <Text style={{fontSize: 14}}>
-              Restore your data from cloud storage
-            </Text>
-          </View>
-        </Pressable>
+        <View style={{flexDirection: 'row'}}>
+          <Pressable
+            style={({pressed}) => pressed && styles.pressed}
+            onPress={() => askToRestoreData()}>
+            <View style={{marginTop: 20}}>
+              <Text style={{fontSize: width * 0.048, fontWeight: 'bold'}}>
+                Restore
+              </Text>
+              <Text style={{fontSize: 14}}>
+                Restore your data from cloud storage
+              </Text>
+            </View>
+          </Pressable>
+          <ActivityIndicator
+            size="small"
+            color="#0000ff"
+            animating={showRestoreIndicator}
+          />
+        </View>
       </View>
     </View>
   );
