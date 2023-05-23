@@ -94,9 +94,17 @@ Props) => {
         exportsHandler();
       }
     },
-    [monthlyPressed, weeklyPressed, dailyPressed, customPressed, exportPressed],
+    [
+      monthlyPressed,
+      weeklyPressed,
+      dailyPressed,
+      customPressed,
+      exportPressed,
+      duration,
+    ],
   );
 
+  // Month Func
   const monthlyHandler = () => {
     // const fromdate = moment(`${year}-01-01`);
     // const todate = moment(`${year}-12-31`);
@@ -114,6 +122,7 @@ Props) => {
     // setDuration(String(moment(toDate).year()));
   };
 
+  // Week Func
   const weeklyHandler = () => {
     let Month = month === '' ? `${moment().month() + 1}` : month;
 
@@ -135,6 +144,8 @@ Props) => {
     const todate = moment(`${year}-${Month}-${daysInMonth}`).format(
       'YYYY-MM-DD',
     );
+
+    console.log('monthsShort: ', moment.monthsShort(moment(date).month()));
 
     setFromDate(fromdate);
     setToDate(todate);

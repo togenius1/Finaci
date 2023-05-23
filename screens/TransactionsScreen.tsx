@@ -74,6 +74,9 @@ const TransactionsScreen = ({navigation}: Props) => {
     }, []),
   );
 
+  console.log('duration: ', duration);
+  console.log('Type duration: ', typeof duration);
+
   useEffect(() => {
     navigation.setOptions({
       title: !customPressed ? 'Transactions' : '',
