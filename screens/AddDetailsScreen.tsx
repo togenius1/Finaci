@@ -19,6 +19,7 @@ import {weeklyTransactsActions} from '../store/weeklyTransact-slice';
 import {dailyTransactsActions} from '../store/dailyTransact-slice';
 import {accountActions} from '../store/account-slice';
 import {cashAccountsActions} from '../store/cash-slice';
+import {current} from '@reduxjs/toolkit';
 
 const {width, height} = Dimensions.get('window');
 
@@ -115,7 +116,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     setAccount(initialAccount);
   };
 
-  // Save
+  // Save data to Storage Func
   const saveDataToStorage = async () => {
     if (type === 'expense') {
       dispatch(
@@ -144,6 +145,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
   };
   //
 
+  // Save Function
   const saveHandler = async () => {
     //save
     await saveDataToStorage();
@@ -240,6 +242,13 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     const weeklyTransactions = sumTransactionByWeek([incomes, expenses]);
 
     const filteredWeeklyTransactions = weeklyTransactions?.filter(
+      wt =>
+        (+wt.expense_weekly !== 0 || +wt.income_weekly !== 0) &&
+        moment(wt.date).year() === year &&
+        +moment(wt.date).month() + 1 === month,
+    );
+
+    const test = weeklyTransactions?.filter(
       wt => +wt.expense_weekly !== 0 || +wt.income_weekly !== 0,
     );
 

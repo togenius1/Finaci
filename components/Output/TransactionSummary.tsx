@@ -308,6 +308,7 @@ const TransactionSummary = ({
       moment(transact?.date).year() === moment(date).year(),
   );
 
+
   // Combine data and sum by date
   // const dailyData = dailyTransaction(String(fromDate), String(toDate), date);
   const dailyData = DailyTransactionData?.filter(

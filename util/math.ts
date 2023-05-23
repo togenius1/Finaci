@@ -366,7 +366,7 @@ export function sumByCustomDate(object, type, fromDate, toDate) {
   return results;
 }
 
-// MONTHLY Transaction
+// Monthly Function
 export function sumTransactionByMonth(object: any) {
   let results = [];
 
@@ -443,7 +443,7 @@ export function sumTransactionByMonth(object: any) {
   return resultFiltered;
 }
 
-// Weekly transactions
+// Weekly Function
 export function sumTransactionByWeek(object) {
   let results: any = [];
 
@@ -564,7 +564,7 @@ export function sumTransactionByWeek(object) {
   return results;
 }
 
-// Daily transactions
+// Daily Function
 export function sumTransactionByDay(object) {
   let results: any = [];
 

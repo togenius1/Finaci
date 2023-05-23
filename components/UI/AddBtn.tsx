@@ -8,10 +8,10 @@ const {width, height} = Dimensions.get('window');
 const AddBtn = ({onPress, style, icon, size, color}: Props) => {
   return (
     // <View style={[styles.addButton, style]}>
+    <View style={[styles.icon, {backgroundColor: color}]}>
     <Pressable
       onPress={onPress}
       style={({pressed}) => pressed && styles.pressed}>
-      <View style={[styles.icon, {backgroundColor: color}]}>
         {/* <MaterialCommunityIcons
           name={icon}
           size={size}
@@ -20,8 +20,8 @@ const AddBtn = ({onPress, style, icon, size, color}: Props) => {
           // type={'font-awesome'}
         /> */}
         <Text style={{fontSize: width * 0.08, color: '#ffffff'}}>+</Text>
-      </View>
     </Pressable>
+      </View>
     // </View>
   );
 };

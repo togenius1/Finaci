@@ -400,6 +400,8 @@ const OverviewScreen = ({navigation}: Props) => {
       <AddBtn
         onPress={() => navigation.navigate('AddExpenses')}
         color={'#b6482a'}
+        // icon="plus"
+        // size={20}
       />
     </View>
   );
