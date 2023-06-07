@@ -149,7 +149,6 @@ const AddAccountForm = ({
 
   // Save budget to account
   const saveAccountHandler = () => {
-    console.log('budget', budget);
     if (budget <= 0 || budget === undefined || accountText === null) {
       Alert.alert('You enter invalid information!');
       return;
