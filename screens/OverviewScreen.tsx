@@ -140,6 +140,7 @@ function HeaderRightComponent({
   );
 }
 
+// Main
 const OverviewScreen = ({navigation}: Props) => {
   const [isDatePickerVisible, setDatePickerVisibility] =
     useState<boolean>(false);

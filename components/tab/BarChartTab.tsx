@@ -20,11 +20,24 @@ const BarchartTab = ({data, fromDate}: Props) => {
   const accounts = dataLoaded?.accounts?.accounts;
   const cashAccounts = dataLoaded?.cashAccounts?.cashAccounts;
 
+  const filteredAccounts = accounts?.filter(
+    cash =>
+      moment(cash.date).month() === moment(fromDate).month() &&
+      cash.budget !== 0,
+  );
+
+  const filteredCashAcc = cashAccounts?.filter(
+    cash => moment(cash.date).month() === moment(fromDate).month(),
+  );
+
+  console.log('filteredCashAcc: ', filteredAccounts);
+  console.log('fromDate: ', fromDate);
+
   // sum expense in the same day --> to barchart
   const sumByDateObj = sumByDate(data, 'expense', moment(fromDate));
 
-  const totalCashAmount = sum(cashAccounts, d => parseFloat(d.budget));
-  const totalAccountAmount = sum(accounts, d => parseFloat(d.budget));
+  const totalCashAmount = sum(filteredCashAcc, d => parseFloat(d.budget));
+  const totalAccountAmount = sum(filteredAccounts, d => parseFloat(d.budget));
   const totalBudget = totalCashAmount + totalAccountAmount;
   const totalExp = sum(data, d => parseFloat(d.amount));
 
