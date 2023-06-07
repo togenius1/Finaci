@@ -126,6 +126,10 @@ const AddAccountForm = ({
     setAccountText(null);
     setIsEditAccount(false);
     setIsEditCash(false);
+    setSelectedCash(false);
+    setCashBtnColor('');
+    setAccBtnColor(btnAccCashColor);
+    setAccountText('');
   }
 
   // Close
