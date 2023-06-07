@@ -72,6 +72,7 @@ const AccountComponents = ({
       +moment(account?.date).year() === year,
   );
 
+
   // Sort Data
   const getSortedState = data =>
     [...data]?.sort((a, b) => parseInt(b.budget) - parseInt(a.budget));

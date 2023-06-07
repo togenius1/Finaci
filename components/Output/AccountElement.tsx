@@ -186,6 +186,7 @@ const AccountElement = ({
   );
 };
 
+// Style
 const styles = StyleSheet.create({
   container: {
     flex: 1,

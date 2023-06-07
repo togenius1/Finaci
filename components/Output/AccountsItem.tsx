@@ -220,6 +220,8 @@ function AccountsItem({navigation, route}: Props) {
     data => data?.Products[0]?.amount !== 0 || data?.Products[1]?.amount !== 0,
   );
 
+
+
   filteredCustomData?.sort((a: any, b: any) => {
     const dateA = new Date(a.Date);
     const dateB = new Date(b.Date);
@@ -463,6 +465,7 @@ function AccountsItem({navigation, route}: Props) {
 
 export default AccountsItem;
 
+// Style
 const styles = StyleSheet.create({
   container: {
     flex: 1,
