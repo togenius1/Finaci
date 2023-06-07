@@ -70,7 +70,7 @@ const HeaderRightComponent = ({
 };
 
 const AccountsScreen = ({navigation}: Props) => {
-  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [IsAccFormVisible, setIsAccFormVisible] = useState<boolean>(false);
   const [isMYListVisible, setIsMYListVisible] = useState<boolean>(false);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [year, setYear] = useState<number>(moment().year());
@@ -122,7 +122,7 @@ const AccountsScreen = ({navigation}: Props) => {
   }
 
   const openAddAccountForm = () => {
-    setIsModalVisible(true);
+    setIsAccFormVisible(true);
     setIsMenuOpen(false);
   };
 
@@ -130,8 +130,8 @@ const AccountsScreen = ({navigation}: Props) => {
     <View style={styles.container}>
       <AccountComponents
         navigation={navigation}
-        isModalVisible={isModalVisible}
-        setIsModalVisible={setIsModalVisible}
+        IsAccFormVisible={IsAccFormVisible}
+        setIsAccFormVisible={setIsAccFormVisible}
         month={month}
         year={year}
       />

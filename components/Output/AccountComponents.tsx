@@ -18,8 +18,8 @@ import moment from 'moment';
 // const {width, height} = Dimensions.get('window');
 
 const AccountComponents = ({
-  isModalVisible,
-  setIsModalVisible,
+  IsAccFormVisible,
+  setIsAccFormVisible,
   navigation,
   month,
   year,
@@ -95,7 +95,7 @@ const AccountComponents = ({
     <>
       <View style={styles.container}>
         <AccountElement
-          setIsModalVisible={setIsModalVisible}
+          setIsAccFormVisible={setIsAccFormVisible}
           setAccountText={setAccountText}
           setAddAccPressed={setAddAccPressed}
           accountText={accountText}
@@ -115,8 +115,8 @@ const AccountComponents = ({
 
         <View style={styles.form}>
           <AddAccountForm
-            setIsModalVisible={setIsModalVisible}
-            isModalVisible={isModalVisible}
+            setIsAccFormVisible={setIsAccFormVisible}
+            IsAccFormVisible={IsAccFormVisible}
             setAccountText={setAccountText}
             accountText={accountText}
             addAccPressed={addAccPressed}
@@ -154,8 +154,8 @@ export default AccountComponents;
 // ============================ TYPE =====================================
 type Props = {
   navigation: AccountNavigationType;
-  isModalVisible: boolean;
+  IsAccFormVisible: boolean;
   month: number;
   year: number;
-  setIsModalVisible: (value: boolean) => void;
+  setIsAccFormVisible: (value: boolean) => void;
 };

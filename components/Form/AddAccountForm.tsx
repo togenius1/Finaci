@@ -29,8 +29,8 @@ const btnAccCashColor = '#ffe9b9';
 const initDate = moment().format('YYYY-MM-DD HH:mm:ss');
 
 const AddAccountForm = ({
-  isModalVisible,
-  setIsModalVisible,
+  IsAccFormVisible,
+  setIsAccFormVisible,
   accountText,
   setAccountText,
   addAccPressed,
@@ -119,7 +119,7 @@ const AddAccountForm = ({
   // Reset
   function resetHandler() {
     // Reset State
-    setIsModalVisible(false);
+    setIsAccFormVisible(false);
     setAddAccPressed(false);
     setSavedAcc(false);
     setBudget(undefined);
@@ -374,13 +374,13 @@ const AddAccountForm = ({
     <Modal
       animationType="fade"
       transparent={true}
-      visible={isModalVisible}
-      onDismiss={() => setIsModalVisible(false)}
-      onRequestClose={() => setIsModalVisible(false)}>
+      visible={IsAccFormVisible}
+      onDismiss={() => setIsAccFormVisible(false)}
+      onRequestClose={() => setIsAccFormVisible(false)}>
       <Pressable
         style={styles.outSide}
-        onPress={() => setIsModalVisible(false)}>
-        <Pressable onPress={() => setIsModalVisible(true)}>
+        onPress={() => setIsAccFormVisible(false)}>
+        <Pressable onPress={() => setIsAccFormVisible(true)}>
           <View style={styles.container}>
             <View style={styles.header}>
               <Pressable
@@ -621,7 +621,7 @@ const styles = StyleSheet.create({
 
 // =================================== TYPE ==========================================
 type Props = {
-  isModalVisible: boolean;
+  IsAccFormVisible: boolean;
   accountText: string;
   addAccPressed: boolean;
   budget: number;
@@ -634,6 +634,6 @@ type Props = {
   setIsEditAccount: (value: boolean) => void;
   setIsEditCash: (value: boolean) => void;
   setAddAccPressed: (value: boolean) => void;
-  setIsModalVisible: (value: boolean) => void;
+  setIsAccFormVisible: (value: boolean) => void;
   setAccountText: (value: string | null) => void;
 };

@@ -20,7 +20,7 @@ import {cashAccountsActions} from '../../store/cash-slice';
 const {width, height} = Dimensions.get('window');
 
 const AccountElement = ({
-  setIsModalVisible,
+  setIsAccFormVisible,
   setAccountText,
   setAddAccPressed,
   setBudget,
@@ -63,7 +63,7 @@ const AccountElement = ({
 
     setBudget(findAcc[0]?.budget);
     setLastEditedDate(item?.editedDate);
-    setIsModalVisible(true);
+    setIsAccFormVisible(true);
     setAddAccPressed(true);
   };
 
@@ -219,7 +219,7 @@ export default AccountElement;
 
 // ========================= TYPE ========================================
 type Props = {
-  setIsModalVisible: (value: boolean) => void;
+  setIsAccFormVisible: (value: boolean) => void;
   setAccountText: (value: string) => void;
   setAddAccPressed: (value: boolean) => void;
   setBudget: (value: number) => void;
