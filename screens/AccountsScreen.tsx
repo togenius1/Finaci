@@ -170,6 +170,7 @@ const AccountsScreen = ({navigation}: Props) => {
   );
 };
 
+// Style
 const styles = StyleSheet.create({
   container: {
     flex: 1,

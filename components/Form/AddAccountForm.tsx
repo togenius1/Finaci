@@ -207,7 +207,6 @@ const AddAccountForm = ({
   const saveCashHandler = () => {
     if (budget <= 0 || budget === undefined || accountText === null) {
       Alert.alert('Category or budget is invalid');
-      return;
     }
     const findCash = cashData?.filter(
       cash =>
@@ -258,6 +257,7 @@ const AddAccountForm = ({
   const cashBtnPressedHandler = () => {
     setCashBtnColor(btnAccCashColor);
     setAccBtnColor(undefined);
+    setAccountText('cash');
 
     // Reset
     setSelectedCash(true);
@@ -266,6 +266,7 @@ const AddAccountForm = ({
   const accBtnPressedHandler = () => {
     setCashBtnColor(undefined);
     setAccBtnColor(btnAccCashColor);
+    setAccountText('');
 
     // Reset
     setSelectedCash(false);
@@ -368,11 +369,6 @@ const AddAccountForm = ({
     );
   };
 
-  // Add budget
-  const addBudget = (budget: number) => {
-    setBudget(budget);
-  };
-
   return (
     <Modal
       animationType="fade"
@@ -420,7 +416,7 @@ const AddAccountForm = ({
                     keyboardType="numeric"
                     // defaultValue={''}
                     value={budget !== undefined ? String(budget) : ''}
-                    onChangeText={text => addBudget(+text)}
+                    onChangeText={text => setBudget(+text)}
                   />
                 </View>
                 <CalendarInput iconSize={width * 0.075} />
@@ -476,7 +472,7 @@ const AddAccountForm = ({
                     keyboardType="numeric"
                     // defaultValue={String(budget)}
                     value={budget !== undefined ? String(budget) : ''}
-                    onChangeText={text => addBudget(+text)}
+                    onChangeText={text => setBudget(+text)}
                   />
                 </View>
 
