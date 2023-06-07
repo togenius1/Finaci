@@ -29,7 +29,6 @@ const accountSlice = createSlice({
     },
     deleteAccount(state, action) {
       const id = action.payload.accountId;
-      console.log(id);
       const existingItem = state.accounts.find(account => account.id === id);
       if (existingItem) {
         state.accounts = state.accounts.filter(account => account.id !== id);

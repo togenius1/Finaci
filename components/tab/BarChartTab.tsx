@@ -30,8 +30,6 @@ const BarchartTab = ({data, fromDate}: Props) => {
     cash => moment(cash.date).month() === moment(fromDate).month(),
   );
 
-  console.log('filteredCashAcc: ', filteredAccounts);
-  console.log('fromDate: ', fromDate);
 
   // sum expense in the same day --> to barchart
   const sumByDateObj = sumByDate(data, 'expense', moment(fromDate));

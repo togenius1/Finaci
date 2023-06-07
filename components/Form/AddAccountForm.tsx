@@ -149,8 +149,8 @@ const AddAccountForm = ({
 
   // Save budget to account
   const saveAccountHandler = () => {
-    console.log(accountText);
-    if (budget <= 0 || accountText === null) {
+    console.log('budget', budget);
+    if (budget <= 0 || budget === undefined || accountText === null) {
       Alert.alert('You enter invalid information!');
       return;
     }
@@ -206,8 +206,9 @@ const AddAccountForm = ({
 
   // Save cash account
   const saveCashHandler = () => {
-    if (budget <= 0 || accountText === null) {
+    if (budget <= 0 || budget === undefined || accountText === null) {
       Alert.alert('Category or budget is invalid');
+      return;
     }
     const findCash = cashData?.filter(
       cash =>
@@ -301,7 +302,7 @@ const AddAccountForm = ({
     setTextDate(moment().format('YYYY-MM-DD HH:mm:ss'));
   }
 
-  // Calendar Input`
+  // Calendar Input
   const CalendarInput = ({style, iconSize}) => {
     return (
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -368,7 +369,10 @@ const AddAccountForm = ({
     );
   };
 
-  // console.log('budget: ', budget);
+  // Add budget
+  const addBudget = (budget: number) => {
+    setBudget(budget);
+  };
 
   return (
     <Modal
@@ -417,7 +421,7 @@ const AddAccountForm = ({
                     keyboardType="numeric"
                     // defaultValue={''}
                     value={budget !== undefined ? String(budget) : ''}
-                    onChangeText={text => setBudget(+text)}
+                    onChangeText={text => addBudget(+text)}
                   />
                 </View>
                 <CalendarInput iconSize={width * 0.075} />
@@ -473,7 +477,7 @@ const AddAccountForm = ({
                     keyboardType="numeric"
                     // defaultValue={String(budget)}
                     value={budget !== undefined ? String(budget) : ''}
-                    onChangeText={text => setBudget(+text)}
+                    onChangeText={text => addBudget(+text)}
                   />
                 </View>
 
