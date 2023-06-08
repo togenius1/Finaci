@@ -32,7 +32,7 @@ const AccountElement = ({
   cashBudget,
   accountsBudget,
   totalExpenses,
-  onPress,
+  // onPress,
   setLastEditedDate,
 }: Props) => {
   const dispatch = useAppDispatch();
@@ -106,7 +106,7 @@ const AccountElement = ({
         <Pressable
           key={item}
           style={({pressed}) => pressed && styles.pressed}
-          onPress={() => onPress(item)}
+          // onPress={() => onPress(item)}
           onLongPress={() =>
             Alert.alert(
               'Edit or Delete?',
@@ -227,6 +227,7 @@ type Props = {
   setIsEditAccount: (value: boolean) => void;
   setIsEditCash: (value: boolean) => void;
   setRemoveAccount: (value: boolean) => void;
+  setLastEditedDate: (value: string) => void;
   cashData: any[];
   accountsData: any[];
   sortedItems: any[];

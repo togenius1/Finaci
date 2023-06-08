@@ -373,6 +373,8 @@ const AddAccountForm = ({
     );
   };
 
+  console.log('account text: ', accountText);
+
   return (
     <Modal
       animationType="fade"

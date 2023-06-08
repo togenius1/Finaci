@@ -72,7 +72,6 @@ const AccountComponents = ({
       +moment(account?.date).year() === year,
   );
 
-
   // Sort Data
   const getSortedState = data =>
     [...data]?.sort((a, b) => parseInt(b.budget) - parseInt(a.budget));
@@ -84,13 +83,13 @@ const AccountComponents = ({
   }, [filteredAccountsData]);
 
   // Navigation
-  function onNavigate(item) {
-    navigation.navigate('AccountsItem', {
-      account: item.title,
-      accountId: item.id,
-      date: item.date,
-    });
-  }
+  // function onNavigate(item) {
+  //   navigation.navigate('AccountsItem', {
+  //     account: item.title,
+  //     accountId: item.id,
+  //     date: item.date,
+  //   });
+  // }
 
   return (
     <>
@@ -99,8 +98,8 @@ const AccountComponents = ({
           setIsAccFormVisible={setIsAccFormVisible}
           setAccountText={setAccountText}
           setAddAccPressed={setAddAccPressed}
-          accountText={accountText}
-          addAccPressed={addAccPressed}
+          // accountText={accountText}
+          // addAccPressed={addAccPressed}
           setBudget={setBudget}
           setIsEditAccount={setIsEditAccount}
           setIsEditCash={setIsEditCash}
@@ -110,7 +109,7 @@ const AccountComponents = ({
           cashBudget={cashBudget}
           accountsBudget={accountsBudget}
           totalExpenses={totalExpenses}
-          onPress={onNavigate}
+          // onPress={onNavigate}
           setLastEditedDate={setLastEditedDate}
         />
 
@@ -147,6 +146,7 @@ const styles = StyleSheet.create({
   form: {
     alignItems: 'center',
     justifyContent: 'center',
+    marginBottom: 50,
   },
 });
 
