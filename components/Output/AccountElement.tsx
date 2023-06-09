@@ -55,7 +55,7 @@ const AccountElement = ({
       setAccountText('');
       setIsEditCash(true);
     }
-    if (accType[0] === 'account') {
+    if (accType[0] !== 'cash' && accType[0] !== undefined) {
       findAcc = accountsData?.filter(acc => acc?.id === item?.id);
       setAccountText(findAcc[0]?.title);
       setIsEditAccount(true);

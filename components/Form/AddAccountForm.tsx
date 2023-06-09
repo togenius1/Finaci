@@ -335,6 +335,7 @@ const AddAccountForm = ({
   const CashBtn = () => {
     return (
       <Pressable
+        disabled={isEditAccount}
         style={({pressed}) => pressed && styles.pressed}
         onPress={() => cashBtnPressedHandler()}>
         <View style={[styles.accountBtn, {backgroundColor: btnCashColor}]}>
@@ -348,6 +349,7 @@ const AddAccountForm = ({
   const AccountBtn = () => {
     return (
       <Pressable
+        disabled={isEditCash}
         style={({pressed}) => pressed && styles.pressed}
         onPress={() => accBtnPressedHandler()}>
         <View style={[styles.accountBtn, {backgroundColor: btnAccColor}]}>
