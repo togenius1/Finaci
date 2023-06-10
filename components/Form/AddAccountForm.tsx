@@ -153,7 +153,12 @@ const AddAccountForm = ({
 
   // Save budget to account
   const saveAccountHandler = () => {
-    if (budget <= 0 || budget === undefined || accountText === null) {
+    if (
+      budget <= 0 ||
+      budget === undefined ||
+      accountText === null ||
+      accountText === ''
+    ) {
       Alert.alert('You enter invalid information!');
       return;
     }
@@ -270,7 +275,11 @@ const AddAccountForm = ({
   const accBtnPressedHandler = () => {
     setCashBtnColor(undefined);
     setAccBtnColor(btnAccCashColor);
-    setAccountText('');
+    if (!isEditAccount) {
+      setAccountText('');
+    } else {
+      setAccountText(accountText);
+    }
 
     // Reset
     setSelectedCash(false);
@@ -375,7 +384,7 @@ const AddAccountForm = ({
     );
   };
 
-  console.log('account text: ', accountText);
+  console.log('budget: ', budget);
 
   return (
     <Modal
@@ -453,6 +462,7 @@ const AddAccountForm = ({
                 </View>
                 <View style={styles.searchContainer}>
                   <TextInput
+                    editable={!isEditAccount}
                     style={styles.textInput}
                     placeholder="search or add category"
                     onChange={event => {
@@ -478,9 +488,9 @@ const AddAccountForm = ({
                     style={styles.textInput}
                     placeholder="Please enter budget amount."
                     keyboardType="numeric"
-                    // defaultValue={String(budget)}
-                    value={budget !== undefined ? String(budget) : ''}
-                    onChangeText={text => setBudget(+text)}
+                    // defaultValue={''}
+                    value={String(budget)}
+                    onChangeText={text => setBudget(text)}
                   />
                 </View>
 
