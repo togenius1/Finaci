@@ -216,6 +216,7 @@ const AddAccountForm = ({
   const saveCashHandler = () => {
     if (budget <= 0 || budget === undefined || accountText === null) {
       Alert.alert('Category or budget is invalid');
+      return;
     }
     const findCash = cashData?.filter(
       cash =>
@@ -433,7 +434,7 @@ const AddAccountForm = ({
                     keyboardType="numeric"
                     // defaultValue={''}
                     value={budget !== undefined ? String(budget) : ''}
-                    onChangeText={text => setBudget(+text)}
+                    onChangeText={text => setBudget(text)}
                   />
                 </View>
                 <CalendarInput iconSize={width * 0.075} />
