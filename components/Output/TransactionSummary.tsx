@@ -264,8 +264,8 @@ const TransactionSummary = ({
   year,
 }: Props) => {
   // Parameters
-  let _renderItem = '';
-  let _renderData = [];
+  let _renderItem: any = '';
+  let _renderData: any = [];
   const date = moment(fromDate).format('YYYY-MM-DD');
 
   const navigation = useNavigation();
@@ -308,7 +308,6 @@ const TransactionSummary = ({
       moment(transact?.date).year() === moment(date).year(),
   );
 
-
   // Combine data and sum by date
   // const dailyData = dailyTransaction(String(fromDate), String(toDate), date);
   const dailyData = DailyTransactionData?.filter(
@@ -336,18 +335,27 @@ const TransactionSummary = ({
   }
 
   // Sort Data
-  const getSortedState = data =>
-    [...data]?.sort(
-      (a, b) =>
-        parseInt(moment(b.date).format('YYYY-MM-DD HH:mm:ss')) -
-        parseInt(moment(a.date).format('YYYY-MM-DD HH:mm:ss')),
-    );
-  const sortedItems = useMemo(() => {
-    if (_renderData) {
-      return getSortedState(_renderData);
+  // const getSortedState = data =>
+  //   [...data]?.sort(
+  //     (a, b) =>
+  //       parseInt(moment(b.date).format('YYYY-MM-DD HH:mm:ss')) -
+  //       parseInt(moment(a.date).format('YYYY-MM-DD HH:mm:ss')),
+  //   );
+  // const sortedItems = useMemo(() => {
+  //   if (_renderData) {
+  //     return getSortedState(_renderData);
+  //   }
+  //   return _renderData;
+  // }, [_renderData]);
+
+  const sortedItems = _renderData.sort((a,b)=>{
+    const dateA = new Date(a.date).valueOf();
+    const dateB = new Date(b.date).valueOf();
+    if(dateA < dateB){
+      return 1; // return 1 here for AESC order
     }
-    return _renderData;
-  }, [_renderData]);
+    return -1 // return -1 here for DESC Order
+  });
 
   // daily renderItem
   function DailyRenderItem({item}) {
