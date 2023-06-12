@@ -245,11 +245,8 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
       wt =>
         (+wt.expense_weekly !== 0 || +wt.income_weekly !== 0) &&
         moment(wt.date).year() === year &&
-        +moment(wt.date).month() + 1 === month,
-    );
-
-    const test = weeklyTransactions?.filter(
-      wt => +wt.expense_weekly !== 0 || +wt.income_weekly !== 0,
+        +moment(wt.date).month() + 1 === month &&
+        +wt.week === +currentWeek,
     );
 
     if (type === 'expense') {

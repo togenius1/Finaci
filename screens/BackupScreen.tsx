@@ -12,7 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {prefetchConfiguration} from 'react-native-app-auth';
 import DocumentPicker from 'react-native-document-picker';
 import RNFS from 'react-native-fs';
-import {v4 as uuidv4} from 'uuid';
+// import {v4 as uuidv4} from 'uuid';
 
 import {configs, defaultAuthState} from '../util/authConfig';
 import {decryption} from '../util/decrypt';
@@ -276,7 +276,11 @@ const BackupScreen = () => {
 
   // Calculate and update new monthly transaction,
   const monthlyTransactionsUpdate = object => {
+    console.log('object: ', object);
+
     const monthlyTransact = sumTransactionByMonth(object);
+
+    console.log('monthlyTransact: ', monthlyTransact);
 
     // Replace new monthly transaction to storage
     dispatch(
@@ -382,6 +386,7 @@ const BackupScreen = () => {
       const publicKey = generatePublicKeyFromSecretKey(
         stringToUint8Array(cloudPrivateKey),
       );
+
       await AsyncStorage.setItem(PUBLIC_KEY, String(publicKey?.publicKey));
     } catch (error) {
       console.error('Error:', error);

@@ -466,7 +466,7 @@ export function sumTransactionByWeek(object) {
     // id: obj[0].id,
     week: getWeekInMonth(
       moment(obj.date).year(),
-      moment(obj.date).month(),
+      moment(obj.date).month() + 1,
       moment(obj.date).date(),
     ),
   }));
@@ -477,7 +477,7 @@ export function sumTransactionByWeek(object) {
     // id: obj[0].id,
     week: getWeekInMonth(
       moment(obj?.date).year(),
-      moment(obj?.date).month(),
+      moment(obj?.date).month() + 1,
       moment(obj?.date).date(),
     ),
   }));

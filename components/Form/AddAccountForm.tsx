@@ -385,10 +385,6 @@ const AddAccountForm = ({
     );
   };
 
-  if (budget === undefined) {
-    setBudget('');
-  }
-
   return (
     <Modal
       animationType="fade"
@@ -492,7 +488,7 @@ const AddAccountForm = ({
                     placeholder="Please enter budget amount."
                     keyboardType="numeric"
                     // defaultValue={''}
-                    value={String(budget)}
+                    value={budget !== undefined ? String(budget) : ''}
                     onChangeText={text => setBudget(text)}
                   />
                 </View>
