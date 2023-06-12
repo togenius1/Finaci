@@ -348,7 +348,7 @@ const TransactionSummary = ({
   //   return _renderData;
   // }, [_renderData]);
 
-  const sortedItems = _renderData.sort((a,b)=>{
+  const sortedItems = _renderData?.sort((a,b)=>{
     const dateA = new Date(a.date).valueOf();
     const dateB = new Date(b.date).valueOf();
     if(dateA < dateB){

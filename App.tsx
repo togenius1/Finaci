@@ -229,3 +229,51 @@ const styles = StyleSheet.create({
 });
 
 // =================================
+const storage = {
+  _persist: {rehydrated: true, version: -1},
+  accounts: {
+    accounts: [
+      [Object],
+      [Object],
+      [Object],
+      [Object],
+      [Object],
+      [Object],
+      [Object],
+      [Object],
+      [Object],
+      [Object],
+    ],
+  },
+  cashAccounts: {cashAccounts: [[Object]]},
+  dailyTransacts: {
+    dailyTransacts: [[Object], [Object], [Object], [Object], [Object]],
+  },
+  expenseCategories: {
+    expenseCategories: [
+      [Object],
+      [Object],
+      [Object],
+      [Object],
+      [Object],
+      [Object],
+      [Object],
+      [Object],
+      [Object],
+      [Object],
+      [Object],
+      [Object],
+      [Object],
+    ],
+  },
+  expenses: {
+    expenses: [[Object], [Object], [Object], [Object], [Object], [Object]],
+  },
+  incomeCategories: {
+    incomeCategories: [[Object], [Object], [Object], [Object], [Object]],
+  },
+  incomes: {incomes: [[Object], [Object]]},
+  monthlyTransacts: {monthlyTransacts: [[Object]]},
+  transferCategories: {transferCategories: []},
+  weeklyTransacts: {weeklyTransacts: [[Object], [Object], [Object]]},
+};

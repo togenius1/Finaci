@@ -35,7 +35,7 @@ export function sumTotalBudget(obj) {
 // SUM for each account Id
 export function sumEachAccountId(obj) {
   let result = [];
-  obj.reduce(function (res, value) {
+  obj?.reduce(function (res, value) {
     if (!res[value.accountId]) {
       res[value.accountId] = {accountId: value.accountId, amount: 0};
       result.push(res[value.accountId]);
@@ -248,11 +248,7 @@ export function sumByWeek(object, type, date = '') {
     ),
   }));
 
-  console.log('mapDayToWeek: ', mapDayToWeek);
-
   const sumPerWeek = mapDayToWeek.reduce((acc, cur) => {
-    console.log('cur date: ', cur);
-
     acc[cur.week - 1] = acc[cur.week - 1] + +cur.amount || +cur.amount; // increment or initialize to cur.value
 
     results[cur.week - 1] = {
@@ -265,8 +261,6 @@ export function sumByWeek(object, type, date = '') {
 
     return acc;
   }, {});
-
-  // console.log('results:', results);
 
   const resultFiltered = results?.filter(result => result !== undefined);
   return resultFiltered;
@@ -328,7 +322,7 @@ export function sumByDate(object, type, date) {
     day: moment(obj.date).date(),
   }));
 
-  const sumPerDay = mapDayToDay.reduce((acc, cur) => {
+  const sumPerDay = mapDayToDay?.reduce((acc, cur) => {
     acc[cur.day - 1] = acc[cur.day - 1] + +cur.amount || +cur.amount; // increment or initialize to cur.value
     results[cur.day - 1] = {
       id: cur.id,

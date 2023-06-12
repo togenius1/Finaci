@@ -45,6 +45,8 @@ import {
 import {dailyTransactsActions} from '../store/dailyTransact-slice';
 import {monthlyTransactsActions} from '../store/monthlyTransact-slice';
 import {weeklyTransactsActions} from '../store/weeklyTransact-slice';
+import { accountActions } from '../store/account-slice';
+import { cashAccountsActions } from '../store/cash-slice';
 
 // Constant
 const {width} = Dimensions.get('window');
@@ -70,12 +72,12 @@ const BackupScreen = () => {
   const timerRef = useRef();
   // const [expensesData, setexpensesData] = useState<ExpenseType>();
   const dispatch = useAppDispatch();
-  const dataLoaded = useAppSelector(store => store);
-  const expensesData = dataLoaded?.expenses?.expenses;
-  const incomesData = dataLoaded?.incomes?.incomes;
+  const rootStore = useAppSelector(store => store);
+  const expensesData = rootStore?.expenses?.expenses;
+  const incomesData = rootStore?.incomes?.incomes;
 
   // [0] ==> incomesData, [1] ==> expensesData
-  const incomeAndExpenseObj = [incomesData, expensesData];
+  // const incomeAndExpenseObj = [incomesData, expensesData];
 
   useEffect(() => {
     // setexpensesData(EXPENSES);
@@ -99,7 +101,7 @@ const BackupScreen = () => {
         [
           {
             text: 'Yes',
-            onPress: () => backupHandler(incomeAndExpenseObj),
+            onPress: () => backupHandler(rootStore),
             // style: 'cancel',
           },
           // {
@@ -239,21 +241,45 @@ const BackupScreen = () => {
       });
 
     const decrypted = await decryption(String(encryptedData));
-    // return decrypted;
+
+    console.log('decrypted ', decrypted);
+    console.log('decrypted ', decrypted?.cashAccounts);
 
     // indicator
     setShowRestoreIndicator(false);
 
+    // Replace accounts
+    replaceCashDataToStorage(decrypted?.cashAccounts?.cashAccounts);
+    replaceAccountsDataToStorage(decrypted?.accounts?.accounts);
+
     // Replace expense/income data to local storage
-    replaceNewIncomeDataToStorage(decrypted[0]);
-    replaceNewExpenseDataToStorage(decrypted[1]);
+    replaceNewIncomeDataToStorage(decrypted?.incomes.incomes);
+    replaceNewExpenseDataToStorage(decrypted?.expenses.expenses);
 
     // Calculate and update new monthly transaction,
-    monthlyTransactionsUpdate(decrypted);
+    monthlyTransactionsUpdate(decrypted?.monthlyTransacts?.monthlyTransacts);
     // Calculate and update new weekly transaction,
-    weeklyTransactionsUpdate(decrypted);
+    weeklyTransactionsUpdate(decrypted?.weeklyTransacts?.weeklyTransacts);
     // Calculate and update new daily transaction,
-    dailyTransactionsUpdate(decrypted);
+    dailyTransactionsUpdate(decrypted?.dailyTransacts?.dailyTransacts);
+  };
+
+  // Replace the old expense data in storage with imported data
+  const replaceCashDataToStorage = obj => {
+    dispatch(
+      cashAccountsActions.replaceCashAccount({
+        cashAccounts: obj,
+      }),
+    );
+  };
+
+  // Replace the old expense data in storage with imported data
+  const replaceAccountsDataToStorage = obj => {
+    dispatch(
+      accountActions.replaceAccount({
+        accounts: obj,
+      }),
+    );
   };
 
   // Replace the old expense data in storage with imported data
@@ -266,50 +292,46 @@ const BackupScreen = () => {
   };
 
   // Replace the old income data in storage with imported data
-  const replaceNewIncomeDataToStorage = obj => {
+  const replaceNewIncomeDataToStorage = object => {
     dispatch(
       incomeActions.replaceIncome({
-        incomes: obj,
+        incomes: object,
       }),
     );
   };
 
   // Calculate and update new monthly transaction,
   const monthlyTransactionsUpdate = object => {
-    console.log('object: ', object);
-
-    const monthlyTransact = sumTransactionByMonth(object);
-
-    console.log('monthlyTransact: ', monthlyTransact);
+    // const monthlyTransact = sumTransactionByMonth(object);
 
     // Replace new monthly transaction to storage
     dispatch(
       monthlyTransactsActions.replaceMonthlyTransacts({
-        monthlyTransacts: monthlyTransact,
+        monthlyTransacts: object,
       }),
     );
   };
 
   // Calculate and update new weekly transaction,
-  const weeklyTransactionsUpdate = async object => {
-    const weeklyTransacts = (await sumTransactionByWeek(object))[0];
+  const weeklyTransactionsUpdate = object => {
+    // const weeklyTransacts = (await sumTransactionByWeek(object))[0];
 
     // Replace new weekly transaction to storage
     dispatch(
       weeklyTransactsActions.replaceWeeklyTransacts({
-        weeklyTransacts: weeklyTransacts,
+        weeklyTransacts: object,
       }),
     );
   };
 
   // Calculate and update new daily transaction,
-  const dailyTransactionsUpdate = async object => {
-    const dailyTransacts = sumTransactionByDay(object);
+  const dailyTransactionsUpdate = object => {
+    // const dailyTransacts = sumTransactionByDay(object);
 
     // Replace new daily transaction to storage
     dispatch(
       dailyTransactsActions.replaceDailyTransacts({
-        dailyTransacts: dailyTransacts,
+        dailyTransacts: object,
       }),
     );
   };
@@ -411,7 +433,7 @@ const BackupScreen = () => {
         <View style={{flexDirection: 'row'}}>
           <Pressable
             style={({pressed}) => pressed && styles.pressed}
-            onPress={() => backupAlert(incomeAndExpenseObj)}>
+            onPress={() => backupAlert(rootStore)}>
             <View style={{marginTop: 20}}>
               <Text style={{fontSize: width * 0.048, fontWeight: 'bold'}}>
                 Backup

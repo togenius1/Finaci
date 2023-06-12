@@ -145,8 +145,6 @@ Props) => {
       'YYYY-MM-DD',
     );
 
-    console.log('monthsShort: ', moment.monthsShort(moment(date).month()));
-
     setFromDate(fromdate);
     setToDate(todate);
     typeof duration === 'number'
