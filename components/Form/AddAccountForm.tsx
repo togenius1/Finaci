@@ -385,7 +385,9 @@ const AddAccountForm = ({
     );
   };
 
-  console.log('budget: ', budget);
+  if (budget === undefined) {
+    setBudget('');
+  }
 
   return (
     <Modal
