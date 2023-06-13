@@ -7,9 +7,9 @@ type Props = {};
 
 function renderExpenseItem(itemData) {
   return (
-    <Pressable
-      style={({pressed}) => pressed && styles.pressed}
-      onPress={() => {}}>
+    // <Pressable
+    //   style={({pressed}) => pressed && styles.pressed}
+    //   onPress={() => {}}>
       <View style={styles.transactBox}>
         <View style={styles.textLeftBox}>
           <View style={styles.pctBox}>
@@ -21,7 +21,7 @@ function renderExpenseItem(itemData) {
         </View>
         <Text> {currencyFormatter(itemData.item.amount, {})}</Text>
       </View>
-    </Pressable>
+    // </Pressable>
   );
 }
 

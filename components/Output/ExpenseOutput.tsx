@@ -58,8 +58,6 @@ const ExpenseOutput = ({data, fromDate, toDate}: Props) => {
       <View style={styles.transactContainer}>
         <OverviewList data={pctEachCateObj} />
       </View>
-
-     
     </View>
   );
 };
@@ -71,9 +69,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   transactContainer: {
-    height: 250,
-    marginTop: 10,
-    marginBottom: 100,
+    height: height / 2.5,
+    marginTop: 5,
+    marginBottom: 5,
     backgroundColor: '#ffffff',
   },
   pieChart: {

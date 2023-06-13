@@ -13,10 +13,9 @@ import IconButton from '../UI/iconButton';
 import IncomeList from './IncomeList';
 import {IncomeCategory} from '../../dummy/categoryItems';
 
-
 type Props = {};
 
-const {width} = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
 const IncomeOutput = ({data, fromDate, toDate}: Props) => {
   // let slices = [];
@@ -65,14 +64,15 @@ const IncomeOutput = ({data, fromDate, toDate}: Props) => {
 
 export default IncomeOutput;
 
+// Style
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
   transactContainer: {
-    height: 250,
-    marginTop: 10,
-    marginBottom: 100,
+    height: height / 2.5,
+    marginTop: 5,
+    marginBottom: 5,
     backgroundColor: '#ffffff',
   },
   pieChart: {
