@@ -1,11 +1,5 @@
 import {Dimensions, StyleSheet, View} from 'react-native';
-import React, {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
+import React, {Dispatch, SetStateAction, useCallback, useEffect} from 'react';
 import moment from 'moment';
 import {useInterstitialAd, TestIds} from 'react-native-google-mobile-ads';
 // import {useNavigation} from '@react-navigation/native';

@@ -98,7 +98,7 @@ const DrawerContent = (props: Props) => {
                 size={22}
                 color={colors.budget}
               />
-              <Text style={styles.reportText}>Report & Export</Text>
+              <Text style={styles.reportText}>Export</Text>
             </View>
           </Pressable>
         </View>
@@ -115,7 +115,7 @@ const DrawerContent = (props: Props) => {
                 size={22}
                 color={colors.budget}
               />
-              <Text style={styles.reportText}>Backup</Text>
+              <Text style={styles.reportText}>Backup/Restore</Text>
             </View>
           </Pressable>
         </View>

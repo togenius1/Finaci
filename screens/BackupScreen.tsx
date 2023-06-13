@@ -34,22 +34,14 @@ import {User} from '../src/models';
 import {useAppDispatch, useAppSelector} from '../hooks';
 import {expenseActions} from '../store/expense-slice';
 import {incomeActions} from '../store/income-slice';
-import moment from 'moment';
-import {
-  sumByDate,
-  sumByMonth,
-  sumTransactionByDay,
-  sumTransactionByMonth,
-  sumTransactionByWeek,
-} from '../util/math';
 import {dailyTransactsActions} from '../store/dailyTransact-slice';
 import {monthlyTransactsActions} from '../store/monthlyTransact-slice';
 import {weeklyTransactsActions} from '../store/weeklyTransact-slice';
-import { accountActions } from '../store/account-slice';
-import { cashAccountsActions } from '../store/cash-slice';
+import {accountActions} from '../store/account-slice';
+import {cashAccountsActions} from '../store/cash-slice';
 
 // Constant
-const {width} = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 const sec_1 = 1000;
 const minute_1 = sec_1 * 60;
 const minute_5 = minute_1 * 5;
@@ -418,27 +410,29 @@ const BackupScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.inner}>
-        <View>
+        <View style={{alignItems: 'center'}}>
           <Text
             style={{
               fontSize: width * 0.058,
               fontWeight: 'bold',
               color: 'black',
             }}>
-            Backup and Restore{' '}
-            <Text style={{fontSize: 12}}>(Google drive)</Text>
+            Backup and Restore
           </Text>
         </View>
 
-        <View style={{flexDirection: 'row'}}>
+        <View style={{flexDirection: 'row', marginBottom: 20}}>
           <Pressable
             style={({pressed}) => pressed && styles.pressed}
             onPress={() => backupAlert(rootStore)}>
             <View style={{marginTop: 20}}>
-              <Text style={{fontSize: width * 0.048, fontWeight: 'bold'}}>
-                Backup
-              </Text>
-              <Text style={{fontSize: 14}}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Text style={{fontSize: width * 0.048, fontWeight: 'bold'}}>
+                  Backup
+                </Text>
+                <Text style={{fontSize: width * 0.03}}> (Google drive)</Text>
+              </View>
+              <Text style={{fontSize: width * 0.035}}>
                 Backup your data to cloud storage
               </Text>
             </View>
@@ -458,7 +452,7 @@ const BackupScreen = () => {
               <Text style={{fontSize: width * 0.048, fontWeight: 'bold'}}>
                 Restore
               </Text>
-              <Text style={{fontSize: 14}}>
+              <Text style={{fontSize: width * 0.035}}>
                 Restore your data from cloud storage
               </Text>
             </View>
@@ -481,7 +475,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 50,
     width,
-    height: 220,
+    height: height / 3,
     elevation: 3,
     shadowColor: '#c6c6c6',
     shadowOffset: {width: 0, height: 0},
@@ -490,7 +484,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   inner: {
-    marginLeft: 20,
+    marginLeft: width * 0.065,
   },
   pressed: {
     opacity: 0.75,
