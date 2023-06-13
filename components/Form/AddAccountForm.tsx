@@ -534,7 +534,7 @@ const AddAccountForm = ({
         mode={mode}
         today={onTodayHandler}
         // style={{position: 'absolute'}}
-      />
+      />  
     </Modal>
   );
 };
