@@ -20,7 +20,6 @@ const Export = () => {
 
   // Export format.
   const createNewObject = () => {
-    console.log('obj ---> ', dataLoaded?.expenses.expenses);
 
     const obj = dataLoaded?.expenses?.expenses?.map((expense, index) => {
       // income
@@ -44,8 +43,6 @@ const Export = () => {
           account => account?.id === incomeObj?.accountId,
         );
       }
-
-      console.log('income Obj: ', incomeObj);
 
       // expense
       let expenseAccountObj;
