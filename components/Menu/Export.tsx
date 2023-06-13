@@ -20,26 +20,29 @@ const Export = () => {
 
   // Export format.
   const createNewObject = () => {
-    const obj = dataLoaded?.expenses.expenses?.map((json, index) => {
+    console.log('obj ---> ', dataLoaded?.expenses.expenses);
+    
+    const obj = dataLoaded?.expenses.expenses?.map((expense, index) => {
       let accountObj;
       const expenseObj = dataLoaded?.expenseCategories?.expenseCategories?.find(
-        cate => cate.id === json.cateId,
+        cate => cate.id === expense.cateId,
       );
+
       accountObj = dataLoaded?.cashAccounts?.cashAccounts?.find(
-        cate => cate.id === json.accountId,
+        cate => cate.id === expense.accountId,
       );
       if (accountObj === undefined) {
         accountObj = dataLoaded?.accounts?.accounts?.find(
-          cate => cate?.id === json?.accountId,
+          cate => cate?.id === expense?.accountId,
         );
       }
       return {
         No: index + 1,
         Account: accountObj?.title,
-        Amount: json.amount,
+        Expense: expense.amount,
         Category: expenseObj?.title,
-        Date: moment(json?.date).format('YYYY-MM-DD'),
-        Note: json?.note,
+        Date: moment(expense?.date).format('YYYY-MM-DD'),
+        Note: expense?.note,
       };
     });
     setNewJson(obj);
