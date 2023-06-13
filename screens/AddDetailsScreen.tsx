@@ -483,6 +483,8 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
 
 export default AddDetailsScreen;
 
+
+// Style
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',

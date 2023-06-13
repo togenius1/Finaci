@@ -164,7 +164,7 @@ const Accounts = ({setAccount, setAccountPressed, month, year}: Props) => {
         </View>
       </View>
 
-      <AddAccountForm
+      {/* <AddAccountForm
         setIsModalVisible={setIsModalVisible}
         isModalVisible={isModalVisible}
         setAccountText={setAccountText}
@@ -175,7 +175,7 @@ const Accounts = ({setAccount, setAccountPressed, month, year}: Props) => {
         setBudget={setBudget}
         isEditAccount={isEditAccount}
         setIsEditAccount={setIsEditAccount}
-      />
+      /> */}
     </View>
   );
 };
