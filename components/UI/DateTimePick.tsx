@@ -10,7 +10,9 @@ import React from 'react';
 // import DateTimePicker from '@react-native-community/datetimepicker';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
-type Props = {};
+type Props = {
+  isVisible: boolean;
+};
 
 const {width, height} = Dimensions.get('window');
 
@@ -22,10 +24,10 @@ const DateTimePick = ({
   value,
   mode,
   today,
-  style
+  style,
 }: Props) => {
   return (
-    <View style={[styles.container,style]}>
+    <View style={[styles.container, style]}>
       <View style={{position: 'absolute', bottom: 0}}>
         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
           <Pressable
