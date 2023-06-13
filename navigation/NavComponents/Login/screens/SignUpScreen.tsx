@@ -128,7 +128,7 @@ export default function SignUpScreen({navigation}: Props) {
           </Text>
         </Text>
 
-        <SocialSignInButtons />
+        {/* <SocialSignInButtons /> */}
 
         <CustomButton
           text="Have an account? Sign in"

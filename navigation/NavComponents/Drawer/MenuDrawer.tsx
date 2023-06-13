@@ -68,7 +68,7 @@ const MenuDrawer = () => {
           title: 'Backup',
         })}
       />
-      <Drawer.Screen
+      {/* <Drawer.Screen
         name="Settings"
         component={SettingsScreen}
         options={() => ({
@@ -81,7 +81,7 @@ const MenuDrawer = () => {
         options={() => ({
           title: 'Recommend Program',
         })}
-      />
+      /> */}
     </Drawer.Navigator>
   );
 };

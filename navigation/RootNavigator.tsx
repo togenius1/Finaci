@@ -18,8 +18,20 @@ const RootNavigator = (props: Props) => {
   return (
     <NavigationContainer>
       <StackLogin.Navigator>
-        <StackLogin.Screen name="SignIn" component={SignInScreen} />
-        <StackLogin.Screen name="SignUp" component={SignUpScreen} />
+        <StackLogin.Screen
+          name="SignIn"
+          component={SignInScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <StackLogin.Screen
+          name="SignUp"
+          component={SignUpScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
         <StackLogin.Screen name="ConfirmEmail" component={ConfirmEmailScreen} />
         <StackLogin.Screen
           name="ForgotPassword"
@@ -32,4 +44,3 @@ const RootNavigator = (props: Props) => {
 };
 
 export default RootNavigator;
-
