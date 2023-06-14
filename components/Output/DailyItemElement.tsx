@@ -60,8 +60,6 @@ const DailyItemElement = ({
   const filteredExpenses = Expenses?.filter(exp => exp.id === itemId);
   const filteredIncomes = Incomes?.filter(income => income.id === itemId);
 
-  console.log('note: ', filteredIncomes[0]?.note);
-
   let filteredAccounts;
 
   if (accountId === undefined) {
@@ -215,13 +213,13 @@ const DailyItemElement = ({
             onLongPress={() =>
               Alert.alert(
                 'Edit or Delete?',
-                'You can Edit or remove the account.',
+                'Delete the transaction?',
                 [
-                  {
-                    text: 'Edit',
-                    onPress: () => console.log('Edit'),
-                    // style: 'cancel',
-                  },
+                  // {
+                  //   text: 'Edit',
+                  //   // onPress: () => console.log('Edit'),
+                  //   // style: 'cancel',
+                  // },
                   {
                     text: 'Delete',
                     onPress: () => removeIncomeHandler(itemId),
@@ -274,13 +272,13 @@ const DailyItemElement = ({
             onLongPress={() =>
               Alert.alert(
                 'Edit or Delete?',
-                'You can Edit or remove the account.',
+                'Delete the transaction?',
                 [
-                  {
-                    text: 'Edit',
-                    onPress: () => console.log('Edit'),
-                    // style: 'cancel',
-                  },
+                  // {
+                  //   text: 'Edit',
+                  //   // onPress: () => console.log('Edit'),
+                  //   // style: 'cancel',
+                  // },
                   {
                     text: 'Delete',
                     onPress: () => removeExpenseHandler(itemId),
