@@ -13,6 +13,7 @@ import {prefetchConfiguration} from 'react-native-app-auth';
 import DocumentPicker from 'react-native-document-picker';
 import RNFS from 'react-native-fs';
 // import {v4 as uuidv4} from 'uuid';
+import {useInterstitialAd, TestIds} from 'react-native-google-mobile-ads';
 
 import {configs, defaultAuthState} from '../util/authConfig';
 import {decryption} from '../util/decrypt';
@@ -39,6 +40,11 @@ import {monthlyTransactsActions} from '../store/monthlyTransact-slice';
 import {weeklyTransactsActions} from '../store/weeklyTransact-slice';
 import {accountActions} from '../store/account-slice';
 import {cashAccountsActions} from '../store/cash-slice';
+
+// Ads variable
+const adUnitId = __DEV__
+  ? TestIds.INTERSTITIAL
+  : 'ca-app-pub-3212728042764573~3355076099';
 
 // Constant
 const {width, height} = Dimensions.get('window');
@@ -70,6 +76,24 @@ const BackupScreen = () => {
 
   // [0] ==> incomesData, [1] ==> expensesData
   // const incomeAndExpenseObj = [incomesData, expensesData];
+
+  const {isLoaded, isClosed, load, show} = useInterstitialAd(adUnitId, {
+    requestNonPersonalizedAdsOnly: true,
+  });
+
+  // Load ads
+  useEffect(() => {
+    // Start loading the interstitial straight away
+    load();
+  }, [load]);
+
+  // Load ads again
+  useEffect(() => {
+    if (isClosed) {
+      // console.log('Reloading ad...');
+      load();
+    }
+  }, [isClosed]);
 
   useEffect(() => {
     // setexpensesData(EXPENSES);
@@ -141,6 +165,11 @@ const BackupScreen = () => {
 
   // Backup Alert
   const backupAlert = obj => {
+    // show Ads
+    if (isLoaded) {
+      show();
+    }
+
     Alert.alert(
       'Backup data!',
       'Do you want to backup your data now?',
@@ -187,8 +216,9 @@ const BackupScreen = () => {
     } else {
       await handleRefresh();
     }
-    await findFolderAndInsertFile(encrypted, fileName);
     setShowBackupIndicator(false);
+    await findFolderAndInsertFile(encrypted, fileName);
+    // setShowBackupIndicator(false);
   };
 
   // Ask to import data

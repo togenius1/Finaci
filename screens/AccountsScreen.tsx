@@ -10,6 +10,7 @@ import React, {useEffect, useState} from 'react';
 import moment from 'moment';
 // import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useInterstitialAd, TestIds} from 'react-native-google-mobile-ads';
 
 import {AccountNavigationType} from '../types';
 import AccountComponents from '../components/Output/AccountComponents';
@@ -23,6 +24,11 @@ if (MONTH < 10) {
 const initFromDateString = `${moment().year()}-${MONTH}-01`;
 const initFromDate = moment(initFromDateString).format('YYYY-MM-DD');
 const initToDate = moment().format('YYYY-MM-DD');
+
+// Ads variable
+const adUnitId = __DEV__
+  ? TestIds.INTERSTITIAL
+  : 'ca-app-pub-3212728042764573~3355076099';
 
 const HeaderRightComponent = ({
   setIsMenuOpen,
@@ -78,6 +84,24 @@ const AccountsScreen = ({navigation}: Props) => {
   const [fromDate, setFromDate] = useState<string | null>(initFromDate);
   const [toDate, setToDate] = useState<string | null>(initToDate);
 
+  const {isLoaded, isClosed, load, show} = useInterstitialAd(adUnitId, {
+    requestNonPersonalizedAdsOnly: true,
+  });
+
+  // Load ads
+  useEffect(() => {
+    // Start loading the interstitial straight away
+    load();
+  }, [load]);
+
+  // Load ads again
+  useEffect(() => {
+    if (isClosed) {
+      // console.log('Reloading ad...');
+      load();
+    }
+  }, [isClosed]);
+
   useEffect(() => {
     onMonthYearSelectedHandler(moment().month());
   }, []);
@@ -124,6 +148,10 @@ const AccountsScreen = ({navigation}: Props) => {
   const openAddAccountForm = () => {
     setIsAccFormVisible(true);
     setIsMenuOpen(false);
+    // show Ads
+    if (isLoaded) {
+      show();
+    }
   };
 
   return (

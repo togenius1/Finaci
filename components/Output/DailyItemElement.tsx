@@ -84,7 +84,7 @@ const DailyItemElement = ({
     // Remove Income
     dispatch(
       incomeActions.deleteIncome({
-        incomeId,
+        incomeId: incomeId !== undefined ? incomeId : 0,
       }),
     );
   };
@@ -100,7 +100,7 @@ const DailyItemElement = ({
     // Remove Expense
     dispatch(
       expenseActions.deleteExpense({
-        expenseId,
+        expenseId: expenseId !== undefined ? expenseId : 0,
       }),
     );
   };
@@ -203,6 +203,41 @@ const DailyItemElement = ({
     );
   };
 
+  const deleteAlertHandler = (id, type) => {
+    Alert.alert(
+      'Edit or Delete?',
+      'Delete the transaction?',
+      [
+        // {
+        //   text: 'Edit',
+        //   // onPress: () => console.log('Edit'),
+        //   // style: 'cancel',
+        // },
+        {
+          text: 'Delete',
+          onPress: () =>
+            type === 'income'
+              ? removeIncomeHandler(id)
+              : type === 'expense'
+              ? removeExpenseHandler(id)
+              : () => {},
+        },
+        {
+          text: 'Cancel',
+          // onPress: () => editAccountPressedHandler(item?.id),
+          style: 'cancel',
+        },
+      ],
+      {
+        cancelable: true,
+        // onDismiss: () =>
+        //   Alert.alert(
+        //     'This alert was dismissed by tapping outside of the alert dialog.',
+        //   ),
+      },
+    );
+  };
+
   return (
     <View style={styles.list}>
       {type === 'income' && (
@@ -210,35 +245,7 @@ const DailyItemElement = ({
           <Pressable
             style={({pressed}) => pressed && styles.pressed}
             // onPress={() => navigation.navigate('IncomesDetails')}
-            onLongPress={() =>
-              Alert.alert(
-                'Edit or Delete?',
-                'Delete the transaction?',
-                [
-                  // {
-                  //   text: 'Edit',
-                  //   // onPress: () => console.log('Edit'),
-                  //   // style: 'cancel',
-                  // },
-                  {
-                    text: 'Delete',
-                    onPress: () => removeIncomeHandler(itemId),
-                  },
-                  {
-                    text: 'Cancel',
-                    // onPress: () => editAccountPressedHandler(item?.id),
-                    style: 'cancel',
-                  },
-                ],
-                {
-                  cancelable: true,
-                  // onDismiss: () =>
-                  //   Alert.alert(
-                  //     'This alert was dismissed by tapping outside of the alert dialog.',
-                  //   ),
-                },
-              )
-            }>
+            onLongPress={() => deleteAlertHandler(itemId, 'income')}>
             <View
               style={{
                 justifyContent: 'center',
@@ -269,35 +276,7 @@ const DailyItemElement = ({
           <Pressable
             style={({pressed}) => pressed && styles.pressed}
             // onPress={() => navigation.navigate('ExpensesDetails')}
-            onLongPress={() =>
-              Alert.alert(
-                'Edit or Delete?',
-                'Delete the transaction?',
-                [
-                  // {
-                  //   text: 'Edit',
-                  //   // onPress: () => console.log('Edit'),
-                  //   // style: 'cancel',
-                  // },
-                  {
-                    text: 'Delete',
-                    onPress: () => removeExpenseHandler(itemId),
-                  },
-                  {
-                    text: 'Cancel',
-                    // onPress: () => editAccountPressedHandler(item?.id),
-                    style: 'cancel',
-                  },
-                ],
-                {
-                  cancelable: true,
-                  // onDismiss: () =>
-                  //   Alert.alert(
-                  //     'This alert was dismissed by tapping outside of the alert dialog.',
-                  //   ),
-                },
-              )
-            }>
+            onLongPress={() => deleteAlertHandler(itemId, 'expense')}>
             <View style={styles.amount}>
               <Text style={{fontSize: width * 0.045, color: 'red'}}>
                 {amount}
