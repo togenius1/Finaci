@@ -36,7 +36,7 @@ const Export = () => {
         );
 
       incomeAccountObj = dataLoaded?.cashAccounts?.cashAccounts?.find(
-        cash => cash.id === incomeObj.accountId,
+        cash => cash.id === incomeObj?.accountId,
       );
       if (incomeAccountObj === undefined) {
         incomeAccountObj = dataLoaded?.accounts?.accounts?.find(
@@ -48,11 +48,11 @@ const Export = () => {
       let expenseAccountObj;
       const expenseCateObj =
         dataLoaded?.expenseCategories?.expenseCategories?.find(
-          cate => cate.id === expense.cateId,
+          cate => cate.id === expense?.cateId,
         );
 
       expenseAccountObj = dataLoaded?.cashAccounts?.cashAccounts?.find(
-        cate => cate.id === expense.accountId,
+        cate => cate.id === expense?.accountId,
       );
       if (expenseAccountObj === undefined) {
         expenseAccountObj = dataLoaded?.accounts?.accounts?.find(
