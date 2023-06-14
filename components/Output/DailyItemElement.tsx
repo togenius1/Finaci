@@ -54,8 +54,13 @@ const DailyItemElement = ({
   const MonthlyTransactionsData =
     dataLoaded?.monthlyTransacts?.monthlyTransacts;
 
-  const filteredExpenses = ExpensesCate.filter(exp => exp.id === cateId);
-  const filteredIncomes = IncomesCate.filter(income => income.id === cateId);
+  const filteredExpensesCat = ExpensesCate.filter(exp => exp.id === cateId);
+  const filteredIncomesCat = IncomesCate.filter(income => income.id === cateId);
+
+  const filteredExpenses = Expenses?.filter(exp => exp.id === itemId);
+  const filteredIncomes = Incomes?.filter(income => income.id === itemId);
+
+  console.log('note: ', filteredIncomes[0]?.note);
 
   let filteredAccounts;
 
@@ -249,11 +254,14 @@ const DailyItemElement = ({
           </Pressable>
           <View style={styles.amount}>
             <Text style={{fontSize: width * 0.045, color: 'black'}}>
-              {filteredIncomes[0]?.title}
+              {filteredIncomesCat[0]?.title}
             </Text>
             <Text style={{fontSize: 10, color: 'grey'}}>
               acc.{filteredAccounts[0]?.title}
             </Text>
+            <View>
+              <Text>note: {filteredIncomes[0]?.note}</Text>
+            </View>
           </View>
         </>
       )}
@@ -307,11 +315,14 @@ const DailyItemElement = ({
               // backgroundColor: '#f5bebe',
             }}>
             <Text style={{fontSize: width * 0.035, color: 'black'}}>
-              {filteredExpenses[0]?.title}
+              {filteredExpensesCat[0]?.title}
             </Text>
             <Text style={{fontSize: 10, color: 'grey'}}>
               acc.{filteredAccounts[0]?.title}
             </Text>
+            <View>
+              <Text>note: {filteredExpenses[0]?.note}</Text>
+            </View>
           </View>
         </>
       )}
@@ -335,6 +346,7 @@ const DailyItemElement = ({
 
 export default DailyItemElement;
 
+// Style
 const styles = StyleSheet.create({
   list: {
     flexDirection: 'row',
