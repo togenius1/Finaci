@@ -2,7 +2,7 @@
   package="com.finner">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="com.google.android.play.billingclient.version" />
+    <uses-permission android:name="com.android.billingclient:billing:6.0.0" />
 
     <application
       android:name=".MainApplication"
