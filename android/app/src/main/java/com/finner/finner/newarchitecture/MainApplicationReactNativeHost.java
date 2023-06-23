@@ -1,4 +1,4 @@
-package com.finner.newarchitecture;
+package com.finner.finner.newarchitecture;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
@@ -19,9 +19,9 @@ import com.facebook.react.fabric.CoreComponentsRegistry;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.fabric.ReactNativeConfig;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import com.finner.BuildConfig;
-import com.finner.newarchitecture.components.MainComponentsRegistry;
-import com.finner.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
+import com.finner.finner.BuildConfig;
+import com.finner.finner.newarchitecture.components.MainComponentsRegistry;
+import com.finner.finner.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
 import java.util.List;
 

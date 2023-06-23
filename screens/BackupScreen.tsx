@@ -264,8 +264,11 @@ const BackupScreen = () => {
 
     const decrypted = await decryption(String(encryptedData));
 
-    console.log('decrypted ', decrypted);
-    console.log('decrypted ', decrypted?.cashAccounts);
+    if (decrypted === undefined) {
+      setShowRestoreIndicator(false);
+      Alert.alert('Your data is empty, nothing to restore');
+      return;
+    }
 
     // indicator
     setShowRestoreIndicator(false);

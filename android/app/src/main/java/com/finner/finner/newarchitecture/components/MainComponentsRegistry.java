@@ -1,4 +1,4 @@
-package com.finner.newarchitecture.components;
+package com.finner.finner.newarchitecture.components;
 
 import com.facebook.jni.HybridData;
 import com.facebook.proguard.annotations.DoNotStrip;

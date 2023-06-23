@@ -135,14 +135,14 @@ android {
     compileSdkVersion rootProject.ext.compileSdkVersion
 
     defaultConfig {
-        applicationId "com.finner"
+        applicationId "com.finner.finner"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 11
-        versionName "1.1.1"
+        versionCode 12
+        versionName "1.1.2"
         buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
         manifestPlaceholders = [
-      appAuthRedirectScheme: 'com.finner'
+      appAuthRedirectScheme: 'com.finner.finner'
     ]
 
         if (isNewArchitectureEnabled()) {

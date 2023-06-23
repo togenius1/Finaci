@@ -1,4 +1,4 @@
-package com.finner.newarchitecture.modules;
+package com.finner.finner.newarchitecture.modules;
 
 import com.facebook.jni.HybridData;
 import com.facebook.react.ReactPackage;
