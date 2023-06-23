@@ -1,0 +1,534 @@
+import {
+  ActivityIndicator,
+  Alert,
+  Dimensions,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {prefetchConfiguration} from 'react-native-app-auth';
+import DocumentPicker from 'react-native-document-picker';
+import RNFS from 'react-native-fs';
+// import {v4 as uuidv4} from 'uuid';
+import {useInterstitialAd, TestIds} from 'react-native-google-mobile-ads';
+
+import {configs, defaultAuthState} from '../util/authConfig';
+import {decryption} from '../util/decrypt';
+import {encryption} from '../util/encrypt';
+import {
+  fetchCreateFile,
+  fetchCreateFolder,
+  fetchFindFolder,
+} from '../util/fetchData';
+import {authorization, refreshAuthorize} from '../util/auth';
+import {Auth, DataStore} from 'aws-amplify';
+import {
+  generatePublicKeyFromSecretKey,
+  PRIVATE_KEY,
+  PUBLIC_KEY,
+  stringToUint8Array,
+} from '../util/crypto';
+import {User} from '../src/models';
+import {useAppDispatch, useAppSelector} from '../hooks';
+import {expenseActions} from '../store/expense-slice';
+import {incomeActions} from '../store/income-slice';
+import {dailyTransactsActions} from '../store/dailyTransact-slice';
+import {monthlyTransactsActions} from '../store/monthlyTransact-slice';
+import {weeklyTransactsActions} from '../store/weeklyTransact-slice';
+import {accountActions} from '../store/account-slice';
+import {cashAccountsActions} from '../store/cash-slice';
+
+// Ads variable
+const adUnitId = __DEV__
+  ? TestIds.INTERSTITIAL
+  : 'ca-app-pub-3212728042764573~3355076099';
+
+// Constant
+const {width, height} = Dimensions.get('window');
+const sec_1 = 1000;
+const minute_1 = sec_1 * 60;
+const minute_5 = minute_1 * 5;
+const minute_15 = minute_5 * 3;
+const hour = minute_15 * 4;
+const day = hour * 24;
+const SevenDays = day * 7;
+const month = day * 30;
+
+// Main
+const BackupScreen = () => {
+  const [showBackupIndicator, setShowBackupIndicator] =
+    useState<boolean>(false);
+  const [showRestoreIndicator, setShowRestoreIndicator] =
+    useState<boolean>(false);
+  const [authState, setAuthState] = useState<AuthStateType>(defaultAuthState);
+  const [isLoading, setIsLoading] = useState<boolean | undefined>(false);
+  // const [isExpenseBoxChecked, setIsExpenseBoxChecked] = useState<boolean | undefined>(false);
+  const auth = useRef<string | null>('');
+  const timerRef = useRef();
+  // const [expensesData, setexpensesData] = useState<ExpenseType>();
+  const dispatch = useAppDispatch();
+  const rootStore = useAppSelector(store => store);
+  const expensesData = rootStore?.expenses?.expenses;
+  const incomesData = rootStore?.incomes?.incomes;
+
+  // [0] ==> incomesData, [1] ==> expensesData
+  // const incomeAndExpenseObj = [incomesData, expensesData];
+
+  const {isLoaded, isClosed, load, show} = useInterstitialAd(adUnitId, {
+    requestNonPersonalizedAdsOnly: true,
+  });
+
+  // Load ads
+  useEffect(() => {
+    // Start loading the interstitial straight away
+    load();
+  }, [load]);
+
+  // Load ads again
+  useEffect(() => {
+    if (isClosed) {
+      // console.log('Reloading ad...');
+      load();
+    }
+  }, [isClosed]);
+
+  useEffect(() => {
+    // setexpensesData(EXPENSES);
+    setUpKey();
+  }, []);
+
+  // useEffect(() => {
+  //   prefetchConfiguration({
+  //     warmAndPrefetchChrome: true,
+  //     connectionTimeoutSeconds: 5,
+  //     ...configs.auth0,
+  //   });
+  // }, []);
+
+  // Timer to backup. Should move to the App file?
+  useEffect(() => {
+    timerRef.current = setInterval(() => {
+      Alert.alert(
+        'Backup data!',
+        'Do you want to backup your data now?',
+        [
+          {
+            text: 'Yes',
+            onPress: () => backupHandler(rootStore),
+            // style: 'cancel',
+          },
+          // {
+          //   text: 'Delete',
+          //   // onPress: () => removeAccountHandler(item?.id),
+          // },
+          {
+            text: 'No',
+            style: 'cancel',
+          },
+        ],
+        {
+          cancelable: true,
+          // onDismiss: () =>
+          //   Alert.alert(
+          //     'This alert was dismissed by tapping outside of the alert dialog.',
+          //   ),
+        },
+      );
+      // backupHandler(expensesData);
+    }, SevenDays);
+    () => clearInterval(timerRef.current);
+  }, []);
+
+  useEffect(() => {
+    authHandler();
+  }, [authState]);
+
+  const authHandler = () => {
+    const accessToken = authState?.accessToken;
+    const authh = `Bearer ${accessToken}`;
+    auth.current = authh;
+  };
+
+  const handleAuthorize = useCallback(
+    async provider => {
+      await authorization(provider, setAuthState);
+    },
+    [authState],
+  );
+
+  const handleRefresh = useCallback(async () => {
+    await refreshAuthorize(authState, setAuthState);
+  }, [authState]);
+
+  // Backup Alert
+  const backupAlert = obj => {
+    // show Ads
+    if (isLoaded) {
+      show();
+    }
+
+    Alert.alert(
+      'Backup data!',
+      'Do you want to backup your data now?',
+      [
+        {
+          text: 'Yes',
+          onPress: () => backupHandler(obj),
+          // style: 'cancel',
+        },
+        {
+          text: 'No',
+          style: 'cancel',
+        },
+      ],
+      {
+        cancelable: true,
+        // onDismiss: () =>
+        //   Alert.alert(
+        //     'This alert was dismissed by tapping outside of the alert dialog.',
+        //   ),
+      },
+    );
+  };
+
+  // Backup
+  const backupHandler = async obj => {
+    setShowBackupIndicator(true);
+    const encrypted = await encryption(obj);
+
+    const d = new Date();
+    const mm = d.getMonth() + 1;
+    let dd = d.getDate();
+    const yy = d.getFullYear();
+    const time = d.getTime();
+    if (dd < 10) {
+      dd = `0${dd}`;
+    }
+    const fileName = `Finner_backup${dd}${mm}${yy}${time}.bak`;
+
+    const today = new Date();
+    const expireAccessToken = new Date(authState.accessTokenExpirationDate);
+    if (!authState.hasLoggedInOnce || today === expireAccessToken) {
+      await handleAuthorize('auth0');
+    } else {
+      await handleRefresh();
+    }
+    setShowBackupIndicator(false);
+    await findFolderAndInsertFile(encrypted, fileName);
+    // setShowBackupIndicator(false);
+  };
+
+  // Ask to import data
+  const askToRestoreData = () => {
+    // Ask to replace the old?
+    Alert.alert(
+      'Do you want to restore an expense data?',
+      'Your old data on your phone will be replaced with the new data!',
+      [
+        {
+          text: 'Yes',
+          onPress: () => restoreHandler(),
+          style: 'destructive',
+        },
+        {
+          text: 'No',
+          style: 'cancel',
+        },
+      ],
+      {
+        cancelable: true,
+        // onDismiss: () =>
+        //   Alert.alert(
+        //     'This alert was dismissed by tapping outside of the alert dialog.',
+        //   ),
+      },
+    );
+  };
+
+  // Restore data from google drive
+  const restoreHandler = async () => {
+    setShowRestoreIndicator(true);
+    const pickedFile = await handleDocumentSelection();
+
+    const uri = pickedFile?.uri;
+    const encryptedData = await RNFS.readFile(uri, 'ascii')
+      .then(result => {
+        return result;
+      })
+      .catch(err => {
+        console.log(err.message, err.code);
+      });
+
+    const decrypted = await decryption(String(encryptedData));
+
+    if (decrypted === undefined) {
+      setShowRestoreIndicator(false);
+      Alert.alert('Your data is empty, nothing to restore');
+      return;
+    }
+
+    // indicator
+    setShowRestoreIndicator(false);
+
+    // Replace accounts
+    replaceCashDataToStorage(decrypted?.cashAccounts?.cashAccounts);
+    replaceAccountsDataToStorage(decrypted?.accounts?.accounts);
+
+    // Replace expense/income data to local storage
+    replaceNewIncomeDataToStorage(decrypted?.incomes.incomes);
+    replaceNewExpenseDataToStorage(decrypted?.expenses.expenses);
+
+    // Calculate and update new monthly transaction,
+    monthlyTransactionsUpdate(decrypted?.monthlyTransacts?.monthlyTransacts);
+    // Calculate and update new weekly transaction,
+    weeklyTransactionsUpdate(decrypted?.weeklyTransacts?.weeklyTransacts);
+    // Calculate and update new daily transaction,
+    dailyTransactionsUpdate(decrypted?.dailyTransacts?.dailyTransacts);
+  };
+
+  // Replace the old expense data in storage with imported data
+  const replaceCashDataToStorage = obj => {
+    dispatch(
+      cashAccountsActions.replaceCashAccount({
+        cashAccounts: obj,
+      }),
+    );
+  };
+
+  // Replace the old expense data in storage with imported data
+  const replaceAccountsDataToStorage = obj => {
+    dispatch(
+      accountActions.replaceAccount({
+        accounts: obj,
+      }),
+    );
+  };
+
+  // Replace the old expense data in storage with imported data
+  const replaceNewExpenseDataToStorage = obj => {
+    dispatch(
+      expenseActions.replaceExpenses({
+        expenses: obj,
+      }),
+    );
+  };
+
+  // Replace the old income data in storage with imported data
+  const replaceNewIncomeDataToStorage = object => {
+    dispatch(
+      incomeActions.replaceIncome({
+        incomes: object,
+      }),
+    );
+  };
+
+  // Calculate and update new monthly transaction,
+  const monthlyTransactionsUpdate = object => {
+    // const monthlyTransact = sumTransactionByMonth(object);
+
+    // Replace new monthly transaction to storage
+    dispatch(
+      monthlyTransactsActions.replaceMonthlyTransacts({
+        monthlyTransacts: object,
+      }),
+    );
+  };
+
+  // Calculate and update new weekly transaction,
+  const weeklyTransactionsUpdate = object => {
+    // const weeklyTransacts = (await sumTransactionByWeek(object))[0];
+
+    // Replace new weekly transaction to storage
+    dispatch(
+      weeklyTransactsActions.replaceWeeklyTransacts({
+        weeklyTransacts: object,
+      }),
+    );
+  };
+
+  // Calculate and update new daily transaction,
+  const dailyTransactionsUpdate = object => {
+    // const dailyTransacts = sumTransactionByDay(object);
+
+    // Replace new daily transaction to storage
+    dispatch(
+      dailyTransactsActions.replaceDailyTransacts({
+        dailyTransacts: object,
+      }),
+    );
+  };
+
+  // Create folder
+  async function createFolder(fileName: string) {
+    const folderObj = await fetchCreateFolder(auth.current, expensesData, '');
+    return folderObj;
+  }
+
+  // Find Folder in the google drive.
+  async function FindFolderInGoogleDrive() {
+    setIsLoading(true);
+    const folders = await fetchFindFolder(auth.current);
+    setIsLoading(false);
+    return folders;
+  }
+
+  // Fin any folders in the local storage.
+  async function findFolderAndInsertFile(
+    encryptedData: string,
+    fileName: string,
+  ) {
+    let folderId: string | null;
+    folderId = await AsyncStorage.getItem('@folderbackup_key');
+    const folderInDrive = await FindFolderInGoogleDrive();
+
+    const foundFolderId = folderInDrive.files?.find(
+      fd => fd.id === folderId,
+    )?.id;
+
+    if (!folderId || !foundFolderId) {
+      const folderObj = await createFolder(fileName);
+      await AsyncStorage.setItem('@folderbackup_key', folderObj?.id);
+      folderId = folderObj?.id;
+
+      await fetchCreateFile(
+        auth.current,
+        encryptedData,
+        String(folderId),
+        fileName,
+      );
+    } else {
+      await fetchCreateFile(auth.current, encryptedData, folderId, fileName);
+    }
+  }
+
+  // Select file from Storage
+  const handleDocumentSelection = async () => {
+    try {
+      const response = await DocumentPicker.pickSingle({
+        presentationStyle: 'fullScreen',
+      });
+      return response;
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+
+  const setUpKey = async () => {
+    try {
+      // const authUser = await Auth.currentAuthenticatedUser({bypassCache: true});
+      const authUser = await Auth.currentAuthenticatedUser();
+      const dbUser = await DataStore.query(User, authUser.attributes.sub);
+      // setCurrentUser(dbUser);
+
+      // Remove Old Key
+      await AsyncStorage.removeItem(PRIVATE_KEY);
+      await AsyncStorage.removeItem(PUBLIC_KEY);
+
+      const cloudPrivateKey = String(dbUser?.backupKey);
+      await AsyncStorage.setItem(PRIVATE_KEY, cloudPrivateKey);
+
+      const publicKey = generatePublicKeyFromSecretKey(
+        stringToUint8Array(cloudPrivateKey),
+      );
+
+      await AsyncStorage.setItem(PUBLIC_KEY, String(publicKey?.publicKey));
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.inner}>
+        <View style={{alignItems: 'center'}}>
+          <Text
+            style={{
+              fontSize: width * 0.058,
+              fontWeight: 'bold',
+              color: 'black',
+            }}>
+            Backup and Restore
+          </Text>
+        </View>
+
+        <View style={{flexDirection: 'row', marginBottom: 20}}>
+          <Pressable
+            style={({pressed}) => pressed && styles.pressed}
+            onPress={() => backupAlert(rootStore)}>
+            <View style={{marginTop: 20}}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Text style={{fontSize: width * 0.048, fontWeight: 'bold'}}>
+                  Backup
+                </Text>
+                <Text style={{fontSize: width * 0.03}}> (Google drive)</Text>
+              </View>
+              <Text style={{fontSize: width * 0.035}}>
+                Backup your data to cloud storage
+              </Text>
+            </View>
+          </Pressable>
+          <ActivityIndicator
+            size="small"
+            color="#0000ff"
+            animating={showBackupIndicator}
+          />
+        </View>
+
+        <View style={{flexDirection: 'row'}}>
+          <Pressable
+            style={({pressed}) => pressed && styles.pressed}
+            onPress={() => askToRestoreData()}>
+            <View style={{marginTop: 20}}>
+              <Text style={{fontSize: width * 0.048, fontWeight: 'bold'}}>
+                Restore
+              </Text>
+              <Text style={{fontSize: width * 0.035}}>
+                Restore your data from cloud storage
+              </Text>
+            </View>
+          </Pressable>
+          <ActivityIndicator
+            size="small"
+            color="#0000ff"
+            animating={showRestoreIndicator}
+          />
+        </View>
+      </View>
+    </View>
+  );
+};
+
+export default BackupScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    justifyContent: 'center',
+    marginTop: 50,
+    width,
+    height: height / 3,
+    elevation: 3,
+    shadowColor: '#c6c6c6',
+    shadowOffset: {width: 0, height: 0},
+    shadowOpacity: 0.7,
+    shadowRadius: 3,
+    backgroundColor: 'white',
+  },
+  inner: {
+    marginLeft: width * 0.065,
+  },
+  pressed: {
+    opacity: 0.75,
+  },
+});
+
+// ================================ TYPE Interface =============================================
+interface AuthStateType {
+  hasLoggedInOnce: boolean;
+  provider: string;
+  accessToken: string;
+  accessTokenExpirationDate: string;
+  refreshToken: string;
+}

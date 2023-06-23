@@ -1,118 +1,231 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+import {LogBox, Pressable, StatusBar, StyleSheet, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {setPRNG} from 'tweetnacl';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Amplify, Auth, DataStore, Hub} from 'aws-amplify';
+import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import {generateKeyPair, PRIVATE_KEY, PRNG, PUBLIC_KEY} from './util/crypto';
+import FinnerNavigator from './navigation/FinnerNavigator';
+import {useAppDispatch, useAppSelector} from './hooks';
+import {fetchCashAccountsData} from './store/cash-action';
+import {fetchAccountsData} from './store/account-action';
+import {fetchIncomeCategoriesData} from './store/income-category-action';
+import {fetchExpenseCategoriesData} from './store/expense-category-action';
+import {fetchExpensesData} from './store/expense-action';
+import {fetchIncomesData} from './store/income-action';
+import {fetchDailyTransactsData} from './store/dailyTransact-action';
+import {fetchMonthlyTransactsData} from './store/monthlyTransact-action';
+import {fetchWeeklyTransactsData} from './store/weeklyTransact-action';
+import awsconfig from './src/aws-exports';
+import {LazyUser, User} from './src/models';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+Amplify.configure(awsconfig);
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+setPRNG(PRNG);
 
-function Section({children, title}: SectionProps): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
+const adUnitId = __DEV__
+  ? TestIds.BANNER
+  : 'ca-app-pub-3212728042764573~3355076099';
+
+const App = () => {
+  // Disable warnings for release app.
+  // LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message:
+  // LogBox.ignoreAllLogs(); // Ignore all log notifications:
+
+  const dispatch = useAppDispatch();
+  const expenseCateData = useAppSelector(
+    state => state.expenseCategories.expenseCategories,
+    // shallowEqual,
   );
-}
+  const incomesCateData = useAppSelector(
+    state => state.incomeCategories.incomeCategories,
+    // shallowEqual,
+  );
+  const cashData = useAppSelector(
+    state => state.cashAccounts.cashAccounts,
+    // shallowEqual,
+  );
+  const accountsData = useAppSelector(
+    state => state.accounts.accounts,
+    // shallowEqual,
+  );
 
-function App(): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+  const [currentUser, setCurrentUser] = useState<LazyUser[]>([]);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>();
+  const [cloudPrivateKey, setCloudPrivateKey] = useState<string | null>('');
+  const [closedAds, setClosedAds] = useState<boolean>(false);
+  // const [localPrivateKey, setLocalPrivateKey] = useState<string | null>();
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  //Reset Expense
+  // useEffect(() => {
+  //   dispatch(fetchCashAccountsData());
+  //   dispatch(fetchExpensesData());
+  //   dispatch(fetchIncomesData());
+  //   dispatch(fetchMonthlyTransactsData());
+  //   dispatch(fetchWeeklyTransactsData());
+  //   dispatch(fetchDailyTransactsData());
+  // }, []);
+
+  // Load Existing Category
+  // useEffect(() => {
+
+  // }, []);
+
+  // Listening for Login events.
+  useEffect(() => {
+    const listener = async data => {
+      if (data.payload.event === 'signIn') {
+        // Load Existing Category
+        if (expenseCateData.length === 0) {
+          dispatch(fetchExpenseCategoriesData());
+        }
+        if (incomesCateData.length === 0) {
+          dispatch(fetchIncomeCategoriesData());
+        }
+        if (cashData.length === 0) {
+          dispatch(fetchCashAccountsData());
+        }
+        if (accountsData.length === 0) {
+          dispatch(fetchAccountsData());
+        }
+
+        // Check and generate a new key
+        await checkUserAndGenerateNewKey();
+        // generateNewKey();
+        setIsAuthenticated(true);
+      }
+      if (data.payload.event === 'signOut') {
+        checkUserAndGenerateNewKey();
+        setIsAuthenticated(false);
+      }
+    };
+
+    Hub.listen('auth', listener);
+  }, []);
+
+  // Check if authenticated user.
+  useEffect(() => {
+    const isAuthenticated = async () => {
+      const authedUser = await Auth.currentAuthenticatedUser();
+      setIsAuthenticated(true);
+    };
+
+    isAuthenticated();
+  }, []);
+
+  // Check if authenticated user.
+  const checkUserAndGenerateNewKey = async () => {
+    // const authUser = await Auth.currentAuthenticatedUser({bypassCache: true});
+    const authUser = await Auth.currentAuthenticatedUser();
+    const subId = String(authUser.attributes.sub);
+    const dbUser = await DataStore.query(User, c => c.id.eq(subId));
+    setCurrentUser(dbUser);
+
+    const cloudPKey = dbUser[0]?.backupKey;
+    setCloudPrivateKey(cloudPKey!);
+
+    generateNewKey();
+  };
+
+  // Generate new key
+  const generateNewKey = async () => {
+    // Compare Cloud key with local key
+    if (cloudPrivateKey === null) {
+      // Remove old key
+      await AsyncStorage.removeItem(PRIVATE_KEY);
+      await AsyncStorage.removeItem(PUBLIC_KEY);
+
+      // Generate a new backup key.
+      const {publicKey, secretKey} = generateKeyPair();
+
+      //Save Key to local storage.
+      await AsyncStorage.setItem(PRIVATE_KEY, secretKey.toString());
+      await AsyncStorage.setItem(PUBLIC_KEY, publicKey.toString());
+
+      // const originalUser = await DataStore.query(User, user?.id);
+
+      await DataStore.save(
+        User.copyOf(currentUser[0], updated => {
+          updated.backupKey = String(secretKey);
+        }),
+      );
+    }
+  };
+
+  // Load Key from Cloud
+  // const saveCloudKeyToLocal = async () => {
+  //   await AsyncStorage.removeItem(PRIVATE_KEY);
+  //   await AsyncStorage.removeItem(PUBLIC_KEY);
+
+  //   await AsyncStorage.setItem(PRIVATE_KEY, String(cloudPrivateKey));
+  //   const newPublicKey = generatePublicKeyFromSecretKey(
+  //     stringToUint8Array(String(cloudPrivateKey)),
+  //   );
+  //   await AsyncStorage.setItem(PUBLIC_KEY, newPublicKey.publicKey.toString());
+  // };
+
+  // const removeCloudKey = async () => {
+  //   const originalUser = await DataStore.query(User, String(user?.id));
+  //   await DataStore.save(
+  //     User.copyOf(originalUser, updated => {
+  //       updated.backupKey = null;
+  //     }),
+  //   );
+  // };
+
+  const closeAdsHandler = () => {
+    setClosedAds(true);
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-}
+    <>
+      <StatusBar barStyle="light-content" />
+      <FinnerNavigator isAuthenticated={isAuthenticated} />
 
+      {isAuthenticated && !closedAds && (
+        <>
+          <Pressable
+            style={({pressed}) => pressed && styles.pressed}
+            onPress={() => closeAdsHandler()}>
+            <View style={styles.close}>
+              <MaterialCommunityIcons name="close" size={20} color={'grey'} />
+            </View>
+          </Pressable>
+
+          <BannerAd
+            unitId={adUnitId}
+            size={BannerAdSize.BANNER}
+            requestOptions={{
+              requestNonPersonalizedAdsOnly: true,
+            }}
+          />
+        </>
+      )}
+
+      {/* {currentUser && (
+        <>
+          <CButton onPress={removeCloudKey} style={{bottom: 25}}>
+            Remove Cloud Key
+          </CButton>
+        </>
+      )} */}
+    </>
+  );
+};
+
+export default App;
+
+//========== Style sheet =======================================
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  close: {
+    position: 'absolute',
+    right: 15,
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
+  pressed: {
+    opacity: 0.65,
   },
 });
 
-export default App;
+// =================================
