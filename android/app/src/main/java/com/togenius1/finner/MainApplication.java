@@ -10,7 +10,7 @@ import com.facebook.react.defaults.DefaultReactNativeHost;
 import com.facebook.soloader.SoLoader;
 import java.util.List;
 
-import com.rnfs.RNFSPackage;
+// import com.rnfs.RNFSPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 

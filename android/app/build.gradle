@@ -82,7 +82,7 @@ android {
         versionName "1.0.4"
 
         manifestPlaceholders = [
-         appAuthRedirectScheme: 'com.togenius1.finner.auth'
+         appAuthRedirectScheme: 'com.togenius1.finner'
     ]
     }
     signingConfigs {

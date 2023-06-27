@@ -11,8 +11,8 @@ const clientId =
 
 const redirectUrl =
   Platform.OS === 'ios'
-    ? 'org.reactjs.native.finner.finner:/oauth2redirect/google'
-    : 'com.finner.finner:/oauth2redirect/google';
+    ? 'org.reactjs.native.togenius1.finner:/oauth2redirect/google'
+    : 'com.togenius1.finner:/oauth2redirect/google';
 
 export const configs = {
   auth0: {
