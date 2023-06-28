@@ -1,4 +1,13 @@
-import {LogBox, Pressable, StatusBar, StyleSheet, View} from 'react-native';
+import {
+  Appearance,
+  LogBox,
+  Pressable,
+  StatusBar,
+  StyleSheet,
+  Text,
+  useColorScheme,
+  View,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {setPRNG} from 'tweetnacl';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -92,7 +101,7 @@ const App = () => {
         }
 
         // Check and generate a new key
-        await checkUserAndGenerateNewKey();
+        checkUserAndGenerateNewKey();
         // generateNewKey();
         setIsAuthenticated(true);
       }
@@ -126,7 +135,10 @@ const App = () => {
     const cloudPKey = dbUser[0]?.backupKey;
     setCloudPrivateKey(cloudPKey!);
 
-    generateNewKey();
+    console.log('dbUser: ', dbUser);
+    console.log('cloudPKey: ', cloudPKey);
+
+    await generateNewKey();
   };
 
   // Generate new key
@@ -179,10 +191,15 @@ const App = () => {
     setClosedAds(true);
   };
 
+  const colorScheme = Appearance.getColorScheme();
+
   return (
     <>
       <StatusBar barStyle="light-content" />
-      <FinnerNavigator isAuthenticated={isAuthenticated} />
+      <FinnerNavigator
+        isAuthenticated={isAuthenticated}
+        colorScheme={colorScheme}
+      />
 
       {isAuthenticated && !closedAds && (
         <>

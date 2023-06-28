@@ -1,5 +1,10 @@
 import React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
+import {ColorSchemeName} from 'react-native';
+import {
+  DarkTheme,
+  DefaultTheme,
+  NavigationContainer,
+} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import AddExpensesScreen from '../screens/AddExpensesScreen';
@@ -15,15 +20,30 @@ import IncomesDetailsScreen from '../screens/IncomesDetailsScreen';
 
 type Props = {
   isAuthenticated: boolean | undefined;
+  colorScheme: ColorSchemeName;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-const FinnerNavigator = ({isAuthenticated}: Props) => {
+const FinnerNavigator = ({isAuthenticated, colorScheme}: Props) => {
+  // const MyTheme = {
+  //   dark: false,
+  //   colors: {
+  //     primary: 'rgb(255, 45, 85)',
+  //     background: 'rgb(242, 242, 242)',
+  //     card: 'rgb(255, 255, 255)',
+  //     text: 'rgb(28, 28, 30)',
+  //     border: 'rgb(199, 199, 204)',
+  //     notification: 'rgb(255, 69, 58)',
+  //   },
+  // };
+
   return (
     <>
       {isAuthenticated ? (
-        <NavigationContainer>
+        <NavigationContainer
+        // theme={colorScheme === 'dark' ? MyTheme : DefaultTheme}
+        >
           <Stack.Navigator
             screenOptions={{
               headerStyle: {backgroundColor: GlobalStyles.colors.primary500},

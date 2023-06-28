@@ -68,14 +68,14 @@ const MenuDrawer = () => {
           title: 'Backup',
         })}
       />
-      {/* <Drawer.Screen
+      <Drawer.Screen
         name="Settings"
         component={SettingsScreen}
         options={() => ({
           title: 'Settings',
         })}
       />
-      <Drawer.Screen
+      {/* <Drawer.Screen
         name="Recommend"
         component={RecommendScreen}
         options={() => ({

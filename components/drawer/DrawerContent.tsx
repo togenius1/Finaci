@@ -121,7 +121,7 @@ const DrawerContent = (props: Props) => {
         </View>
 
         <View style={styles.settingContainer}>
-          {/* <Pressable
+          <Pressable
             style={({pressed}) => pressed && styles.pressed}
             onPress={() => {
               navigation.navigate('Settings');
@@ -132,7 +132,7 @@ const DrawerContent = (props: Props) => {
             </View>
           </Pressable>
 
-          <Pressable
+          {/* <Pressable
             style={({pressed}) => pressed && styles.pressed}
             onPress={() => {
               navigation.navigate('Recommend');

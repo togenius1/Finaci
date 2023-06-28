@@ -1,12 +1,77 @@
-import {Dimensions, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import {
+  ActivityIndicator,
+  Alert,
+  Dimensions,
+  StyleSheet,
+  View,
+} from 'react-native';
+import React, {useState} from 'react';
+import {Auth, DataStore} from 'aws-amplify';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const {width} = Dimensions.get('window');
+import CButton from '../components/UI/CButton';
+import {User} from '../src/models';
+import {PRIVATE_KEY, PUBLIC_KEY} from '../util/crypto';
+import {persistor} from '../store';
 
-function Settings() {
+// Constant
+const {width, height} = Dimensions.get('window');
+
+const Settings = () => {
+  const [showDeleteIndicator, setShowDeleteIndicator] =
+    useState<boolean>(false);
+
+  // Alert closing account request
+  const closeAccountAlertHandler = () => {
+    Alert.alert(
+      'Do you want to close your account now?',
+      'After closing your account, you can create a new account at any time.',
+      [
+        {
+          text: 'Yes',
+          onPress: () => closeAccountHandler(),
+          // style: 'cancel',
+        },
+        {
+          text: 'No',
+          style: 'cancel',
+        },
+      ],
+      {
+        cancelable: true,
+        // onDismiss: () =>
+        //   Alert.alert(
+        //     'This alert was dismissed by tapping outside of the alert dialog.',
+        //   ),
+      },
+    );
+  };
+
+  // Close account
+  const closeAccountHandler = async () => {
+    setShowDeleteIndicator(true);
+
+    try {
+      const result = await Auth.deleteUser();
+
+      // Remove old key
+      await AsyncStorage.removeItem(PRIVATE_KEY);
+      await AsyncStorage.removeItem(PUBLIC_KEY);
+
+      // Remove Data from local storage
+      //...
+
+      console.log(result);
+    } catch (error) {
+      console.log('Error deleting user', error);
+    }
+
+    setShowDeleteIndicator(false);
+  };
+
   return (
     <View style={styles.container}>
-      <View style={[styles.currency, styles.box]}>
+      {/* <View style={[styles.currency, styles.box]}>
         <Text style={styles.text}>Currency</Text>
       </View>
 
@@ -19,10 +84,19 @@ function Settings() {
       </View>
       <View>
         <Text>Finner version 1.0.5</Text>
+      </View> */}
+
+      <View style={styles.closeAccount}>
+        <CButton onPress={closeAccountAlertHandler}>Close account</CButton>
+        <ActivityIndicator
+          size="small"
+          color="#0000ff"
+          animating={showDeleteIndicator}
+        />
       </View>
     </View>
   );
-}
+};
 
 export default Settings;
 
@@ -51,8 +125,14 @@ const styles = StyleSheet.create({
   notification: {
     paddingVertical: 20,
   },
+  closeAccount: {
+    marginTop: height / 4,
+  },
   text: {
     fontSize: 16,
     marginLeft: 15,
+  },
+  pressed: {
+    opacity: 0.65,
   },
 });

@@ -19,7 +19,7 @@ import {weeklyTransactsActions} from '../store/weeklyTransact-slice';
 import {dailyTransactsActions} from '../store/dailyTransact-slice';
 import {accountActions} from '../store/account-slice';
 import {cashAccountsActions} from '../store/cash-slice';
-import {current} from '@reduxjs/toolkit';
+
 
 const {width, height} = Dimensions.get('window');
 
