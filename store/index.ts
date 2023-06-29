@@ -14,11 +14,13 @@ import transferCategoriesSlice from './transfer-category-slice';
 import dailyTransactsSlice from './dailyTransact-slice';
 import weeklyTransactsSlice from './weeklyTransact-slice';
 import monthlyTransactsSlice from './monthlyTransact-slice';
+import authAccountsSlice from './authAccount-slice';
 
 const rootReducer = combineReducers({
   expenses: expenseSlice.reducer,
   incomes: incomeSlice.reducer,
   // transfers: transferSlice.reducer,
+  authAccounts: authAccountsSlice.reducer,
   cashAccounts: cashAccountsSlice.reducer,
   accounts: accountSlice.reducer,
   expenseCategories: expenseCategoriesSlice.reducer,

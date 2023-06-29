@@ -13,7 +13,7 @@ import {Auth} from 'aws-amplify';
 import Logo from '../../../../assets/images/Logo_1.png';
 import CustomInput from '../components/CustomInput';
 import CustomButton from '../components/CustomButton';
-import SocialSignInButtons from '../components/SocialSignInButtons';
+// import SocialSignInButtons from '../components/SocialSignInButtons';
 
 type Props = {};
 
@@ -36,6 +36,7 @@ const SignInScreen = ({navigation}: Props) => {
     setLoading(true);
     try {
       await Auth.signIn(data.username, data.password);
+
       // console.log(response);
     } catch (e) {
       Alert.alert('Oops', e.message);

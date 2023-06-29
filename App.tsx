@@ -40,8 +40,8 @@ const adUnitId = __DEV__
 
 const App = () => {
   // Disable warnings for release app.
-  LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message:
-  LogBox.ignoreAllLogs(); // Ignore all log notifications:
+  // LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message:
+  // LogBox.ignoreAllLogs(); // Ignore all log notifications:
 
   const dispatch = useAppDispatch();
   const expenseCateData = useAppSelector(
@@ -61,9 +61,10 @@ const App = () => {
     // shallowEqual,
   );
 
-  const [currentUser, setCurrentUser] = useState<LazyUser[]>([]);
+  // const [currentUser, setCurrentUser] = useState<LazyUser[]>([]);
+  const [authedUser, setAuthedtUser] = useState<any>();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>();
-  const [cloudPrivateKey, setCloudPrivateKey] = useState<string | null>('');
+  // const [cloudPrivateKey, setCloudPrivateKey] = useState<string | null>('');
   const [closedAds, setClosedAds] = useState<boolean>(false);
   // const [localPrivateKey, setLocalPrivateKey] = useState<string | null>();
 
@@ -100,13 +101,13 @@ const App = () => {
           dispatch(fetchAccountsData());
         }
 
-        // Check and generate a new key
+        // Check user and generate a new key
         checkUserAndGenerateNewKey();
-        // generateNewKey();
+
         setIsAuthenticated(true);
       }
       if (data.payload.event === 'signOut') {
-        checkUserAndGenerateNewKey();
+        // checkUserAndGenerateNewKey();
         setIsAuthenticated(false);
       }
     };
@@ -117,7 +118,9 @@ const App = () => {
   // Check if authenticated user.
   useEffect(() => {
     const isAuthenticated = async () => {
-      const authedUser = await Auth.currentAuthenticatedUser();
+      // const authUser = await Auth.currentAuthenticatedUser({bypassCache: true});
+      const authUser = await Auth.currentAuthenticatedUser();
+      setAuthedtUser(authUser);
       setIsAuthenticated(true);
     };
 
@@ -126,25 +129,25 @@ const App = () => {
 
   // Check if authenticated user.
   const checkUserAndGenerateNewKey = async () => {
-    // const authUser = await Auth.currentAuthenticatedUser({bypassCache: true});
-    const authUser = await Auth.currentAuthenticatedUser();
-    const subId = String(authUser.attributes.sub);
-    const dbUser = await DataStore.query(User, c => c.id.eq(subId));
-    setCurrentUser(dbUser);
+    const subId = String(authedUser?.attributes?.sub);
+    const dbCurrentUser = await DataStore.query(User, c => c.id.eq(subId));
 
-    const cloudPKey = dbUser[0]?.backupKey;
-    setCloudPrivateKey(cloudPKey!);
+    const cloudPKey = dbCurrentUser[0]?.backupKey;
 
-    console.log('dbUser: ', dbUser);
-    console.log('cloudPKey: ', cloudPKey);
+    console.log('authedUser--: ', authedUser);
+    console.log('subId--: ', subId);
+    console.log('dbUser: ', dbCurrentUser);
+    console.log('cloudPKey: ', String(cloudPKey));
 
-    await generateNewKey();
+    // const key = cloudPKey === undefined ? '' : cloudPKey;
+
+    // await generateNewKey(String(key), dbCurrentUser);
   };
 
   // Generate new key
-  const generateNewKey = async () => {
+  const generateNewKey = async (pKey: string, dbUser: LazyUser[]) => {
     // Compare Cloud key with local key
-    if (cloudPrivateKey === null) {
+    if (pKey === '') {
       // Remove old key
       await AsyncStorage.removeItem(PRIVATE_KEY);
       await AsyncStorage.removeItem(PUBLIC_KEY);
@@ -159,7 +162,7 @@ const App = () => {
       // const originalUser = await DataStore.query(User, user?.id);
 
       await DataStore.save(
-        User.copyOf(currentUser[0], updated => {
+        User.copyOf(dbUser[0], updated => {
           updated.backupKey = String(secretKey);
         }),
       );

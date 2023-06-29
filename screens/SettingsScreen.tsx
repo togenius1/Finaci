@@ -6,13 +6,9 @@ import {
   View,
 } from 'react-native';
 import React, {useState} from 'react';
-import {Auth, DataStore} from 'aws-amplify';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Auth} from 'aws-amplify';
 
 import CButton from '../components/UI/CButton';
-import {User} from '../src/models';
-import {PRIVATE_KEY, PUBLIC_KEY} from '../util/crypto';
-import {persistor} from '../store';
 
 // Constant
 const {width, height} = Dimensions.get('window');
@@ -55,13 +51,11 @@ const Settings = () => {
       const result = await Auth.deleteUser();
 
       // Remove old key
-      await AsyncStorage.removeItem(PRIVATE_KEY);
-      await AsyncStorage.removeItem(PUBLIC_KEY);
 
       // Remove Data from local storage
       //...
 
-      console.log(result);
+      // console.log(result);
     } catch (error) {
       console.log('Error deleting user', error);
     }
