@@ -9,13 +9,13 @@ import {
 } from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {prefetchConfiguration} from 'react-native-app-auth';
+// import {prefetchConfiguration} from 'react-native-app-auth';
 import DocumentPicker from 'react-native-document-picker';
 import RNFS from 'react-native-fs';
 // import {v4 as uuidv4} from 'uuid';
 import {useInterstitialAd, TestIds} from 'react-native-google-mobile-ads';
 
-import {configs, defaultAuthState} from '../util/authConfig';
+import {defaultAuthState} from '../util/authConfig';
 import {decryption} from '../util/decrypt';
 import {encryption} from '../util/encrypt';
 import {
@@ -25,13 +25,13 @@ import {
 } from '../util/fetchData';
 import {authorization, refreshAuthorize} from '../util/auth';
 import {Auth, DataStore} from 'aws-amplify';
-import {
-  generatePublicKeyFromSecretKey,
-  PRIVATE_KEY,
-  PUBLIC_KEY,
-  stringToUint8Array,
-} from '../util/crypto';
-import {User} from '../src/models';
+// import {
+//   generatePublicKeyFromSecretKey,
+//   PRIVATE_KEY,
+//   PUBLIC_KEY,
+//   stringToUint8Array,
+// } from '../util/crypto';
+// import {User} from '../src/models';
 import {useAppDispatch, useAppSelector} from '../hooks';
 import {expenseActions} from '../store/expense-slice';
 import {incomeActions} from '../store/income-slice';
@@ -63,6 +63,7 @@ const BackupScreen = () => {
     useState<boolean>(false);
   const [showRestoreIndicator, setShowRestoreIndicator] =
     useState<boolean>(false);
+  const [authCurrentAccount, setAuthCurrentAccount] = useState<any>();
   const [authState, setAuthState] = useState<AuthStateType>(defaultAuthState);
   const [isLoading, setIsLoading] = useState<boolean | undefined>(false);
   // const [isExpenseBoxChecked, setIsExpenseBoxChecked] = useState<boolean | undefined>(false);
@@ -71,6 +72,8 @@ const BackupScreen = () => {
   // const [expensesData, setexpensesData] = useState<ExpenseType>();
   const dispatch = useAppDispatch();
   const rootStore = useAppSelector(store => store);
+
+  const authAccountsData = rootStore?.authAccounts?.authAccounts;
   const expensesData = rootStore?.expenses?.expenses;
   const incomesData = rootStore?.incomes?.incomes;
 
@@ -96,9 +99,24 @@ const BackupScreen = () => {
   }, [isClosed]);
 
   useEffect(() => {
-    // setexpensesData(EXPENSES);
-    setUpKey();
+    const setAccount = async () => {
+      const authedUser = await Auth.currentAuthenticatedUser();
+      const subId: string = authedUser?.attributes?.sub;
+
+      const filterAuthAccount = authAccountsData?.filter(
+        auth => String(auth.id) === subId,
+      );
+
+      setAuthCurrentAccount(filterAuthAccount);
+    };
+
+    setAccount();
   }, []);
+
+  // useEffect(() => {
+  //   // setexpensesData(EXPENSES);
+  //   setUpKey();
+  // }, []);
 
   // useEffect(() => {
   //   prefetchConfiguration({
@@ -197,7 +215,11 @@ const BackupScreen = () => {
   // Backup
   const backupHandler = async obj => {
     setShowBackupIndicator(true);
-    const encrypted = await encryption(obj);
+
+    const PRIVATE_KEY: string = authCurrentAccount[0]?.backupKey;
+    const PUBLIC_KEY: string = authCurrentAccount[0]?.publicKey;
+
+    const encrypted = await encryption(obj, PRIVATE_KEY, PUBLIC_KEY);
 
     const d = new Date();
     const mm = d.getMonth() + 1;
@@ -251,6 +273,10 @@ const BackupScreen = () => {
   // Restore data from google drive
   const restoreHandler = async () => {
     setShowRestoreIndicator(true);
+
+    const PRIVATE_KEY: string = authCurrentAccount[0]?.backupKey;
+    const PUBLIC_KEY: string = authCurrentAccount[0]?.publicKey;
+
     const pickedFile = await handleDocumentSelection();
 
     const uri = pickedFile?.uri;
@@ -262,7 +288,11 @@ const BackupScreen = () => {
         console.log(err.message, err.code);
       });
 
-    const decrypted = await decryption(String(encryptedData));
+    const decrypted = await decryption(
+      String(encryptedData),
+      PRIVATE_KEY,
+      PUBLIC_KEY,
+    );
 
     if (decrypted === undefined) {
       setShowRestoreIndicator(false);
@@ -416,29 +446,29 @@ const BackupScreen = () => {
     }
   };
 
-  const setUpKey = async () => {
-    try {
-      // const authUser = await Auth.currentAuthenticatedUser({bypassCache: true});
-      const authUser = await Auth.currentAuthenticatedUser();
-      const dbUser = await DataStore.query(User, authUser.attributes.sub);
-      // setCurrentUser(dbUser);
+  // const setUpKey = async () => {
+  //   try {
+  //     // const authUser = await Auth.currentAuthenticatedUser({bypassCache: true});
+  //     const authUser = await Auth.currentAuthenticatedUser();
+  //     const dbUser = await DataStore.query(User, authUser.attributes.sub);
+  //     // setCurrentUser(dbUser);
 
-      // Remove Old Key
-      await AsyncStorage.removeItem(PRIVATE_KEY);
-      await AsyncStorage.removeItem(PUBLIC_KEY);
+  //     // Remove Old Key
+  //     await AsyncStorage.removeItem(PRIVATE_KEY);
+  //     await AsyncStorage.removeItem(PUBLIC_KEY);
 
-      const cloudPrivateKey = String(dbUser?.backupKey);
-      await AsyncStorage.setItem(PRIVATE_KEY, cloudPrivateKey);
+  //     const cloudPrivateKey = String(dbUser?.backupKey);
+  //     await AsyncStorage.setItem(PRIVATE_KEY, cloudPrivateKey);
 
-      const publicKey = generatePublicKeyFromSecretKey(
-        stringToUint8Array(cloudPrivateKey),
-      );
+  //     const publicKey = generatePublicKeyFromSecretKey(
+  //       stringToUint8Array(cloudPrivateKey),
+  //     );
 
-      await AsyncStorage.setItem(PUBLIC_KEY, String(publicKey?.publicKey));
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  };
+  //     await AsyncStorage.setItem(PUBLIC_KEY, String(publicKey?.publicKey));
+  //   } catch (error) {
+  //     console.error('Error:', error);
+  //   }
+  // };
 
   return (
     <View style={styles.container}>

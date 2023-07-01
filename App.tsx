@@ -6,12 +6,12 @@ import {
   StatusBar,
   StyleSheet,
   Text,
-  useColorScheme,
+  // useColorScheme,
   View,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {setPRNG} from 'tweetnacl';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Amplify, Auth, DataStore, Hub} from 'aws-amplify';
 import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -69,7 +69,7 @@ const App = () => {
   );
 
   // const [currentUser, setCurrentUser] = useState<LazyUser[]>([]);
-  const [authedUser, setAuthedtUser] = useState<any>();
+  // const [authedUser, setAuthedtUser] = useState<any>();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>();
   // const [cloudPrivateKey, setCloudPrivateKey] = useState<string | null>('');
   const [closedAds, setClosedAds] = useState<boolean>(false);
@@ -128,7 +128,7 @@ const App = () => {
       }
       if (data.payload.event === 'signOut') {
         setIsAuthenticated(false);
-        await DataStore.clear();
+        // await DataStore.clear();
       }
     };
 
@@ -168,12 +168,9 @@ const App = () => {
   ) => {
     setShowIndicator(true);
 
-    if (dbUser.length === 0) {
-      return;
-    }
-
     // Compare Cloud key with local key
     if (pKey === 'null') {
+      console.log('Generate a new backup key...');
       // Generate a new backup key.
       const {publicKey, secretKey} = generateKeyPair();
 
@@ -192,6 +189,7 @@ const App = () => {
       const existingAccount = authAccounts?.filter(
         account => account?.id === id,
       );
+
       if (existingAccount?.length === 0) {
         dispatch(
           authAccountsActions.addAuthAccount({
