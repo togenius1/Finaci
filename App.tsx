@@ -45,6 +45,7 @@ const App = () => {
   // Disable warnings for release app.
   // LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message:
   // LogBox.ignoreAllLogs(); // Ignore all log notifications:
+  // add
 
   const dispatch = useAppDispatch();
   const dataLoaded = useAppSelector(store => store);
