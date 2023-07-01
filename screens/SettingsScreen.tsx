@@ -6,14 +6,19 @@ import {
   View,
 } from 'react-native';
 import React, {useState} from 'react';
-import {Auth} from 'aws-amplify';
+import {Auth, DataStore} from 'aws-amplify';
 
 import CButton from '../components/UI/CButton';
+import {useAppDispatch, useAppSelector} from '../hooks';
+import {authAccountsActions} from '../store/authAccount-slice';
 
 // Constant
 const {width, height} = Dimensions.get('window');
 
 const Settings = () => {
+  const dispatch = useAppDispatch();
+  // const dataLoaded = useAppSelector(store => store);
+
   const [showDeleteIndicator, setShowDeleteIndicator] =
     useState<boolean>(false);
 
@@ -48,13 +53,17 @@ const Settings = () => {
     setShowDeleteIndicator(true);
 
     try {
+      const authUser = await Auth.currentAuthenticatedUser();
+      const subId = String(authUser?.attributes?.sub);
+      // Delete account from local storage
+      dispatch(
+        authAccountsActions.deleteAuthAccount({
+          id: subId,
+        }),
+      );
+
+      // Delete account from cloud storage
       const result = await Auth.deleteUser();
-
-      // Remove old key
-
-      // Remove Data from local storage
-      //...
-
       // console.log(result);
     } catch (error) {
       console.log('Error deleting user', error);

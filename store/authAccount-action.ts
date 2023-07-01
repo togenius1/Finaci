@@ -16,10 +16,10 @@ export const fetchAuthAccountsData = () => {
     };
 
     try {
-      const AccountsData = await fetchData();
+      const authAccountsData = await fetchData();
       dispatch(
         accountActions.replaceAccount({
-          accounts: AccountsData || [],
+          authAccounts: authAccountsData || [],
         }),
       );
     } catch (error) {}

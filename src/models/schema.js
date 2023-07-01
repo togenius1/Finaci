@@ -14,11 +14,18 @@ export const schema = {
                     "name": "name",
                     "isArray": false,
                     "type": "String",
-                    "isRequired": false,
+                    "isRequired": true,
                     "attributes": []
                 },
                 "backupKey": {
                     "name": "backupKey",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "publicKey": {
+                    "name": "publicKey",
                     "isArray": false,
                     "type": "String",
                     "isRequired": false,
@@ -70,5 +77,5 @@ export const schema = {
     "enums": {},
     "nonModels": {},
     "codegenVersion": "3.4.4",
-    "version": "9466b5faf4a77e8f7f4651485022760d"
+    "version": "1c220e10f9bccde67f2f1e39b2384637"
 };

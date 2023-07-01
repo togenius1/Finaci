@@ -1,16 +1,16 @@
 {
   "providers": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-finner1-staging-90228-authRole",
-      "UnauthRoleArn": "arn:aws:iam::106155996924:role/amplify-finner1-staging-90228-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::106155996924:role/amplify-finner1-staging-90228-authRole",
+      "AuthRoleName": "amplify-finner1-staging-10445-authRole",
+      "UnauthRoleArn": "arn:aws:iam::106155996924:role/amplify-finner1-staging-10445-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::106155996924:role/amplify-finner1-staging-10445-authRole",
       "Region": "ap-southeast-1",
-      "DeploymentBucketName": "amplify-finner1-staging-90228-deployment",
-      "UnauthRoleName": "amplify-finner1-staging-90228-unauthRole",
-      "StackName": "amplify-finner1-staging-90228",
-      "StackId": "arn:aws:cloudformation:ap-southeast-1:106155996924:stack/amplify-finner1-staging-90228/a0737bb0-b746-11ed-80a6-0a1a1493ddd2",
-      "AmplifyAppId": "d3b0ksndom8nto",
-      "AuthTriggerTemplateURL": "https://s3.amazonaws.com/amplify-finner1-staging-90228-deployment/amplify-cfn-templates/auth/auth-trigger-cloudformation-template.json"
+      "DeploymentBucketName": "amplify-finner1-staging-10445-deployment",
+      "UnauthRoleName": "amplify-finner1-staging-10445-unauthRole",
+      "StackName": "amplify-finner1-staging-10445",
+      "StackId": "arn:aws:cloudformation:ap-southeast-1:106155996924:stack/amplify-finner1-staging-10445/45022900-17ab-11ee-9210-063f7ebf7fe2",
+      "AmplifyAppId": "d32rhkdia70g75",
+      "AuthTriggerTemplateURL": "https://s3.amazonaws.com/amplify-finner1-staging-10445-deployment/amplify-cfn-templates/auth/auth-trigger-cloudformation-template.json"
     }
   },
   "api": {
@@ -31,15 +31,15 @@
             "authenticationType": "API_KEY"
           }
         },
-        "GraphQLAPIIdOutput": "tn27tzifwrhj7avmhwsfss4zsm",
-        "GraphQLAPIEndpointOutput": "https://ohvl7ntswnhqnn7n7alxcssgra.appsync-api.ap-southeast-1.amazonaws.com/graphql",
-        "GraphQLAPIKeyOutput": "da2-3ef366ez4fdppizzs7mzbg5nem"
+        "GraphQLAPIIdOutput": "oqdwov32frbxpkgvbibnrg2hha",
+        "GraphQLAPIEndpointOutput": "https://ebiwgohyg5dk5mtigpgyz7emke.appsync-api.ap-southeast-1.amazonaws.com/graphql",
+        "GraphQLAPIKeyOutput": "da2-fwoe2q65hfg4xjti6r4e6wcra4"
       },
       "providerPlugin": "awscloudformation",
       "service": "AppSync",
-      "lastPushTimeStamp": "2023-06-29T03:03:25.633Z",
+      "lastPushTimeStamp": "2023-07-01T03:21:00.804Z",
       "providerMetadata": {
-        "s3TemplateURL": "https://s3.amazonaws.com/amplify-finner1-staging-90228-deployment/amplify-cfn-templates/api/cloudformation-template.json",
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-finner1-staging-10445-deployment/amplify-cfn-templates/api/cloudformation-template.json",
         "logicalId": "apiFinner1"
       }
     }
@@ -49,13 +49,13 @@
       "customAuth": false,
       "dependsOn": [
         {
+          "category": "function",
+          "resourceName": "Finner1PostConfirmation",
+          "triggerProvider": "Cognito",
           "attributes": [
             "Arn",
             "Name"
-          ],
-          "category": "function",
-          "resourceName": "Finner1PostConfirmation",
-          "triggerProvider": "Cognito"
+          ]
         }
       ],
       "frontendAuthConfig": {
@@ -77,17 +77,17 @@
       "providerPlugin": "awscloudformation",
       "service": "Cognito",
       "output": {
-        "UserPoolId": "ap-southeast-1_XxBnIhmF2",
-        "AppClientIDWeb": "65a1ht3a1tugb9b7ob2r8g437e",
-        "AppClientID": "16cedr36f8o70diqq2n8sinq34",
-        "IdentityPoolId": "ap-southeast-1:1969e586-2f58-4867-b8fc-1e0c6e7149ff",
-        "UserPoolArn": "arn:aws:cognito-idp:ap-southeast-1:106155996924:userpool/ap-southeast-1_XxBnIhmF2",
+        "UserPoolId": "ap-southeast-1_4aEG5mryg",
+        "AppClientIDWeb": "7vg6prta1gdutfmc166h78oi46",
+        "AppClientID": "3olal4oboj346g4m372n5qjs0",
+        "IdentityPoolId": "ap-southeast-1:9e6a71d0-4a72-4b59-b6f1-915ab130d61b",
+        "UserPoolArn": "arn:aws:cognito-idp:ap-southeast-1:106155996924:userpool/ap-southeast-1_4aEG5mryg",
         "IdentityPoolName": "testAuthIdentityPool__staging",
         "UserPoolName": "Finner1"
       },
-      "lastPushTimeStamp": "2023-06-29T03:03:25.644Z",
+      "lastPushTimeStamp": "2023-07-01T03:21:00.810Z",
       "providerMetadata": {
-        "s3TemplateURL": "https://s3.amazonaws.com/amplify-finner1-staging-90228-deployment/amplify-cfn-templates/auth/Finner1-cloudformation-template.json",
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-finner1-staging-10445-deployment/amplify-cfn-templates/auth/Finner1-cloudformation-template.json",
         "logicalId": "authFinner1"
       }
     }
@@ -104,15 +104,20 @@
         "Name": "Finner1PostConfirmation-staging",
         "LambdaExecutionRole": "Finner1PostConfirmation-staging"
       },
-      "lastPushTimeStamp": "2023-06-29T03:03:25.656Z",
+      "lastPushTimeStamp": "2023-07-01T03:21:00.811Z",
       "providerMetadata": {
-        "s3TemplateURL": "https://s3.amazonaws.com/amplify-finner1-staging-90228-deployment/amplify-cfn-templates/function/Finner1PostConfirmation-cloudformation-template.json",
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-finner1-staging-10445-deployment/amplify-cfn-templates/function/Finner1PostConfirmation-cloudformation-template.json",
         "logicalId": "functionFinner1PostConfirmation"
       },
       "s3Bucket": {
-        "deploymentBucketName": "amplify-finner1-staging-90228-deployment",
-        "s3Key": "amplify-builds/Finner1PostConfirmation-4f624a6977446b764e77-build.zip"
-      }
+        "deploymentBucketName": "amplify-finner1-staging-10445-deployment",
+        "s3Key": "amplify-builds/Finner1PostConfirmation-5671316b764468664e75-build.zip"
+      },
+      "lastBuildTimeStamp": "2023-07-01T03:12:13.597Z",
+      "lastBuildType": "PROD",
+      "lastPackageTimeStamp": "2023-07-01T03:12:13.650Z",
+      "distZipFilename": "Finner1PostConfirmation-5671316b764468664e75-build.zip",
+      "lastPushDirHash": "Cq97J6pPNGNNoLdxmHUM8ra3vhU="
     }
   }
 }

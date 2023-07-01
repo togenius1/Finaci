@@ -11,6 +11,7 @@ const authAccountsSlice = createSlice({
       state.authAccounts = action.payload.authAccounts;
     },
 
+    // Add
     addAuthAccount(state, action) {
       const newAuthAccounts = action.payload;
       const existingItem = state.authAccounts.find(
@@ -20,20 +21,27 @@ const authAccountsSlice = createSlice({
       if (!existingItem) {
         state.authAccounts.push({
           id: newAuthAccounts.id,
-          name: newAuthAccounts.title,
-          backupKey: newAuthAccounts.budget,
-          createdAt: newAuthAccounts.date,
-          updatedAt: newAuthAccounts.editedDate,
+          name: newAuthAccounts.name,
+          backupKey: newAuthAccounts.backupKey, // SecretKey
+          publicKey: newAuthAccounts.publicKey,
+          keyCreatedDate: newAuthAccounts.keyCreatedDate,
         });
       }
     },
+    // Delete
     deleteAuthAccount(state, action) {
-      const id = action.payload.accountId;
-      const existingItem = state.authAccounts.find(account => account.id === id);
+      const id = action.payload.id;
+      const existingItem = state.authAccounts.find(
+        account => account.id === id,
+      );
       if (existingItem) {
-        state.authAccounts = state.authAccounts.filter(account => account.id !== id);
+        state.authAccounts = state.authAccounts.filter(
+          account => account.id !== id,
+        );
       }
     },
+
+    // Update
     updateAuthAccount(state, action) {
       const updatedAccountIndex = state.authAccounts.findIndex(
         account => account.id === action.payload.id,

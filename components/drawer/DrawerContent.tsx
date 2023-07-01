@@ -1,4 +1,11 @@
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {
+  Dimensions,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import React from 'react';
 import {DrawerContentScrollView} from '@react-navigation/drawer';
 import {useNavigation} from '@react-navigation/native';
@@ -19,7 +26,7 @@ const colors = {
   recommendation: '#00c4da',
 };
 
-// const {width, height} = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
 const DrawerContent = (props: Props) => {
   const navigation = useNavigation();
@@ -33,7 +40,7 @@ const DrawerContent = (props: Props) => {
             onPress={() => {
               navigation.navigate('Overview');
             }}>
-            <View style={{flexDirection: 'row', marginBottom: 25}}>
+            <View style={{flexDirection: 'row', marginBottom: height / 50}}>
               <MaterialCommunityIcons
                 name="chart-donut-variant"
                 size={24}
@@ -47,7 +54,7 @@ const DrawerContent = (props: Props) => {
             onPress={() => {
               navigation.navigate('Transactions');
             }}>
-            <View style={{flexDirection: 'row', marginBottom: 25}}>
+            <View style={{flexDirection: 'row', marginBottom: height / 50}}>
               <Ionicons
                 name="remove-outline"
                 size={22}
@@ -64,7 +71,7 @@ const DrawerContent = (props: Props) => {
             onPress={() => {
               navigation.navigate('Stats');
             }}>
-            <View style={{flexDirection: 'row', marginBottom: 25}}>
+            <View style={{flexDirection: 'row', marginBottom: height / 50}}>
               <Ionicons
                 name="bar-chart-outline"
                 size={24}
@@ -79,7 +86,7 @@ const DrawerContent = (props: Props) => {
             onPress={() => {
               navigation.navigate('Accounts');
             }}>
-            <View style={{flexDirection: 'row', marginBottom: 25}}>
+            <View style={{flexDirection: 'row', marginBottom: height / 50}}>
               <Ionicons name="wallet-outline" size={22} color={colors.budget} />
               <Text style={styles.budgetText}>Accounts</Text>
             </View>
@@ -126,7 +133,7 @@ const DrawerContent = (props: Props) => {
             onPress={() => {
               navigation.navigate('Settings');
             }}>
-            <View style={{flexDirection: 'row', marginBottom: 25}}>
+            <View style={{flexDirection: 'row', marginBottom: height / 50}}>
               <Ionicons name="cog-outline" size={22} color={colors.setting} />
               <Text style={styles.settingText}>Settings</Text>
             </View>
@@ -221,8 +228,8 @@ const styles = StyleSheet.create({
   },
   settingContainer: {
     marginLeft: 20,
-    marginTop: 180,
-    // marginBottom: 100,
+    marginTop: height / 3.5,
+    // marginBottom: 10,
     // backgroundColor: '#86b0dd',
   },
   settingText: {
@@ -236,7 +243,8 @@ const styles = StyleSheet.create({
   },
   logoutContainer: {
     marginLeft: 20,
-    marginTop: 50,
+    marginTop: Platform.OS === 'ios' ? 10 : 50,
+    bottom: Platform.OS === 'ios' ? 10 : 0,
   },
   logoutText: {
     fontSize: 14,

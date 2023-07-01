@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   Appearance,
   LogBox,
   Pressable,
@@ -29,6 +30,8 @@ import {fetchExpenseCategoriesData} from './store/expense-category-action';
 // import {fetchWeeklyTransactsData} from './store/weeklyTransact-action';
 import awsconfig from './src/aws-exports';
 import {LazyUser, User} from './src/models';
+import {authAccountsActions} from './store/authAccount-slice';
+import moment from 'moment';
 
 Amplify.configure(awsconfig);
 
@@ -44,6 +47,10 @@ const App = () => {
   // LogBox.ignoreAllLogs(); // Ignore all log notifications:
 
   const dispatch = useAppDispatch();
+  const dataLoaded = useAppSelector(store => store);
+
+  const authAccounts = dataLoaded?.authAccounts?.authAccounts;
+
   const expenseCateData = useAppSelector(
     state => state.expenseCategories.expenseCategories,
     // shallowEqual,
@@ -67,6 +74,7 @@ const App = () => {
   // const [cloudPrivateKey, setCloudPrivateKey] = useState<string | null>('');
   const [closedAds, setClosedAds] = useState<boolean>(false);
   // const [localPrivateKey, setLocalPrivateKey] = useState<string | null>();
+  const [showIndicator, setShowIndicator] = useState<boolean>(false);
 
   //Reset Expense
   // useEffect(() => {
@@ -83,9 +91,22 @@ const App = () => {
 
   // }, []);
 
+  // Check if authenticated user, Stay logged in.
+  useEffect(() => {
+    const isAuthenticated = async () => {
+      // const authUser = await Auth.currentAuthenticatedUser({bypassCache: true});
+      const authUser = await Auth.currentAuthenticatedUser();
+      // setAuthedtUser(authUser);
+
+      setIsAuthenticated(true);
+    };
+
+    isAuthenticated();
+  }, []);
+
   // Listening for Login events.
   useEffect(() => {
-    const listener = async data => {
+    const listenerAuth = async data => {
       if (data.payload.event === 'signIn') {
         // Load Existing Category
         if (expenseCateData.length === 0) {
@@ -101,73 +122,117 @@ const App = () => {
           dispatch(fetchAccountsData());
         }
 
-        // Check user and generate a new key
-        checkUserAndGenerateNewKey();
+        // await generateNewKey();
 
         setIsAuthenticated(true);
       }
       if (data.payload.event === 'signOut') {
-        // checkUserAndGenerateNewKey();
         setIsAuthenticated(false);
       }
     };
 
-    Hub.listen('auth', listener);
+    Hub.listen('auth', listenerAuth);
   }, []);
 
-  // Check if authenticated user.
-  useEffect(() => {
-    const isAuthenticated = async () => {
-      // const authUser = await Auth.currentAuthenticatedUser({bypassCache: true});
-      const authUser = await Auth.currentAuthenticatedUser();
-      setAuthedtUser(authUser);
-      setIsAuthenticated(true);
-    };
+  // useEffect(() => {
+  //   // Create listener
+  //   const listener = Hub.listen('datastore', async hubData => {
+  //     const {event, data} = hubData.payload;
+  //     if (event === 'ready') {
+  //       // do something here once the data is synced from the cloud
+  //       await generateNewKey();
+  //     }
+  //   });
 
-    isAuthenticated();
-  }, []);
+  //   // Remove listener
+  //   listener();
+  // }, []);
 
   // Check if authenticated user.
   const checkUserAndGenerateNewKey = async () => {
-    const subId = String(authedUser?.attributes?.sub);
+    // setShowIndicator(true);
+
+    // const authUser = await Auth.currentAuthenticatedUser({bypassCache: true});
+    const authedUser = await Auth.currentAuthenticatedUser();
+    const subId: string = authedUser?.attributes?.sub;
     const dbCurrentUser = await DataStore.query(User, c => c.id.eq(subId));
 
+    const name = String(dbCurrentUser[0]?.name);
     const cloudPKey = dbCurrentUser[0]?.backupKey;
 
-    console.log('authedUser--: ', authedUser);
+    const key = cloudPKey === undefined ? null : cloudPKey;
+
     console.log('subId--: ', subId);
-    console.log('dbUser: ', dbCurrentUser);
-    console.log('cloudPKey: ', String(cloudPKey));
+    console.log('dbCurrentUser: ', dbCurrentUser);
 
-    // const key = cloudPKey === undefined ? '' : cloudPKey;
+    if (dbCurrentUser.length === 0) {
+      return;
+    }
 
-    // await generateNewKey(String(key), dbCurrentUser);
+    // await generateNewKey(subId, name, String(key), dbCurrentUser);
   };
 
   // Generate new key
-  const generateNewKey = async (pKey: string, dbUser: LazyUser[]) => {
-    // Compare Cloud key with local key
-    if (pKey === '') {
-      // Remove old key
-      await AsyncStorage.removeItem(PRIVATE_KEY);
-      await AsyncStorage.removeItem(PUBLIC_KEY);
+  const generateNewKey = async () =>
+    // id: string,
+    // name: string,
+    // pKey: string,
+    // dbUser: LazyUser[],
+    {
+      setShowIndicator(true);
+      const authedUser = await Auth.currentAuthenticatedUser();
+      const subId: string = authedUser?.attributes?.sub;
+      const dbCurrentUser = await DataStore.query(User, c => c.id.eq(subId));
+      setShowIndicator(false);
 
-      // Generate a new backup key.
-      const {publicKey, secretKey} = generateKeyPair();
+      const name = String(dbCurrentUser[0]?.name);
+      const cloudPKey = dbCurrentUser[0]?.backupKey;
 
-      //Save Key to local storage.
-      await AsyncStorage.setItem(PRIVATE_KEY, secretKey.toString());
-      await AsyncStorage.setItem(PUBLIC_KEY, publicKey.toString());
+      const pKey = cloudPKey === undefined ? null : cloudPKey;
 
-      // const originalUser = await DataStore.query(User, user?.id);
+      console.log('subId: ', subId);
+      console.log('dbCurrentUser: ', dbCurrentUser);
+      console.log('pKey: ', pKey);
 
-      await DataStore.save(
-        User.copyOf(dbUser[0], updated => {
-          updated.backupKey = String(secretKey);
-        }),
-      );
-    }
-  };
+      if (dbCurrentUser.length === 0) {
+        return;
+      }
+
+      // Compare Cloud key with local key
+      if (pKey === null) {
+        console.log('+++++++++++++++++ Generating new Key +++++++++++++++++');
+        // Generate a new backup key.
+        const {publicKey, secretKey} = generateKeyPair();
+
+        // Save the new key to the cloud
+        await DataStore.save(
+          User.copyOf(dbCurrentUser[0], updated => {
+            updated.backupKey = String(secretKey);
+          }),
+        );
+
+        // Save Key to local storage.
+        // await AsyncStorage.setItem(PRIVATE_KEY, secretKey.toString());
+        // await AsyncStorage.setItem(PUBLIC_KEY, publicKey.toString());
+
+        // Check if this account isEmpty
+        const existingAccount = authAccounts?.filter(
+          account => account?.id === id,
+        );
+        if (existingAccount?.length === 0) {
+          dispatch(
+            authAccountsActions.addAuthAccount({
+              id: subId,
+              name: name,
+              backupKey: secretKey.toString(),
+              publicKey: publicKey.toString(),
+              keyCreatedDate: moment().date(),
+            }),
+          );
+        }
+      }
+      // setShowIndicator(false);
+    };
 
   // Load Key from Cloud
   // const saveCloudKeyToLocal = async () => {
@@ -199,6 +264,11 @@ const App = () => {
   return (
     <>
       <StatusBar barStyle="light-content" />
+      <ActivityIndicator
+        size="small"
+        color="#0000ff"
+        animating={showIndicator}
+      />
       <FinnerNavigator
         isAuthenticated={isAuthenticated}
         colorScheme={colorScheme}
