@@ -73,16 +73,16 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.togenius1.finner"
+    namespace "com.finner.finner"
     defaultConfig {
-        applicationId "com.togenius1.finner"
+        applicationId "com.finner.finner"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 5
         versionName "1.0.6"
 
         manifestPlaceholders = [
-         appAuthRedirectScheme: 'com.togenius1.finner'
+         appAuthRedirectScheme: 'com.finner.finner'
     ]
     }
     signingConfigs {
