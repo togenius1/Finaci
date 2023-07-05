@@ -145,10 +145,6 @@ const App = () => {
 
     const sub = DataStore.observeQuery(User, c => c.id.eq(subId)).subscribe(
       ({items}) => {
-        // console.log('item[0]:  ', items[0]);
-        // console.log('item[0].name:  ', items[0]?.name);
-        // console.log('item[0].backupKey:  ', items[0]?.backupKey);
-
         const dbCurrentUser = items;
         const name = String(items[0]?.name);
         const cloudPKey = String(items[0]?.backupKey);
@@ -171,7 +167,6 @@ const App = () => {
 
     // Compare Cloud key with local key
     if (pKey === 'null') {
-      console.log('Generate a new backup key...');
       // Generate a new backup key.
       const {publicKey, secretKey} = generateKeyPair();
 
