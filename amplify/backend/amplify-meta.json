@@ -37,7 +37,7 @@
       },
       "providerPlugin": "awscloudformation",
       "service": "AppSync",
-      "lastPushTimeStamp": "2023-07-01T03:21:00.804Z",
+      "lastPushTimeStamp": "2023-07-06T01:53:31.573Z",
       "providerMetadata": {
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-finner1-staging-10445-deployment/amplify-cfn-templates/api/cloudformation-template.json",
         "logicalId": "apiFinner1"
@@ -49,13 +49,13 @@
       "customAuth": false,
       "dependsOn": [
         {
-          "category": "function",
-          "resourceName": "Finner1PostConfirmation",
-          "triggerProvider": "Cognito",
           "attributes": [
             "Arn",
             "Name"
-          ]
+          ],
+          "category": "function",
+          "resourceName": "Finner1PostConfirmation",
+          "triggerProvider": "Cognito"
         }
       ],
       "frontendAuthConfig": {
@@ -85,7 +85,7 @@
         "IdentityPoolName": "testAuthIdentityPool__staging",
         "UserPoolName": "Finner1"
       },
-      "lastPushTimeStamp": "2023-07-01T03:21:00.810Z",
+      "lastPushTimeStamp": "2023-07-06T01:53:31.583Z",
       "providerMetadata": {
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-finner1-staging-10445-deployment/amplify-cfn-templates/auth/Finner1-cloudformation-template.json",
         "logicalId": "authFinner1"
@@ -104,7 +104,7 @@
         "Name": "Finner1PostConfirmation-staging",
         "LambdaExecutionRole": "Finner1PostConfirmation-staging"
       },
-      "lastPushTimeStamp": "2023-07-01T03:21:00.811Z",
+      "lastPushTimeStamp": "2023-07-06T01:53:31.595Z",
       "providerMetadata": {
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-finner1-staging-10445-deployment/amplify-cfn-templates/function/Finner1PostConfirmation-cloudformation-template.json",
         "logicalId": "functionFinner1PostConfirmation"
@@ -112,12 +112,7 @@
       "s3Bucket": {
         "deploymentBucketName": "amplify-finner1-staging-10445-deployment",
         "s3Key": "amplify-builds/Finner1PostConfirmation-5671316b764468664e75-build.zip"
-      },
-      "lastBuildTimeStamp": "2023-07-01T03:12:13.597Z",
-      "lastBuildType": "PROD",
-      "lastPackageTimeStamp": "2023-07-01T03:12:13.650Z",
-      "distZipFilename": "Finner1PostConfirmation-5671316b764468664e75-build.zip",
-      "lastPushDirHash": "Cq97J6pPNGNNoLdxmHUM8ra3vhU="
+      }
     }
   }
 }

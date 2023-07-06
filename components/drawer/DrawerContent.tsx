@@ -127,6 +127,23 @@ const DrawerContent = (props: Props) => {
           </Pressable>
         </View>
 
+        <View style={styles.packageContainer}>
+          <Pressable
+            style={({pressed}) => pressed && styles.pressed}
+            onPress={() => {
+              navigation.navigate('Paywall');
+            }}>
+            <View style={{flexDirection: 'row', marginBottom: height / 50}}>
+              <MaterialCommunityIcons
+                name="shape-plus-outline"
+                size={22}
+                color={colors.setting}
+              />
+              <Text style={styles.settingText}>Paywall</Text>
+            </View>
+          </Pressable>
+        </View>
+
         <View style={styles.settingContainer}>
           <Pressable
             style={({pressed}) => pressed && styles.pressed}
@@ -226,12 +243,19 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginLeft: 20,
   },
+
+  packageContainer: {
+    marginLeft: 20,
+    marginTop: height / 15,
+  },
+
   settingContainer: {
     marginLeft: 20,
-    marginTop: height / 3.5,
+    marginTop: height / 5,
     // marginBottom: 10,
     // backgroundColor: '#86b0dd',
   },
+
   settingText: {
     fontSize: 14,
     marginLeft: 20,
@@ -243,7 +267,7 @@ const styles = StyleSheet.create({
   },
   logoutContainer: {
     marginLeft: 20,
-    marginTop: Platform.OS === 'ios' ? 10 : 50,
+    marginTop: Platform.OS === 'ios' ? 10 : 30,
     bottom: Platform.OS === 'ios' ? 10 : 0,
   },
   logoutText: {

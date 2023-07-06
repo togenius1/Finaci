@@ -13,6 +13,7 @@ export type RootStackParamList = {
   Backup: undefined;
   ExpenseGraphs: undefined;
   TransactionSummary: undefined;
+  Paywall: undefined;
   IncomesDetails: {
     date: string;
     time: string;

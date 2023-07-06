@@ -2,6 +2,7 @@ import {
   ActivityIndicator,
   Appearance,
   LogBox,
+  Platform,
   Pressable,
   StatusBar,
   StyleSheet,
@@ -15,6 +16,7 @@ import {setPRNG} from 'tweetnacl';
 import {Amplify, Auth, DataStore, Hub} from 'aws-amplify';
 import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Purchases, {LOG_LEVEL} from 'react-native-purchases';
 
 import {generateKeyPair, PRIVATE_KEY, PRNG, PUBLIC_KEY} from './util/crypto';
 import FinnerNavigator from './navigation/FinnerNavigator';
@@ -32,6 +34,7 @@ import awsconfig from './src/aws-exports';
 import {LazyUser, User} from './src/models';
 import {authAccountsActions} from './store/authAccount-slice';
 import moment from 'moment';
+import {API_KEY} from './constants/api';
 
 Amplify.configure(awsconfig);
 
@@ -77,21 +80,6 @@ const App = () => {
   // const [localPrivateKey, setLocalPrivateKey] = useState<string | null>();
   const [showIndicator, setShowIndicator] = useState<boolean>(false);
 
-  //Reset Expense
-  // useEffect(() => {
-  //   dispatch(fetchCashAccountsData());
-  //   dispatch(fetchExpensesData());
-  //   dispatch(fetchIncomesData());
-  //   dispatch(fetchMonthlyTransactsData());
-  //   dispatch(fetchWeeklyTransactsData());
-  //   dispatch(fetchDailyTransactsData());
-  // }, []);
-
-  // Load Existing Category
-  // useEffect(() => {
-
-  // }, []);
-
   // Check if authenticated user, Stay logged in.
   useEffect(() => {
     const isAuthenticated = async () => {
@@ -136,6 +124,20 @@ const App = () => {
     Hub.listen('auth', listenerAuth);
   }, []);
 
+  // Load Purchases
+  useEffect(() => {
+    Purchases.setLogLevel(LOG_LEVEL.VERBOSE);
+
+    if (Platform.OS === 'ios') {
+      Purchases.configure({apiKey: ''});
+    } else if (Platform.OS === 'android') {
+      Purchases.configure({apiKey: API_KEY});
+
+      // OR: if building for Amazon, be sure to follow the installation instructions then:
+      //  Purchases.configure({ apiKey: <public_amazon_sdk_key>, useAmazon: true });
+    }
+  }, []);
+
   // Check if authenticated user.
   const checkUserAndGenerateNewKey = async () => {
     // const authUser = await Auth.currentAuthenticatedUser({bypassCache: true});
@@ -145,10 +147,6 @@ const App = () => {
 
     const sub = DataStore.observeQuery(User, c => c.id.eq(subId)).subscribe(
       ({items}) => {
-        // console.log('item[0]:  ', items[0]);
-        // console.log('item[0].name:  ', items[0]?.name);
-        // console.log('item[0].backupKey:  ', items[0]?.backupKey);
-
         const dbCurrentUser = items;
         const name = String(items[0]?.name);
         const cloudPKey = String(items[0]?.backupKey);
@@ -171,7 +169,6 @@ const App = () => {
 
     // Compare Cloud key with local key
     if (pKey === 'null') {
-      console.log('Generate a new backup key...');
       // Generate a new backup key.
       const {publicKey, secretKey} = generateKeyPair();
 
@@ -205,27 +202,6 @@ const App = () => {
     }
     setShowIndicator(false);
   };
-
-  // Load Key from Cloud
-  // const saveCloudKeyToLocal = async () => {
-  //   await AsyncStorage.removeItem(PRIVATE_KEY);
-  //   await AsyncStorage.removeItem(PUBLIC_KEY);
-
-  //   await AsyncStorage.setItem(PRIVATE_KEY, String(cloudPrivateKey));
-  //   const newPublicKey = generatePublicKeyFromSecretKey(
-  //     stringToUint8Array(String(cloudPrivateKey)),
-  //   );
-  //   await AsyncStorage.setItem(PUBLIC_KEY, newPublicKey.publicKey.toString());
-  // };
-
-  // const removeCloudKey = async () => {
-  //   const originalUser = await DataStore.query(User, String(user?.id));
-  //   await DataStore.save(
-  //     User.copyOf(originalUser, updated => {
-  //       updated.backupKey = null;
-  //     }),
-  //   );
-  // };
 
   const closeAdsHandler = () => {
     setClosedAds(true);

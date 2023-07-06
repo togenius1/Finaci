@@ -11,6 +11,7 @@ import ReportsScreen from '../../../screens/ReportsScreen';
 import BackupScreen from '../../../screens/BackupScreen';
 import RecommendScreen from '../../../screens/RecommendScreen';
 import {RootStackParamList} from '../../../types';
+import PaywallScreen from '../../../screens/PaywallScreen';
 
 const Drawer = createDrawerNavigator<RootStackParamList>();
 
@@ -73,6 +74,13 @@ const MenuDrawer = () => {
         component={SettingsScreen}
         options={() => ({
           title: 'Settings',
+        })}
+      />
+      <Drawer.Screen
+        name="Paywall"
+        component={PaywallScreen}
+        options={() => ({
+          title: 'Paywall',
         })}
       />
       {/* <Drawer.Screen

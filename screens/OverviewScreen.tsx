@@ -10,6 +10,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import moment from 'moment';
+import Purchases from 'react-native-purchases';
 
 import Spending from '../components/tab/SpendingTab';
 import Expense from '../components/tab/ExpenseTab';
