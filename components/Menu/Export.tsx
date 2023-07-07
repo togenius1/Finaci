@@ -6,7 +6,7 @@ import {xport} from '../../util/xport';
 import {useAppSelector} from '../../hooks';
 import {useNavigation} from '@react-navigation/native';
 import Purchases from 'react-native-purchases';
-import {ENTITLEMENT_PRO} from '../../constants/api';
+import {ENTITLEMENT_PRO, ENTITLEMENT_STD} from '../../constants/api';
 
 const {width} = Dimensions.get('window');
 
@@ -87,7 +87,9 @@ const Export = () => {
     const customerInfo = await Purchases.getCustomerInfo();
 
     if (
-      typeof customerInfo.entitlements.active[ENTITLEMENT_PRO] !== 'undefined'
+      typeof customerInfo.entitlements.active[ENTITLEMENT_PRO] !==
+        'undefined' ||
+      typeof customerInfo.entitlements.active[ENTITLEMENT_STD] !== 'undefined'
     ) {
       await xport(data);
     } else {

@@ -1,8 +1,17 @@
-import {Alert, Pressable, StyleSheet, Text, View} from 'react-native';
+import {
+  Alert,
+  DevSettings,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import React from 'react';
-import {useNavigation} from '@react-navigation/native';
+// import {useNavigation} from '@react-navigation/native';
 import Purchases from 'react-native-purchases';
-import {ENTITLEMENT_PRO} from '../../constants/api';
+
+import {ENTITLEMENT_PRO, ENTITLEMENT_STD} from '../../constants/api';
+import {Auth} from 'aws-amplify';
 
 type Props = {};
 
@@ -11,20 +20,21 @@ const PackageItemsScreen = ({purchasePackage, setIsPurchasing}: Props) => {
     product: {title, description, priceString},
   } = purchasePackage;
 
-  const navigation = useNavigation();
-
-  // console.log('purchasePackage: ', purchasePackage);
-
   const onSelection = async () => {
     // TODO purchase package
     try {
       const {customerInfo} = await Purchases.purchasePackage(purchasePackage);
 
       if (
-        typeof customerInfo.entitlements.active[ENTITLEMENT_PRO] !== 'undefined'
+        typeof customerInfo.entitlements.active[ENTITLEMENT_PRO] !==
+          'undefined' ||
+        typeof customerInfo.entitlements.active[ENTITLEMENT_STD] !== 'undefined'
       ) {
         // Unlock that great "pro" content
-        navigation.goBack();
+        Auth.signOut();
+        // ios:  NativeModules.DevSettings.reload();??
+        DevSettings.reload();
+        // navigation.goBack();
       }
     } catch (e) {
       if (!e.userCancelled) {

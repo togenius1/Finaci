@@ -15,7 +15,7 @@ import RNFS from 'react-native-fs';
 // import {v4 as uuidv4} from 'uuid';
 import {useInterstitialAd, TestIds} from 'react-native-google-mobile-ads';
 
-import {defaultAuthState} from '../util/authConfig';
+import {defaultAuthState} from '../constants/authConfig';
 import {decryption} from '../util/decrypt';
 import {encryption} from '../util/encrypt';
 import {

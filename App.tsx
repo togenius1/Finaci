@@ -74,20 +74,18 @@ const App = () => {
   );
 
   // const [currentUser, setCurrentUser] = useState<LazyUser[]>([]);
-  // const [authedUser, setAuthedtUser] = useState<any>();
+  const [appUserId, setAppUserId] = useState<string | null>('');
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>();
   // const [cloudPrivateKey, setCloudPrivateKey] = useState<string | null>('');
   const [closedAds, setClosedAds] = useState<boolean>(false);
   // const [localPrivateKey, setLocalPrivateKey] = useState<string | null>();
   const [showIndicator, setShowIndicator] = useState<boolean>(false);
-  const [closedBannerAds, setClosedBannerAds] = useState<boolean>(false);
 
   // Check if authenticated user, Stay logged in.
   useEffect(() => {
     const isAuthenticated = async () => {
       // const authUser = await Auth.currentAuthenticatedUser({bypassCache: true});
       const authUser = await Auth.currentAuthenticatedUser();
-      // setAuthedtUser(authUser);
 
       setIsAuthenticated(true);
     };
@@ -114,6 +112,7 @@ const App = () => {
         }
 
         await checkUserAndGenerateNewKey();
+        await configPurchase();
 
         setIsAuthenticated(true);
       }
@@ -127,17 +126,46 @@ const App = () => {
   }, []);
 
   // Load Purchases
-  useEffect(() => {
+  // useEffect(() => {
+  const configPurchase = async () => {
     Purchases.setLogLevel(LOG_LEVEL.VERBOSE);
+    const authUser = await Auth.currentAuthenticatedUser();
 
     if (Platform.OS === 'ios') {
       Purchases.configure({apiKey: ''});
     } else if (Platform.OS === 'android') {
-      Purchases.configure({apiKey: API_KEY});
+      // Purchases.configure({apiKey: API_KEY});
+      Purchases.configure({
+        apiKey: API_KEY,
+        appUserID: authUser?.attributes?.sub,
+      });
 
       // OR: if building for Amazon, be sure to follow the installation instructions then:
       //  Purchases.configure({ apiKey: <public_amazon_sdk_key>, useAmazon: true });
     }
+  };
+
+  //   configPurchase();
+  // }, []);
+
+  // Load Packages and set close ads
+  useEffect(() => {
+    // Close Ads
+    const onCloseBannerAds = async () => {
+      const customerInfo = await Purchases.getCustomerInfo();
+
+      if (
+        typeof customerInfo.entitlements.active[ENTITLEMENT_PRO] !==
+          'undefined' ||
+        typeof customerInfo.entitlements.active[ENTITLEMENT_STD] !== 'undefined'
+      ) {
+        setClosedAds(true);
+      } else {
+        setClosedAds(false);
+      }
+    };
+
+    onCloseBannerAds();
   }, []);
 
   // Check if authenticated user.
@@ -209,25 +237,6 @@ const App = () => {
     setClosedAds(true);
   };
 
-  useEffect(() => {
-    onCloseBannerAds();
-  }, []);
-
-  // Close Ads
-  const onCloseBannerAds = async () => {
-    const customerInfo = await Purchases.getCustomerInfo();
-
-    if (
-      typeof customerInfo.entitlements.active[ENTITLEMENT_PRO] !==
-        'undefined' ||
-      typeof customerInfo.entitlements.active[ENTITLEMENT_STD] !== 'undefined'
-    ) {
-      setClosedBannerAds(true);
-    } else {
-      setClosedBannerAds(false);
-    }
-  };
-
   // Color scheme
   const colorScheme = Appearance.getColorScheme();
 
@@ -254,25 +263,15 @@ const App = () => {
             </View>
           </Pressable>
 
-          {!closedBannerAds && (
-            <BannerAd
-              unitId={adUnitId}
-              size={BannerAdSize.BANNER}
-              requestOptions={{
-                requestNonPersonalizedAdsOnly: true,
-              }}
-            />
-          )}
+          <BannerAd
+            unitId={adUnitId}
+            size={BannerAdSize.BANNER}
+            requestOptions={{
+              requestNonPersonalizedAdsOnly: true,
+            }}
+          />
         </>
       )}
-
-      {/* {currentUser && (
-        <>
-          <CButton onPress={removeCloudKey} style={{bottom: 25}}>
-            Remove Cloud Key
-          </CButton>
-        </>
-      )} */}
     </>
   );
 };

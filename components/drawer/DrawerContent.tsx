@@ -6,7 +6,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {DrawerContentScrollView} from '@react-navigation/drawer';
 import {useNavigation} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -30,6 +30,17 @@ const {width, height} = Dimensions.get('window');
 
 const DrawerContent = (props: Props) => {
   const navigation = useNavigation();
+
+  const [authUser, setAuthUser] = useState<any>();
+
+  useEffect(() => {
+    const onAuthUser = async () => {
+      const authUser = await Auth.currentAuthenticatedUser();
+      setAuthUser(authUser);
+    };
+
+    onAuthUser();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -179,6 +190,7 @@ const DrawerContent = (props: Props) => {
             <View style={{flexDirection: 'row'}}>
               <Ionicons name="log-out" size={22} color={colors.user} />
               <Text style={styles.logoutText}>Log out</Text>
+              <Text style={styles.username}>{authUser?.username}</Text>
             </View>
           </Pressable>
         </View>
@@ -271,6 +283,12 @@ const styles = StyleSheet.create({
     bottom: Platform.OS === 'ios' ? 10 : 0,
   },
   logoutText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginLeft: 20,
+  },
+  username: {
+    color: 'grey',
     fontSize: 14,
     fontWeight: 'bold',
     marginLeft: 20,
