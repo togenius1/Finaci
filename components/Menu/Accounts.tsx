@@ -99,7 +99,6 @@ const Accounts = ({setAccount, setAccountPressed, month, year}: Props) => {
 
   // Set account
   function onAccountsHandler(item) {
-    // console.log('item: ', item);
     setAccountPressed(false);
     setAccount(item === undefined ? null : item);
   }

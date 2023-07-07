@@ -18,7 +18,7 @@ import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Purchases, {LOG_LEVEL} from 'react-native-purchases';
 
-import {generateKeyPair, PRIVATE_KEY, PRNG, PUBLIC_KEY} from './util/crypto';
+import {generateKeyPair, PRNG} from './util/crypto';
 import FinnerNavigator from './navigation/FinnerNavigator';
 import {useAppDispatch, useAppSelector} from './hooks';
 import {fetchCashAccountsData} from './store/cash-action';
@@ -34,7 +34,8 @@ import awsconfig from './src/aws-exports';
 import {LazyUser, User} from './src/models';
 import {authAccountsActions} from './store/authAccount-slice';
 import moment from 'moment';
-import {API_KEY} from './constants/api';
+import {API_KEY, ENTITLEMENT_PRO, ENTITLEMENT_STD} from './constants/api';
+import {useNavigation} from '@react-navigation/native';
 
 Amplify.configure(awsconfig);
 
@@ -79,6 +80,7 @@ const App = () => {
   const [closedAds, setClosedAds] = useState<boolean>(false);
   // const [localPrivateKey, setLocalPrivateKey] = useState<string | null>();
   const [showIndicator, setShowIndicator] = useState<boolean>(false);
+  const [closedBannerAds, setClosedBannerAds] = useState<boolean>(false);
 
   // Check if authenticated user, Stay logged in.
   useEffect(() => {
@@ -207,6 +209,26 @@ const App = () => {
     setClosedAds(true);
   };
 
+  useEffect(() => {
+    onCloseBannerAds();
+  }, []);
+
+  // Close Ads
+  const onCloseBannerAds = async () => {
+    const customerInfo = await Purchases.getCustomerInfo();
+
+    if (
+      typeof customerInfo.entitlements.active[ENTITLEMENT_PRO] !==
+        'undefined' ||
+      typeof customerInfo.entitlements.active[ENTITLEMENT_STD] !== 'undefined'
+    ) {
+      setClosedBannerAds(true);
+    } else {
+      setClosedBannerAds(false);
+    }
+  };
+
+  // Color scheme
   const colorScheme = Appearance.getColorScheme();
 
   return (
@@ -232,13 +254,15 @@ const App = () => {
             </View>
           </Pressable>
 
-          <BannerAd
-            unitId={adUnitId}
-            size={BannerAdSize.BANNER}
-            requestOptions={{
-              requestNonPersonalizedAdsOnly: true,
-            }}
-          />
+          {!closedBannerAds && (
+            <BannerAd
+              unitId={adUnitId}
+              size={BannerAdSize.BANNER}
+              requestOptions={{
+                requestNonPersonalizedAdsOnly: true,
+              }}
+            />
+          )}
         </>
       )}
 

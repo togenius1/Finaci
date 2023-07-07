@@ -4,6 +4,9 @@ import moment from 'moment';
 
 import {xport} from '../../util/xport';
 import {useAppSelector} from '../../hooks';
+import {useNavigation} from '@react-navigation/native';
+import Purchases from 'react-native-purchases';
+import {ENTITLEMENT_PRO} from '../../constants/api';
 
 const {width} = Dimensions.get('window');
 
@@ -14,13 +17,14 @@ const Export = () => {
   const [jsonData, setJsonData] = useState();
   const [newJson, setNewJson] = useState();
 
+  const navigation = useNavigation();
+
   useEffect(() => {
     createNewObject();
   }, [jsonData]);
 
   // Export format.
   const createNewObject = () => {
-
     const obj = dataLoaded?.expenses?.expenses?.map((expense, index) => {
       // income
       const incomeObj = dataLoaded?.incomes.incomes?.find(
@@ -80,7 +84,15 @@ const Export = () => {
 
   // Export
   const exportHandler = async (data: {}) => {
-    await xport(data);
+    const customerInfo = await Purchases.getCustomerInfo();
+
+    if (
+      typeof customerInfo.entitlements.active[ENTITLEMENT_PRO] !== 'undefined'
+    ) {
+      await xport(data);
+    } else {
+      navigation.navigate('Paywall');
+    }
   };
 
   return (

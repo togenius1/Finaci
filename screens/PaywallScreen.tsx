@@ -19,9 +19,10 @@ const PaywallScreen = () => {
       try {
         const offerings = await Purchases?.getOfferings();
 
+        console.log('offerings: ', offerings);
+
         if (offerings.current !== null) {
           // Display current offering with offerings.current
-          console.log('offerings: ', offerings.current);
           setPackages(offerings.current.availablePackages);
         }
       } catch (e) {
@@ -49,7 +50,6 @@ const PaywallScreen = () => {
 
   // Render Item
   const renderItem = ({item}) => {
-    console.log('item: ', item);
     return (
       <PackageItem purchasePackage={item} setIsPurchasing={setIsPurchasing} />
     );
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   text: {
-    color: 'lightgrey',
+    color: 'grey',
   },
   headerFooterContainer: {
     marginVertical: 10,

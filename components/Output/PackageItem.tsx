@@ -1,18 +1,36 @@
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {Alert, Pressable, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {useNavigation} from '@react-navigation/native';
+import Purchases from 'react-native-purchases';
+import {ENTITLEMENT_PRO} from '../../constants/api';
 
 type Props = {};
 
 const PackageItemsScreen = ({purchasePackage, setIsPurchasing}: Props) => {
   const {
-    product: {title, description, price_string},
+    product: {title, description, priceString},
   } = purchasePackage;
 
   const navigation = useNavigation();
 
+  // console.log('purchasePackage: ', purchasePackage);
+
   const onSelection = async () => {
     // TODO purchase package
+    try {
+      const {customerInfo} = await Purchases.purchasePackage(purchasePackage);
+
+      if (
+        typeof customerInfo.entitlements.active[ENTITLEMENT_PRO] !== 'undefined'
+      ) {
+        // Unlock that great "pro" content
+        navigation.goBack();
+      }
+    } catch (e) {
+      if (!e.userCancelled) {
+        Alert.alert(e);
+      }
+    }
   };
 
   return (
@@ -21,7 +39,7 @@ const PackageItemsScreen = ({purchasePackage, setIsPurchasing}: Props) => {
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.terms}>{description}</Text>
       </View>
-      <Text style={styles.title}>{price_string}</Text>
+      <Text style={styles.title}>{priceString}</Text>
     </Pressable>
   );
 };
@@ -34,17 +52,18 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 8,
-    backgroundColor: '#1a1a1a',
+    marginVertical: 10,
+    backgroundColor: '#cdcdcd',
     borderBottomWidth: 1,
-    borderBottomColor: '#242424',
+    borderBottomColor: '#eaeaea',
   },
   left: {},
   title: {
-    color: 'white',
+    color: '#000000',
     fontSize: 16,
     fontWeight: 'bold',
   },
   terms: {
-    color: 'darkgrey',
+    color: '#545454',
   },
 });
