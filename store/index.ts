@@ -15,6 +15,7 @@ import dailyTransactsSlice from './dailyTransact-slice';
 import weeklyTransactsSlice from './weeklyTransact-slice';
 import monthlyTransactsSlice from './monthlyTransact-slice';
 import authAccountsSlice from './authAccount-slice';
+import customerInfoSlice from './customerInfo-slice';
 
 const rootReducer = combineReducers({
   expenses: expenseSlice.reducer,
@@ -23,6 +24,7 @@ const rootReducer = combineReducers({
   authAccounts: authAccountsSlice.reducer,
   cashAccounts: cashAccountsSlice.reducer,
   accounts: accountSlice.reducer,
+  customerInfos: customerInfoSlice.reducer,
   expenseCategories: expenseCategoriesSlice.reducer,
   incomeCategories: incomeCategoriesSlice.reducer,
   transferCategories: transferCategoriesSlice.reducer,

@@ -11,6 +11,7 @@ import {DrawerContentScrollView} from '@react-navigation/drawer';
 import {useNavigation} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+// import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {Auth} from 'aws-amplify';
 
 type Props = {};
@@ -22,6 +23,7 @@ const colors = {
   income: '#03991e',
   budget: '#072ac7',
   setting: '#424242',
+  paywall: '#eb9d3d',
   user: '#075aff',
   recommendation: '#00c4da',
 };
@@ -146,9 +148,9 @@ const DrawerContent = (props: Props) => {
             }}>
             <View style={{flexDirection: 'row', marginBottom: height / 50}}>
               <MaterialCommunityIcons
-                name="shape-plus-outline"
+                name="cart-outline"
                 size={22}
-                color={colors.setting}
+                color={colors.paywall}
               />
               <Text style={styles.settingText}>Paywall</Text>
             </View>

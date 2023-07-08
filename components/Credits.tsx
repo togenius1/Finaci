@@ -6,11 +6,11 @@ type Props = {};
 const Credits = (props: Props) => {
   return (
     <Text style={{position: 'absolute', bottom: 10, color: '#999999'}}>
-      Created by Genius Company.
+      Created by toGenius1 Company.
     </Text>
   );
 };
 
 export default Credits;
 
-const styles = StyleSheet.create({});
+// const styles = StyleSheet.create({});

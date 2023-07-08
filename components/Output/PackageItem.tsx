@@ -15,7 +15,7 @@ import {Auth} from 'aws-amplify';
 
 type Props = {};
 
-const PackageItemsScreen = ({purchasePackage, setIsPurchasing}: Props) => {
+const PackageItemsScreen = ({purchasePackage}: Props) => {
   const {
     product: {title, description, priceString},
   } = purchasePackage;
@@ -42,6 +42,8 @@ const PackageItemsScreen = ({purchasePackage, setIsPurchasing}: Props) => {
       }
     }
   };
+
+  // console.log('getUserData: ', getUserData);
 
   return (
     <Pressable onPress={onSelection} style={styles.container}>

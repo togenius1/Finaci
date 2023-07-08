@@ -36,6 +36,10 @@ import {authAccountsActions} from './store/authAccount-slice';
 import moment from 'moment';
 import {API_KEY, ENTITLEMENT_PRO, ENTITLEMENT_STD} from './constants/api';
 import {useNavigation} from '@react-navigation/native';
+import customerInfoSlice, {
+  customerInfoActions,
+} from './store/customerInfo-slice';
+import {fetchCustomerInfoData} from './store/customerInfo-action';
 
 Amplify.configure(awsconfig);
 
@@ -55,6 +59,8 @@ const App = () => {
   const dataLoaded = useAppSelector(store => store);
 
   const authAccounts = dataLoaded?.authAccounts?.authAccounts;
+
+  const customerInfosData = dataLoaded?.customerInfos?.customerInfos;
 
   const expenseCateData = useAppSelector(
     state => state.expenseCategories.expenseCategories,
@@ -113,20 +119,30 @@ const App = () => {
 
         await checkUserAndGenerateNewKey();
         await configPurchase();
+        await getUserData();
+        await onCloseBannerAds();
 
         setIsAuthenticated(true);
       }
       if (data.payload.event === 'signOut') {
         setIsAuthenticated(false);
-        // await DataStore.clear();
+        await getUserData();
       }
     };
 
     Hub.listen('auth', listenerAuth);
   }, []);
 
+  // Purchase Listener
+  useEffect(() => {
+    Purchases.addCustomerInfoUpdateListener(getUserData);
+
+    return () => {
+      Purchases.removeCustomerInfoUpdateListener;
+    };
+  }, []);
+
   // Load Purchases
-  // useEffect(() => {
   const configPurchase = async () => {
     Purchases.setLogLevel(LOG_LEVEL.VERBOSE);
     const authUser = await Auth.currentAuthenticatedUser();
@@ -145,28 +161,68 @@ const App = () => {
     }
   };
 
-  //   configPurchase();
-  // }, []);
+  // Get User Data
+  const getUserData = async () => {
+    // Delete data in Storage
+    // fetchCustomerInfoData();
+    const customerInfo = await Purchases.getCustomerInfo();
+    const appUserId = await Purchases.getAppUserID();
+    const stdActive =
+      typeof customerInfo?.entitlements?.active[ENTITLEMENT_STD] !==
+      'undefined';
+    const proActive =
+      typeof customerInfo?.entitlements?.active[ENTITLEMENT_PRO] !==
+      'undefined';
+
+    const customerInfoInStorage = customerInfosData?.filter(
+      cus => cus.appUserId === appUserId,
+    );
+
+    if (customerInfoInStorage?.length === 0) {
+      dispatch(
+        customerInfoActions.addCustomerInfo({
+          id: 'accountInfo-' + appUserId,
+          appUserId: appUserId,
+          stdActive: stdActive,
+          proActive: proActive,
+          date: moment(),
+        }),
+      );
+    } else {
+      dispatch(
+        customerInfoActions.updateCustomerInfo({
+          id: customerInfoInStorage[0]?.id,
+          appUserId: appUserId,
+          stdActive: stdActive,
+          proActive: proActive,
+          date: moment(),
+        }),
+      );
+    }
+  };
 
   // Load Packages and set close ads
-  useEffect(() => {
-    // Close Ads
-    const onCloseBannerAds = async () => {
-      const customerInfo = await Purchases.getCustomerInfo();
+  // useEffect(() => {
+  //   // Close Ads
+  const onCloseBannerAds = async () => {
+    const authUser = await Auth.currentAuthenticatedUser();
+    const appUserId = authUser?.attributes?.sub;
+    const filteredCustomerInfo = customerInfosData?.filter(
+      cus => cus.appUserId === appUserId,
+    );
 
-      if (
-        typeof customerInfo.entitlements.active[ENTITLEMENT_PRO] !==
-          'undefined' ||
-        typeof customerInfo.entitlements.active[ENTITLEMENT_STD] !== 'undefined'
-      ) {
-        setClosedAds(true);
-      } else {
-        setClosedAds(false);
-      }
-    };
+    if (
+      filteredCustomerInfo[0]?.stdActive ||
+      filteredCustomerInfo[0]?.proActive
+    ) {
+      setClosedAds(true);
+    } else {
+      setClosedAds(false);
+    }
+  };
 
-    onCloseBannerAds();
-  }, []);
+  // onCloseBannerAds();
+  // }, []);
 
   // Check if authenticated user.
   const checkUserAndGenerateNewKey = async () => {
@@ -225,7 +281,7 @@ const App = () => {
             name: name,
             backupKey: secretKey.toString(),
             publicKey: publicKey.toString(),
-            keyCreatedDate: moment().date(),
+            keyCreatedDate: moment(),
           }),
         );
       }
