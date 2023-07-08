@@ -40,6 +40,7 @@ import {monthlyTransactsActions} from '../store/monthlyTransact-slice';
 import {weeklyTransactsActions} from '../store/weeklyTransact-slice';
 import {accountActions} from '../store/account-slice';
 import {cashAccountsActions} from '../store/cash-slice';
+import {useNavigation} from '@react-navigation/native';
 
 // Ads variable
 const adUnitId = __DEV__
@@ -59,6 +60,8 @@ const month = day * 30;
 
 // Main
 const BackupScreen = () => {
+  const navigation = useNavigation();
+
   const [showBackupIndicator, setShowBackupIndicator] =
     useState<boolean>(false);
   const [showRestoreIndicator, setShowRestoreIndicator] =
@@ -72,6 +75,8 @@ const BackupScreen = () => {
   // const [expensesData, setexpensesData] = useState<ExpenseType>();
   const dispatch = useAppDispatch();
   const rootStore = useAppSelector(store => store);
+
+  const customerInfosData = rootStore?.customerInfos?.customerInfos;
 
   const authAccountsData = rootStore?.authAccounts?.authAccounts;
   const expensesData = rootStore?.expenses?.expenses;
@@ -93,7 +98,6 @@ const BackupScreen = () => {
   // Load ads again
   useEffect(() => {
     if (isClosed) {
-      // console.log('Reloading ad...');
       load();
     }
   }, [isClosed]);
@@ -182,10 +186,21 @@ const BackupScreen = () => {
   }, [authState]);
 
   // Backup Alert
-  const backupAlert = obj => {
-    // show Ads
-    if (isLoaded) {
-      show();
+  const backupAlert = async obj => {
+    const authUser = await Auth.currentAuthenticatedUser();
+    const appUserId = authUser?.attributes?.sub;
+    const filteredCustomerInfo = customerInfosData?.filter(
+      cus => cus.appUserId === appUserId,
+    );
+
+    if (
+      !filteredCustomerInfo[0]?.stdActive &&
+      !filteredCustomerInfo[0]?.proActive
+    ) {
+      // show Ads
+      if (isLoaded) {
+        show();
+      }
     }
 
     Alert.alert(
@@ -241,6 +256,42 @@ const BackupScreen = () => {
     setShowBackupIndicator(false);
     await findFolderAndInsertFile(encrypted, fileName);
     // setShowBackupIndicator(false);
+  };
+
+  // Check Pro user
+  const checkPro = async () => {
+    const authUser = await Auth.currentAuthenticatedUser();
+    const appUserId = authUser?.attributes?.sub;
+    const filteredCustomerInfo = customerInfosData?.filter(
+      cus => cus.appUserId === appUserId,
+    );
+
+    if (filteredCustomerInfo[0]?.proActive === false) {
+      Alert.alert(
+        'This function is for Pro users.',
+        'Would you like to purchase Pro(Premium)?',
+        [
+          {
+            text: 'Yes',
+            onPress: () => navigation.navigate('Paywall'),
+            style: 'destructive',
+          },
+          {
+            text: 'No',
+            style: 'cancel',
+          },
+        ],
+        {
+          cancelable: true,
+          // onDismiss: () =>
+          //   Alert.alert(
+          //     'This alert was dismissed by tapping outside of the alert dialog.',
+          //   ),
+        },
+      );
+    } else {
+      askToRestoreData();
+    }
   };
 
   // Ask to import data
@@ -510,7 +561,7 @@ const BackupScreen = () => {
         <View style={{flexDirection: 'row'}}>
           <Pressable
             style={({pressed}) => pressed && styles.pressed}
-            onPress={() => askToRestoreData()}>
+            onPress={() => checkPro()}>
             <View style={{marginTop: 20}}>
               <Text style={{fontSize: width * 0.048, fontWeight: 'bold'}}>
                 Restore

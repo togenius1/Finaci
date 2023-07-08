@@ -120,7 +120,7 @@ const App = () => {
         await checkUserAndGenerateNewKey();
         await configPurchase();
         await getUserData();
-        await onCloseBannerAds();
+        onCloseBannerAds();
 
         setIsAuthenticated(true);
       }
@@ -140,6 +140,11 @@ const App = () => {
     return () => {
       Purchases.removeCustomerInfoUpdateListener;
     };
+  }, []);
+
+  // Close Ads
+  useEffect(() => {
+    onCloseBannerAds();
   }, []);
 
   // Load Purchases
@@ -220,9 +225,6 @@ const App = () => {
       setClosedAds(false);
     }
   };
-
-  // onCloseBannerAds();
-  // }, []);
 
   // Check if authenticated user.
   const checkUserAndGenerateNewKey = async () => {

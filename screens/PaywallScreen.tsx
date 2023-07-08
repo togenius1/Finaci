@@ -57,7 +57,7 @@ const PaywallScreen = () => {
   }, []);
 
   // Header
-  const header = () => <Text style={styles.text}>Finner Premium</Text>;
+  const header = () => <Text style={styles.text}>Finner items:</Text>;
 
   // Footer
   const footer = () => {
@@ -89,7 +89,8 @@ const PaywallScreen = () => {
     return (
       <PackageItem
         purchasePackage={item}
-        // setIsPurchasing={setIsPurchasing}
+        stdActive={subSTDActive}
+        proActive={subPROActive}
       />
     );
   };
@@ -158,7 +159,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     justifyContent: 'space-between',
-    padding: 30,
+    padding: 36,
     backgroundColor: '#e6f3ff',
   },
   headline: {

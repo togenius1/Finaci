@@ -1,18 +1,26 @@
 import React, {useEffect, useState} from 'react';
-import {Dimensions, Pressable, StyleSheet, Text, View} from 'react-native';
+import {
+  Alert,
+  Dimensions,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import {Auth} from 'aws-amplify';
 import moment from 'moment';
 
 import {xport} from '../../util/xport';
 import {useAppSelector} from '../../hooks';
 import {useNavigation} from '@react-navigation/native';
-import Purchases from 'react-native-purchases';
-import {ENTITLEMENT_PRO, ENTITLEMENT_STD} from '../../constants/api';
 
 const {width} = Dimensions.get('window');
 
 const Export = () => {
   // const dispatch = useAppDispatch();
   const dataLoaded = useAppSelector(store => store);
+
+  const customerInfosData = dataLoaded?.customerInfos?.customerInfos;
 
   const [jsonData, setJsonData] = useState();
   const [newJson, setNewJson] = useState();
@@ -82,19 +90,46 @@ const Export = () => {
     setNewJson(obj);
   };
 
+  // Check Pro or standard
+  const checkPro = async (data: {}) => {
+    const authUser = await Auth.currentAuthenticatedUser();
+    const appUserId = authUser?.attributes?.sub;
+    const filteredCustomerInfo = customerInfosData?.filter(
+      cus => cus.appUserId === appUserId,
+    );
+
+
+    if (filteredCustomerInfo[0]?.proActive === false) {
+      Alert.alert(
+        'This function is for Pro users.',
+        'Would you like to purchase Pro(Premium)?',
+        [
+          {
+            text: 'Yes',
+            onPress: () => navigation.navigate('Paywall'),
+            style: 'destructive',
+          },
+          {
+            text: 'No',
+            style: 'cancel',
+          },
+        ],
+        {
+          cancelable: true,
+          // onDismiss: () =>
+          //   Alert.alert(
+          //     'This alert was dismissed by tapping outside of the alert dialog.',
+          //   ),
+        },
+      );
+    } else {
+      await exportHandler(data);
+    }
+  };
+
   // Export
   const exportHandler = async (data: {}) => {
-    const customerInfo = await Purchases.getCustomerInfo();
-
-    if (
-      typeof customerInfo.entitlements.active[ENTITLEMENT_PRO] !==
-        'undefined' ||
-      typeof customerInfo.entitlements.active[ENTITLEMENT_STD] !== 'undefined'
-    ) {
-      await xport(data);
-    } else {
-      navigation.navigate('Paywall');
-    }
+    await xport(data);
   };
 
   return (
@@ -108,7 +143,7 @@ const Export = () => {
 
         <Pressable
           style={({pressed}) => pressed && styles.pressed}
-          onPress={() => exportHandler(newJson)}>
+          onPress={() => checkPro(newJson)}>
           <View style={{marginTop: 20}}>
             <Text style={{fontSize: 18}}>Excel (.xls)</Text>
             <Text style={{fontSize: 14}}>
