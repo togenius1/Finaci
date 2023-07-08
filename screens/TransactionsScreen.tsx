@@ -2,6 +2,7 @@ import {
   Dimensions,
   Platform,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -15,6 +16,7 @@ import moment from 'moment';
 import TransactionOutput from '../components/Output/TransactionOutput';
 import MonthYearList from '../components/Menu/MonthYearList';
 import {TransactionNavigationProp} from '../types';
+import {useSwipe} from '../components/UI/useSwape';
 
 const {width} = Dimensions.get('window');
 
@@ -147,7 +149,8 @@ const TransactionsScreen = ({navigation}: Props) => {
     navigation,
     duration,
     year,
-    showMonthYearListMenuHandler,
+    // showMonthYearListMenuHandler,
+    isModalVisible,
     monthlyPressed,
     weeklyPressed,
     dailyPressed,
@@ -221,8 +224,28 @@ const TransactionsScreen = ({navigation}: Props) => {
     hideDatePicker();
   };
 
+  // SWAP LEFT and RIGHT
+  const {onTouchStart, onTouchEnd} = useSwipe(onSwipeLeft, onSwipeRight, 6);
+
+  function onSwipeLeft() {
+    console.log('SWIPE_LEFT');
+    // setYear(+year - 1);
+    // console.log(year);
+    // MonthYearList(year);
+  }
+
+  function onSwipeRight() {
+    console.log('SWIPE_RIGHT');
+    // setYear(+year + 1);
+    // console.log(year);
+    // MonthYearList(year);
+  }
+
   return (
-    <View style={styles.container}>
+    <View
+      style={styles.container}
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}>
       <TransactionOutput
         setDuration={setDuration}
         duration={duration}

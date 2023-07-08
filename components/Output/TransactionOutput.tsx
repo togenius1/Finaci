@@ -6,6 +6,8 @@ import {useInterstitialAd, TestIds} from 'react-native-google-mobile-ads';
 
 import TransactionSummary from './TransactionSummary';
 import Tabs from '../UI/Tabs';
+import {Auth} from 'aws-amplify';
+import { useAppSelector } from '../../hooks';
 
 const {width} = Dimensions.get('window');
 const TabsDataObject = {
@@ -46,9 +48,9 @@ const TransactionOutput = ({
 // weeklyTransactions,
 // dailyTransactions,
 Props) => {
-  // const [customPressed, setCustomPressed] = useState(false);
+  const rootStore = useAppSelector(store => store);
 
-  // const navigation = useNavigation();
+  const customerInfosData = rootStore?.customerInfos?.customerInfos;
 
   const {isLoaded, isClosed, load, show} = useInterstitialAd(adUnitId, {
     requestNonPersonalizedAdsOnly: true,
@@ -206,16 +208,27 @@ Props) => {
     setExportPressed(false);
   };
 
-  function exportsHandler() {
+  async function exportsHandler() {
     setExportPressed(true);
     setMonthlyPressed(false);
     setWeeklyPressed(false);
     setDailyPressed(false);
     setCustomPressed(false);
 
-    // show Ads
-    if (isLoaded) {
-      show();
+    const authUser = await Auth.currentAuthenticatedUser();
+    const appUserId = authUser?.attributes?.sub;
+    const filteredCustomerInfo = customerInfosData?.filter(
+      cus => cus.appUserId === appUserId,
+    );
+
+    if (
+      !filteredCustomerInfo[0]?.stdActive &&
+      !filteredCustomerInfo[0]?.proActive
+    ) {
+      // show Ads
+      if (isLoaded) {
+        show();
+      }
     }
   }
 

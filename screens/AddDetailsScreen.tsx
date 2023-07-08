@@ -3,6 +3,8 @@ import React, {useEffect, useState} from 'react';
 import {v4 as uuidv4} from 'uuid';
 import moment from 'moment';
 import {isEmpty} from '@aws-amplify/core';
+import {Auth} from 'aws-amplify';
+import {TestIds, useInterstitialAd} from 'react-native-google-mobile-ads';
 
 import {AddDetailsNavigationType, AddDetailsRouteProp} from '../types';
 import ExpenseForm from '../components/ManageExpense/ExpenseForm';
@@ -20,12 +22,18 @@ import {dailyTransactsActions} from '../store/dailyTransact-slice';
 import {accountActions} from '../store/account-slice';
 import {cashAccountsActions} from '../store/cash-slice';
 
-
 const {width, height} = Dimensions.get('window');
+
+// Ads variable
+const adUnitId = __DEV__
+  ? TestIds.INTERSTITIAL
+  : 'ca-app-pub-3212728042764573~3355076099';
 
 const AddDetailsScreen = ({route, navigation}: Props) => {
   const dispatch = useAppDispatch();
   const dataLoaded = useAppSelector(store => store);
+
+  const customerInfosData = dataLoaded?.customerInfos?.customerInfos;
 
   const expenses = dataLoaded?.expenses?.expenses;
   const incomes = dataLoaded?.incomes?.incomes;
@@ -53,6 +61,24 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
   const [note, setNote] = useState<Note>({
     note: '',
   });
+
+  const {isLoaded, isClosed, load, show} = useInterstitialAd(adUnitId, {
+    requestNonPersonalizedAdsOnly: true,
+  });
+
+  // Load ads
+  useEffect(() => {
+    // Start loading the interstitial straight away
+    load();
+  }, [load]);
+
+  // Load ads again
+  useEffect(() => {
+    if (isClosed) {
+      // console.log('Reloading ad...');
+      load();
+    }
+  }, [isClosed]);
 
   useEffect(() => {
     initialAccountHandler();
@@ -100,7 +126,8 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
   const initialAccountHandler = () => {
     const SelectedTitle =
       account?.title === undefined ? 'Cash' : account?.title;
-    if (isEmpty(cash) || +cash[0]?.budget === 0) {
+
+    if (cash?.length === 0 || +cash[0]?.budget === 0) {
       const accId = 'cash-' + uuidv4();
       dispatch(
         cashAccountsActions.addCashAccount({
@@ -147,6 +174,23 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
 
   // Save Function
   const saveHandler = async () => {
+    // Check Purchase user: show Ads
+    const authUser = await Auth.currentAuthenticatedUser();
+    const appUserId = authUser?.attributes?.sub;
+    const filteredCustomerInfo = customerInfosData?.filter(
+      cus => cus.appUserId === appUserId,
+    );
+
+    if (
+      !filteredCustomerInfo[0]?.stdActive &&
+      !filteredCustomerInfo[0]?.proActive
+    ) {
+      // show Ads
+      if (isLoaded) {
+        show();
+      }
+    }
+
     //save
     await saveDataToStorage();
 
@@ -482,7 +526,6 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
 };
 
 export default AddDetailsScreen;
-
 
 // Style
 const styles = StyleSheet.create({

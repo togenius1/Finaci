@@ -27,26 +27,29 @@ const DateTimePick = ({
   style,
 }: Props) => {
   return (
-    <View style={[styles.container, style]}>
-      <View style={{position: 'absolute', bottom: 0}}>
-        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          <Pressable
-            style={({pressed}) => pressed && styles.pressed}
-            onPress={onCancel}>
-            <Text>Cancel</Text>
-          </Pressable>
-          <Pressable
-            style={({pressed}) => pressed && styles.pressed}
-            onPress={today}>
-            <Text>Today</Text>
-          </Pressable>
-          <Pressable
-            style={({pressed}) => pressed && styles.pressed}
-            onPress={onConfirm}>
-            <Text>Done</Text>
-          </Pressable>
+    <>
+      {/* <View style={[styles.container, style]}>
+        <View style={{position: 'absolute', bottom: -20}}>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <Pressable
+              style={({pressed}) => pressed && styles.pressed}
+              onPress={onCancel}>
+              <Text>Cancel</Text>
+            </Pressable>
+            <Pressable
+              style={({pressed}) => pressed && styles.pressed}
+              onPress={today}>
+              <Text>Today</Text>
+            </Pressable>
+            <Pressable
+              style={({pressed}) => pressed && styles.pressed}
+              onPress={onConfirm}>
+              <Text>Done</Text>
+            </Pressable>
+          </View>
         </View>
-      </View>
+      </View> */}
+
       <DateTimePickerModal
         testID="dateTimePicker"
         isVisible={isVisible}
@@ -60,7 +63,7 @@ const DateTimePick = ({
         style={styles.datePicker}
         // supportedOrientations="portrait-upside-down"
       />
-    </View>
+    </>
   );
 };
 
@@ -71,6 +74,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    // backgroundColor: '#ed9c9c',
   },
   btnsContainer: {
     justifyContent: 'space-between',

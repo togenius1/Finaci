@@ -14,7 +14,6 @@ type EagerUser = {
   readonly id: string;
   readonly name: string;
   readonly backupKey?: string | null;
-  readonly publicKey?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -27,7 +26,6 @@ type LazyUser = {
   readonly id: string;
   readonly name: string;
   readonly backupKey?: string | null;
-  readonly publicKey?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }

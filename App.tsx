@@ -117,7 +117,7 @@ const App = () => {
           dispatch(fetchAccountsData());
         }
 
-        await checkUserAndGenerateNewKey();
+        checkUserAndGenerateNewKey();
         await configPurchase();
         await getUserData();
         onCloseBannerAds();
@@ -141,6 +141,11 @@ const App = () => {
       Purchases.removeCustomerInfoUpdateListener;
     };
   }, []);
+
+  // Generate backup key
+  // useEffect(() => {
+  //   checkUserAndGenerateNewKey();
+  // }, []);
 
   // Close Ads
   useEffect(() => {
@@ -239,9 +244,9 @@ const App = () => {
         const name = String(items[0]?.name);
         const cloudPKey = String(items[0]?.backupKey);
 
-        const key = cloudPKey === undefined ? null : cloudPKey;
+        const key: string = cloudPKey === 'undefined' ? 'null' : cloudPKey;
 
-        generateNewKey(subId, name, String(key), dbCurrentUser);
+        generateNewKey(subId, name, key, dbCurrentUser);
       },
     );
   };
@@ -261,15 +266,17 @@ const App = () => {
       const {publicKey, secretKey} = generateKeyPair();
 
       // Save the new key to the cloud
-      await DataStore.save(
+      const updatedPrivateKey = await DataStore.save(
         User.copyOf(dbUser[0], updated => {
           updated.backupKey = String(secretKey);
         }),
       );
 
-      // Save Key to local storage.
-      // await AsyncStorage.setItem(PRIVATE_KEY, secretKey.toString());
-      // await AsyncStorage.setItem(PUBLIC_KEY, publicKey.toString());
+      // const updatedPublicKey = await DataStore.save(
+      //   User.copyOf(dbUser[0], updated => {
+      //     updated.publicKey = String(publicKey);
+      //   }),
+      // );
 
       // Check if this account isEmpty
       const existingAccount = authAccounts?.filter(
@@ -302,7 +309,7 @@ const App = () => {
     <>
       <StatusBar barStyle="light-content" />
       <ActivityIndicator
-        size="small"
+        size="large"
         color="#0000ff"
         animating={showIndicator}
       />

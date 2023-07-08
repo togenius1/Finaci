@@ -13,7 +13,7 @@ import moment from 'moment';
 import {GlobalStyles} from '../../constants/styles';
 import DateTimePick from '../UI/DateTimePick';
 
-const {width} = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
 function ExpenseForm({
   type,

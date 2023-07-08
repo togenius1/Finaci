@@ -15,6 +15,8 @@ import {useInterstitialAd, TestIds} from 'react-native-google-mobile-ads';
 import {AccountNavigationType} from '../types';
 import AccountComponents from '../components/Output/AccountComponents';
 import MonthYearList from '../components/Menu/MonthYearList';
+import {Auth} from 'aws-amplify';
+import {useAppSelector} from '../hooks';
 
 const {width, height} = Dimensions.get('window');
 let MONTH = moment().month() + 1;
@@ -76,6 +78,10 @@ const HeaderRightComponent = ({
 };
 
 const AccountsScreen = ({navigation}: Props) => {
+  const rootStore = useAppSelector(store => store);
+
+  const customerInfosData = rootStore?.customerInfos?.customerInfos;
+
   const [IsAccFormVisible, setIsAccFormVisible] = useState<boolean>(false);
   const [isMYListVisible, setIsMYListVisible] = useState<boolean>(false);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
@@ -145,12 +151,25 @@ const AccountsScreen = ({navigation}: Props) => {
     setIsMYListVisible(false);
   }
 
-  const openAddAccountForm = () => {
+  const openAddAccountForm = async () => {
     setIsAccFormVisible(true);
     setIsMenuOpen(false);
-    // show Ads
-    if (isLoaded) {
-      show();
+
+    // Check Purchase user: show Ads
+    const authUser = await Auth.currentAuthenticatedUser();
+    const appUserId = authUser?.attributes?.sub;
+    const filteredCustomerInfo = customerInfosData?.filter(
+      cus => cus.appUserId === appUserId,
+    );
+
+    if (
+      !filteredCustomerInfo[0]?.stdActive &&
+      !filteredCustomerInfo[0]?.proActive
+    ) {
+      // show Ads
+      if (isLoaded) {
+        show();
+      }
     }
   };
 
