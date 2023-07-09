@@ -236,6 +236,9 @@ const BackupScreen = () => {
 
     const encrypted = await encryption(obj, PRIVATE_KEY, PUBLIC_KEY);
 
+    console.log('authCurrentAccount: ', authCurrentAccount);
+    const name = authCurrentAccount[0]?.name;
+
     const d = new Date();
     const mm = d.getMonth() + 1;
     let dd = d.getDate();
@@ -244,7 +247,7 @@ const BackupScreen = () => {
     if (dd < 10) {
       dd = `0${dd}`;
     }
-    const fileName = `Finner_backup${dd}${mm}${yy}${time}.bak`;
+    const fileName = `Finner_backup_${name}_${dd}${mm}${yy}${time}.bak`;
 
     const today = new Date();
     const expireAccessToken = new Date(authState.accessTokenExpirationDate);

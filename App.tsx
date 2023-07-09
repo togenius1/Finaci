@@ -258,7 +258,7 @@ const App = () => {
     const sub = DataStore.observeQuery(User, c => c.id.eq(subId)).subscribe(
       ({items}) => {
         // const dbCurrentUser = items;
-        const name = String(items[0]?.name);
+        const name = items[0]?.name;
         const cloudPKey = String(items[0]?.backupKey);
         const pubKey = String(items[0]?.publicKey);
 
@@ -343,7 +343,7 @@ const App = () => {
             keyCreatedDate: moment(),
           }),
         );
-        console.log('Push new key to local storage successfully');
+        console.log('Push new key to local storage successfully.');
       }
     } catch (error) {
       console.error('Failed to push new key to local storage:', error);
