@@ -15,16 +15,16 @@ const authAccountsSlice = createSlice({
     addAuthAccount(state, action) {
       const newAuthAccounts = action.payload;
       const existingItem = state.authAccounts.find(
-        account => account.id === newAuthAccounts.id,
+        account => account.id === newAuthAccounts?.id,
       );
 
       if (!existingItem) {
         state.authAccounts.push({
-          id: newAuthAccounts.id,
-          name: newAuthAccounts.name,
-          backupKey: newAuthAccounts.backupKey, // SecretKey
-          publicKey: newAuthAccounts.publicKey,
-          keyCreatedDate: newAuthAccounts.keyCreatedDate,
+          id: newAuthAccounts?.id,
+          name: newAuthAccounts?.name,
+          backupKey: newAuthAccounts?.backupKey, // SecretKey
+          publicKey: newAuthAccounts?.publicKey,
+          keyCreatedDate: newAuthAccounts?.keyCreatedDate,
         });
       }
     },
