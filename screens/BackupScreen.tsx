@@ -134,7 +134,7 @@ const BackupScreen = () => {
   useEffect(() => {
     timerRef.current = setInterval(() => {
       Alert.alert(
-        'Backup data!',
+        'Backup data.',
         'Do you want to backup your data now?',
         [
           {
@@ -298,8 +298,8 @@ const BackupScreen = () => {
   const askToRestoreData = () => {
     // Ask to replace the old?
     Alert.alert(
-      'Do you want to restore an expense data?',
-      'Your old data on your phone will be replaced with the new data!',
+      'Your old data on your phone will be replaced with the new data.',
+      'Do you want to restore data?',
       [
         {
           text: 'Yes',
