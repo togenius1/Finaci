@@ -161,7 +161,6 @@ const AccountsScreen = ({navigation}: Props) => {
     const filteredCustomerInfo = customerInfosData?.filter(
       cus => cus.appUserId === appUserId,
     );
-
     if (
       !filteredCustomerInfo[0]?.stdActive &&
       !filteredCustomerInfo[0]?.proActive

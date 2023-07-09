@@ -1,17 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, FlatList, Alert, StyleSheet} from 'react-native';
+import {View, Text, FlatList, Alert, StyleSheet, Linking} from 'react-native';
 import Purchases from 'react-native-purchases';
 import PackageItem from '../components/Output/PackageItem';
 import RestorePurchasesButton from '../components/UI/RestorePurchasesButton';
-import moment from 'moment';
 
-import SignInScreen from '../navigation/NavComponents/Login/screens/SignInScreen';
-import CButton from '../components/UI/CButton';
-import {Auth} from 'aws-amplify';
 import Credits from '../components/Credits';
-import {ENTITLEMENT_PRO, ENTITLEMENT_STD} from '../constants/api';
-import LoginForm from '../components/Form/LoginForm';
-import LogoutButton from '../components/UI/LogoutButton';
 import {useAppSelector} from '../hooks';
 
 /*
@@ -25,11 +18,7 @@ const PaywallScreen = () => {
 
   // - State for all available package
   const [packages, setPackages] = useState<any[]>([]);
-  // - State for displaying an overlay view
-  const [isPurchasing, setIsPurchasing] = useState<boolean>(false);
-  const [isAnonymous, setIsAnonymous] = useState<boolean>(true);
   const [userId, setUserId] = useState<string | null>(null);
-  const [subscriptionActive, setSubscriptionActive] = useState<boolean>(false);
   const [subSTDActive, setSubSTDActive] = useState<boolean>(false);
   const [subPROActive, setSubPROActive] = useState<boolean>(false);
 
@@ -61,15 +50,22 @@ const PaywallScreen = () => {
 
   // Footer
   const footer = () => {
-    console.warn(
-      "Modify this value to reflect your app's Privacy Policy and Terms & Conditions agreements. Required to make it through App Review.",
-    );
+    // console.warn(
+    //   "Modify this value to reflect your app's Privacy Policy and Terms & Conditions agreements. Required to make it through App Review.",
+    // );
     return (
-      <Text style={styles.text}>
-        Don't forget to add your subscription terms and conditions. Read more
-        about this here:
-        https://www.revenuecat.com/blog/schedule-2-section-3-8-b
-      </Text>
+      <View style={{flexDirection: 'row'}}>
+        <Text style={styles.text}>Terms and Conditions: </Text>
+        <Text
+          style={{color: 'blue'}}
+          onPress={() =>
+            Linking.openURL(
+              'https://www.privacypolicies.com/live/ff66f483-14db-4593-98fb-bcf5293f82dd',
+            )
+          }>
+          link
+        </Text>
+      </View>
     );
   };
 

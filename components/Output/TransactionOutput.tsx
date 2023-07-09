@@ -7,7 +7,7 @@ import {useInterstitialAd, TestIds} from 'react-native-google-mobile-ads';
 import TransactionSummary from './TransactionSummary';
 import Tabs from '../UI/Tabs';
 import {Auth} from 'aws-amplify';
-import { useAppSelector } from '../../hooks';
+import {useAppSelector} from '../../hooks';
 
 const {width} = Dimensions.get('window');
 const TabsDataObject = {
@@ -248,7 +248,7 @@ Props) => {
         fromDate={fromDate}
         toDate={toDate}
         exportPressed={exportPressed}
-        year={year}
+        // year={year}
         setIndicatorIndex={setIndicatorIndex}
       />
     </View>

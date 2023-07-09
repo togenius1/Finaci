@@ -80,7 +80,7 @@ const BackupScreen = () => {
 
   const authAccountsData = rootStore?.authAccounts?.authAccounts;
   const expensesData = rootStore?.expenses?.expenses;
-  const incomesData = rootStore?.incomes?.incomes;
+  // const incomesData = rootStore?.incomes?.incomes;
 
   // [0] ==> incomesData, [1] ==> expensesData
   // const incomeAndExpenseObj = [incomesData, expensesData];

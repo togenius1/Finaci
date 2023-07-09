@@ -32,6 +32,7 @@ const MenuDrawer = () => {
         component={OverviewScreen}
         options={() => ({
           // title: 'Overview',
+          // headerStyle: {height: 20},
         })}
       />
       <Drawer.Screen

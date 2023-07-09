@@ -9,12 +9,13 @@ import {
 } from 'react-native';
 import React from 'react';
 import {v4 as uuidv4} from 'uuid';
+import moment from 'moment';
 
 import {currencyFormatter} from '../../util/currencyFormatter';
 import {accountActions} from '../../store/account-slice';
 import {useAppDispatch, useAppSelector} from '../../hooks';
 import AccountHeader from '../AccountHeader';
-import {sumTotalFunc} from '../../util/math';
+import {sumTotalBudget, sumTotalFunc} from '../../util/math';
 import {cashAccountsActions} from '../../store/cash-slice';
 
 const {width, height} = Dimensions.get('window');
@@ -26,14 +27,16 @@ const AccountElement = ({
   setBudget,
   setIsEditAccount,
   setIsEditCash,
-  cashData,
-  accountsData,
+  // cashData,
+  // accountsData,
   sortedItems,
-  cashBudget,
-  accountsBudget,
-  totalExpenses,
+  // cashBudget,
+  // accountsBudget,
+  // totalExpenses,
   // onPress,
   setLastEditedDate,
+  month,
+  year,
 }: Props) => {
   const dispatch = useAppDispatch();
 
@@ -42,6 +45,25 @@ const AccountElement = ({
     state => state.expenses.expenses,
     // shallowEqual,
   );
+  const cashData = useAppSelector(
+    state => state.cashAccounts.cashAccounts,
+    // shallowEqual,
+  );
+  const accountsData = useAppSelector(
+    state => state.accounts.accounts,
+    // shallowEqual,
+  );
+
+  // Filtered Cash data
+  const filteredCashData = cashData?.filter(
+    account =>
+      +moment(account?.date).month() + 1 === +month &&
+      +moment(account?.date).year() === year,
+  );
+
+  const cashBudget = sumTotalBudget(filteredCashData);
+  const accountsBudget = sumTotalBudget(accountsData);
+  const totalExpenses = sumTotalFunc(expensesData);
 
   const totalAssets = Number(cashBudget) + Number(accountsBudget);
   const total = totalAssets - Number(totalExpenses);
@@ -228,11 +250,13 @@ type Props = {
   setIsEditCash: (value: boolean) => void;
   setRemoveAccount: (value: boolean) => void;
   setLastEditedDate: (value: string) => void;
-  cashData: any[];
-  accountsData: any[];
+  // cashData: any[];
+  // accountsData: any[];
   sortedItems: any[];
-  cashBudget: number | undefined;
-  accountsBudget: number | undefined;
-  totalExpenses: number | undefined;
+  // cashBudget: number | undefined;
+  // accountsBudget: number | undefined;
+  // totalExpenses: number | undefined;
+  month: number;
+  year: number;
   onPress: () => void;
 };

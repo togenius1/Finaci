@@ -2,13 +2,12 @@ import {
   Dimensions,
   Platform,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
-import React, {useCallback, useEffect, useState} from 'react';
-import {useFocusEffect} from '@react-navigation/native';
+import React, {useEffect, useState} from 'react';
+// import {useFocusEffect} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import moment from 'moment';
@@ -17,6 +16,7 @@ import TransactionOutput from '../components/Output/TransactionOutput';
 import MonthYearList from '../components/Menu/MonthYearList';
 import {TransactionNavigationProp} from '../types';
 import {useSwipe} from '../components/UI/useSwape';
+// import Finner from '../assets/images/Finner.png';
 
 const {width} = Dimensions.get('window');
 
@@ -57,28 +57,28 @@ const TransactionsScreen = ({navigation}: Props) => {
   }, []);
 
   // useEffect when focus
-  useFocusEffect(
-    useCallback(() => {
-      // alert('Screen was focused');
-      // Do something when the screen is focused
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     // alert('Screen was focused');
+  //     // Do something when the screen is focused
 
-      return () => {
-        // alert('Screen was unfocused');
-        // Do something when the screen is unfocused
-        // Useful for cleanup functions
-        setIndicatorIndex(2);
-        setMonthlyPressed(false);
-        setWeeklyPressed(false);
-        setDailyPressed(true);
-        setCustomPressed(false);
-        setExportPressed(false);
-      };
-    }, []),
-  );
+  //     return () => {
+  //       // alert('Screen was unfocused');
+  //       // Do something when the screen is unfocused
+  //       // Useful for cleanup functions
+  //       setIndicatorIndex(2);
+  //       setMonthlyPressed(false);
+  //       setWeeklyPressed(false);
+  //       setDailyPressed(true);
+  //       setCustomPressed(false);
+  //       setExportPressed(false);
+  //     };
+  //   }, []),
+  // );
 
   useEffect(() => {
     navigation.setOptions({
-      title: !customPressed ? 'Transactions' : '',
+      title: !customPressed && !exportPressed ? 'Transactions' : '',
       headerTitleAlign: 'left',
       headerRight: () => (
         <View
@@ -89,7 +89,7 @@ const TransactionsScreen = ({navigation}: Props) => {
             width: width * 0.5,
             // backgroundColor: '#fed8d8',
           }}>
-          {!customPressed && (
+          {!customPressed && !exportPressed && (
             <Pressable
               style={({pressed}) => pressed && styles.pressed}
               onPress={() => showMonthYearListMenuHandler()}>
@@ -106,7 +106,7 @@ const TransactionsScreen = ({navigation}: Props) => {
             </Pressable>
           )}
 
-          {customPressed && (
+          {(customPressed || exportPressed) && (
             <View
               style={{
                 flexDirection: 'row',
@@ -154,6 +154,8 @@ const TransactionsScreen = ({navigation}: Props) => {
     monthlyPressed,
     weeklyPressed,
     dailyPressed,
+    customPressed,
+    exportPressed,
   ]);
 
   function onMonthYearSelectedHandler(time) {
@@ -225,7 +227,7 @@ const TransactionsScreen = ({navigation}: Props) => {
   };
 
   // SWAP LEFT and RIGHT
-  const {onTouchStart, onTouchEnd} = useSwipe(onSwipeLeft, onSwipeRight, 6);
+  const {onTouchStart, onTouchEnd} = useSwipe(onSwipeLeft, onSwipeRight, 4);
 
   function onSwipeLeft() {
     console.log('SWIPE_LEFT');
@@ -241,11 +243,22 @@ const TransactionsScreen = ({navigation}: Props) => {
     // MonthYearList(year);
   }
 
+  const {width, height} = Dimensions.get('window');
+
   return (
     <View
       style={styles.container}
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}>
+      {/* <Image
+        source={Finner}
+        style={{
+          position: 'absolute',
+          top: height / 4,
+          left: width / 10,
+          resizeMode: 'center', // or 'stretch'
+        }}
+      /> */}
       <TransactionOutput
         setDuration={setDuration}
         duration={duration}
@@ -301,7 +314,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-
   pressed: {
     opacity: 0.65,
   },

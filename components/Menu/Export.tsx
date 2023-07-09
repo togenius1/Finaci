@@ -11,8 +11,9 @@ import {Auth} from 'aws-amplify';
 import moment from 'moment';
 
 import {xport} from '../../util/xport';
-import {useAppSelector} from '../../hooks';
+import {customerInfoData, useAppSelector} from '../../hooks';
 import {useNavigation} from '@react-navigation/native';
+import {useSelector} from 'react-redux';
 
 const {width} = Dimensions.get('window');
 
@@ -97,7 +98,6 @@ const Export = () => {
     const filteredCustomerInfo = customerInfosData?.filter(
       cus => cus.appUserId === appUserId,
     );
-
 
     if (filteredCustomerInfo[0]?.proActive === false) {
       Alert.alert(

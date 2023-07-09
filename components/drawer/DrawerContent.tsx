@@ -53,7 +53,7 @@ const DrawerContent = (props: Props) => {
             onPress={() => {
               navigation.navigate('Overview');
             }}>
-            <View style={{flexDirection: 'row', marginBottom: height / 50}}>
+            <View style={{flexDirection: 'row'}}>
               <MaterialCommunityIcons
                 name="chart-donut-variant"
                 size={24}
@@ -67,7 +67,12 @@ const DrawerContent = (props: Props) => {
             onPress={() => {
               navigation.navigate('Transactions');
             }}>
-            <View style={{flexDirection: 'row', marginBottom: height / 50}}>
+            <View
+              style={{
+                flexDirection: 'row',
+                marginTop: height / 20,
+                marginBottom: 20,
+              }}>
               <Ionicons
                 name="remove-outline"
                 size={22}
@@ -99,7 +104,12 @@ const DrawerContent = (props: Props) => {
             onPress={() => {
               navigation.navigate('Accounts');
             }}>
-            <View style={{flexDirection: 'row', marginBottom: height / 50}}>
+            <View
+              style={{
+                flexDirection: 'row',
+                marginTop: height / 50,
+                marginBottom: 20,
+              }}>
               <Ionicons name="wallet-outline" size={22} color={colors.budget} />
               <Text style={styles.budgetText}>Accounts</Text>
             </View>
@@ -157,19 +167,7 @@ const DrawerContent = (props: Props) => {
           </Pressable>
         </View>
 
-        <View style={styles.settingContainer}>
-          <Pressable
-            style={({pressed}) => pressed && styles.pressed}
-            onPress={() => {
-              navigation.navigate('Settings');
-            }}>
-            <View style={{flexDirection: 'row', marginBottom: height / 50}}>
-              <Ionicons name="cog-outline" size={22} color={colors.setting} />
-              <Text style={styles.settingText}>Settings</Text>
-            </View>
-          </Pressable>
-
-          {/* <Pressable
+        {/* <Pressable
             style={({pressed}) => pressed && styles.pressed}
             onPress={() => {
               navigation.navigate('Recommend');
@@ -183,6 +181,18 @@ const DrawerContent = (props: Props) => {
               <Text style={styles.RecommendText}>Recommend</Text>
             </View>
           </Pressable> */}
+
+        <View style={styles.settingContainer}>
+          <Pressable
+            style={({pressed}) => pressed && styles.pressed}
+            onPress={() => {
+              navigation.navigate('Settings');
+            }}>
+            <View style={{flexDirection: 'row'}}>
+              <Ionicons name="cog-outline" size={22} color={colors.setting} />
+              <Text style={styles.settingText}>Settings</Text>
+            </View>
+          </Pressable>
         </View>
 
         <View style={styles.logoutContainer}>
@@ -206,12 +216,13 @@ export default DrawerContent;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 25,
+    marginTop: 1,
+    marginBottom: 1,
     backgroundColor: 'white',
   },
   OverviewContainer: {
     // flex: 1,
-    marginTop: 40,
+    marginTop: 20,
     marginLeft: 20,
     borderBottomWidth: 1,
     borderBottomColor: '#c2c2c2',
@@ -246,7 +257,7 @@ const styles = StyleSheet.create({
   },
   reportContainer: {
     // paddingVertical: 200,
-    marginTop: 50,
+    marginTop: 30,
     marginLeft: 20,
     // marginBottom: 100,
     // borderBottomWidth: 1,
@@ -265,7 +276,7 @@ const styles = StyleSheet.create({
 
   settingContainer: {
     marginLeft: 20,
-    marginTop: height / 5,
+    marginTop: height / 5.5,
     // marginBottom: 10,
     // backgroundColor: '#86b0dd',
   },
@@ -281,8 +292,8 @@ const styles = StyleSheet.create({
   },
   logoutContainer: {
     marginLeft: 20,
-    marginTop: Platform.OS === 'ios' ? 10 : 30,
-    bottom: Platform.OS === 'ios' ? 10 : 0,
+    marginTop: Platform.OS === 'ios' ? 10 : height * 0.09,
+    // bottom: Platform.OS === 'ios' ? 10 : 0,
   },
   logoutText: {
     fontSize: 14,

@@ -6,16 +6,16 @@ import {
   Text,
   View,
 } from 'react-native';
-import React, {useEffect, useMemo, useState} from 'react';
+import React from 'react';
 import {v4 as uuidv4} from 'uuid';
 import moment from 'moment';
+import {useNavigation} from '@react-navigation/native';
 // import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import {sumTotalFunc} from '../../util/math';
 import {currencyFormatter} from '../../util/currencyFormatter';
 import {getDaysInWeek} from '../../util/date';
 import Export from '../Menu/Export';
-import {useNavigation} from '@react-navigation/native';
 import {TransactionSummaryNavigationProp} from '../../types';
 import {useAppSelector} from '../../hooks';
 
@@ -261,8 +261,8 @@ const TransactionSummary = ({
   fromDate,
   toDate,
   exportPressed,
-  year,
-}: Props) => {
+}: // year,
+Props) => {
   // Parameters
   let _renderItem: any = '';
   let _renderData: any = [];
@@ -274,6 +274,8 @@ const TransactionSummary = ({
 
   const ExpenseData = dataLoaded?.expenses?.expenses;
   const IncomeData = dataLoaded?.incomes?.incomes;
+  const MonthlyTransactsData = dataLoaded?.monthlyTransacts?.monthlyTransacts;
+  const WeeklyTransactsData = dataLoaded?.weeklyTransacts?.weeklyTransacts;
   const DailyTransactionData = dataLoaded?.dailyTransacts?.dailyTransacts;
 
   // FILTERED DATA (From date ----> To date)
@@ -295,13 +297,13 @@ const TransactionSummary = ({
 
   // Monthly Transaction
   // const monthlyData = monthlyTransaction(fromDate, toDate, year);
-  const monthlyData = dataLoaded?.monthlyTransacts?.monthlyTransacts?.filter(
+  const monthlyData = MonthlyTransactsData?.filter(
     transact => moment(transact?.date).year() === moment(date).year(),
   );
 
   //  Weekly Transaction
   // const weeklyData = weeklyTransaction(fromDate, toDate, date);
-  const weeklyData = dataLoaded?.weeklyTransacts?.weeklyTransacts?.filter(
+  const weeklyData = WeeklyTransactsData?.filter(
     transact =>
       // console.log(moment(transact?.date).month() + 1),
       moment(transact?.date).month() === moment(date).month() &&
@@ -348,13 +350,13 @@ const TransactionSummary = ({
   //   return _renderData;
   // }, [_renderData]);
 
-  const sortedItems = _renderData?.sort((a,b)=>{
+  const sortedItems = _renderData?.sort((a, b) => {
     const dateA = new Date(a.date).valueOf();
     const dateB = new Date(b.date).valueOf();
-    if(dateA < dateB){
+    if (dateA < dateB) {
       return 1; // return 1 here for AESC order
     }
-    return -1 // return -1 here for DESC Order
+    return -1; // return -1 here for DESC Order
   });
 
   // daily renderItem

@@ -7,10 +7,10 @@ import {
   View,
 } from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
+import {useFocusEffect} from '@react-navigation/native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import moment from 'moment';
-import Purchases from 'react-native-purchases';
 
 import Spending from '../components/tab/SpendingTab';
 import Expense from '../components/tab/ExpenseTab';
@@ -19,7 +19,6 @@ import MonthYearList from '../components/Menu/MonthYearList';
 import {OverviewNavigationProp} from '../types';
 import AddBtn from '../components/UI/AddBtn';
 import Menu from '../components/Menu/Menu';
-import {useFocusEffect} from '@react-navigation/native';
 
 type Props = {
   navigation: OverviewNavigationProp;

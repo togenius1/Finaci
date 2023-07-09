@@ -6,8 +6,6 @@ import {
   Pressable,
   StatusBar,
   StyleSheet,
-  Text,
-  // useColorScheme,
   View,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
@@ -18,7 +16,12 @@ import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Purchases, {LOG_LEVEL} from 'react-native-purchases';
 
-import {generateKeyPair, PRNG} from './util/crypto';
+import {
+  generateKeyPair,
+  generatePublicKeyFromSecretKey,
+  PRNG,
+  stringToUint8Array,
+} from './util/crypto';
 import FinnerNavigator from './navigation/FinnerNavigator';
 import {useAppDispatch, useAppSelector} from './hooks';
 import {fetchCashAccountsData} from './store/cash-action';
@@ -31,15 +34,11 @@ import {fetchExpenseCategoriesData} from './store/expense-category-action';
 // import {fetchMonthlyTransactsData} from './store/monthlyTransact-action';
 // import {fetchWeeklyTransactsData} from './store/weeklyTransact-action';
 import awsconfig from './src/aws-exports';
-import {LazyUser, User} from './src/models';
+import {User} from './src/models';
 import {authAccountsActions} from './store/authAccount-slice';
 import moment from 'moment';
 import {API_KEY, ENTITLEMENT_PRO, ENTITLEMENT_STD} from './constants/api';
-import {useNavigation} from '@react-navigation/native';
-import customerInfoSlice, {
-  customerInfoActions,
-} from './store/customerInfo-slice';
-import {fetchCustomerInfoData} from './store/customerInfo-action';
+import {customerInfoActions} from './store/customerInfo-slice';
 
 Amplify.configure(awsconfig);
 
@@ -52,8 +51,7 @@ const adUnitId = __DEV__
 const App = () => {
   // Disable warnings for release app.
   // LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message:
-  // LogBox.ignoreAllLogs(); // Ignore all log notifications:
-  // add
+  // LogBox.ignoreAllLogs(); // Ignore all log notifications: add
 
   const dispatch = useAppDispatch();
   const dataLoaded = useAppSelector(store => store);
@@ -80,7 +78,6 @@ const App = () => {
   );
 
   // const [currentUser, setCurrentUser] = useState<LazyUser[]>([]);
-  const [appUserId, setAppUserId] = useState<string | null>('');
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>();
   // const [cloudPrivateKey, setCloudPrivateKey] = useState<string | null>('');
   const [closedAds, setClosedAds] = useState<boolean>(false);
@@ -240,64 +237,110 @@ const App = () => {
 
     const sub = DataStore.observeQuery(User, c => c.id.eq(subId)).subscribe(
       ({items}) => {
-        const dbCurrentUser = items;
+        // const dbCurrentUser = items;
         const name = String(items[0]?.name);
         const cloudPKey = String(items[0]?.backupKey);
 
         const key: string = cloudPKey === 'undefined' ? 'null' : cloudPKey;
 
-        generateNewKey(subId, name, key, dbCurrentUser);
+        if (key === 'null') {
+          generateNewKey(subId, name, key);
+        } else {
+          pKeyCloudToLocalStorage(subId);
+        }
       },
     );
   };
 
-  // Generate new key
-  const generateNewKey = async (
-    id: string,
-    name: string,
-    pKey: string,
-    dbUser: LazyUser[],
-  ) => {
+  // Generate new key for new account
+  const generateNewKey = async (id: string, name: string) => {
     setShowIndicator(true);
 
-    // Compare Cloud key with local key
-    if (pKey === 'null') {
-      // Generate a new backup key.
-      const {publicKey, secretKey} = generateKeyPair();
+    const {publicKey, secretKey} = generateKeyPair();
 
-      // Save the new key to the cloud
-      const updatedPrivateKey = await DataStore.save(
-        User.copyOf(dbUser[0], updated => {
-          updated.backupKey = String(secretKey);
-        }),
-      );
+    // Update back key to cloud
+    updateUserItem(id, {
+      backupKey: String(secretKey),
+      // publicKey: String(publicKey),
+    });
 
-      // const updatedPublicKey = await DataStore.save(
-      //   User.copyOf(dbUser[0], updated => {
-      //     updated.publicKey = String(publicKey);
-      //   }),
-      // );
+    // Push new User data to local storage
+    // const existingAccount = authAccounts?.filter(account => account?.id === id);
 
-      // Check if this account isEmpty
+    // if (existingAccount?.length === 0) {
+    dispatch(
+      authAccountsActions.addAuthAccount({
+        id: id,
+        name: name,
+        backupKey: secretKey.toString(),
+        publicKey: publicKey.toString(),
+        keyCreatedDate: moment(),
+      }),
+    );
+    // }
+
+    setShowIndicator(false);
+  };
+
+  // To update an existing item in the DataStore,
+  async function updateUserItem(
+    itemId: string,
+    updatedProperties: Partial<User>,
+  ) {
+    try {
+      const item = await DataStore.query(User, itemId);
+      if (item) {
+        const updatedItem = User.copyOf(item, updated => {
+          updated.backupKey = updatedProperties.backupKey;
+          // updated.property2 = updatedProperties.property2;
+          // Update other properties as needed
+        });
+
+        await DataStore.save(updatedItem);
+        console.log('Item updated successfully');
+      }
+    } catch (error) {
+      console.error('Failed to update item:', error);
+    }
+  }
+
+  // For Install app on new Devices.
+  // Download private key from cloud
+  // Convert to public key and save both to local storage
+  const pKeyCloudToLocalStorage = async (id: string) => {
+    console.log('Downloading private key to local storage...');
+    setShowIndicator(true);
+    try {
+      // existing account on local storage
       const existingAccount = authAccounts?.filter(
-        account => account?.id === id,
+        (auth: {id: string}) => auth?.id === id,
       );
 
       if (existingAccount?.length === 0) {
+        const cloudAccount = await DataStore.query(User, id);
+        const publicKey = generatePublicKeyFromSecretKey(
+          stringToUint8Array(String(cloudAccount?.backupKey)),
+        );
+
         dispatch(
           authAccountsActions.addAuthAccount({
             id: id,
-            name: name,
-            backupKey: secretKey.toString(),
+            name: cloudAccount?.name,
+            backupKey: cloudAccount?.backupKey,
             publicKey: publicKey.toString(),
             keyCreatedDate: moment(),
           }),
         );
       }
+      console.log('Push new key to local storage successfully');
+    } catch (error) {
+      console.error('Failed to push new key to local storage:', error);
     }
+
     setShowIndicator(false);
   };
 
+  // Close Ads
   const closeAdsHandler = () => {
     setClosedAds(true);
   };
