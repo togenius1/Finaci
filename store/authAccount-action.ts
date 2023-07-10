@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import {accountActions} from './account-slice';
+import {authAccountsActions} from './authAccount-slice';
 
 export const fetchAuthAccountsData = () => {
   return async dispatch => {
@@ -17,7 +17,7 @@ export const fetchAuthAccountsData = () => {
     try {
       const authAccountsData = await fetchData();
       dispatch(
-        accountActions.replaceAccount({
+        authAccountsActions.replaceAuthAccount({
           authAccounts: authAccountsData || [],
         }),
       );

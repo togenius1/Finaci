@@ -323,7 +323,6 @@ const App = () => {
     backupKey: string,
     publicKey: string,
   ) => {
-    fetchAuthAccountsData(); // remove old data
     setShowIndicator(true);
     try {
       // const cloudAccount = await DataStore.query(User, id);
