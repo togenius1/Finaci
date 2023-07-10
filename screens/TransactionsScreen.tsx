@@ -99,21 +99,20 @@ const TransactionsScreen = ({navigation}: Props) => {
       // title: !customPressed && !exportPressed ? 'Transactions' : '',
       title: '',
       headerTitleAlign: 'left',
-      headerStyle: {
-        height: height * 0.06,
-        backgroundColor: '#b1fd90',
-      },
-
+      // headerStyle: {
+      //   height: height * 0.06,
+      //   backgroundColor: '#b1fd90',
+      // },
       headerRight: () => (
-        <View style={{flexDirection: 'column'}}>
+        <>
           <View
             style={{
               flexDirection: 'row',
               justifyContent: 'flex-end',
               marginLeft: width / 2,
               width: width * 0.5,
-              marginTop: 20,
-              backgroundColor: '#fed8d8',
+              marginTop: height * 0.032,
+              // backgroundColor: '#fed8d8',
             }}>
             {!customPressed && !exportPressed && (
               <Pressable
@@ -122,6 +121,7 @@ const TransactionsScreen = ({navigation}: Props) => {
                 <View
                   style={{
                     marginRight: 25,
+                    // marginTop: 20,
                     paddingHorizontal: 5,
                     paddingVertical: 3.5,
                     borderWidth: 0.6,
@@ -173,14 +173,18 @@ const TransactionsScreen = ({navigation}: Props) => {
               </View>
             </Pressable>
           </View>
-          <View style={{marginTop: 15, marginBottom: 25}}>
-            <Tabs
-              TabsDataObject={TabsDataObject}
-              onItemPress={onItemPress}
-              indicatorIndex={indicatorIndex}
-            />
-          </View>
-        </View>
+          {/* <View
+            style={{
+              // backgroundColor: 'red',
+              marginTop: 10,
+            }}> */}
+          <Tabs
+            TabsDataObject={TabsDataObject}
+            onItemPress={onItemPress}
+            indicatorIndex={indicatorIndex}
+          />
+          {/* </View> */}
+        </>
       ),
     });
   }, [

@@ -7,7 +7,7 @@ import {
   View,
 } from 'react-native';
 import React, {createRef, useEffect, useRef, useState} from 'react';
-import {v4 as uuidv4} from 'uuid';
+// import {v4 as uuidv4} from 'uuid';
 
 type Props = {
   TabsDataObject: object;
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     padding: 6,
     marginTop: 10,
     width,
-    // backgroundColor: '#c2fae2',
+    backgroundColor: '#ffffff',
   },
   itemContainer: {
     flexDirection: 'row',
