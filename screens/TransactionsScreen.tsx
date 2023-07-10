@@ -2,29 +2,67 @@ import {
   Dimensions,
   Platform,
   Pressable,
+  SafeAreaView,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 // import {useFocusEffect} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import moment from 'moment';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 
 import TransactionOutput from '../components/Output/TransactionOutput';
 import MonthYearList from '../components/Menu/MonthYearList';
 import {TransactionNavigationProp} from '../types';
 import {useSwipe} from '../components/UI/useSwape';
-// import Finner from '../assets/images/Finner.png';
+import Screen1 from '../components/tab/Screen1';
+import Screen2 from '../components/tab/Screen2';
+import Screen3 from '../components/tab/Screen3';
+import Tabs from '../components/UI/Tabs';
 
-const {width} = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
 const initialStartDate = moment(`${moment().year()}-01-01`).format(
   'YYYY-MM-DD',
 );
 const initialToDate = moment(`${moment().year()}-12-31`).format('YYYY-MM-DD');
 
+const TabsDataObject = {
+  monthly: 'Monthly',
+  weekly: 'Weekly',
+  daily: 'Daily',
+  custom: 'Custom',
+  export: 'Export',
+};
+
+// Swipe Screen
+const TopTab = createMaterialTopTabNavigator();
+
+function TransactionArea({}) {
+  return (
+    <TopTab.Navigator
+      screenListeners={{
+        state: e => {
+          // Do something with the state
+          // console.log(e.data?.state?.index);
+        },
+      }}
+      screenOptions={() => ({
+        tabBarIndicatorStyle: {backgroundColor: 'transparent'},
+        tabBarShowLabel: false,
+        tabBarContentContainerStyle: {height: 0},
+      })}>
+      <TopTab.Screen name="Screen1" component={Screen1} />
+      <TopTab.Screen name="Screen2" component={Screen2} />
+      <TopTab.Screen name="Screen3" component={Screen3} />
+    </TopTab.Navigator>
+  );
+}
+
+// Main
 const TransactionsScreen = ({navigation}: Props) => {
   // const dispatch = useAppDispatch();
 
@@ -56,92 +94,92 @@ const TransactionsScreen = ({navigation}: Props) => {
     onMonthYearSelectedHandler(initTime);
   }, []);
 
-  // useEffect when focus
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     // alert('Screen was focused');
-  //     // Do something when the screen is focused
-
-  //     return () => {
-  //       // alert('Screen was unfocused');
-  //       // Do something when the screen is unfocused
-  //       // Useful for cleanup functions
-  //       setIndicatorIndex(2);
-  //       setMonthlyPressed(false);
-  //       setWeeklyPressed(false);
-  //       setDailyPressed(true);
-  //       setCustomPressed(false);
-  //       setExportPressed(false);
-  //     };
-  //   }, []),
-  // );
-
   useEffect(() => {
     navigation.setOptions({
-      title: !customPressed && !exportPressed ? 'Transactions' : '',
+      // title: !customPressed && !exportPressed ? 'Transactions' : '',
+      title: '',
       headerTitleAlign: 'left',
+      headerStyle: {
+        height: height * 0.06,
+        backgroundColor: '#b1fd90',
+      },
+
       headerRight: () => (
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'flex-end',
-            // alignItems: 'center',
-            width: width * 0.5,
-            // backgroundColor: '#fed8d8',
-          }}>
-          {!customPressed && !exportPressed && (
-            <Pressable
-              style={({pressed}) => pressed && styles.pressed}
-              onPress={() => showMonthYearListMenuHandler()}>
+        <View style={{flexDirection: 'column'}}>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'flex-end',
+              marginLeft: width / 2,
+              width: width * 0.5,
+              marginTop: 20,
+              backgroundColor: '#fed8d8',
+            }}>
+            {!customPressed && !exportPressed && (
+              <Pressable
+                style={({pressed}) => pressed && styles.pressed}
+                onPress={() => showMonthYearListMenuHandler()}>
+                <View
+                  style={{
+                    marginRight: 25,
+                    paddingHorizontal: 5,
+                    paddingVertical: 3.5,
+                    borderWidth: 0.6,
+                    borderColor: 'grey',
+                  }}>
+                  <Text>{`${duration} ${!monthlyPressed ? year : ''}`}</Text>
+                </View>
+              </Pressable>
+            )}
+
+            {(customPressed || exportPressed) && (
               <View
                 style={{
-                  marginRight: 25,
-                  paddingHorizontal: 5,
-                  paddingVertical: 3.5,
-                  borderWidth: 0.6,
-                  borderColor: 'grey',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  width: width * 0.5,
+                  marginRight: width / 8,
+                  // borderWidth: 0.6,
+                  // borderColor: 'lightgrey',
                 }}>
-                <Text>{`${duration} ${!monthlyPressed ? year : ''}`}</Text>
+                <Pressable
+                  style={({pressed}) => pressed && styles.pressed}
+                  onPress={onFromDateHandler}>
+                  <View style={{borderWidth: 0.6, borderColor: 'lightgrey'}}>
+                    <Text>{moment(fromDate).format('YYYY-MM-DD')}</Text>
+                  </View>
+                </Pressable>
+                <Pressable
+                  style={({pressed}) => pressed && styles.pressed}
+                  onPress={onToDateHandler}>
+                  <View style={{borderWidth: 0.6, borderColor: 'lightgrey'}}>
+                    {/* <Text>2022-09-30</Text> */}
+                    <Text>{moment(toDate).format('YYYY-MM-DD')}</Text>
+                  </View>
+                </Pressable>
+              </View>
+            )}
+
+            <Pressable
+              style={({pressed}) => pressed && styles.pressed}
+              onPress={() => navigation.navigate('Stats')}>
+              <View style={{marginRight: 20}}>
+                <Ionicons
+                  name="stats-chart-outline"
+                  size={20}
+                  color="#0047b8"
+                />
               </View>
             </Pressable>
-          )}
-
-          {(customPressed || exportPressed) && (
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                width: width * 0.5,
-                marginRight: width / 8,
-                // borderWidth: 0.6,
-                // borderColor: 'lightgrey',
-              }}>
-              <Pressable
-                style={({pressed}) => pressed && styles.pressed}
-                onPress={onFromDateHandler}>
-                <View style={{borderWidth: 0.6, borderColor: 'lightgrey'}}>
-                  <Text>{moment(fromDate).format('YYYY-MM-DD')}</Text>
-                </View>
-              </Pressable>
-              <Pressable
-                style={({pressed}) => pressed && styles.pressed}
-                onPress={onToDateHandler}>
-                <View style={{borderWidth: 0.6, borderColor: 'lightgrey'}}>
-                  {/* <Text>2022-09-30</Text> */}
-                  <Text>{moment(toDate).format('YYYY-MM-DD')}</Text>
-                </View>
-              </Pressable>
-            </View>
-          )}
-
-          <Pressable
-            style={({pressed}) => pressed && styles.pressed}
-            onPress={() => navigation.navigate('Stats')}>
-            <View style={{marginRight: 20}}>
-              <Ionicons name="stats-chart-outline" size={20} color="#0047b8" />
-            </View>
-          </Pressable>
+          </View>
+          <View style={{marginTop: 15, marginBottom: 25}}>
+            <Tabs
+              TabsDataObject={TabsDataObject}
+              onItemPress={onItemPress}
+              indicatorIndex={indicatorIndex}
+            />
+          </View>
         </View>
       ),
     });
@@ -157,6 +195,36 @@ const TransactionsScreen = ({navigation}: Props) => {
     customPressed,
     exportPressed,
   ]);
+
+  //
+  const onItemPress = useCallback(
+    (itemIndex: number) => {
+      setIndicatorIndex(itemIndex);
+      if (itemIndex === 0) {
+        monthlyHandler();
+      }
+      if (itemIndex === 1) {
+        weeklyHandler();
+      }
+      if (itemIndex === 2) {
+        dailyHandler();
+      }
+      if (itemIndex === 3) {
+        customHandler();
+      }
+      if (itemIndex === 4) {
+        exportsHandler();
+      }
+    },
+    [
+      monthlyPressed,
+      weeklyPressed,
+      dailyPressed,
+      customPressed,
+      exportPressed,
+      duration,
+    ],
+  );
 
   function onMonthYearSelectedHandler(time) {
     if (monthlyPressed) {
@@ -226,40 +294,145 @@ const TransactionsScreen = ({navigation}: Props) => {
     hideDatePicker();
   };
 
-  // SWAP LEFT and RIGHT
-  const {onTouchStart, onTouchEnd} = useSwipe(onSwipeLeft, onSwipeRight, 4);
+  //----
+  //----
+  // Month Func
+  const monthlyHandler = () => {
+    // const fromdate = moment(`${year}-01-01`);
+    // const todate = moment(`${year}-12-31`);
+    const fromdate = moment(`${year}-01-01`).format('YYYY-MM-DD');
+    const todate = moment(`${year}-12-31`).format('YYYY-MM-DD');
 
-  function onSwipeLeft() {
-    console.log('SWIPE_LEFT');
-    // setYear(+year - 1);
-    // console.log(year);
-    // MonthYearList(year);
+    setFromDate(fromdate);
+    setToDate(todate);
+    setMonthlyPressed(true);
+    setWeeklyPressed(false);
+    setDailyPressed(false);
+    setCustomPressed(false);
+    setExportPressed(false);
+    setDuration(year);
+    // setDuration(String(moment(toDate).year()));
+  };
+
+  // Week Func
+  const weeklyHandler = () => {
+    let Month = month === '' ? `${moment().month() + 1}` : month;
+
+    if (+Month < 10) {
+      Month = `0${Month}`;
+    }
+
+    let currentDate = moment().date();
+    if (currentDate < 10) {
+      currentDate = +`0${currentDate}`;
+    }
+    const date = moment(`${year}-${Month}-${currentDate}`).format('YYYY-MM-DD');
+
+    const daysInMonth = moment(
+      moment().format(`YYYY-${Month}`),
+      'YYYY-MM',
+    ).daysInMonth();
+    const fromdate = moment(`${year}-${Month}-01`).format('YYYY-MM-DD');
+    const todate = moment(`${year}-${Month}-${daysInMonth}`).format(
+      'YYYY-MM-DD',
+    );
+
+    setFromDate(fromdate);
+    setToDate(todate);
+    typeof duration === 'number'
+      ? setDuration(moment.monthsShort(moment(date).month()))
+      : '';
+
+    // Reset
+    setMonthlyPressed(false);
+    setWeeklyPressed(true);
+    setDailyPressed(false);
+    setCustomPressed(false);
+    setExportPressed(false);
+  };
+
+  const dailyHandler = () => {
+    let Month = month === '' ? `${moment().month() + 1}` : month;
+
+    if (+Month < 10) {
+      Month = `0${Month}`;
+    }
+
+    const date = moment().format(`${year}-${Month}-DD`);
+    const daysInMonth = moment(
+      moment().format(`YYYY-${Month}`),
+      'YYYY-MM',
+    ).daysInMonth();
+    const fromdate = moment(`${year}-${Month}-01`).format('YYYY-MM-DD');
+    const todate = moment(`${year}-${Month}-${daysInMonth}`).format(
+      'YYYY-MM-DD',
+    );
+
+    setFromDate(fromdate);
+    setToDate(todate);
+
+    typeof duration === 'number'
+      ? setDuration(moment.monthsShort(moment(date).month()))
+      : '';
+
+    setMonthlyPressed(false);
+    setWeeklyPressed(false);
+    setDailyPressed(true);
+    setCustomPressed(false);
+    setExportPressed(false);
+  };
+
+  const customHandler = () => {
+    if (+month < 10) {
+      month = `0${month}`;
+    }
+
+    let today = moment().date();
+    if (+today < 10) {
+      today = +`0${today}`;
+    }
+
+    const fromdate = moment(`${year}-${month}-01`).format('YYYY-MM-DD');
+    const todate = moment(`${year}-${month}-${today}`).format('YYYY-MM-DD');
+
+    setFromDate(fromdate);
+    setToDate(todate);
+    setMonthlyPressed(false);
+    setWeeklyPressed(false);
+    setDailyPressed(false);
+    setCustomPressed(true);
+    setExportPressed(false);
+  };
+
+  async function exportsHandler() {
+    setExportPressed(true);
+    setMonthlyPressed(false);
+    setWeeklyPressed(false);
+    setDailyPressed(false);
+    setCustomPressed(false);
+
+    const authUser = await Auth.currentAuthenticatedUser();
+    const appUserId = authUser?.attributes?.sub;
+    const filteredCustomerInfo = customerInfosData?.filter(
+      cus => cus.appUserId === appUserId,
+    );
+
+    if (
+      !filteredCustomerInfo[0]?.stdActive &&
+      !filteredCustomerInfo[0]?.proActive
+    ) {
+      // show Ads
+      if (isLoaded) {
+        show();
+      }
+    }
   }
-
-  function onSwipeRight() {
-    console.log('SWIPE_RIGHT');
-    // setYear(+year + 1);
-    // console.log(year);
-    // MonthYearList(year);
-  }
-
-  const {width, height} = Dimensions.get('window');
 
   return (
-    <View
-      style={styles.container}
-      onTouchStart={onTouchStart}
-      onTouchEnd={onTouchEnd}>
-      {/* <Image
-        source={Finner}
-        style={{
-          position: 'absolute',
-          top: height / 4,
-          left: width / 10,
-          resizeMode: 'center', // or 'stretch'
-        }}
-      /> */}
-      <TransactionOutput
+    <View style={styles.container}>
+      <TransactionArea />
+
+      {/* <TransactionOutput
         setDuration={setDuration}
         duration={duration}
         setFromDate={setFromDate}
@@ -280,7 +453,7 @@ const TransactionsScreen = ({navigation}: Props) => {
         month={month}
         setIndicatorIndex={setIndicatorIndex}
         indicatorIndex={indicatorIndex}
-      />
+      /> */}
 
       <MonthYearList
         monthlyPressed={monthlyPressed}

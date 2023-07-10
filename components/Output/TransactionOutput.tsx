@@ -2,12 +2,16 @@ import {Dimensions, StyleSheet, View} from 'react-native';
 import React, {Dispatch, SetStateAction, useCallback, useEffect} from 'react';
 import moment from 'moment';
 import {useInterstitialAd, TestIds} from 'react-native-google-mobile-ads';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 // import {useNavigation} from '@react-navigation/native';
 
 import TransactionSummary from './TransactionSummary';
 import Tabs from '../UI/Tabs';
 import {Auth} from 'aws-amplify';
 import {useAppSelector} from '../../hooks';
+import Screen1 from '../tab/Screen1';
+import Screen2 from '../tab/Screen2';
+import Screen3 from '../tab/Screen3';
 
 const {width} = Dimensions.get('window');
 const TabsDataObject = {
@@ -233,25 +237,27 @@ Props) => {
   }
 
   return (
-    <View style={styles.container}>
-      <Tabs
-        TabsDataObject={TabsDataObject}
-        onItemPress={onItemPress}
-        indicatorIndex={indicatorIndex}
-      />
+    <>
+      <View style={styles.container}>
+        {/* <Tabs
+          TabsDataObject={TabsDataObject}
+          onItemPress={onItemPress}
+          indicatorIndex={indicatorIndex}
+        /> */}
 
-      <TransactionSummary
-        monthlyPressed={monthlyPressed}
-        weeklyPressed={weeklyPressed}
-        dailyPressed={dailyPressed}
-        customPressed={customPressed}
-        fromDate={fromDate}
-        toDate={toDate}
-        exportPressed={exportPressed}
-        // year={year}
-        setIndicatorIndex={setIndicatorIndex}
-      />
-    </View>
+        <TransactionSummary
+          monthlyPressed={monthlyPressed}
+          weeklyPressed={weeklyPressed}
+          dailyPressed={dailyPressed}
+          customPressed={customPressed}
+          fromDate={fromDate}
+          toDate={toDate}
+          exportPressed={exportPressed}
+          setIndicatorIndex={setIndicatorIndex}
+          // year={null}
+        />
+      </View>
+    </>
   );
 };
 
@@ -260,7 +266,7 @@ export default TransactionOutput;
 // Style
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1,
   },
   tabContainer: {
     padding: 6,

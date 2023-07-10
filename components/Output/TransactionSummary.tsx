@@ -496,7 +496,7 @@ type Props = {
   fromDate: string | null;
   toDate: string | null;
   exportPressed: boolean;
-  year: string | null;
+  // year: string | null;
   setIndicatorIndex: React.Dispatch<React.SetStateAction<number | undefined>>;
 };
 
