@@ -43,10 +43,10 @@ const authAccountsSlice = createSlice({
 
     // Update
     updateAuthAccount(state, action) {
-      const updatedAccountIndex = state.authAccounts.findIndex(
-        account => account.id === action.payload.id,
+      const updatedAuthAccountIndex = state.authAccounts.findIndex(
+        auth => auth.id === action?.payload?.id,
       );
-      state.authAccounts[updatedAccountIndex] = action.payload;
+      state.authAccounts[updatedAuthAccountIndex] = action.payload;
     },
   },
 });

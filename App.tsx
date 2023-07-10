@@ -344,6 +344,18 @@ const App = () => {
         );
         console.log('Push new key to local storage successfully.');
       }
+      // Update Auth User Account
+      if (existingAccount?.length !== 0) {
+        dispatch(
+          authAccountsActions.updateAuthAccount({
+            id: id,
+            name: name,
+            backupKey: backupKey,
+            publicKey: publicKey,
+            keyCreatedDate: moment(),
+          }),
+        );
+      }
     } catch (error) {
       console.error('Failed to push new key to local storage:', error);
     }

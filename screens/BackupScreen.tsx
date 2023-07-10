@@ -236,6 +236,8 @@ const BackupScreen = () => {
 
     const encrypted = await encryption(obj, PRIVATE_KEY, PUBLIC_KEY);
 
+    const name = authCurrentAccount[0]?.name;
+
     const d = new Date();
     const mm = d.getMonth() + 1;
     let dd = d.getDate();
