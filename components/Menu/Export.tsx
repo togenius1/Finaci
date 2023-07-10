@@ -7,13 +7,12 @@ import {
   Text,
   View,
 } from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import {Auth} from 'aws-amplify';
 import moment from 'moment';
 
 import {xport} from '../../util/xport';
-import {customerInfoData, useAppSelector} from '../../hooks';
-import {useNavigation} from '@react-navigation/native';
-import {useSelector} from 'react-redux';
+import {useAppSelector} from '../../hooks';
 
 const {width} = Dimensions.get('window');
 

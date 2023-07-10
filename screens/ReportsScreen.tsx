@@ -10,7 +10,6 @@ const ReportsScreen = () => {
     <View style={styles.container}>
       {/* <Report /> */}
       <Export />
-      {/* <Backup /> */}
     </View>
   );
 };
