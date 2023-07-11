@@ -35,9 +35,7 @@ const TransactReducer = (state, action) => {
     };
   }
   if (action.type === 'SET_FROM_DATE') {
-    // console.log('from date action', action.item);
     const updatedFromDate = action.item.fromDate;
-    // console.log('update fromDate: ', updatedFromDate);
     return {
       ...state,
       fromDate: updatedFromDate,

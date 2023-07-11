@@ -14,21 +14,21 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import moment from 'moment';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 
-import TransactionOutput from '../components/Output/TransactionOutput';
+// import TransactionOutput from '../components/Output/TransactionOutput';
 import MonthYearList from '../components/Menu/MonthYearList';
 import {TransactionNavigationProp} from '../types';
-import {useSwipe} from '../components/UI/useSwape';
+// import {useSwipe} from '../components/UI/useSwape';
 import Screen1 from '../components/screen-components/Screen1';
 import Screen2 from '../components/screen-components/Screen2';
 import Screen3 from '../components/screen-components/Screen3';
 import Tabs from '../components/UI/Tabs';
 import {currencyFormatter} from '../util/currencyFormatter';
 import {sumTotalFunc} from '../util/math';
-import {useAppDispatch, useAppSelector} from '../hooks';
-import {transactStateActions} from '../store/transaction-state-slice';
+import { useAppSelector} from '../hooks';
+// import {transactStateActions} from '../store/transaction-state-slice';
 import {Auth} from 'aws-amplify';
 import {TestIds, useInterstitialAd} from 'react-native-google-mobile-ads';
-import TransactProvider from '../store-context/TransactProvider';
+// import TransactProvider from '../store-context/TransactProvider';
 import TransactContext from '../store-context/transact-context';
 
 const {width, height} = Dimensions.get('window');
@@ -261,15 +261,6 @@ const TransactionsScreen = ({navigation}: Props) => {
 
   // Initialize State
   useEffect(() => {
-    // const initialStartDate = moment(`${moment().year()}-01-01`).format(
-    //   'YYYY-MM-DD',
-    // );
-    // const initialToDate = moment(`${moment().year()}-12-31`).format(
-    //   'YYYY-MM-DD',
-    // );
-    // transactCtx.fromDateSetHandler({fromDate: initialStartDate});
-    // transactCtx.toDateSetHandler({toDate: initialToDate});
-
     transactCtx.tabPressedHandler({
       monthlyPressed: true,
       weeklyPressed: false,
@@ -563,7 +554,6 @@ const TransactionsScreen = ({navigation}: Props) => {
   }
 
   // FILTERED DATA (From date ----> To date)
-  console.log('ctx fromdate: ', transactCtx.fromDate);
   const selectedDurationExpenseData = ExpenseData?.filter(
     expense =>
       moment(expense.date).format('YYYY-MM-DD') >= transactCtx.fromDate &&
@@ -579,7 +569,6 @@ const TransactionsScreen = ({navigation}: Props) => {
   const totalExpenses = +sumTotalFunc(selectedDurationExpenseData).toFixed(0);
   const totalIncome = +sumTotalFunc(selectedDurationIncomeData).toFixed(0);
   const total = totalIncome - totalExpenses;
-  console.log('total', total);
 
   return (
     <View style={styles.container}>
