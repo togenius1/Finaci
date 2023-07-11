@@ -1,10 +1,16 @@
 import {useReducer} from 'react';
+import moment from 'moment';
 
 import TransactContext from './transact-context';
 
+const initialStartDate = moment(`${moment().year()}-01-01`).format(
+  'YYYY-MM-DD',
+);
+const initialToDate = moment(`${moment().year()}-12-31`).format('YYYY-MM-DD');
+
 const defaultTransactState = {
-  fromDate: '',
-  toDate: '',
+  fromDate: initialStartDate,
+  toDate: initialToDate,
   monthlyPressed: true,
   weeklyPressed: false,
   dailyPressed: false,

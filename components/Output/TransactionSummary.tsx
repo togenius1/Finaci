@@ -12,7 +12,7 @@ import moment from 'moment';
 import {useNavigation} from '@react-navigation/native';
 // import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import {sumTotalFunc} from '../../util/math';
+// import {sumTotalFunc} from '../../util/math';
 import {currencyFormatter} from '../../util/currencyFormatter';
 import {getDaysInWeek} from '../../util/date';
 import Export from '../Menu/Export';
@@ -400,19 +400,6 @@ const styles = StyleSheet.create({
     flex: 1,
     // marginBottom: 50,
   },
-  // assetsContainer: {
-  //   flexDirection: 'row',
-  //   justifyContent: 'space-around',
-  //   paddingVertical: 8,
-  //   marginVertical: 5,
-  //   backgroundColor: 'white',
-  //   borderColor: '#b8b8b8',
-  //   borderBottomWidth: 0.4,
-  // },
-  // assetBox: {
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  // },
   list: {
     flexDirection: 'row',
     justifyContent: 'space-between',
