@@ -16,10 +16,10 @@ import {ExpenseCategory} from '../../dummy/categoryItems';
 
 type Props = {};
 
-const {width, height} = Dimensions.get('window');
+const { height} = Dimensions.get('window');
 
 const ExpenseOutput = ({data, fromDate, toDate}: Props) => {
-  const navigation = useNavigation();
+  // const navigation = useNavigation();
 
   // filter data: from date --> to date
   const filteredData = data.filter(

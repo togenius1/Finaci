@@ -17,9 +17,12 @@ import monthlyTransactsSlice from './monthlyTransact-slice';
 import authAccountsSlice from './authAccount-slice';
 import customerInfoSlice from './customerInfo-slice';
 
+import transactStateReducer from './transaction-state-slice';
+
 const rootReducer = combineReducers({
   expenses: expenseSlice.reducer,
   incomes: incomeSlice.reducer,
+
   // transfers: transferSlice.reducer,
   authAccounts: authAccountsSlice.reducer,
   cashAccounts: cashAccountsSlice.reducer,
@@ -31,6 +34,9 @@ const rootReducer = combineReducers({
   dailyTransacts: dailyTransactsSlice.reducer,
   weeklyTransacts: weeklyTransactsSlice.reducer,
   monthlyTransacts: monthlyTransactsSlice.reducer,
+
+  // State
+  transactStates: transactStateReducer,
 });
 
 const persistConfig = {

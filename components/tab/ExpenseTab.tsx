@@ -2,9 +2,9 @@ import React, {useEffect} from 'react';
 
 import ExpenseOutput from '../Output/ExpenseOutput';
 // import {EXPENSES} from '../../dummy/dummy';
-import {useAppDispatch, useAppSelector} from '../../hooks';
+import {useAppSelector} from '../../hooks';
 // import {ExpenseType} from '../../models/expense';
-import {fetchExpensesData} from '../../store/expense-action';
+// import {fetchExpensesData} from '../../store/expense-action';
 import {ExpenseTabRouteProp} from '../../types';
 
 type Props = {

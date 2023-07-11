@@ -6,26 +6,23 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 // import {useNavigation} from '@react-navigation/native';
 
 import TransactionSummary from './TransactionSummary';
-import Tabs from '../UI/Tabs';
+// import Tabs from '../UI/Tabs';
 import {Auth} from 'aws-amplify';
 import {useAppSelector} from '../../hooks';
-import Screen1 from '../tab/Screen1';
-import Screen2 from '../tab/Screen2';
-import Screen3 from '../tab/Screen3';
 
 const {width} = Dimensions.get('window');
-const TabsDataObject = {
-  monthly: 'Monthly',
-  weekly: 'Weekly',
-  daily: 'Daily',
-  custom: 'Custom',
-  export: 'Export',
-};
+// const TabsDataObject = {
+//   monthly: 'Monthly',
+//   weekly: 'Weekly',
+//   daily: 'Daily',
+//   custom: 'Custom',
+//   export: 'Export',
+// };
 
 // Ads variable
-const adUnitId = __DEV__
-  ? TestIds.INTERSTITIAL
-  : 'ca-app-pub-3212728042764573~3355076099';
+// const adUnitId = __DEV__
+//   ? TestIds.INTERSTITIAL
+//   : 'ca-app-pub-3212728042764573~3355076099';
 
 const TransactionOutput = ({
   setDuration,
@@ -54,187 +51,187 @@ const TransactionOutput = ({
 Props) => {
   const rootStore = useAppSelector(store => store);
 
-  const customerInfosData = rootStore?.customerInfos?.customerInfos;
+  // const customerInfosData = rootStore?.customerInfos?.customerInfos;
 
-  const {isLoaded, isClosed, load, show} = useInterstitialAd(adUnitId, {
-    requestNonPersonalizedAdsOnly: true,
-  });
+  // const {isLoaded, isClosed, load, show} = useInterstitialAd(adUnitId, {
+  //   requestNonPersonalizedAdsOnly: true,
+  // });
 
-  // Load ads
-  useEffect(() => {
-    // Start loading the interstitial straight away
-    load();
-  }, [load]);
+  // // Load ads
+  // useEffect(() => {
+  //   // Start loading the interstitial straight away
+  //   load();
+  // }, [load]);
 
-  // Load ads again
-  useEffect(() => {
-    if (isClosed) {
-      // console.log('Reloading ad...');
-      load();
-    }
-  }, [isClosed]);
+  // // Load ads again
+  // useEffect(() => {
+  //   if (isClosed) {
+  //     // console.log('Reloading ad...');
+  //     load();
+  //   }
+  // }, [isClosed]);
 
   //
-  const onItemPress = useCallback(
-    (itemIndex: number) => {
-      setIndicatorIndex(itemIndex);
-      if (itemIndex === 0) {
-        monthlyHandler();
-      }
-      if (itemIndex === 1) {
-        weeklyHandler();
-      }
-      if (itemIndex === 2) {
-        dailyHandler();
-      }
-      if (itemIndex === 3) {
-        customHandler();
-      }
-      if (itemIndex === 4) {
-        exportsHandler();
-      }
-    },
-    [
-      monthlyPressed,
-      weeklyPressed,
-      dailyPressed,
-      customPressed,
-      exportPressed,
-      duration,
-    ],
-  );
+  // const onItemPress = useCallback(
+  //   (itemIndex: number) => {
+  //     setIndicatorIndex(itemIndex);
+  //     if (itemIndex === 0) {
+  //       monthlyHandler();
+  //     }
+  //     if (itemIndex === 1) {
+  //       weeklyHandler();
+  //     }
+  //     if (itemIndex === 2) {
+  //       dailyHandler();
+  //     }
+  //     if (itemIndex === 3) {
+  //       customHandler();
+  //     }
+  //     if (itemIndex === 4) {
+  //       exportsHandler();
+  //     }
+  //   },
+  //   [
+  //     monthlyPressed,
+  //     weeklyPressed,
+  //     dailyPressed,
+  //     customPressed,
+  //     exportPressed,
+  //     duration,
+  //   ],
+  // );
 
   // Month Func
-  const monthlyHandler = () => {
-    // const fromdate = moment(`${year}-01-01`);
-    // const todate = moment(`${year}-12-31`);
-    const fromdate = moment(`${year}-01-01`).format('YYYY-MM-DD');
-    const todate = moment(`${year}-12-31`).format('YYYY-MM-DD');
+  // const monthlyHandler = () => {
+  //   // const fromdate = moment(`${year}-01-01`);
+  //   // const todate = moment(`${year}-12-31`);
+  //   const fromdate = moment(`${year}-01-01`).format('YYYY-MM-DD');
+  //   const todate = moment(`${year}-12-31`).format('YYYY-MM-DD');
 
-    setFromDate(fromdate);
-    setToDate(todate);
-    setMonthlyPressed(true);
-    setWeeklyPressed(false);
-    setDailyPressed(false);
-    setCustomPressed(false);
-    setExportPressed(false);
-    setDuration(year);
-    // setDuration(String(moment(toDate).year()));
-  };
+  //   setFromDate(fromdate);
+  //   setToDate(todate);
+  //   setMonthlyPressed(true);
+  //   setWeeklyPressed(false);
+  //   setDailyPressed(false);
+  //   setCustomPressed(false);
+  //   setExportPressed(false);
+  //   setDuration(year);
+  //   // setDuration(String(moment(toDate).year()));
+  // };
 
   // Week Func
-  const weeklyHandler = () => {
-    let Month = month === '' ? `${moment().month() + 1}` : month;
+  // const weeklyHandler = () => {
+  //   let Month = month === '' ? `${moment().month() + 1}` : month;
 
-    if (+Month < 10) {
-      Month = `0${Month}`;
-    }
+  //   if (+Month < 10) {
+  //     Month = `0${Month}`;
+  //   }
 
-    let currentDate = moment().date();
-    if (currentDate < 10) {
-      currentDate = +`0${currentDate}`;
-    }
-    const date = moment(`${year}-${Month}-${currentDate}`).format('YYYY-MM-DD');
+  //   let currentDate = moment().date();
+  //   if (currentDate < 10) {
+  //     currentDate = +`0${currentDate}`;
+  //   }
+  //   const date = moment(`${year}-${Month}-${currentDate}`).format('YYYY-MM-DD');
 
-    const daysInMonth = moment(
-      moment().format(`YYYY-${Month}`),
-      'YYYY-MM',
-    ).daysInMonth();
-    const fromdate = moment(`${year}-${Month}-01`).format('YYYY-MM-DD');
-    const todate = moment(`${year}-${Month}-${daysInMonth}`).format(
-      'YYYY-MM-DD',
-    );
+  //   const daysInMonth = moment(
+  //     moment().format(`YYYY-${Month}`),
+  //     'YYYY-MM',
+  //   ).daysInMonth();
+  //   const fromdate = moment(`${year}-${Month}-01`).format('YYYY-MM-DD');
+  //   const todate = moment(`${year}-${Month}-${daysInMonth}`).format(
+  //     'YYYY-MM-DD',
+  //   );
 
-    setFromDate(fromdate);
-    setToDate(todate);
-    typeof duration === 'number'
-      ? setDuration(moment.monthsShort(moment(date).month()))
-      : '';
+  //   setFromDate(fromdate);
+  //   setToDate(todate);
+  //   typeof duration === 'number'
+  //     ? setDuration(moment.monthsShort(moment(date).month()))
+  //     : '';
 
-    // Reset
-    setMonthlyPressed(false);
-    setWeeklyPressed(true);
-    setDailyPressed(false);
-    setCustomPressed(false);
-    setExportPressed(false);
-  };
+  //   // Reset
+  //   setMonthlyPressed(false);
+  //   setWeeklyPressed(true);
+  //   setDailyPressed(false);
+  //   setCustomPressed(false);
+  //   setExportPressed(false);
+  // };
 
-  const dailyHandler = () => {
-    let Month = month === '' ? `${moment().month() + 1}` : month;
+  // const dailyHandler = () => {
+  //   let Month = month === '' ? `${moment().month() + 1}` : month;
 
-    if (+Month < 10) {
-      Month = `0${Month}`;
-    }
+  //   if (+Month < 10) {
+  //     Month = `0${Month}`;
+  //   }
 
-    const date = moment().format(`${year}-${Month}-DD`);
-    const daysInMonth = moment(
-      moment().format(`YYYY-${Month}`),
-      'YYYY-MM',
-    ).daysInMonth();
-    const fromdate = moment(`${year}-${Month}-01`).format('YYYY-MM-DD');
-    const todate = moment(`${year}-${Month}-${daysInMonth}`).format(
-      'YYYY-MM-DD',
-    );
+  //   const date = moment().format(`${year}-${Month}-DD`);
+  //   const daysInMonth = moment(
+  //     moment().format(`YYYY-${Month}`),
+  //     'YYYY-MM',
+  //   ).daysInMonth();
+  //   const fromdate = moment(`${year}-${Month}-01`).format('YYYY-MM-DD');
+  //   const todate = moment(`${year}-${Month}-${daysInMonth}`).format(
+  //     'YYYY-MM-DD',
+  //   );
 
-    setFromDate(fromdate);
-    setToDate(todate);
+  //   setFromDate(fromdate);
+  //   setToDate(todate);
 
-    typeof duration === 'number'
-      ? setDuration(moment.monthsShort(moment(date).month()))
-      : '';
+  //   typeof duration === 'number'
+  //     ? setDuration(moment.monthsShort(moment(date).month()))
+  //     : '';
 
-    setMonthlyPressed(false);
-    setWeeklyPressed(false);
-    setDailyPressed(true);
-    setCustomPressed(false);
-    setExportPressed(false);
-  };
+  //   setMonthlyPressed(false);
+  //   setWeeklyPressed(false);
+  //   setDailyPressed(true);
+  //   setCustomPressed(false);
+  //   setExportPressed(false);
+  // };
 
-  const customHandler = () => {
-    if (+month < 10) {
-      month = `0${month}`;
-    }
+  // const customHandler = () => {
+  //   if (+month < 10) {
+  //     month = `0${month}`;
+  //   }
 
-    let today = moment().date();
-    if (+today < 10) {
-      today = +`0${today}`;
-    }
+  //   let today = moment().date();
+  //   if (+today < 10) {
+  //     today = +`0${today}`;
+  //   }
 
-    const fromdate = moment(`${year}-${month}-01`).format('YYYY-MM-DD');
-    const todate = moment(`${year}-${month}-${today}`).format('YYYY-MM-DD');
+  //   const fromdate = moment(`${year}-${month}-01`).format('YYYY-MM-DD');
+  //   const todate = moment(`${year}-${month}-${today}`).format('YYYY-MM-DD');
 
-    setFromDate(fromdate);
-    setToDate(todate);
-    setMonthlyPressed(false);
-    setWeeklyPressed(false);
-    setDailyPressed(false);
-    setCustomPressed(true);
-    setExportPressed(false);
-  };
+  //   setFromDate(fromdate);
+  //   setToDate(todate);
+  //   setMonthlyPressed(false);
+  //   setWeeklyPressed(false);
+  //   setDailyPressed(false);
+  //   setCustomPressed(true);
+  //   setExportPressed(false);
+  // };
 
-  async function exportsHandler() {
-    setExportPressed(true);
-    setMonthlyPressed(false);
-    setWeeklyPressed(false);
-    setDailyPressed(false);
-    setCustomPressed(false);
+  // async function exportsHandler() {
+  //   setExportPressed(true);
+  //   setMonthlyPressed(false);
+  //   setWeeklyPressed(false);
+  //   setDailyPressed(false);
+  //   setCustomPressed(false);
 
-    const authUser = await Auth.currentAuthenticatedUser();
-    const appUserId = authUser?.attributes?.sub;
-    const filteredCustomerInfo = customerInfosData?.filter(
-      cus => cus.appUserId === appUserId,
-    );
+  //   const authUser = await Auth.currentAuthenticatedUser();
+  //   const appUserId = authUser?.attributes?.sub;
+  //   const filteredCustomerInfo = customerInfosData?.filter(
+  //     cus => cus.appUserId === appUserId,
+  //   );
 
-    if (
-      !filteredCustomerInfo[0]?.stdActive &&
-      !filteredCustomerInfo[0]?.proActive
-    ) {
-      // show Ads
-      if (isLoaded) {
-        show();
-      }
-    }
-  }
+  //   if (
+  //     !filteredCustomerInfo[0]?.stdActive &&
+  //     !filteredCustomerInfo[0]?.proActive
+  //   ) {
+  //     // show Ads
+  //     if (isLoaded) {
+  //       show();
+  //     }
+  //   }
+  // }
 
   return (
     <>
@@ -253,7 +250,7 @@ Props) => {
           fromDate={fromDate}
           toDate={toDate}
           exportPressed={exportPressed}
-          setIndicatorIndex={setIndicatorIndex}
+          // setIndicatorIndex={setIndicatorIndex}
           // year={null}
         />
       </View>

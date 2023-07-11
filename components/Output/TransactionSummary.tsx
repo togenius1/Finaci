@@ -6,7 +6,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {v4 as uuidv4} from 'uuid';
 import moment from 'moment';
 import {useNavigation} from '@react-navigation/native';
@@ -20,32 +20,6 @@ import {TransactionSummaryNavigationProp} from '../../types';
 import {useAppSelector} from '../../hooks';
 
 const {width} = Dimensions.get('window');
-
-// Header
-function HeaderSummary({total, totalIncome, totalExpenses}: HeaderSummaryType) {
-  return (
-    <View style={styles.assetsContainer}>
-      <View style={styles.assetBox}>
-        <Text style={{fontSize: 14}}>Income</Text>
-        <Text style={{color: 'blue', fontSize: 16, fontWeight: 'bold'}}>
-          {currencyFormatter(+totalIncome, {})}
-        </Text>
-      </View>
-      <View style={styles.assetBox}>
-        <Text style={{fontSize: 14}}>Expenses</Text>
-        <Text style={{color: 'red', fontSize: 16, fontWeight: 'bold'}}>
-          {currencyFormatter(+totalExpenses, {})}
-        </Text>
-      </View>
-      <View style={styles.assetBox}>
-        <Text style={{fontSize: 14}}>Total</Text>
-        <Text style={{fontSize: 16, fontWeight: 'bold'}}>
-          {currencyFormatter(+total, {})}
-        </Text>
-      </View>
-    </View>
-  );
-}
 
 // Monthly renderItem
 function MonthlyRenderItem({item}) {
@@ -253,16 +227,7 @@ const DailyItem = ({
 };
 
 // Main function
-const TransactionSummary = ({
-  monthlyPressed,
-  weeklyPressed,
-  dailyPressed,
-  customPressed,
-  fromDate,
-  toDate,
-  exportPressed,
-}: // year,
-Props) => {
+const TransactionSummary = ({}: Props) => {
   // Parameters
   let _renderItem: any = '';
   let _renderData: any = [];
@@ -272,28 +237,46 @@ Props) => {
 
   const dataLoaded = useAppSelector(store => store);
 
-  const ExpenseData = dataLoaded?.expenses?.expenses;
-  const IncomeData = dataLoaded?.incomes?.incomes;
+  // Transaction states
+  const transactStateData = dataLoaded?.transactStates;
+
+  const fromDate = transactStateData?.fromDate;
+  const toDate = transactStateData?.toDate;
+  const monthlyPressed = transactStateData?.monthlyPressed;
+  const weeklyPressed = transactStateData?.weeklyPressed;
+  const dailyPressed = transactStateData?.dailyPressed;
+  const customPressed = transactStateData?.customPressed;
+  const exportPressed = transactStateData?.exportPressed;
+
+  console.log('transactStateData: ', transactStateData);
+  console.log('monthlyPressed: ', monthlyPressed);
+
+  // console.log('monthlyPressed: ', monthlyPressed);
+  // console.log('weeklyPressed: ', weeklyPressed);
+  // console.log('dailyPressed: ', dailyPressed);
+
+  // const ExpenseData = dataLoaded?.expenses?.expenses;
+  // const IncomeData = dataLoaded?.incomes?.incomes;
   const MonthlyTransactsData = dataLoaded?.monthlyTransacts?.monthlyTransacts;
   const WeeklyTransactsData = dataLoaded?.weeklyTransacts?.weeklyTransacts;
   const DailyTransactionData = dataLoaded?.dailyTransacts?.dailyTransacts;
 
-  // FILTERED DATA (From date ----> To date)
-  const selectedDurationExpenseData = ExpenseData?.filter(
-    expense =>
-      moment(expense.date).format('YYYY-MM-DD') >= fromDate &&
-      moment(expense.date).format('YYYY-MM-DD') <= toDate,
-  );
-  const selectedDurationIncomeData = IncomeData?.filter(
-    income =>
-      moment(income.date).format('YYYY-MM-DD') >= fromDate &&
-      moment(income.date).format('YYYY-MM-DD') <= toDate,
-  );
+  // // FILTERED DATA (From date ----> To date)
+  // const selectedDurationExpenseData = ExpenseData?.filter(
+  //   expense =>
+  //     moment(expense.date).format('YYYY-MM-DD') >= fromDate &&
+  //     moment(expense.date).format('YYYY-MM-DD') <= toDate,
+  // );
+  // const selectedDurationIncomeData = IncomeData?.filter(
+  //   income =>
+  //     moment(income.date).format('YYYY-MM-DD') >= fromDate &&
+  //     moment(income.date).format('YYYY-MM-DD') <= toDate,
+  // );
 
-  // TOTAL EXPENSE
-  const totalExpenses = +sumTotalFunc(selectedDurationExpenseData).toFixed(0);
-  const totalIncome = +sumTotalFunc(selectedDurationIncomeData).toFixed(0);
-  const total = totalIncome - totalExpenses;
+  // // TOTAL EXPENSE
+  // const totalExpenses = +sumTotalFunc(selectedDurationExpenseData).toFixed(0);
+  // const totalIncome = +sumTotalFunc(selectedDurationIncomeData).toFixed(0);
+  // const total = totalIncome - totalExpenses;
 
   // Monthly Transaction
   // const monthlyData = monthlyTransaction(fromDate, toDate, year);
@@ -398,11 +381,11 @@ Props) => {
 
   return (
     <View style={styles.container}>
-      <HeaderSummary
+      {/* <HeaderSummary
         total={total}
         totalIncome={totalIncome}
         totalExpenses={totalExpenses}
-      />
+      /> */}
 
       {!exportPressed && (
         <FlatList
@@ -423,21 +406,21 @@ export default TransactionSummary;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginBottom: 50,
+    // marginBottom: 50,
   },
-  assetsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingVertical: 8,
-    marginVertical: 5,
-    backgroundColor: 'white',
-    borderColor: '#b8b8b8',
-    borderBottomWidth: 0.4,
-  },
-  assetBox: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+  // assetsContainer: {
+  //   flexDirection: 'row',
+  //   justifyContent: 'space-around',
+  //   paddingVertical: 8,
+  //   marginVertical: 5,
+  //   backgroundColor: 'white',
+  //   borderColor: '#b8b8b8',
+  //   borderBottomWidth: 0.4,
+  // },
+  // assetBox: {
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  // },
   list: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -488,23 +471,13 @@ const styles = StyleSheet.create({
 });
 
 // ============================= TYPE and INTERFACE ====================================
-type Props = {
-  monthlyPressed: boolean;
-  weeklyPressed: boolean;
-  dailyPressed: boolean;
-  customPressed: boolean;
-  fromDate: string | null;
-  toDate: string | null;
-  exportPressed: boolean;
-  // year: string | null;
-  setIndicatorIndex: React.Dispatch<React.SetStateAction<number | undefined>>;
-};
+type Props = {};
 
-interface HeaderSummaryType {
-  total: number;
-  totalIncome: number;
-  totalExpenses: number;
-}
+// interface HeaderSummaryType {
+//   total: number;
+//   totalIncome: number;
+//   totalExpenses: number;
+// }
 
 export interface DailyItemType {
   incomeAmount: number;

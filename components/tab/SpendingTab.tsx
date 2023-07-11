@@ -19,7 +19,7 @@ type Props = {
 const {width} = Dimensions.get('window');
 
 const SpendingTab = ({route}: Props) => {
-  const navigation = useNavigation();
+  // const navigation = useNavigation();
 
   // const dispatch = useAppDispatch();
   const dataLoaded = useAppSelector(store => store);

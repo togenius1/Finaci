@@ -362,7 +362,7 @@ const OverviewScreen = ({navigation}: Props) => {
     <View style={styles.container}>
       <OverviewTab
         setFocusedTabIndex={setFocusedTabIndex}
-        focusedTabIndex={focusedTabIndex}
+        // focusedTabIndex={focusedTabIndex}
         fromDate={fromDate}
         toDate={toDate}
       />

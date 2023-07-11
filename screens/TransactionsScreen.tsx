@@ -18,10 +18,16 @@ import TransactionOutput from '../components/Output/TransactionOutput';
 import MonthYearList from '../components/Menu/MonthYearList';
 import {TransactionNavigationProp} from '../types';
 import {useSwipe} from '../components/UI/useSwape';
-import Screen1 from '../components/tab/Screen1';
-import Screen2 from '../components/tab/Screen2';
-import Screen3 from '../components/tab/Screen3';
+import Screen1 from '../components/screen-components/Screen1';
+import Screen2 from '../components/screen-components/Screen2';
+import Screen3 from '../components/screen-components/Screen3';
 import Tabs from '../components/UI/Tabs';
+import {currencyFormatter} from '../util/currencyFormatter';
+import {sumTotalFunc} from '../util/math';
+import {useAppDispatch, useAppSelector} from '../hooks';
+import {transactStateActions} from '../store/transaction-state-slice';
+import {Auth} from 'aws-amplify';
+import {TestIds, useInterstitialAd} from 'react-native-google-mobile-ads';
 
 const {width, height} = Dimensions.get('window');
 
@@ -38,16 +44,22 @@ const TabsDataObject = {
   export: 'Export',
 };
 
+// Ads variable
+const adUnitId = __DEV__
+  ? TestIds.INTERSTITIAL
+  : 'ca-app-pub-3212728042764573~3355076099';
+
 // Swipe Screen
 const TopTab = createMaterialTopTabNavigator();
 
-function TransactionArea({}) {
+function TransactScreenComponent({setFocusedTabIndex, focusedTabIndex}) {
   return (
     <TopTab.Navigator
       screenListeners={{
         state: e => {
           // Do something with the state
-          // console.log(e.data?.state?.index);
+          // console.log('Page Index: ', e.data?.state?.index);
+          setFocusedTabIndex(e.data?.state?.index);
         },
       }}
       screenOptions={() => ({
@@ -62,18 +74,51 @@ function TransactionArea({}) {
   );
 }
 
+// Header
+function HeaderSummary({total, totalIncome, totalExpenses}: HeaderSummaryType) {
+  return (
+    <View style={styles.assetsContainer}>
+      <View style={styles.assetBox}>
+        <Text style={{fontSize: 14}}>Income</Text>
+        <Text style={{color: 'blue', fontSize: 16, fontWeight: 'bold'}}>
+          {currencyFormatter(+totalIncome, {})}
+        </Text>
+      </View>
+      <View style={styles.assetBox}>
+        <Text style={{fontSize: 14}}>Expenses</Text>
+        <Text style={{color: 'red', fontSize: 16, fontWeight: 'bold'}}>
+          {currencyFormatter(+totalExpenses, {})}
+        </Text>
+      </View>
+      <View style={styles.assetBox}>
+        <Text style={{fontSize: 14}}>Total</Text>
+        <Text style={{fontSize: 16, fontWeight: 'bold'}}>
+          {currencyFormatter(+total, {})}
+        </Text>
+      </View>
+    </View>
+  );
+}
+
 // Main
 const TransactionsScreen = ({navigation}: Props) => {
-  // const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
+  const dataLoaded = useAppSelector(store => store);
 
+  const ExpenseData = dataLoaded?.expenses?.expenses;
+  const IncomeData = dataLoaded?.incomes?.incomes;
+  const transactStateData = dataLoaded?.transactStates?.transactStates;
+  const customerInfosData = dataLoaded?.customerInfos?.customerInfos;
+
+  const [focusedTabIndex, setFocusedTabIndex] = useState<number | undefined>(0);
   const [fromDate, setFromDate] = useState<string | null>(initialStartDate);
   const [toDate, setToDate] = useState<string | null>(initialToDate);
   const [monthlyPressed, setMonthlyPressed] = useState<boolean>(true);
-  // const [showMonthYearListMenu, setShowMonthYearListMenu] =
-  //   useState<boolean>(false);
   const [weeklyPressed, setWeeklyPressed] = useState<boolean>(false);
   const [dailyPressed, setDailyPressed] = useState<boolean>(false);
   const [customPressed, setCustomPressed] = useState<boolean>(false);
+  const [exportPressed, setExportPressed] = useState<boolean>(false);
+
   const [duration, setDuration] = useState<string | null>(
     moment().format('MMM'),
   );
@@ -86,7 +131,24 @@ const TransactionsScreen = ({navigation}: Props) => {
   const [toDateClicked, setToDateClicked] = useState<boolean>(false);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [indicatorIndex, setIndicatorIndex] = useState<number | undefined>(0);
-  const [exportPressed, setExportPressed] = useState<boolean>(false);
+
+  const {isLoaded, isClosed, load, show} = useInterstitialAd(adUnitId, {
+    requestNonPersonalizedAdsOnly: true,
+  });
+
+  // Load ads
+  useEffect(() => {
+    // Start loading the interstitial straight away
+    load();
+  }, [load]);
+
+  // Load ads again
+  useEffect(() => {
+    if (isClosed) {
+      // console.log('Reloading ad...');
+      load();
+    }
+  }, [isClosed]);
 
   // Initial from date, to date
   useEffect(() => {
@@ -200,24 +262,34 @@ const TransactionsScreen = ({navigation}: Props) => {
     exportPressed,
   ]);
 
+  // Initialize State
+  useEffect(() => {
+    updateState();
+  }, []);
+
   //
   const onItemPress = useCallback(
     (itemIndex: number) => {
       setIndicatorIndex(itemIndex);
       if (itemIndex === 0) {
         monthlyHandler();
+        updateState();
       }
       if (itemIndex === 1) {
         weeklyHandler();
+        updateState();
       }
       if (itemIndex === 2) {
         dailyHandler();
+        updateState();
       }
       if (itemIndex === 3) {
         customHandler();
+        updateState();
       }
       if (itemIndex === 4) {
         exportsHandler();
+        updateState();
       }
     },
     [
@@ -298,8 +370,22 @@ const TransactionsScreen = ({navigation}: Props) => {
     hideDatePicker();
   };
 
-  //----
-  //----
+  // Update State
+  const updateState = () => {
+    dispatch({
+      type: 'update',
+      payload: {
+        fromDate,
+        toDate,
+        monthlyPressed,
+        weeklyPressed,
+        dailyPressed,
+        customPressed,
+        exportPressed,
+      },
+    });
+  };
+
   // Month Func
   const monthlyHandler = () => {
     // const fromdate = moment(`${year}-01-01`);
@@ -387,8 +473,10 @@ const TransactionsScreen = ({navigation}: Props) => {
   };
 
   const customHandler = () => {
-    if (+month < 10) {
-      month = `0${month}`;
+    let MONTH;
+    MONTH = month;
+    if (+MONTH < 10) {
+      MONTH = `0${MONTH}`;
     }
 
     let today = moment().date();
@@ -396,8 +484,8 @@ const TransactionsScreen = ({navigation}: Props) => {
       today = +`0${today}`;
     }
 
-    const fromdate = moment(`${year}-${month}-01`).format('YYYY-MM-DD');
-    const todate = moment(`${year}-${month}-${today}`).format('YYYY-MM-DD');
+    const fromdate = moment(`${year}-${MONTH}-01`).format('YYYY-MM-DD');
+    const todate = moment(`${year}-${MONTH}-${today}`).format('YYYY-MM-DD');
 
     setFromDate(fromdate);
     setToDate(todate);
@@ -408,6 +496,7 @@ const TransactionsScreen = ({navigation}: Props) => {
     setExportPressed(false);
   };
 
+  // Export Handler
   async function exportsHandler() {
     setExportPressed(true);
     setMonthlyPressed(false);
@@ -432,32 +521,37 @@ const TransactionsScreen = ({navigation}: Props) => {
     }
   }
 
+  // FILTERED DATA (From date ----> To date)
+  const selectedDurationExpenseData = ExpenseData?.filter(
+    expense =>
+      moment(expense.date).format('YYYY-MM-DD') >= fromDate &&
+      moment(expense.date).format('YYYY-MM-DD') <= toDate,
+  );
+  const selectedDurationIncomeData = IncomeData?.filter(
+    income =>
+      moment(income.date).format('YYYY-MM-DD') >= fromDate &&
+      moment(income.date).format('YYYY-MM-DD') <= toDate,
+  );
+
+  // TOTAL EXPENSE
+  const totalExpenses = +sumTotalFunc(selectedDurationExpenseData).toFixed(0);
+  const totalIncome = +sumTotalFunc(selectedDurationIncomeData).toFixed(0);
+  const total = totalIncome - totalExpenses;
+
   return (
     <View style={styles.container}>
-      <TransactionArea />
+      <View style={{marginTop: 18}}>
+        <HeaderSummary
+          total={total}
+          totalIncome={totalIncome}
+          totalExpenses={totalExpenses}
+        />
+      </View>
 
-      {/* <TransactionOutput
-        setDuration={setDuration}
-        duration={duration}
-        setFromDate={setFromDate}
-        fromDate={fromDate}
-        setToDate={setToDate}
-        toDate={toDate}
-        monthlyPressed={monthlyPressed}
-        setMonthlyPressed={setMonthlyPressed}
-        weeklyPressed={weeklyPressed}
-        setWeeklyPressed={setWeeklyPressed}
-        dailyPressed={dailyPressed}
-        setDailyPressed={setDailyPressed}
-        setCustomPressed={setCustomPressed}
-        customPressed={customPressed}
-        setExportPressed={setExportPressed}
-        exportPressed={exportPressed}
-        year={year}
-        month={month}
-        setIndicatorIndex={setIndicatorIndex}
-        indicatorIndex={indicatorIndex}
-      /> */}
+      <TransactScreenComponent
+        setFocusedTabIndex={setFocusedTabIndex}
+        focusedTabIndex={focusedTabIndex}
+      />
 
       <MonthYearList
         monthlyPressed={monthlyPressed}
@@ -491,6 +585,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  assetsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingVertical: 8,
+    marginVertical: 5,
+    backgroundColor: 'white',
+    borderColor: '#b8b8b8',
+    borderBottomWidth: 0.4,
+  },
+  assetBox: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   pressed: {
     opacity: 0.65,
   },
@@ -500,3 +607,9 @@ const styles = StyleSheet.create({
 type Props = {
   navigation: TransactionNavigationProp;
 };
+
+interface HeaderSummaryType {
+  total: number;
+  totalIncome: number;
+  totalExpenses: number;
+}
