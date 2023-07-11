@@ -41,6 +41,7 @@ import moment from 'moment';
 import {API_KEY, ENTITLEMENT_PRO, ENTITLEMENT_STD} from './constants/api';
 import {customerInfoActions} from './store/customerInfo-slice';
 import {fetchAuthAccountsData} from './store/authAccount-action';
+import TransactProvider from './store-context/TransactProvider';
 
 Amplify.configure(awsconfig);
 
@@ -372,7 +373,7 @@ const App = () => {
   const colorScheme = Appearance.getColorScheme();
 
   return (
-    <>
+    <TransactProvider>
       <StatusBar barStyle="light-content" />
       <ActivityIndicator
         size="large"
@@ -403,7 +404,7 @@ const App = () => {
           />
         </>
       )}
-    </>
+    </TransactProvider>
   );
 };
 

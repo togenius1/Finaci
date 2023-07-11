@@ -6,7 +6,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import React, {useEffect} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {v4 as uuidv4} from 'uuid';
 import moment from 'moment';
 import {useNavigation} from '@react-navigation/native';
@@ -18,6 +18,7 @@ import {getDaysInWeek} from '../../util/date';
 import Export from '../Menu/Export';
 import {TransactionSummaryNavigationProp} from '../../types';
 import {useAppSelector} from '../../hooks';
+import TransactContext from '../../store-context/transact-context';
 
 const {width} = Dimensions.get('window');
 
@@ -238,25 +239,16 @@ const TransactionSummary = ({}: Props) => {
   const dataLoaded = useAppSelector(store => store);
 
   // Transaction states
-  const transactStateData = dataLoaded?.transactStates;
+  const transactCtx = useContext(TransactContext);
+  const fromDate = transactCtx?.fromDate;
+  const toDate = transactCtx?.toDate;
+  const monthlyPressed = transactCtx?.monthlyPressed;
+  const weeklyPressed = transactCtx?.weeklyPressed;
+  const dailyPressed = transactCtx?.dailyPressed;
+  const customPressed = transactCtx?.customPressed;
+  const exportPressed = transactCtx?.exportPressed;
 
-  const fromDate = transactStateData?.fromDate;
-  const toDate = transactStateData?.toDate;
-  const monthlyPressed = transactStateData?.monthlyPressed;
-  const weeklyPressed = transactStateData?.weeklyPressed;
-  const dailyPressed = transactStateData?.dailyPressed;
-  const customPressed = transactStateData?.customPressed;
-  const exportPressed = transactStateData?.exportPressed;
-
-  console.log('transactStateData: ', transactStateData);
-  console.log('monthlyPressed: ', monthlyPressed);
-
-  // console.log('monthlyPressed: ', monthlyPressed);
-  // console.log('weeklyPressed: ', weeklyPressed);
-  // console.log('dailyPressed: ', dailyPressed);
-
-  // const ExpenseData = dataLoaded?.expenses?.expenses;
-  // const IncomeData = dataLoaded?.incomes?.incomes;
+  // Data from local storage
   const MonthlyTransactsData = dataLoaded?.monthlyTransacts?.monthlyTransacts;
   const WeeklyTransactsData = dataLoaded?.weeklyTransacts?.weeklyTransacts;
   const DailyTransactionData = dataLoaded?.dailyTransacts?.dailyTransacts;

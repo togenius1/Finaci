@@ -34,9 +34,6 @@ const rootReducer = combineReducers({
   dailyTransacts: dailyTransactsSlice.reducer,
   weeklyTransacts: weeklyTransactsSlice.reducer,
   monthlyTransacts: monthlyTransactsSlice.reducer,
-
-  // State
-  transactStates: transactStateReducer,
 });
 
 const persistConfig = {

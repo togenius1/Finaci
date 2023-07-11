@@ -7,7 +7,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 // import {useFocusEffect} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
@@ -28,13 +28,10 @@ import {useAppDispatch, useAppSelector} from '../hooks';
 import {transactStateActions} from '../store/transaction-state-slice';
 import {Auth} from 'aws-amplify';
 import {TestIds, useInterstitialAd} from 'react-native-google-mobile-ads';
+import TransactProvider from '../store-context/TransactProvider';
+import TransactContext from '../store-context/transact-context';
 
 const {width, height} = Dimensions.get('window');
-
-const initialStartDate = moment(`${moment().year()}-01-01`).format(
-  'YYYY-MM-DD',
-);
-const initialToDate = moment(`${moment().year()}-12-31`).format('YYYY-MM-DD');
 
 const TabsDataObject = {
   monthly: 'Monthly',
@@ -102,22 +99,14 @@ function HeaderSummary({total, totalIncome, totalExpenses}: HeaderSummaryType) {
 
 // Main
 const TransactionsScreen = ({navigation}: Props) => {
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
   const dataLoaded = useAppSelector(store => store);
 
   const ExpenseData = dataLoaded?.expenses?.expenses;
   const IncomeData = dataLoaded?.incomes?.incomes;
-  const transactStateData = dataLoaded?.transactStates?.transactStates;
   const customerInfosData = dataLoaded?.customerInfos?.customerInfos;
 
   const [focusedTabIndex, setFocusedTabIndex] = useState<number | undefined>(0);
-  const [fromDate, setFromDate] = useState<string | null>(initialStartDate);
-  const [toDate, setToDate] = useState<string | null>(initialToDate);
-  const [monthlyPressed, setMonthlyPressed] = useState<boolean>(true);
-  const [weeklyPressed, setWeeklyPressed] = useState<boolean>(false);
-  const [dailyPressed, setDailyPressed] = useState<boolean>(false);
-  const [customPressed, setCustomPressed] = useState<boolean>(false);
-  const [exportPressed, setExportPressed] = useState<boolean>(false);
 
   const [duration, setDuration] = useState<string | null>(
     moment().format('MMM'),
@@ -135,6 +124,8 @@ const TransactionsScreen = ({navigation}: Props) => {
   const {isLoaded, isClosed, load, show} = useInterstitialAd(adUnitId, {
     requestNonPersonalizedAdsOnly: true,
   });
+
+  const transactCtx = useContext(TransactContext);
 
   // Load ads
   useEffect(() => {
@@ -176,7 +167,7 @@ const TransactionsScreen = ({navigation}: Props) => {
               marginTop: height * 0.032,
               // backgroundColor: '#fed8d8',
             }}>
-            {!customPressed && !exportPressed && (
+            {!transactCtx.customPressed && !transactCtx.exportPressed && (
               <Pressable
                 style={({pressed}) => pressed && styles.pressed}
                 onPress={() => showMonthYearListMenuHandler()}>
@@ -189,12 +180,14 @@ const TransactionsScreen = ({navigation}: Props) => {
                     borderWidth: 0.6,
                     borderColor: 'grey',
                   }}>
-                  <Text>{`${duration} ${!monthlyPressed ? year : ''}`}</Text>
+                  <Text>{`${duration} ${
+                    !transactCtx.monthlyPressed ? year : ''
+                  }`}</Text>
                 </View>
               </Pressable>
             )}
 
-            {(customPressed || exportPressed) && (
+            {(transactCtx.customPressed || transactCtx.exportPressed) && (
               <View
                 style={{
                   flexDirection: 'row',
@@ -209,7 +202,9 @@ const TransactionsScreen = ({navigation}: Props) => {
                   style={({pressed}) => pressed && styles.pressed}
                   onPress={onFromDateHandler}>
                   <View style={{borderWidth: 0.6, borderColor: 'lightgrey'}}>
-                    <Text>{moment(fromDate).format('YYYY-MM-DD')}</Text>
+                    <Text>
+                      {moment(transactCtx.fromDate).format('YYYY-MM-DD')}
+                    </Text>
                   </View>
                 </Pressable>
                 <Pressable
@@ -217,7 +212,9 @@ const TransactionsScreen = ({navigation}: Props) => {
                   onPress={onToDateHandler}>
                   <View style={{borderWidth: 0.6, borderColor: 'lightgrey'}}>
                     {/* <Text>2022-09-30</Text> */}
-                    <Text>{moment(toDate).format('YYYY-MM-DD')}</Text>
+                    <Text>
+                      {moment(transactCtx.toDate).format('YYYY-MM-DD')}
+                    </Text>
                   </View>
                 </Pressable>
               </View>
@@ -255,16 +252,31 @@ const TransactionsScreen = ({navigation}: Props) => {
     year,
     // showMonthYearListMenuHandler,
     isModalVisible,
-    monthlyPressed,
-    weeklyPressed,
-    dailyPressed,
-    customPressed,
-    exportPressed,
+    transactCtx.monthlyPressed,
+    transactCtx.weeklyPressed,
+    transactCtx.dailyPressed,
+    transactCtx.customPressed,
+    transactCtx.exportPressed,
   ]);
 
   // Initialize State
   useEffect(() => {
-    updateState();
+    // const initialStartDate = moment(`${moment().year()}-01-01`).format(
+    //   'YYYY-MM-DD',
+    // );
+    // const initialToDate = moment(`${moment().year()}-12-31`).format(
+    //   'YYYY-MM-DD',
+    // );
+    // transactCtx.fromDateSetHandler({fromDate: initialStartDate});
+    // transactCtx.toDateSetHandler({toDate: initialToDate});
+
+    transactCtx.tabPressedHandler({
+      monthlyPressed: true,
+      weeklyPressed: false,
+      dailyPressed: false,
+      customPressed: false,
+      exportPressed: false,
+    });
   }, []);
 
   //
@@ -273,50 +285,55 @@ const TransactionsScreen = ({navigation}: Props) => {
       setIndicatorIndex(itemIndex);
       if (itemIndex === 0) {
         monthlyHandler();
-        updateState();
+        // updateState();
       }
       if (itemIndex === 1) {
         weeklyHandler();
-        updateState();
+        // updateState();
       }
       if (itemIndex === 2) {
         dailyHandler();
-        updateState();
+        // updateState();
       }
       if (itemIndex === 3) {
         customHandler();
-        updateState();
+        // updateState();
       }
       if (itemIndex === 4) {
         exportsHandler();
-        updateState();
+        // updateState();
       }
     },
     [
-      monthlyPressed,
-      weeklyPressed,
-      dailyPressed,
-      customPressed,
-      exportPressed,
+      transactCtx.monthlyPressed,
+      transactCtx.weeklyPressed,
+      transactCtx.dailyPressed,
+      transactCtx.customPressed,
+      transactCtx.exportPressed,
       duration,
     ],
   );
 
   function onMonthYearSelectedHandler(time) {
-    if (monthlyPressed) {
+    if (transactCtx.monthlyPressed) {
       // const mm = moment().month(time).format('M');
       // const daysInMonth = moment(`${year}-0${mm}`, 'YYYY-MM').daysInMonth();
       const fromdate = moment([time, 0]).format('YYYY-MM-DD');
       const todate = moment(`${time}-12-31`).endOf('year').format('YYYY-MM-DD');
       setYear(time);
 
-      setFromDate(fromdate);
-      setToDate(todate);
-      setDuration(time);
-      setMonth(+moment().month() + 1);
-      setIsModalVisible(false);
+      transactCtx.fromDateSetHandler({
+        fromDate: fromdate,
+      });
+      transactCtx.toDateSetHandler({
+        toDate: todate,
+      });
     }
-    if (!monthlyPressed) {
+    setDuration(time);
+    setMonth(+moment().month() + 1);
+    setIsModalVisible(false);
+
+    if (!transactCtx.monthlyPressed) {
       const mm = moment().month(time).format('M');
       const daysInMonth = moment(`${year}-${mm}`, 'YYYY-M').daysInMonth();
       const fromdate = moment([year, +mm - 1]).format('YYYY-MM-DD');
@@ -326,8 +343,12 @@ const TransactionsScreen = ({navigation}: Props) => {
 
       const month = moment(fromdate).month() + 1;
 
-      setFromDate(fromdate);
-      setToDate(todate);
+      transactCtx.fromDateSetHandler({
+        fromDate: fromdate,
+      });
+      transactCtx.toDateSetHandler({
+        toDate: todate,
+      });
       setDuration(time);
       setMonth(month);
       setIsModalVisible(false);
@@ -357,33 +378,23 @@ const TransactionsScreen = ({navigation}: Props) => {
   }
 
   const onConfirm = (date: string) => {
-    const fromDate = moment(date).format('YYYY-MM-DD');
+    const fromdate = moment(date).format('YYYY-MM-DD');
     const todate = moment(date).format('YYYY-MM-DD');
     if (fromDateClicked) {
-      setFromDate(fromDate);
+      // setFromDate(fromdate);
+      transactCtx.fromDateSetHandler({
+        fromDate: fromdate,
+      });
     }
     if (toDateClicked) {
-      setToDate(todate);
+      // setToDate(todate);
+      transactCtx.toDateSetHandler({
+        toDate: todate,
+      });
     }
     setFromDateClicked(false);
     setToDateClicked(false);
     hideDatePicker();
-  };
-
-  // Update State
-  const updateState = () => {
-    dispatch({
-      type: 'update',
-      payload: {
-        fromDate,
-        toDate,
-        monthlyPressed,
-        weeklyPressed,
-        dailyPressed,
-        customPressed,
-        exportPressed,
-      },
-    });
   };
 
   // Month Func
@@ -393,15 +404,22 @@ const TransactionsScreen = ({navigation}: Props) => {
     const fromdate = moment(`${year}-01-01`).format('YYYY-MM-DD');
     const todate = moment(`${year}-12-31`).format('YYYY-MM-DD');
 
-    setFromDate(fromdate);
-    setToDate(todate);
-    setMonthlyPressed(true);
-    setWeeklyPressed(false);
-    setDailyPressed(false);
-    setCustomPressed(false);
-    setExportPressed(false);
     setDuration(year);
     // setDuration(String(moment(toDate).year()));
+    transactCtx.fromDateSetHandler({
+      fromDate: fromdate,
+    });
+    transactCtx.toDateSetHandler({
+      toDate: todate,
+    });
+
+    transactCtx.tabPressedHandler({
+      monthlyPressed: true,
+      weeklyPressed: false,
+      dailyPressed: false,
+      customPressed: false,
+      exportPressed: false,
+    });
   };
 
   // Week Func
@@ -427,18 +445,26 @@ const TransactionsScreen = ({navigation}: Props) => {
       'YYYY-MM-DD',
     );
 
-    setFromDate(fromdate);
-    setToDate(todate);
+    // setFromDate(fromdate);
+    // setToDate(todate);
     typeof duration === 'number'
       ? setDuration(moment.monthsShort(moment(date).month()))
       : '';
 
-    // Reset
-    setMonthlyPressed(false);
-    setWeeklyPressed(true);
-    setDailyPressed(false);
-    setCustomPressed(false);
-    setExportPressed(false);
+    transactCtx.fromDateSetHandler({
+      fromDate: fromdate,
+    });
+    transactCtx.toDateSetHandler({
+      toDate: todate,
+    });
+
+    transactCtx.tabPressedHandler({
+      monthlyPressed: false,
+      weeklyPressed: true,
+      dailyPressed: false,
+      customPressed: false,
+      exportPressed: false,
+    });
   };
 
   const dailyHandler = () => {
@@ -458,18 +484,24 @@ const TransactionsScreen = ({navigation}: Props) => {
       'YYYY-MM-DD',
     );
 
-    setFromDate(fromdate);
-    setToDate(todate);
-
     typeof duration === 'number'
       ? setDuration(moment.monthsShort(moment(date).month()))
       : '';
 
-    setMonthlyPressed(false);
-    setWeeklyPressed(false);
-    setDailyPressed(true);
-    setCustomPressed(false);
-    setExportPressed(false);
+    transactCtx.fromDateSetHandler({
+      fromDate: fromdate,
+    });
+    transactCtx.toDateSetHandler({
+      toDate: todate,
+    });
+
+    transactCtx.tabPressedHandler({
+      monthlyPressed: false,
+      weeklyPressed: false,
+      dailyPressed: true,
+      customPressed: false,
+      exportPressed: false,
+    });
   };
 
   const customHandler = () => {
@@ -487,22 +519,31 @@ const TransactionsScreen = ({navigation}: Props) => {
     const fromdate = moment(`${year}-${MONTH}-01`).format('YYYY-MM-DD');
     const todate = moment(`${year}-${MONTH}-${today}`).format('YYYY-MM-DD');
 
-    setFromDate(fromdate);
-    setToDate(todate);
-    setMonthlyPressed(false);
-    setWeeklyPressed(false);
-    setDailyPressed(false);
-    setCustomPressed(true);
-    setExportPressed(false);
+    transactCtx.fromDateSetHandler({
+      fromDate: fromdate,
+    });
+    transactCtx.toDateSetHandler({
+      toDate: todate,
+    });
+
+    transactCtx.tabPressedHandler({
+      monthlyPressed: false,
+      weeklyPressed: false,
+      dailyPressed: false,
+      customPressed: true,
+      exportPressed: false,
+    });
   };
 
   // Export Handler
   async function exportsHandler() {
-    setExportPressed(true);
-    setMonthlyPressed(false);
-    setWeeklyPressed(false);
-    setDailyPressed(false);
-    setCustomPressed(false);
+    transactCtx.tabPressedHandler({
+      monthlyPressed: false,
+      weeklyPressed: false,
+      dailyPressed: false,
+      customPressed: false,
+      exportPressed: true,
+    });
 
     const authUser = await Auth.currentAuthenticatedUser();
     const appUserId = authUser?.attributes?.sub;
@@ -522,21 +563,23 @@ const TransactionsScreen = ({navigation}: Props) => {
   }
 
   // FILTERED DATA (From date ----> To date)
+  console.log('ctx fromdate: ', transactCtx.fromDate);
   const selectedDurationExpenseData = ExpenseData?.filter(
     expense =>
-      moment(expense.date).format('YYYY-MM-DD') >= fromDate &&
-      moment(expense.date).format('YYYY-MM-DD') <= toDate,
+      moment(expense.date).format('YYYY-MM-DD') >= transactCtx.fromDate &&
+      moment(expense.date).format('YYYY-MM-DD') <= transactCtx.toDate,
   );
   const selectedDurationIncomeData = IncomeData?.filter(
     income =>
-      moment(income.date).format('YYYY-MM-DD') >= fromDate &&
-      moment(income.date).format('YYYY-MM-DD') <= toDate,
+      moment(income.date).format('YYYY-MM-DD') >= transactCtx.fromDate &&
+      moment(income.date).format('YYYY-MM-DD') <= transactCtx.toDate,
   );
 
   // TOTAL EXPENSE
   const totalExpenses = +sumTotalFunc(selectedDurationExpenseData).toFixed(0);
   const totalIncome = +sumTotalFunc(selectedDurationIncomeData).toFixed(0);
   const total = totalIncome - totalExpenses;
+  console.log('total', total);
 
   return (
     <View style={styles.container}>
@@ -554,7 +597,7 @@ const TransactionsScreen = ({navigation}: Props) => {
       />
 
       <MonthYearList
-        monthlyPressed={monthlyPressed}
+        monthlyPressed={transactCtx.monthlyPressed}
         onMYSelectedHandler={onMonthYearSelectedHandler}
         year={+year}
         setYear={setYear}
@@ -568,7 +611,13 @@ const TransactionsScreen = ({navigation}: Props) => {
         // onChange={onChange}
         onCancel={hideDatePicker}
         onConfirm={onConfirm}
-        value={toDateClicked ? toDate : fromDateClicked ? fromDate : ''}
+        value={
+          toDateClicked
+            ? transactCtx.toDate
+            : fromDateClicked
+            ? transactCtx.fromDate
+            : ''
+        }
         mode={mode}
         // today={onTodayHandler}
         is24Hour={true}
