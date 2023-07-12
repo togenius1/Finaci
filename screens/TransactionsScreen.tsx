@@ -2,18 +2,11 @@ import {
   Dimensions,
   Platform,
   Pressable,
-  SafeAreaView,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
-import React, {
-  Children,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 // import {useFocusEffect} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
