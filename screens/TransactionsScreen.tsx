@@ -7,7 +7,13 @@ import {
   Text,
   View,
 } from 'react-native';
-import React, {useCallback, useContext, useEffect, useState} from 'react';
+import React, {
+  Children,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 // import {useFocusEffect} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
@@ -18,9 +24,6 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import MonthYearList from '../components/Menu/MonthYearList';
 import {TransactionNavigationProp} from '../types';
 // import {useSwipe} from '../components/UI/useSwape';
-import Screen1 from '../components/screen-components/Screen1';
-import Screen2 from '../components/screen-components/Screen2';
-import Screen3 from '../components/screen-components/Screen3';
 import Tabs from '../components/UI/Tabs';
 import {currencyFormatter} from '../util/currencyFormatter';
 import {sumTotalFunc} from '../util/math';
@@ -50,7 +53,7 @@ const adUnitId = __DEV__
 // Swipe Screen
 const screens = [
   {name: 'Screen 1', props: {foo: 'bar'}},
-  {name: 'Screen 2', props: {baz: 'qux'}},
+  {name: 'Current Screen', props: {baz: 'qux'}},
   {name: 'Screen 3', props: {abc: 'def'}},
 ];
 
@@ -66,38 +69,18 @@ function TransactScreenComponent({setFocusedTabIndex, focusedTabIndex}) {
           setFocusedTabIndex(e.data?.state?.index);
         },
       }}
-      initialRouteName="Screen 2"
+      initialRouteName="Current Screen"
       screenOptions={() => ({
         // tabBarIndicatorStyle: {backgroundColor: 'transparent'},
         // tabBarShowLabel: false,
         // tabBarContentContainerStyle: {height: 0},
       })}>
       {screens.map((screen, index) => (
-        <TopTab.Screen
-          key={index}
-          name={screen.name}
-          component={() => <TransactionSummary {...screen.props} />}
-        />
+        <TopTab.Screen key={index} name={screen.name}>
+          {() => <TransactionSummary {...screen.props} />}
+        </TopTab.Screen>
       ))}
     </TopTab.Navigator>
-
-    // <TopTab.Navigator
-    //   screenListeners={{
-    //     state: e => {
-    //       // Do something with the state
-    //       // console.log('Page Index: ', e.data?.state?.index);
-    //       setFocusedTabIndex(e.data?.state?.index);
-    //     },
-    //   }}
-    //   screenOptions={() => ({
-    //     tabBarIndicatorStyle: {backgroundColor: 'transparent'},
-    //     tabBarShowLabel: false,
-    //     tabBarContentContainerStyle: {height: 0},
-    //   })}>
-    //   <TopTab.Screen name="Screen1" component={Screen1} />
-    //   <TopTab.Screen name="Screen2" component={Screen2} />
-    //   <TopTab.Screen name="Screen3" component={Screen3} />
-    // </TopTab.Navigator>
   );
 }
 

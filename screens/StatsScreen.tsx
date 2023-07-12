@@ -167,19 +167,19 @@ const StatsScreen = ({navigation}: Props) => {
     //   month = moment(fromdate).month() + 1;
     // }
 
-    setFromDate(fromdate);
-    setToDate(todate);
+    // setFromDate(fromdate);
+    // setToDate(todate);
     setMonth(mm);
     setIsModalVisible(false);
   }
 
   function setFromToDateExpenseIncomeHandler() {
     if (year === moment().year()) {
-      setFromDate(moment(`${year}-01-01`).format('YYYY-MM-DD'));
-      setToDate(moment(`${year}-MM-DD`).format('YYYY-MM-DD'));
+      // setFromDate(moment(`${year}-01-01`).format('YYYY-MM-DD'));
+      // setToDate(moment(`${year}-MM-DD`).format('YYYY-MM-DD'));
     } else {
-      setFromDate(moment(`${year}-01-01`).format('YYYY-MM-DD'));
-      setToDate(moment(`${year}-12-31`).format('YYYY-MM-DD'));
+      //   setFromDate(moment(`${year}-01-01`).format('YYYY-MM-DD'));
+      //   setToDate(moment(`${year}-12-31`).format('YYYY-MM-DD'));
     }
   }
 
