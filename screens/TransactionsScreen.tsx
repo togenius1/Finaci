@@ -27,6 +27,7 @@ import {TestIds, useInterstitialAd} from 'react-native-google-mobile-ads';
 // import TransactProvider from '../store-context/TransactProvider';
 import TransactContext from '../store-context/transact-context';
 import TransactionSummary from '../components/Output/TransactionSummary';
+import {useSwipe} from '../components/ui-function/useSwipe';
 
 const {width, height} = Dimensions.get('window');
 
@@ -46,7 +47,7 @@ const adUnitId = __DEV__
 // Swipe Screen
 // Specify initial screen to three screens.
 // Swap left/right to push a screen to an array.
-const screens = [
+const initialScreens = [
   {name: 'Screen 1', props: {foo: 'bar'}},
   {name: 'Current Screen', props: {baz: 'qux'}},
   {name: 'Screen 3', props: {abc: 'def'}},
@@ -54,7 +55,11 @@ const screens = [
 
 const TopTab = createMaterialTopTabNavigator();
 
-function TransactScreenComponent({setFocusedTabIndex, focusedTabIndex}) {
+function TransactScreenComponent({
+  setFocusedTabIndex,
+  focusedTabIndex,
+  screens,
+}) {
   return (
     <TopTab.Navigator
       screenListeners={{
@@ -128,6 +133,7 @@ const TransactionsScreen = ({navigation}: Props) => {
   const [toDateClicked, setToDateClicked] = useState<boolean>(false);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [indicatorIndex, setIndicatorIndex] = useState<number | undefined>(0);
+  const [screens, setScreens] = useState<any>(initialScreens);
 
   const {isLoaded, isClosed, load, show} = useInterstitialAd(adUnitId, {
     requestNonPersonalizedAdsOnly: true,
@@ -578,8 +584,30 @@ const TransactionsScreen = ({navigation}: Props) => {
   const totalIncome = +sumTotalFunc(selectedDurationIncomeData).toFixed(0);
   const total = totalIncome - totalExpenses;
 
+  // Detect swipe screen: Left and Right
+  const {onTouchStart, onTouchEnd} = useSwipe(onSwipeLeft, onSwipeRight, 6);
+
+  function onSwipeLeft() {
+    console.log('SWIPE_LEFT');
+    // Increase screen on the right
+    // setScreens({name: 'Screen 1', props: {foo: 'bar'})
+
+    // Remove one screen on the left
+  }
+
+  function onSwipeRight() {
+    console.log('SWIPE_RIGHT');
+    // Increase screen on the left
+    // setScreens({name: 'Screen 1', props: {foo: 'bar'})
+
+    // Remove one screen on the right
+  }
+
   return (
-    <View style={styles.container}>
+    <View
+      style={styles.container}
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}>
       <View style={{marginTop: 18}}>
         <HeaderSummary
           total={total}
@@ -591,6 +619,7 @@ const TransactionsScreen = ({navigation}: Props) => {
       <TransactScreenComponent
         setFocusedTabIndex={setFocusedTabIndex}
         focusedTabIndex={focusedTabIndex}
+        screens={screens}
       />
 
       <MonthYearList
