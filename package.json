@@ -38,7 +38,7 @@
     "react-native-google-mobile-ads": "^11.1.1",
     "react-native-modal-datetime-picker": "^15.0.1",
     "react-native-pager-view": "^6.2.0",
-    "react-native-purchases": "^6.2.3",
+    "react-native-purchases": "^6.3.0",
     "react-native-reanimated": "^3.3.0",
     "react-native-rename": "^3.2.13",
     "react-native-safe-area-context": "^4.6.3",

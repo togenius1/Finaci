@@ -6,7 +6,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import React, {useContext, useEffect} from 'react';
+import React, {useContext} from 'react';
 import {v4 as uuidv4} from 'uuid';
 import moment from 'moment';
 import {useNavigation} from '@react-navigation/native';
@@ -232,7 +232,6 @@ const TransactionSummary = ({}: Props) => {
   // Parameters
   let _renderItem: any = '';
   let _renderData: any = [];
-  const date = moment(fromDate).format('YYYY-MM-DD');
 
   const navigation = useNavigation();
 
@@ -247,28 +246,12 @@ const TransactionSummary = ({}: Props) => {
   const dailyPressed = transactCtx?.dailyPressed;
   const customPressed = transactCtx?.customPressed;
   const exportPressed = transactCtx?.exportPressed;
-
   // Data from local storage
   const MonthlyTransactsData = dataLoaded?.monthlyTransacts?.monthlyTransacts;
   const WeeklyTransactsData = dataLoaded?.weeklyTransacts?.weeklyTransacts;
   const DailyTransactionData = dataLoaded?.dailyTransacts?.dailyTransacts;
 
-  // // FILTERED DATA (From date ----> To date)
-  // const selectedDurationExpenseData = ExpenseData?.filter(
-  //   expense =>
-  //     moment(expense.date).format('YYYY-MM-DD') >= fromDate &&
-  //     moment(expense.date).format('YYYY-MM-DD') <= toDate,
-  // );
-  // const selectedDurationIncomeData = IncomeData?.filter(
-  //   income =>
-  //     moment(income.date).format('YYYY-MM-DD') >= fromDate &&
-  //     moment(income.date).format('YYYY-MM-DD') <= toDate,
-  // );
-
-  // // TOTAL EXPENSE
-  // const totalExpenses = +sumTotalFunc(selectedDurationExpenseData).toFixed(0);
-  // const totalIncome = +sumTotalFunc(selectedDurationIncomeData).toFixed(0);
-  // const total = totalIncome - totalExpenses;
+  const date = moment(fromDate).format('YYYY-MM-DD');
 
   // Monthly Transaction
   // const monthlyData = monthlyTransaction(fromDate, toDate, year);
@@ -311,20 +294,6 @@ const TransactionSummary = ({}: Props) => {
     _renderData = dailyData;
   }
 
-  // Sort Data
-  // const getSortedState = data =>
-  //   [...data]?.sort(
-  //     (a, b) =>
-  //       parseInt(moment(b.date).format('YYYY-MM-DD HH:mm:ss')) -
-  //       parseInt(moment(a.date).format('YYYY-MM-DD HH:mm:ss')),
-  //   );
-  // const sortedItems = useMemo(() => {
-  //   if (_renderData) {
-  //     return getSortedState(_renderData);
-  //   }
-  //   return _renderData;
-  // }, [_renderData]);
-
   const sortedItems = _renderData?.sort((a, b) => {
     const dateA = new Date(a.date).valueOf();
     const dateB = new Date(b.date).valueOf();
@@ -339,9 +308,6 @@ const TransactionSummary = ({}: Props) => {
     const expenseAmount = currencyFormatter(item.expense_daily, {});
     const incomeAmount = currencyFormatter(item.income_daily, {});
 
-    // if (!customPressed && +expenseAmount === 0 && +incomeAmount === 0) {
-    //   return;
-    // }
     if (+expenseAmount === 0 && +incomeAmount === 0) {
       return;
     }
@@ -373,12 +339,6 @@ const TransactionSummary = ({}: Props) => {
 
   return (
     <View style={styles.container}>
-      {/* <HeaderSummary
-        total={total}
-        totalIncome={totalIncome}
-        totalExpenses={totalExpenses}
-      /> */}
-
       {!exportPressed && (
         <FlatList
           keyExtractor={item => item + uuidv4()}

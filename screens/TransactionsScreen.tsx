@@ -55,11 +55,7 @@ const initialScreens = [
 
 const TopTab = createMaterialTopTabNavigator();
 
-function TransactScreenComponent({
-  setFocusedTabIndex,
-  focusedTabIndex,
-  screens,
-}) {
+function TransactScreenComponent({setFocusedTabIndex, screens}) {
   return (
     <TopTab.Navigator
       screenListeners={{
@@ -271,6 +267,8 @@ const TransactionsScreen = ({navigation}: Props) => {
     transactCtx.dailyPressed,
     transactCtx.customPressed,
     transactCtx.exportPressed,
+    transactCtx.fromDate,
+    transactCtx.toDate,
   ]);
 
   // Initialize State
@@ -335,7 +333,7 @@ const TransactionsScreen = ({navigation}: Props) => {
       });
     }
     setDuration(time);
-    setMonth(+moment().month() + 1);
+    setMonth(String(+moment().month() + 1));
     setIsModalVisible(false);
 
     if (!transactCtx.monthlyPressed) {
@@ -618,7 +616,6 @@ const TransactionsScreen = ({navigation}: Props) => {
 
       <TransactScreenComponent
         setFocusedTabIndex={setFocusedTabIndex}
-        focusedTabIndex={focusedTabIndex}
         screens={screens}
       />
 

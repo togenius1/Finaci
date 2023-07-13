@@ -41,7 +41,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
   const cash = dataLoaded?.cashAccounts?.cashAccounts;
   const ExpenseCategory = dataLoaded?.expenseCategories?.expenseCategories;
   const IncomeCategory = dataLoaded?.incomeCategories?.incomeCategories;
-  const weeklyTransactsData = dataLoaded?.weeklyTransacts?.weeklyTransacts;
+  // const weeklyTransactsData = dataLoaded?.weeklyTransacts?.weeklyTransacts;
 
   const amount = route.params?.amount;
   const type = route.params?.transaction?.type;
@@ -66,19 +66,19 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     requestNonPersonalizedAdsOnly: true,
   });
 
-  // Load ads
-  useEffect(() => {
-    // Start loading the interstitial straight away
-    load();
-  }, [load]);
+  // // Load ads
+  // useEffect(() => {
+  //   // Start loading the interstitial straight away
+  //   load();
+  // }, [load]);
 
-  // Load ads again
-  useEffect(() => {
-    if (isClosed) {
-      // console.log('Reloading ad...');
-      load();
-    }
-  }, [isClosed]);
+  // // Load ads again
+  // useEffect(() => {
+  //   if (isClosed) {
+  //     // console.log('Reloading ad...');
+  //     load();
+  //   }
+  // }, [isClosed]);
 
   useEffect(() => {
     initialAccountHandler();
@@ -174,22 +174,23 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
 
   // Save Function
   const saveHandler = async () => {
+    // Ads
+    // if (
+    //   !filteredCustomerInfo[0]?.stdActive &&
+    //   !filteredCustomerInfo[0]?.proActive
+    // ) {
+    //   // show Ads
+    //   if (isLoaded) {
+    //     show();
+    //   }
+    // }
+
     // Check Purchase user: show Ads
     const authUser = await Auth.currentAuthenticatedUser();
     const appUserId = authUser?.attributes?.sub;
     const filteredCustomerInfo = customerInfosData?.filter(
       cus => cus.appUserId === appUserId,
     );
-
-    if (
-      !filteredCustomerInfo[0]?.stdActive &&
-      !filteredCustomerInfo[0]?.proActive
-    ) {
-      // show Ads
-      if (isLoaded) {
-        show();
-      }
-    }
 
     //save
     await saveDataToStorage();
