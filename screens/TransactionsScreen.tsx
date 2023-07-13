@@ -56,6 +56,8 @@ const initialScreens = [
 const TopTab = createMaterialTopTabNavigator();
 
 function TransactScreenComponent({setFocusedTabIndex, screens}) {
+  console.log('screens: ', screens);
+  console.log('name: ', screens[1]?.name);
   return (
     <TopTab.Navigator
       screenListeners={{
@@ -65,14 +67,14 @@ function TransactScreenComponent({setFocusedTabIndex, screens}) {
           setFocusedTabIndex(e.data?.state?.index);
         },
       }}
-      initialRouteName="Current Screen"
+      initialRouteName={screens[1]?.name.toString()}
       screenOptions={() => ({
         // tabBarIndicatorStyle: {backgroundColor: 'transparent'},
         // tabBarShowLabel: false,
         // tabBarContentContainerStyle: {height: 0},
       })}>
-      {screens.map((screen, index) => (
-        <TopTab.Screen key={index} name={screen.name}>
+      {screens?.map((screen, index) => (
+        <TopTab.Screen key={index} name={screen?.name}>
           {() => <TransactionSummary {...screen.props} />}
         </TopTab.Screen>
       ))}
@@ -587,18 +589,37 @@ const TransactionsScreen = ({navigation}: Props) => {
 
   function onSwipeLeft() {
     console.log('SWIPE_LEFT');
-    // Increase screen on the right
-    // setScreens({name: 'Screen 1', props: {foo: 'bar'})
+
+    const newArray = screens?.concat([
+      {
+        name: 'Screen ' + Math.random() * 1,
+        props: {foo: 'bar'},
+      },
+    ]);
+    setScreens(newArray);
 
     // Remove one screen on the left
+    const removedScreen = screens?.slice(1, 4);
+    setScreens(removedScreen);
+    console.log(removedScreen);
   }
 
   function onSwipeRight() {
     console.log('SWIPE_RIGHT');
-    // Increase screen on the left
-    // setScreens({name: 'Screen 1', props: {foo: 'bar'})
+
+    setScreens(prev =>
+      prev?.concat([
+        {
+          name: 'Screen ' + Math.random() * 1,
+          props: {foo: 'bar'},
+        },
+      ]),
+    );
 
     // Remove one screen on the right
+    const removedScreen = screens?.slice(1, 4);
+    setScreens(removedScreen);
+    console.log(removedScreen);
   }
 
   return (
