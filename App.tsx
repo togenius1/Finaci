@@ -42,6 +42,7 @@ import {API_KEY, ENTITLEMENT_PRO, ENTITLEMENT_STD} from './constants/api';
 import {customerInfoActions} from './store/customerInfo-slice';
 import {fetchAuthAccountsData} from './store/authAccount-action';
 import TransactProvider from './store-context/TransactProvider';
+import OverviewProvider from './store-context/OverviewProvider';
 
 Amplify.configure(awsconfig);
 
@@ -373,38 +374,40 @@ const App = () => {
   const colorScheme = Appearance.getColorScheme();
 
   return (
-    <TransactProvider>
-      <StatusBar barStyle="light-content" />
-      <ActivityIndicator
-        size="large"
-        color="#0000ff"
-        animating={showIndicator}
-      />
-      <FinnerNavigator
-        isAuthenticated={isAuthenticated}
-        colorScheme={colorScheme}
-      />
+    <OverviewProvider>
+      <TransactProvider>
+        <StatusBar barStyle="light-content" />
+        <ActivityIndicator
+          size="large"
+          color="#0000ff"
+          animating={showIndicator}
+        />
+        <FinnerNavigator
+          isAuthenticated={isAuthenticated}
+          colorScheme={colorScheme}
+        />
 
-      {isAuthenticated && !closedAds && (
-        <>
-          <Pressable
-            style={({pressed}) => pressed && styles.pressed}
-            onPress={() => closeAdsHandler()}>
-            <View style={styles.close}>
-              <MaterialCommunityIcons name="close" size={20} color={'grey'} />
-            </View>
-          </Pressable>
+        {isAuthenticated && !closedAds && (
+          <>
+            <Pressable
+              style={({pressed}) => pressed && styles.pressed}
+              onPress={() => closeAdsHandler()}>
+              <View style={styles.close}>
+                <MaterialCommunityIcons name="close" size={20} color={'grey'} />
+              </View>
+            </Pressable>
 
-          <BannerAd
-            unitId={adUnitId}
-            size={BannerAdSize.BANNER}
-            requestOptions={{
-              requestNonPersonalizedAdsOnly: true,
-            }}
-          />
-        </>
-      )}
-    </TransactProvider>
+            <BannerAd
+              unitId={adUnitId}
+              size={BannerAdSize.BANNER}
+              requestOptions={{
+                requestNonPersonalizedAdsOnly: true,
+              }}
+            />
+          </>
+        )}
+      </TransactProvider>
+    </OverviewProvider>
   );
 };
 

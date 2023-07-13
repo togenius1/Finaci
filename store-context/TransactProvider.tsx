@@ -70,7 +70,7 @@ const TransactProvider = props => {
     dispatchTransactAction({type: 'SET_TO_DATE', item: item});
   };
 
-  const cartContext = {
+  const transactContext = {
     fromDate: transactState.fromDate,
     toDate: transactState.toDate,
     monthlyPressed: transactState.monthlyPressed,
@@ -84,7 +84,7 @@ const TransactProvider = props => {
   };
 
   return (
-    <TransactContext.Provider value={cartContext}>
+    <TransactContext.Provider value={transactContext}>
       {props.children}
     </TransactContext.Provider>
   );

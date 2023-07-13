@@ -1,13 +1,14 @@
 import {StyleSheet} from 'react-native';
-import React, {useEffect} from 'react';
+import React, {useContext, useEffect} from 'react';
 // import {useIsFocused} from '@react-navigation/native';
 
 import IncomeOutput from '../Output/IncomeOutput';
 // import {INCOME} from '../../dummy/dummy';
 import {IncomeTabRouteProp} from '../../types';
 // import {IncomeType} from '../../models/income';
-import {useAppDispatch, useAppSelector} from '../../hooks';
-import {fetchIncomesData} from '../../store/income-action';
+import {useAppSelector} from '../../hooks';
+// import {fetchIncomesData} from '../../store/income-action';
+import OverviewContext from '../../store-context/overview-context';
 
 type Props = {
   route: IncomeTabRouteProp;
@@ -21,8 +22,11 @@ const IncomeTab = ({route}: Props) => {
   // const [incomeData, setIncomeData] = useState<IncomeType>();
 
   // const isFocused = useIsFocused();
-  const fromDate = route.params?.fromDate;
-  const toDate = route.params?.toDate;
+  // const fromDate = route.params?.fromDate;
+  // const toDate = route.params?.toDate;
+  const overviewCtx = useContext(OverviewContext);
+  const fromDate = overviewCtx?.fromDate;
+  const toDate = overviewCtx?.toDate;
 
   useEffect(() => {}, [route.params]);
 

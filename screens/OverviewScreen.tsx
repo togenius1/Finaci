@@ -6,7 +6,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {useFocusEffect} from '@react-navigation/native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
@@ -19,6 +19,7 @@ import MonthYearList from '../components/Menu/MonthYearList';
 import {OverviewNavigationProp} from '../types';
 import AddBtn from '../components/UI/AddBtn';
 import Menu from '../components/Menu/Menu';
+import OverviewContext from '../store-context/overview-context';
 
 type Props = {
   navigation: OverviewNavigationProp;
@@ -34,10 +35,12 @@ const initFromDateString = `${moment().year()}-${MONTH}-01`;
 const initFromDate = moment(initFromDateString).format('YYYY-MM-DD');
 const initToDate = moment().format('YYYY-MM-DD');
 
+// Top tab
 const TopTab = createMaterialTopTabNavigator();
 // const navigation = useNavigation();
 
-function OverviewTab({setFocusedTabIndex, fromDate, toDate}) {
+// Overview
+function OverviewTab({setFocusedTabIndex}) {
   return (
     <TopTab.Navigator
       screenListeners={{
@@ -54,22 +57,23 @@ function OverviewTab({setFocusedTabIndex, fromDate, toDate}) {
       <TopTab.Screen
         name="Spending"
         component={Spending}
-        initialParams={{fromDate: fromDate, toDate: toDate}}
+        // initialParams={{fromDate: fromDate, toDate: toDate}}
       />
       <TopTab.Screen
         name="Expense"
         component={Expense}
-        initialParams={{fromDate: fromDate, toDate: toDate}}
+        // initialParams={{fromDate: fromDate, toDate: toDate}}
       />
       <TopTab.Screen
         name="Income"
         component={Income}
-        initialParams={{fromDate: fromDate, toDate: toDate}}
+        // initialParams={{fromDate: fromDate, toDate: toDate}}
       />
     </TopTab.Navigator>
   );
 }
 
+// Header Right
 function HeaderRightComponent({
   fromDate,
   toDate,
@@ -145,8 +149,8 @@ const OverviewScreen = ({navigation}: Props) => {
   const [isDatePickerVisible, setDatePickerVisibility] =
     useState<boolean>(false);
   const [mode, setMode] = useState<string | null>('date');
-  const [fromDate, setFromDate] = useState<string | null>(initFromDate);
-  const [toDate, setToDate] = useState<string | null>(initToDate);
+  // const [fromDate, setFromDate] = useState<string | null>(initFromDate);
+  // const [toDate, setToDate] = useState<string | null>(initToDate);
   const [fromDateClicked, setFromDateClicked] = useState<boolean>(false);
   const [toDateClicked, setToDateClicked] = useState<boolean>(false);
   const [rightMenuClicked, setRightMenuClicked] = useState<boolean>(false);
@@ -159,6 +163,8 @@ const OverviewScreen = ({navigation}: Props) => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   // const [duration, setDuration] = useState(moment().year());
   const [month, setMonth] = useState<string | null>(String(MONTH));
+
+  const overviewCtx = useContext(OverviewContext);
 
   // useEffect when focus
   useFocusEffect(
@@ -193,8 +199,8 @@ const OverviewScreen = ({navigation}: Props) => {
       // headerTitleContainerStyle: {marginLeft: 0},
       headerRight: () => (
         <HeaderRightComponent
-          fromDate={fromDate}
-          toDate={toDate}
+          fromDate={overviewCtx.fromDate}
+          toDate={overviewCtx.toDate}
           showCustomDate={showCustomDate}
           fromDateClickedHandler={fromDateClickedHandler}
           toDateClickedHandler={toDateClickedHandler}
@@ -205,24 +211,24 @@ const OverviewScreen = ({navigation}: Props) => {
     });
   }, [
     rightMenuClicked,
-    fromDate,
-    toDate,
+    overviewCtx.fromDate,
+    overviewCtx.toDate,
     showCustomDate,
     navigation,
     // showMonthYearListMenu,
   ]);
 
-  useEffect(() => {
-    if (focusedTabIndex === 0) {
-      sendParamsToSpendingTabHandler();
-    }
-    if (focusedTabIndex === 1) {
-      sendParamsToExpenseTabHandler();
-    }
-    if (focusedTabIndex === 2) {
-      sendParamsToIncomeTabHandler();
-    }
-  }, [focusedTabIndex, fromDate, toDate]);
+  // useEffect(() => {
+  // if (focusedTabIndex === 0) {
+  //   sendParamsToSpendingTabHandler();
+  // }
+  // if (focusedTabIndex === 1) {
+  //   sendParamsToExpenseTabHandler();
+  // }
+  // if (focusedTabIndex === 2) {
+  //   sendParamsToIncomeTabHandler();
+  // }
+  // }, [focusedTabIndex, overviewCtx.fromDate, toDate]);
 
   // Set Month Year
   function onMonthYearSelectedHandler(time) {
@@ -240,8 +246,14 @@ const OverviewScreen = ({navigation}: Props) => {
     todate = moment(`${year}-${mm}-${daysInMonth}`).format('YYYY-MM-DD');
     // month = moment(fromdate).month() + 1;
 
-    setFromDate(moment(fromdate).format('YYYY-MM-DD'));
-    setToDate(moment(todate).format('YYYY-MM-DD'));
+    // setFromDate(moment(fromdate).format('YYYY-MM-DD'));
+    // setToDate(moment(todate).format('YYYY-MM-DD'));
+    overviewCtx.fromDateSetHandler({
+      fromDate: fromdate,
+    });
+    overviewCtx.toDateSetHandler({
+      toDate: todate,
+    });
 
     const MONTH = moment(todate).format('M');
     setMonth(MONTH);
@@ -258,17 +270,23 @@ const OverviewScreen = ({navigation}: Props) => {
   }
 
   function monthlyClickedHandler() {
-    setFromDate(initFromDate);
-    setToDate(initToDate);
-    if (focusedTabIndex === 0) {
-      sendParamsToSpendingTabHandler();
-    }
-    if (focusedTabIndex === 1) {
-      sendParamsToExpenseTabHandler();
-    }
-    if (focusedTabIndex === 2) {
-      sendParamsToIncomeTabHandler();
-    }
+    // setFromDate(initFromDate);
+    // setToDate(initToDate);
+    overviewCtx.fromDateSetHandler({
+      fromDate: initFromDate,
+    });
+    overviewCtx.toDateSetHandler({
+      toDate: initToDate,
+    });
+    // if (focusedTabIndex === 0) {
+    //   // sendParamsToSpendingTabHandler();
+    // }
+    // if (focusedTabIndex === 1) {
+    //   // sendParamsToExpenseTabHandler();
+    // }
+    // if (focusedTabIndex === 2) {
+    //   // sendParamsToIncomeTabHandler();
+    // }
 
     setShowCustomDate(false);
     setRightMenuClicked(false);
@@ -301,10 +319,16 @@ const OverviewScreen = ({navigation}: Props) => {
     }
     let date = moment(event).format('YYYY-MM-DD');
     if (fromDateClicked) {
-      setFromDate(date);
+      // setFromDate(date);
+      overviewCtx.fromDateSetHandler({
+        fromDate: date,
+      });
     }
     if (toDateClicked) {
-      setToDate(date);
+      // setToDate(date);
+      overviewCtx.toDateSetHandler({
+        toDate: date,
+      });
     }
   }
 
@@ -318,61 +342,68 @@ const OverviewScreen = ({navigation}: Props) => {
 
   const onConfirm = date => {
     if (fromDateClicked) {
-      setFromDate(moment(date).format('YYYY-MM-DD'));
+      // setFromDate(moment(date).format('YYYY-MM-DD'));
+      overviewCtx.fromDateSetHandler({
+        fromDate: moment(date).format('YYYY-MM-DD'),
+      });
     }
     if (toDateClicked) {
-      setToDate(moment(date).format('YYYY-MM-DD'));
+      // setToDate(moment(date).format('YYYY-MM-DD'));
+      overviewCtx.toDateSetHandler({
+        toDate: moment(date).format('YYYY-MM-DD'),
+      });
     }
-    if (focusedTabIndex === 0) {
-      sendParamsToSpendingTabHandler();
-    }
-    if (focusedTabIndex === 1) {
-      sendParamsToExpenseTabHandler();
-    }
-    if (focusedTabIndex === 2) {
-      sendParamsToIncomeTabHandler();
-    }
+    // if (focusedTabIndex === 0) {
+    //   sendParamsToSpendingTabHandler();
+    // }
+    // if (focusedTabIndex === 1) {
+    //   sendParamsToExpenseTabHandler();
+    // }
+    // if (focusedTabIndex === 2) {
+    //   sendParamsToIncomeTabHandler();
+    // }
     setFromDateClicked(false);
     setToDateClicked(false);
     hideDatePicker();
   };
 
-  const sendParamsToSpendingTabHandler = () => {
-    navigation.navigate('Spending', {
-      fromDate: fromDate,
-      toDate: toDate,
-    });
-  };
+  // const sendParamsToSpendingTabHandler = () => {
+  //   navigation.navigate('Spending', {
+  //     fromDate: fromDate,
+  //     toDate: toDate,
+  //   });
+  // };
 
-  const sendParamsToExpenseTabHandler = () => {
-    navigation.navigate('Expense', {
-      fromDate: fromDate,
-      toDate: toDate,
-    });
-  };
+  // const sendParamsToExpenseTabHandler = () => {
+  //   navigation.navigate('Expense', {
+  //     fromDate: fromDate,
+  //     toDate: toDate,
+  //   });
+  // };
 
-  const sendParamsToIncomeTabHandler = () => {
-    navigation.navigate('Income', {
-      fromDate: fromDate,
-      toDate: toDate,
-    });
-  };
+  // const sendParamsToIncomeTabHandler = () => {
+  //   navigation.navigate('Income', {
+  //     fromDate: fromDate,
+  //     toDate: toDate,
+  //   });
+  // };
 
   return (
     <View style={styles.container}>
-      <OverviewTab
-        setFocusedTabIndex={setFocusedTabIndex}
-        // focusedTabIndex={focusedTabIndex}
-        fromDate={fromDate}
-        toDate={toDate}
-      />
+      <OverviewTab setFocusedTabIndex={setFocusedTabIndex} />
 
       <DateTimePickerModal
         isVisible={isDatePickerVisible}
         onChange={onChange}
         onCancel={hideDatePicker}
         onConfirm={onConfirm}
-        value={toDateClicked ? toDate : fromDateClicked ? fromDate : ''}
+        value={
+          toDateClicked
+            ? overviewCtx.toDate
+            : fromDateClicked
+            ? overviewCtx.fromDate
+            : ''
+        }
         mode={mode}
         // today={onTodayHandler}
         is24Hour={true}
@@ -385,7 +416,7 @@ const OverviewScreen = ({navigation}: Props) => {
         isMenuOpen={isMenuOpen}
         monthlyClickedHandler={monthlyClickedHandler}
         customClickedHandler={customClickedHandler}
-        focusedTabIndex={focusedTabIndex}
+        focusedTabIndex={Number(focusedTabIndex)}
       />
 
       <MonthYearList
