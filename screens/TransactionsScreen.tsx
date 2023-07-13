@@ -44,6 +44,8 @@ const adUnitId = __DEV__
   : 'ca-app-pub-3212728042764573~3355076099';
 
 // Swipe Screen
+// Specify initial screen to three screens.
+// Swap left/right to push a screen to an array.
 const screens = [
   {name: 'Screen 1', props: {foo: 'bar'}},
   {name: 'Current Screen', props: {baz: 'qux'}},
