@@ -228,7 +228,8 @@ const DailyItem = ({
 };
 
 // Main function
-const TransactionSummary = ({}: Props) => {
+const TransactionSummary = ({props}: Props) => {
+
   // Parameters
   let _renderItem: any = '';
   let _renderData: any = [];

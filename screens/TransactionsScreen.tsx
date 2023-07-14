@@ -48,16 +48,14 @@ const adUnitId = __DEV__
 // Specify initial screen to three screens.
 // Swap left/right to push a screen to an array.
 const initialScreens = [
-  {name: 'Screen 1', props: {foo: 'bar'}},
-  {name: 'Current Screen', props: {baz: 'qux'}},
-  {name: 'Screen 3', props: {abc: 'def'}},
+  {name: 'Screen 1', props: {num: '1'}},
+  {name: 'Screen 2', props: {num: '2'}},
+  {name: 'Screen 3', props: {num: '3'}},
 ];
 
 const TopTab = createMaterialTopTabNavigator();
 
-function TransactScreenComponent({setFocusedTabIndex, screens}) {
-  console.log('screens: ', screens);
-  console.log('name: ', screens[1]?.name);
+function TransactScreenComponent({setFocusedTabIndex, tabs}) {
   return (
     <TopTab.Navigator
       screenListeners={{
@@ -67,15 +65,15 @@ function TransactScreenComponent({setFocusedTabIndex, screens}) {
           setFocusedTabIndex(e.data?.state?.index);
         },
       }}
-      initialRouteName={screens[1]?.name.toString()}
+      initialRouteName={tabs[1]?.name}
       screenOptions={() => ({
         // tabBarIndicatorStyle: {backgroundColor: 'transparent'},
         // tabBarShowLabel: false,
         // tabBarContentContainerStyle: {height: 0},
       })}>
-      {screens?.map((screen, index) => (
-        <TopTab.Screen key={index} name={screen?.name}>
-          {() => <TransactionSummary {...screen.props} />}
+      {tabs?.map((tab, index) => (
+        <TopTab.Screen key={index} name={tab?.name}>
+          {() => <TransactionSummary {...tab.props} />}
         </TopTab.Screen>
       ))}
     </TopTab.Navigator>
@@ -131,7 +129,7 @@ const TransactionsScreen = ({navigation}: Props) => {
   const [toDateClicked, setToDateClicked] = useState<boolean>(false);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [indicatorIndex, setIndicatorIndex] = useState<number | undefined>(0);
-  const [screens, setScreens] = useState<any>(initialScreens);
+  const [tabs, setTabs] = useState<any>(initialScreens);
 
   const {isLoaded, isClosed, load, show} = useInterstitialAd(adUnitId, {
     requestNonPersonalizedAdsOnly: true,
@@ -584,42 +582,49 @@ const TransactionsScreen = ({navigation}: Props) => {
   const totalIncome = +sumTotalFunc(selectedDurationIncomeData).toFixed(0);
   const total = totalIncome - totalExpenses;
 
+  // Function for Swipe Left
+  const newTabsArrayLeftHandler = () => {
+    // to stretch the array by adding a new screen
+    const updatedTabs = [
+      ...tabs,
+      {name: `Screen ${Math.random() * 100}`, props: {abc: 'def'}},
+    ];
+    // to shrink the array by removing the first screen
+    if (updatedTabs?.length > 0) {
+      const updatedRemovedTabs = updatedTabs?.slice(1);
+      setTabs(updatedRemovedTabs);
+    }
+  };
+
+  // Function for Swipe Right
+  const newTabsArrayRightHandler = () => {
+    // to stretch the array by adding a new screen
+    const updatedTabs = [
+      {name: `Screen ${Math.random() * 100}`, props: {abc: 'def'}},
+      ...tabs,
+    ];
+    // to shrink the array by removing the last screen
+    if (updatedTabs?.length > 0) {
+      const updatedRemovedTabs = updatedTabs?.slice(0, -1);
+      setTabs(updatedRemovedTabs);
+    }
+  };
+
   // Detect swipe screen: Left and Right
   const {onTouchStart, onTouchEnd} = useSwipe(onSwipeLeft, onSwipeRight, 6);
 
   function onSwipeLeft() {
     console.log('SWIPE_LEFT');
+    console.log('Screen Index: ', focusedTabIndex);
 
-    const newArray = screens?.concat([
-      {
-        name: 'Screen ' + Math.random() * 1,
-        props: {foo: 'bar'},
-      },
-    ]);
-    setScreens(newArray);
-
-    // Remove one screen on the left
-    const removedScreen = screens?.slice(1, 4);
-    setScreens(removedScreen);
-    console.log(removedScreen);
+    newTabsArrayLeftHandler();
   }
 
   function onSwipeRight() {
     console.log('SWIPE_RIGHT');
+    console.log('Screen Index: ', focusedTabIndex);
 
-    setScreens(prev =>
-      prev?.concat([
-        {
-          name: 'Screen ' + Math.random() * 1,
-          props: {foo: 'bar'},
-        },
-      ]),
-    );
-
-    // Remove one screen on the right
-    const removedScreen = screens?.slice(1, 4);
-    setScreens(removedScreen);
-    console.log(removedScreen);
+    newTabsArrayRightHandler();
   }
 
   return (
@@ -637,7 +642,7 @@ const TransactionsScreen = ({navigation}: Props) => {
 
       <TransactScreenComponent
         setFocusedTabIndex={setFocusedTabIndex}
-        screens={screens}
+        tabs={tabs}
       />
 
       <MonthYearList
