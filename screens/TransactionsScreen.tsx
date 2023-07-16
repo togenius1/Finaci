@@ -6,13 +6,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 // import {useFocusEffect} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
@@ -63,7 +57,7 @@ interface ScreenType {
   setCurrentTabIndex: (index: number) => void;
 }
 
-const tabsScreen = Array.from({length: 3}, (_, i) => ({
+const tabsScreen = Array.from({length: 9}, (_, i) => ({
   name: `Sc ${i}`,
   props: {num: `${i}`},
 }));
@@ -85,9 +79,9 @@ function TransactScreenComponent({tabs, setCurrentTabIndex}: ScreenType) {
       initialRouteName={tabs[middleTabIndex]?.name}
       // onTabPress={({index}) => onTabChange(index)}
       screenOptions={() => ({
-        // tabBarIndicatorStyle: {backgroundColor: 'transparent'},
-        // tabBarShowLabel: false,
-        // tabBarContentContainerStyle: {height: 0},
+        tabBarIndicatorStyle: {backgroundColor: 'transparent'},
+        tabBarShowLabel: false,
+        tabBarContentContainerStyle: {height: 0},
       })}>
       {tabs?.map((tab, index) => (
         <TopTab.Screen key={index} name={tab?.name}>
@@ -186,10 +180,18 @@ const TransactionsScreen = ({navigation}: Props) => {
     if (indicatorIndex === 0) {
       onMonthYearSelectedHandler(year);
     }
+
+    return () => {
+      // console.log('CLEANUP');
+    };
   }, [year]);
 
   useEffect(() => {
     changeYearHandler();
+
+    return () => {
+      // console.log('CLEANUP');
+    };
   }, [currentTabIndex]);
 
   // Header Right
@@ -316,6 +318,8 @@ const TransactionsScreen = ({navigation}: Props) => {
       customPressed: false,
       exportPressed: false,
     });
+
+    () => {};
   }, []);
 
   //
@@ -620,64 +624,58 @@ const TransactionsScreen = ({navigation}: Props) => {
   const total = totalIncome - totalExpenses;
 
   // Detect swipe screen: Left and Right
-  const {onTouchStart, onTouchEnd} = useSwipe(onSwipeLeft, onSwipeRight, 4);
+  const {onTouchStart, onTouchEnd} = useSwipe(onSwipeLeft, onSwipeRight, 2);
 
-  useEffect(() => {
-    if (swipeLeft) {
-      updatedLeftTabs();
-    }
-    if (swipeRight) {
-      updatedRightTabs();
-    }
-  }, [currentTabIndex]);
+  // const updatedLeftTabs = () => {
+  //   // stretch the array by adding a new screen
+  //   const i = Math.random();
 
-  const updatedLeftTabs = () => {
-    // stretch the array by adding a new screen
-    const i = Math.random();
+  //   const updatedArrTabs = [
+  //     ...tabs,
+  //     {
+  //       name: `Sc ${i}`,
+  //       props: {num: `${i}`},
+  //     },
+  //   ];
 
-    const updatedArrTabs = [
-      ...tabs,
-      {
-        name: `Sc ${i}`,
-        props: {num: `${i}`},
-      },
-    ];
+  //   // shrink the array by removing the first screen
+  //   // if (tabs.length > 0) {
+  //   const updatedTabs = updatedArrTabs.slice(1);
+  //   setTabs(updatedTabs);
+  //   // }
+  // };
 
-    // shrink the array by removing the first screen
-    if (updatedArrTabs.length > 0) {
-      const updatedTabs = updatedArrTabs.slice(1);
-      setTabs(updatedTabs);
-    }
-  };
+  // const updatedRightTabs = () => {
+  //   // stretch the array by adding a new screen
+  //   const i = Math.random();
 
-  const updatedRightTabs = () => {
-    // stretch the array by adding a new screen
-    const i = Math.random();
+  //   const updatedArrTabs = [
+  //     {
+  //       name: `Sc ${i}`,
+  //       props: {num: `${i}`},
+  //     },
+  //     ...tabs,
+  //   ];
 
-    const updatedArrTabs = [
-      {
-        name: `Sc ${i}`,
-        props: {num: `${i}`},
-      },
-      ...tabs,
-    ];
+  //   // shrink the array by removing the first screen
+  //   // if (tabs.length > 0) {
+  //   const updatedTabs = updatedArrTabs.slice(0, -1);
+  //   setTabs(updatedTabs);
+  //   // }
+  // };
 
-    // shrink the array by removing the first screen
-    if (updatedArrTabs.length > 0) {
-      const updatedTabs = updatedArrTabs.slice(0, -1);
-      setTabs(updatedTabs);
-      console.log('updatedTabs: ', updatedTabs);
-    }
-  };
+  // console.log('updatedTabs: ', tabs);
 
   // Increase or Decrease Year
   const changeYearHandler = () => {
     if (swipeLeft) {
       setYear(prev => +prev + 1);
+      // updatedLeftTabs();
     }
 
     if (swipeRight) {
       setYear(prev => +prev - 1);
+      // updatedRightTabs();
     }
   };
 
@@ -686,6 +684,8 @@ const TransactionsScreen = ({navigation}: Props) => {
     console.log('SWIPE_LEFT');
     setSwipeLeft(true);
     setSwipeRight(false);
+
+    // updatedLeftTabs();
   }
 
   // Swipe Right
@@ -693,6 +693,8 @@ const TransactionsScreen = ({navigation}: Props) => {
     console.log('SWIPE_RIGHT');
     setSwipeLeft(false);
     setSwipeRight(true);
+
+    // updatedRightTabs();
   }
 
   return (

@@ -1,6 +1,8 @@
 import {
   Dimensions,
   FlatList,
+  Image,
+  ImageBackground,
   Pressable,
   StyleSheet,
   Text,
@@ -20,7 +22,7 @@ import {TransactionSummaryNavigationProp} from '../../types';
 import {useAppSelector} from '../../hooks';
 import TransactContext from '../../store-context/transact-context';
 
-const {width} = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
 // Monthly renderItem
 function MonthlyRenderItem({item}) {
@@ -339,6 +341,12 @@ const TransactionSummary = ({props}: Props) => {
 
   return (
     <View style={styles.container}>
+      <ImageBackground
+        style={styles.tinyLogo}
+        source={require('../../assets/images/Finner.png')}
+        resizeMode="center"
+      />
+
       {!exportPressed && (
         <FlatList
           keyExtractor={item => item + uuidv4()}
@@ -403,6 +411,18 @@ const styles = StyleSheet.create({
     width: 35,
     height: 20,
     marginRight: 15,
+  },
+  tinyLogo: {
+    width: width / 4,
+    height: height / 10,
+    marginTop: height / 5,
+    marginLeft: width / 2.5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    // backgroundColor: 'red',
+    opacity: 0.7,
+
+    position: 'absolute',
   },
   pressed: {
     opacity: 0.65,
