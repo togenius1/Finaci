@@ -6,7 +6,13 @@ import {
   Text,
   View,
 } from 'react-native';
-import React, {useCallback, useContext, useEffect, useState} from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 // import {useFocusEffect} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
@@ -47,25 +53,37 @@ const adUnitId = __DEV__
 // Swipe Screen
 // Specify initial screen to three screens.
 // Swap left/right to push a screen to an array.
-const initialScreens = [
-  {name: 'Screen 1', props: {num: '1'}},
-  {name: 'Screen 2', props: {num: '2'}},
-  {name: 'Screen 3', props: {num: '3'}},
-];
+// const initialScreens = [
+//   {name: 'Screen 1', props: {num: '1'}},
+//   {name: 'Screen 2', props: {num: '2'}},
+//   {name: 'Screen 3', props: {num: '3'}},
+// ];
+interface ScreenType {
+  tabs: any[];
+  setCurrentTabIndex: (index: number) => void;
+}
+
+const tabsScreen = Array.from({length: 3}, (_, i) => ({
+  name: `Sc ${i}`,
+  props: {num: `${i}`},
+}));
+
+const middleTabIndex = Math.floor(tabsScreen?.length / 2);
 
 const TopTab = createMaterialTopTabNavigator();
 
-function TransactScreenComponent({setFocusedTabIndex, tabs}) {
+function TransactScreenComponent({tabs, setCurrentTabIndex}: ScreenType) {
   return (
     <TopTab.Navigator
       screenListeners={{
         state: e => {
           // Do something with the state
           // console.log('Page Index: ', e.data?.state?.index);
-          setFocusedTabIndex(e.data?.state?.index);
+          setCurrentTabIndex(e.data?.state?.index);
         },
       }}
-      initialRouteName={tabs[1]?.name}
+      initialRouteName={tabs[middleTabIndex]?.name}
+      // onTabPress={({index}) => onTabChange(index)}
       screenOptions={() => ({
         // tabBarIndicatorStyle: {backgroundColor: 'transparent'},
         // tabBarShowLabel: false,
@@ -115,13 +133,18 @@ const TransactionsScreen = ({navigation}: Props) => {
   const IncomeData = dataLoaded?.incomes?.incomes;
   const customerInfosData = dataLoaded?.customerInfos?.customerInfos;
 
-  const [focusedTabIndex, setFocusedTabIndex] = useState<number | undefined>(0);
+  // const scrollViewRef = useRef(null);
+  const [currentTabIndex, setCurrentTabIndex] = useState<number | undefined>(
+    middleTabIndex,
+  );
+  const [swipeLeft, setSwipeLeft] = useState<boolean>(false);
+  const [swipeRight, setSwipeRight] = useState<boolean>(false);
 
   const [duration, setDuration] = useState<string | null>(
     moment().format('MMM'),
   );
   const [month, setMonth] = useState<string>('');
-  const [year, setYear] = useState<string>(moment().year());
+  const [year, setYear] = useState<string>(String(moment().year()));
   const [isDatePickerVisible, setDatePickerVisibility] =
     useState<boolean>(false);
   const [mode, setMode] = useState<string>('date');
@@ -129,7 +152,7 @@ const TransactionsScreen = ({navigation}: Props) => {
   const [toDateClicked, setToDateClicked] = useState<boolean>(false);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [indicatorIndex, setIndicatorIndex] = useState<number | undefined>(0);
-  const [tabs, setTabs] = useState<any>(initialScreens);
+  const [tabs, setTabs] = useState<any>(tabsScreen);
 
   const {isLoaded, isClosed, load, show} = useInterstitialAd(adUnitId, {
     requestNonPersonalizedAdsOnly: true,
@@ -154,9 +177,22 @@ const TransactionsScreen = ({navigation}: Props) => {
   // Initial from date, to date
   useEffect(() => {
     let initTime = moment().year();
+    // if (indicatorIndex === 0) {
     onMonthYearSelectedHandler(initTime);
+    // }
   }, []);
 
+  useEffect(() => {
+    if (indicatorIndex === 0) {
+      onMonthYearSelectedHandler(year);
+    }
+  }, [year]);
+
+  useEffect(() => {
+    changeYearHandler();
+  }, [currentTabIndex]);
+
+  // Header Right
   useEffect(() => {
     navigation.setOptions({
       // title: !customPressed && !exportPressed ? 'Transactions' : '',
@@ -352,6 +388,7 @@ const TransactionsScreen = ({navigation}: Props) => {
       transactCtx.toDateSetHandler({
         toDate: todate,
       });
+
       setDuration(time);
       setMonth(month);
       setIsModalVisible(false);
@@ -582,56 +619,87 @@ const TransactionsScreen = ({navigation}: Props) => {
   const totalIncome = +sumTotalFunc(selectedDurationIncomeData).toFixed(0);
   const total = totalIncome - totalExpenses;
 
-  // Function for Swipe Left
-  const newTabsArrayLeftHandler = () => {
-    // to stretch the array by adding a new screen
-    const updatedTabs = [
-      ...tabs,
-      {name: `Screen ${Math.random() * 100}`, props: {abc: 'def'}},
-    ];
-    // to shrink the array by removing the first screen
-    if (updatedTabs?.length > 0) {
-      const updatedRemovedTabs = updatedTabs?.slice(1);
-      setTabs(updatedRemovedTabs);
-    }
-  };
-
-  // Function for Swipe Right
-  const newTabsArrayRightHandler = () => {
-    // to stretch the array by adding a new screen
-    const updatedTabs = [
-      {name: `Screen ${Math.random() * 100}`, props: {abc: 'def'}},
-      ...tabs,
-    ];
-    // to shrink the array by removing the last screen
-    if (updatedTabs?.length > 0) {
-      const updatedRemovedTabs = updatedTabs?.slice(0, -1);
-      setTabs(updatedRemovedTabs);
-    }
-  };
-
   // Detect swipe screen: Left and Right
-  const {onTouchStart, onTouchEnd} = useSwipe(onSwipeLeft, onSwipeRight, 6);
+  const {onTouchStart, onTouchEnd} = useSwipe(onSwipeLeft, onSwipeRight, 4);
 
+  useEffect(() => {
+    if (swipeLeft) {
+      updatedLeftTabs();
+    }
+    if (swipeRight) {
+      updatedRightTabs();
+    }
+  }, [currentTabIndex]);
+
+  const updatedLeftTabs = () => {
+    // stretch the array by adding a new screen
+    const i = Math.random();
+
+    const updatedArrTabs = [
+      ...tabs,
+      {
+        name: `Sc ${i}`,
+        props: {num: `${i}`},
+      },
+    ];
+
+    // shrink the array by removing the first screen
+    if (updatedArrTabs.length > 0) {
+      const updatedTabs = updatedArrTabs.slice(1);
+      setTabs(updatedTabs);
+    }
+  };
+
+  const updatedRightTabs = () => {
+    // stretch the array by adding a new screen
+    const i = Math.random();
+
+    const updatedArrTabs = [
+      {
+        name: `Sc ${i}`,
+        props: {num: `${i}`},
+      },
+      ...tabs,
+    ];
+
+    // shrink the array by removing the first screen
+    if (updatedArrTabs.length > 0) {
+      const updatedTabs = updatedArrTabs.slice(0, -1);
+      setTabs(updatedTabs);
+      console.log('updatedTabs: ', updatedTabs);
+    }
+  };
+
+  // Increase or Decrease Year
+  const changeYearHandler = () => {
+    if (swipeLeft) {
+      setYear(prev => +prev + 1);
+    }
+
+    if (swipeRight) {
+      setYear(prev => +prev - 1);
+    }
+  };
+
+  // Swipe Left
   function onSwipeLeft() {
     console.log('SWIPE_LEFT');
-    console.log('Screen Index: ', focusedTabIndex);
-
-    newTabsArrayLeftHandler();
+    setSwipeLeft(true);
+    setSwipeRight(false);
   }
 
+  // Swipe Right
   function onSwipeRight() {
     console.log('SWIPE_RIGHT');
-    console.log('Screen Index: ', focusedTabIndex);
-
-    newTabsArrayRightHandler();
+    setSwipeLeft(false);
+    setSwipeRight(true);
   }
 
   return (
     <View
-      style={styles.container}
       onTouchStart={onTouchStart}
-      onTouchEnd={onTouchEnd}>
+      onTouchEnd={onTouchEnd}
+      style={styles.container}>
       <View style={{marginTop: 18}}>
         <HeaderSummary
           total={total}
@@ -641,7 +709,8 @@ const TransactionsScreen = ({navigation}: Props) => {
       </View>
 
       <TransactScreenComponent
-        setFocusedTabIndex={setFocusedTabIndex}
+        setCurrentTabIndex={setCurrentTabIndex}
+        // scrollViewRef={scrollViewRef}
         tabs={tabs}
       />
 
@@ -682,6 +751,7 @@ export default TransactionsScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    width: width,
   },
   assetsContainer: {
     flexDirection: 'row',

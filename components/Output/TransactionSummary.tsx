@@ -229,7 +229,6 @@ const DailyItem = ({
 
 // Main function
 const TransactionSummary = ({props}: Props) => {
-
   // Parameters
   let _renderItem: any = '';
   let _renderData: any = [];
@@ -359,7 +358,7 @@ export default TransactionSummary;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // marginBottom: 50,
+    // width: width,
   },
   list: {
     flexDirection: 'row',
