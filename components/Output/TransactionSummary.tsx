@@ -1,7 +1,6 @@
 import {
   Dimensions,
   FlatList,
-  Image,
   ImageBackground,
   Pressable,
   StyleSheet,

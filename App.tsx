@@ -15,14 +15,9 @@ import {Amplify, Auth, DataStore, Hub} from 'aws-amplify';
 import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Purchases, {LOG_LEVEL} from 'react-native-purchases';
-const AWS = require('aws-sdk');
+// const AWS = require('aws-sdk');
 
-import {
-  generateKeyPair,
-  generatePublicKeyFromSecretKey,
-  PRNG,
-  stringToUint8Array,
-} from './util/crypto';
+import {generateKeyPair, PRNG} from './util/crypto';
 import FinnerNavigator from './navigation/FinnerNavigator';
 import {useAppDispatch, useAppSelector} from './hooks';
 import {fetchCashAccountsData} from './store/cash-action';
@@ -40,7 +35,7 @@ import {authAccountsActions} from './store/authAccount-slice';
 import moment from 'moment';
 import {API_KEY, ENTITLEMENT_PRO, ENTITLEMENT_STD} from './constants/api';
 import {customerInfoActions} from './store/customerInfo-slice';
-import {fetchAuthAccountsData} from './store/authAccount-action';
+// import {fetchAuthAccountsData} from './store/authAccount-action';
 import TransactProvider from './store-context/TransactProvider';
 import OverviewProvider from './store-context/OverviewProvider';
 
@@ -53,7 +48,7 @@ const adUnitId = __DEV__
   : 'ca-app-pub-3212728042764573~3355076099';
 
 const App = () => {
-  // Disable warnings for release app.
+  // // Disable warnings for release app.
   // LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message:
   // LogBox.ignoreAllLogs(); // Ignore all log notifications: add
 

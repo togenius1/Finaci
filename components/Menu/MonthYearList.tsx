@@ -20,18 +20,18 @@ type Props = {
 const {width, height} = Dimensions.get('window');
 
 const monthObj = [
-  {id: 1, MY: 'Jan'},
-  {id: 2, MY: 'Feb'},
-  {id: 3, MY: 'Mar'},
-  {id: 4, MY: 'Apr'},
-  {id: 5, MY: 'May'},
-  {id: 6, MY: 'June'},
-  {id: 7, MY: 'July'},
-  {id: 8, MY: 'Aug'},
-  {id: 9, MY: 'Sep'},
-  {id: 10, MY: 'Oct'},
-  {id: 11, MY: 'Nov'},
-  {id: 12, MY: 'Dec'},
+  {id: 0, MY: 'Jan'},
+  {id: 1, MY: 'Feb'},
+  {id: 2, MY: 'Mar'},
+  {id: 3, MY: 'Apr'},
+  {id: 4, MY: 'May'},
+  {id: 5, MY: 'June'},
+  {id: 6, MY: 'July'},
+  {id: 7, MY: 'Aug'},
+  {id: 8, MY: 'Sep'},
+  {id: 9, MY: 'Oct'},
+  {id: 10, MY: 'Nov'},
+  {id: 11, MY: 'Dec'},
 ];
 
 let prevYear = Array.from({length: 5}, (_, i) =>

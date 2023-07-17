@@ -57,7 +57,7 @@ interface ScreenType {
   setCurrentTabIndex: (index: number) => void;
 }
 
-const tabsScreen = Array.from({length: 9}, (_, i) => ({
+const tabsScreen = Array.from({length: 21}, (_, i) => ({
   name: `Sc ${i}`,
   props: {num: `${i}`},
 }));
@@ -172,26 +172,32 @@ const TransactionsScreen = ({navigation}: Props) => {
   useEffect(() => {
     let initTime = moment().year();
     // if (indicatorIndex === 0) {
-    onMonthYearSelectedHandler(initTime);
+    monthlyHandler(initTime);
     // }
   }, []);
 
   useEffect(() => {
     if (indicatorIndex === 0) {
-      onMonthYearSelectedHandler(year);
+      monthlyHandler(year);
+    }
+    if (indicatorIndex === 1) {
+      weeklyHandler(month, year);
+    }
+    if (indicatorIndex === 2) {
+      dailyHandler(month, year);
     }
 
-    return () => {
-      // console.log('CLEANUP');
-    };
-  }, [year]);
+    // return () => {
+    // console.log('CLEANUP');
+    // };
+  }, [year, month]);
 
   useEffect(() => {
-    changeYearHandler();
+    changeMonthYearHandler();
 
-    return () => {
-      // console.log('CLEANUP');
-    };
+    // return () => {
+    // console.log('CLEANUP');
+    // };
   }, [currentTabIndex]);
 
   // Header Right
@@ -298,7 +304,7 @@ const TransactionsScreen = ({navigation}: Props) => {
     navigation,
     duration,
     year,
-    // showMonthYearListMenuHandler,
+    // month,
     isModalVisible,
     transactCtx.monthlyPressed,
     transactCtx.weeklyPressed,
@@ -327,15 +333,15 @@ const TransactionsScreen = ({navigation}: Props) => {
     (itemIndex: number) => {
       setIndicatorIndex(itemIndex);
       if (itemIndex === 0) {
-        monthlyHandler();
+        monthlyHandler(year);
         // updateState();
       }
       if (itemIndex === 1) {
-        weeklyHandler();
+        weeklyHandler(month, year);
         // updateState();
       }
       if (itemIndex === 2) {
-        dailyHandler();
+        dailyHandler(month, year);
         // updateState();
       }
       if (itemIndex === 3) {
@@ -363,6 +369,7 @@ const TransactionsScreen = ({navigation}: Props) => {
       // const daysInMonth = moment(`${year}-0${mm}`, 'YYYY-MM').daysInMonth();
       const fromdate = moment([time, 0]).format('YYYY-MM-DD');
       const todate = moment(`${time}-12-31`).endOf('year').format('YYYY-MM-DD');
+
       setYear(time);
 
       transactCtx.fromDateSetHandler({
@@ -442,7 +449,7 @@ const TransactionsScreen = ({navigation}: Props) => {
   };
 
   // Month Func
-  const monthlyHandler = () => {
+  const monthlyHandler = year => {
     // const fromdate = moment(`${year}-01-01`);
     // const todate = moment(`${year}-12-31`);
     const fromdate = moment(`${year}-01-01`).format('YYYY-MM-DD');
@@ -467,8 +474,11 @@ const TransactionsScreen = ({navigation}: Props) => {
   };
 
   // Week Func
-  const weeklyHandler = () => {
-    let Month = month === '' ? `${moment().month() + 1}` : month;
+  const weeklyHandler = (month, year) => {
+    let Month = month === '' ? `${moment().month()}` + 1 : month;
+
+    console.log('Month: ', +month);
+    console.log('month % 12: ', +month % 13);
 
     if (+Month < 10) {
       Month = `0${Month}`;
@@ -489,11 +499,9 @@ const TransactionsScreen = ({navigation}: Props) => {
       'YYYY-MM-DD',
     );
 
-    // setFromDate(fromdate);
-    // setToDate(todate);
-    typeof duration === 'number'
-      ? setDuration(moment.monthsShort(moment(date).month()))
-      : '';
+    // typeof duration === 'number'
+    setDuration(moment.monthsShort(moment(date).month()));
+    // : '';
 
     transactCtx.fromDateSetHandler({
       fromDate: fromdate,
@@ -511,7 +519,7 @@ const TransactionsScreen = ({navigation}: Props) => {
     });
   };
 
-  const dailyHandler = () => {
+  const dailyHandler = (month, year) => {
     let Month = month === '' ? `${moment().month() + 1}` : month;
 
     if (+Month < 10) {
@@ -528,9 +536,9 @@ const TransactionsScreen = ({navigation}: Props) => {
       'YYYY-MM-DD',
     );
 
-    typeof duration === 'number'
-      ? setDuration(moment.monthsShort(moment(date).month()))
-      : '';
+    // typeof duration === 'number'
+    setDuration(moment.monthsShort(moment(date).month()));
+    // : '';
 
     transactCtx.fromDateSetHandler({
       fromDate: fromdate,
@@ -624,7 +632,7 @@ const TransactionsScreen = ({navigation}: Props) => {
   const total = totalIncome - totalExpenses;
 
   // Detect swipe screen: Left and Right
-  const {onTouchStart, onTouchEnd} = useSwipe(onSwipeLeft, onSwipeRight, 2);
+  const {onTouchStart, onTouchEnd} = useSwipe(onSwipeLeft, onSwipeRight, 4);
 
   // const updatedLeftTabs = () => {
   //   // stretch the array by adding a new screen
@@ -664,18 +672,30 @@ const TransactionsScreen = ({navigation}: Props) => {
   //   // }
   // };
 
-  // console.log('updatedTabs: ', tabs);
-
   // Increase or Decrease Year
-  const changeYearHandler = () => {
+  const changeMonthYearHandler = () => {
     if (swipeLeft) {
-      setYear(prev => +prev + 1);
-      // updatedLeftTabs();
+      if (indicatorIndex === 0) {
+        setYear(prev => +prev + 1);
+      }
+      if (indicatorIndex === 1) {
+        setMonth(prev => (+prev + 1) % 13);
+      }
+      if (indicatorIndex === 2) {
+        setMonth(prev => +prev + 1);
+      }
     }
 
     if (swipeRight) {
-      setYear(prev => +prev - 1);
-      // updatedRightTabs();
+      if (indicatorIndex === 0) {
+        setYear(prev => Math.abs(+prev - 1));
+      }
+      if (indicatorIndex === 1) {
+        setMonth(prev => Math.abs(+prev - 1) % 13);
+      }
+      if (indicatorIndex === 2) {
+        setMonth(prev => Math.abs(+prev - 1));
+      }
     }
   };
 
@@ -721,7 +741,7 @@ const TransactionsScreen = ({navigation}: Props) => {
         onMYSelectedHandler={onMonthYearSelectedHandler}
         year={+year}
         setYear={setYear}
-        month={month}
+        month={+month}
         setIsModalVisible={setIsModalVisible}
         isModalVisible={isModalVisible}
       />
