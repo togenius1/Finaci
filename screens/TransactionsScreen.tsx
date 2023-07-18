@@ -172,7 +172,7 @@ const TransactionsScreen = ({navigation}: Props) => {
   useEffect(() => {
     let initTime = moment().year();
     // if (indicatorIndex === 0) {
-    monthlyHandler(initTime);
+    onMonthYearSelectedHandler(initTime);
     // }
   }, []);
 
@@ -477,9 +477,6 @@ const TransactionsScreen = ({navigation}: Props) => {
   const weeklyHandler = (month, year) => {
     let Month = month === '' ? `${moment().month()}` + 1 : month;
 
-    console.log('Month: ', +month);
-    console.log('month % 12: ', +month % 13);
-
     if (+Month < 10) {
       Month = `0${Month}`;
     }
@@ -679,10 +676,26 @@ const TransactionsScreen = ({navigation}: Props) => {
         setYear(prev => +prev + 1);
       }
       if (indicatorIndex === 1) {
-        setMonth(prev => (+prev + 1) % 13);
+        setMonth(prev => {
+          let newMonth = +prev + 1;
+
+          if (newMonth > 12) {
+            newMonth = (newMonth % 13) + 1;
+          }
+
+          return newMonth;
+        });
       }
       if (indicatorIndex === 2) {
-        setMonth(prev => +prev + 1);
+        setMonth(prev => {
+          let newMonth = +prev + 1;
+
+          if (newMonth > 12) {
+            newMonth = (newMonth % 13) + 1;
+          }
+
+          return newMonth;
+        });
       }
     }
 
@@ -691,10 +704,26 @@ const TransactionsScreen = ({navigation}: Props) => {
         setYear(prev => Math.abs(+prev - 1));
       }
       if (indicatorIndex === 1) {
-        setMonth(prev => Math.abs(+prev - 1) % 13);
+        setMonth(prev => {
+          let newMonth = Math.abs(+prev - 1);
+
+          if (newMonth > 13) {
+            newMonth = (newMonth % 13) + 1;
+          }
+
+          return newMonth;
+        });
       }
       if (indicatorIndex === 2) {
-        setMonth(prev => Math.abs(+prev - 1));
+        setMonth(prev => {
+          let newMonth = Math.abs(+prev - 1);
+
+          if (newMonth > 13) {
+            newMonth = (newMonth % 13) + 1;
+          }
+
+          return newMonth;
+        });
       }
     }
   };
