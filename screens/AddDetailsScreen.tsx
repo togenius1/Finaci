@@ -2,9 +2,9 @@ import {Dimensions, Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {v4 as uuidv4} from 'uuid';
 import moment from 'moment';
-import {isEmpty} from '@aws-amplify/core';
+// import {isEmpty} from '@aws-amplify/core';
 import {Auth} from 'aws-amplify';
-import {TestIds, useInterstitialAd} from 'react-native-google-mobile-ads';
+// import {TestIds, useInterstitialAd} from 'react-native-google-mobile-ads';
 
 import {AddDetailsNavigationType, AddDetailsRouteProp} from '../types';
 import ExpenseForm from '../components/ManageExpense/ExpenseForm';
@@ -14,20 +14,26 @@ import {useAppDispatch, useAppSelector} from '../hooks';
 import Note from '../components/Menu/Note';
 import Accounts from '../components/Menu/Accounts';
 import Category from '../components/Form/Category';
-import {sumByDate, sumByMonth, sumTransactionByWeek} from '../util/math';
+import {
+  sumByDate,
+  sumByMonth,
+  sumTotalFunc,
+  sumTransactionByWeek,
+} from '../util/math';
 import {monthlyTransactsActions} from '../store/monthlyTransact-slice';
 import {getWeekInMonth} from '../util/date';
 import {weeklyTransactsActions} from '../store/weeklyTransact-slice';
 import {dailyTransactsActions} from '../store/dailyTransact-slice';
 import {accountActions} from '../store/account-slice';
 import {cashAccountsActions} from '../store/cash-slice';
+import {totalIncomeActions} from '../store/total-income-monthly-slice';
 
 const {width, height} = Dimensions.get('window');
 
 // Ads variable
-const adUnitId = __DEV__
-  ? TestIds.INTERSTITIAL
-  : 'ca-app-pub-3212728042764573~3355076099';
+// const adUnitId = __DEV__
+//   ? TestIds.INTERSTITIAL
+//   : 'ca-app-pub-3212728042764573~3355076099';
 
 const AddDetailsScreen = ({route, navigation}: Props) => {
   const dispatch = useAppDispatch();
@@ -62,9 +68,9 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     note: '',
   });
 
-  const {isLoaded, isClosed, load, show} = useInterstitialAd(adUnitId, {
-    requestNonPersonalizedAdsOnly: true,
-  });
+  // const {isLoaded, isClosed, load, show} = useInterstitialAd(adUnitId, {
+  //   requestNonPersonalizedAdsOnly: true,
+  // });
 
   // // Load ads
   // useEffect(() => {
@@ -186,11 +192,11 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     // }
 
     // Check Purchase user: show Ads
-    const authUser = await Auth.currentAuthenticatedUser();
-    const appUserId = authUser?.attributes?.sub;
-    const filteredCustomerInfo = customerInfosData?.filter(
-      cus => cus.appUserId === appUserId,
-    );
+    // const authUser = await Auth.currentAuthenticatedUser();
+    // const appUserId = authUser?.attributes?.sub;
+    // const filteredCustomerInfo = customerInfosData?.filter(
+    //   cus => cus.appUserId === appUserId,
+    // );
 
     //save
     await saveDataToStorage();
@@ -233,6 +239,33 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
       );
     }
     // }
+  };
+
+  // Update Total Income
+  const totalIncomeUpdate = () => {
+    const year = moment(textDate).year();
+    const month = moment(textDate).month() + 1;
+
+    const selectedDurationIncomeData = incomes?.filter(
+      income =>
+        Number(income?.month) === month && Number(income?.year) === year,
+    );
+    const totalIncome = +sumTotalFunc(selectedDurationIncomeData).toFixed(0);
+
+    const totalIncome_monthly =
+      dataLoaded.totalIncomesMonthly.totalIncomesMonthly;
+    const findMonth = totalIncome_monthly?.filter(
+      total => Number(total.month) === month && Number(total.year) === year,
+    );
+
+    dispatch(
+      totalIncomeActions.addTotalIncome({
+        id: '',
+        amount: totalIncome,
+        month: month,
+        year: year,
+      }),
+    );
   };
 
   //Update Monthly Transaction

@@ -6,16 +6,9 @@ import {
   Text,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {Dispatch, SetStateAction} from 'react';
 import moment from 'moment';
 // import {v4 as uuidv4} from 'uuid';
-
-type Props = {
-  isModalVisible: boolean;
-  setIsModalVisible: (value: boolean) => void;
-  year: number;
-  setYear: (value: number) => void;
-};
 
 const {width, height} = Dimensions.get('window');
 
@@ -52,7 +45,12 @@ yearObj.sort((a: any, b: any) => {
   return 1; // return 1 here for DESC Order
 });
 
-function MonthList({item, onYearSelectedHandler, selectedMY, monthlyPressed}) {
+function MonthList({
+  item,
+  onYearSelectedHandler,
+  selectedMY,
+  monthlyPressed,
+}: Pros) {
   // const currentYear = moment().year();
   let MY = item.MY;
   if (!monthlyPressed) {
@@ -76,17 +74,17 @@ function MonthList({item, onYearSelectedHandler, selectedMY, monthlyPressed}) {
   );
 }
 
-export default function MonthYearList({
-  monthlyPressed,
-  onMYSelectedHandler,
+const MonthYearList = ({
   year,
   setYear,
+  monthlyPressed,
+  onMYSelectedHandler,
   month,
-  decrementYearHandle,
-  incrementYearHandle,
+  // decrementYearHandle,
+  // incrementYearHandle,
   isModalVisible,
   setIsModalVisible,
-}: Props) {
+}: Props) => {
   //
   const selectedMY = monthlyPressed ? year : month;
   let obj;
@@ -181,7 +179,9 @@ export default function MonthYearList({
       </Pressable>
     </Modal>
   );
-}
+};
+
+export default MonthYearList;
 
 const styles = StyleSheet.create({
   listMenu: {
@@ -210,3 +210,16 @@ const styles = StyleSheet.create({
     opacity: 0.65,
   },
 });
+
+// onMYSelectedHandler,
+
+// ============================== TYPE ===================================
+type Props = {
+  monthlyPressed: boolean;
+  isModalVisible: boolean;
+  setIsModalVisible: (value: boolean) => void;
+  year: number;
+  month: number;
+  setYear: Dispatch<SetStateAction<string>>;
+  onMYSelectedHandler: (value: any) => void;
+};

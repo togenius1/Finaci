@@ -631,44 +631,6 @@ const TransactionsScreen = ({navigation}: Props) => {
   // Detect swipe screen: Left and Right
   const {onTouchStart, onTouchEnd} = useSwipe(onSwipeLeft, onSwipeRight, 4);
 
-  // const updatedLeftTabs = () => {
-  //   // stretch the array by adding a new screen
-  //   const i = Math.random();
-
-  //   const updatedArrTabs = [
-  //     ...tabs,
-  //     {
-  //       name: `Sc ${i}`,
-  //       props: {num: `${i}`},
-  //     },
-  //   ];
-
-  //   // shrink the array by removing the first screen
-  //   // if (tabs.length > 0) {
-  //   const updatedTabs = updatedArrTabs.slice(1);
-  //   setTabs(updatedTabs);
-  //   // }
-  // };
-
-  // const updatedRightTabs = () => {
-  //   // stretch the array by adding a new screen
-  //   const i = Math.random();
-
-  //   const updatedArrTabs = [
-  //     {
-  //       name: `Sc ${i}`,
-  //       props: {num: `${i}`},
-  //     },
-  //     ...tabs,
-  //   ];
-
-  //   // shrink the array by removing the first screen
-  //   // if (tabs.length > 0) {
-  //   const updatedTabs = updatedArrTabs.slice(0, -1);
-  //   setTabs(updatedTabs);
-  //   // }
-  // };
-
   // Increase or Decrease Year
   const changeMonthYearHandler = () => {
     if (swipeLeft) {
@@ -730,7 +692,7 @@ const TransactionsScreen = ({navigation}: Props) => {
 
   // Swipe Left
   function onSwipeLeft() {
-    console.log('SWIPE_LEFT');
+    // console.log('SWIPE_LEFT');
     setSwipeLeft(true);
     setSwipeRight(false);
 
@@ -739,7 +701,7 @@ const TransactionsScreen = ({navigation}: Props) => {
 
   // Swipe Right
   function onSwipeRight() {
-    console.log('SWIPE_RIGHT');
+    // console.log('SWIPE_RIGHT');
     setSwipeLeft(false);
     setSwipeRight(true);
 

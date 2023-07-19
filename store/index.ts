@@ -16,12 +16,12 @@ import weeklyTransactsSlice from './weeklyTransact-slice';
 import monthlyTransactsSlice from './monthlyTransact-slice';
 import authAccountsSlice from './authAccount-slice';
 import customerInfoSlice from './customerInfo-slice';
-
-import transactStateReducer from './transaction-state-slice';
+import totalIncomeMonthlySlice from './total-income-monthly-slice';
 
 const rootReducer = combineReducers({
   expenses: expenseSlice.reducer,
   incomes: incomeSlice.reducer,
+  totalIncomesMonthly: totalIncomeMonthlySlice.reducer,
 
   // transfers: transferSlice.reducer,
   authAccounts: authAccountsSlice.reducer,
