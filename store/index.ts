@@ -16,12 +16,11 @@ import weeklyTransactsSlice from './weeklyTransact-slice';
 import monthlyTransactsSlice from './monthlyTransact-slice';
 import authAccountsSlice from './authAccount-slice';
 import customerInfoSlice from './customerInfo-slice';
-import totalIncomeMonthlySlice from './total-income-monthly-slice';
+import yearlyTransactSlice from './yearlyTransact-slice';
 
 const rootReducer = combineReducers({
   expenses: expenseSlice.reducer,
   incomes: incomeSlice.reducer,
-  totalIncomesMonthly: totalIncomeMonthlySlice.reducer,
 
   // transfers: transferSlice.reducer,
   authAccounts: authAccountsSlice.reducer,
@@ -34,6 +33,7 @@ const rootReducer = combineReducers({
   dailyTransacts: dailyTransactsSlice.reducer,
   weeklyTransacts: weeklyTransactsSlice.reducer,
   monthlyTransacts: monthlyTransactsSlice.reducer,
+  yearlyTransacts: yearlyTransactSlice.reducer,
 });
 
 const persistConfig = {

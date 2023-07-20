@@ -26,7 +26,7 @@ import {weeklyTransactsActions} from '../store/weeklyTransact-slice';
 import {dailyTransactsActions} from '../store/dailyTransact-slice';
 import {accountActions} from '../store/account-slice';
 import {cashAccountsActions} from '../store/cash-slice';
-import {totalIncomeActions} from '../store/total-income-monthly-slice';
+import {totalIncomeActions} from '../store/yearlyTransact-slice';
 
 const {width, height} = Dimensions.get('window');
 
@@ -239,33 +239,6 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
       );
     }
     // }
-  };
-
-  // Update Total Income
-  const totalIncomeUpdate = () => {
-    const year = moment(textDate).year();
-    const month = moment(textDate).month() + 1;
-
-    const selectedDurationIncomeData = incomes?.filter(
-      income =>
-        Number(income?.month) === month && Number(income?.year) === year,
-    );
-    const totalIncome = +sumTotalFunc(selectedDurationIncomeData).toFixed(0);
-
-    const totalIncome_monthly =
-      dataLoaded.totalIncomesMonthly.totalIncomesMonthly;
-    const findMonth = totalIncome_monthly?.filter(
-      total => Number(total.month) === month && Number(total.year) === year,
-    );
-
-    dispatch(
-      totalIncomeActions.addTotalIncome({
-        id: '',
-        amount: totalIncome,
-        month: month,
-        year: year,
-      }),
-    );
   };
 
   //Update Monthly Transaction

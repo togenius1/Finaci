@@ -93,7 +93,7 @@ function TransactScreenComponent({tabs, setCurrentTabIndex}: ScreenType) {
 }
 
 // Header
-function HeaderSummary({total, totalIncome, totalExpenses}: HeaderSummaryType) {
+function HeaderSummary({total, totalIncome, totalExpense}: HeaderSummaryType) {
   return (
     <View style={styles.assetsContainer}>
       <View style={styles.assetBox}>
@@ -105,7 +105,7 @@ function HeaderSummary({total, totalIncome, totalExpenses}: HeaderSummaryType) {
       <View style={styles.assetBox}>
         <Text style={{fontSize: 14}}>Expenses</Text>
         <Text style={{color: 'red', fontSize: 16, fontWeight: 'bold'}}>
-          {currencyFormatter(+totalExpenses, {})}
+          {currencyFormatter(+totalExpense, {})}
         </Text>
       </View>
       <View style={styles.assetBox}>
@@ -611,22 +611,58 @@ const TransactionsScreen = ({navigation}: Props) => {
     }
   }
 
-  // FILTERED DATA (From date ----> To date)
-  const selectedDurationExpenseData = ExpenseData?.filter(
-    expense =>
-      moment(expense.date).format('YYYY-MM-DD') >= transactCtx.fromDate &&
-      moment(expense.date).format('YYYY-MM-DD') <= transactCtx.toDate,
-  );
-  const selectedDurationIncomeData = IncomeData?.filter(
-    income =>
-      moment(income.date).format('YYYY-MM-DD') >= transactCtx.fromDate &&
-      moment(income.date).format('YYYY-MM-DD') <= transactCtx.toDate,
-  );
+  // Total
+  let total;
+  let totalExpense;
+  let totalIncome;
 
-  // TOTAL EXPENSE
-  const totalExpenses = +sumTotalFunc(selectedDurationExpenseData).toFixed(0);
-  const totalIncome = +sumTotalFunc(selectedDurationIncomeData).toFixed(0);
-  const total = totalIncome - totalExpenses;
+  // Monthly Transaction
+  if (indicatorIndex === 1 || indicatorIndex === 2) {
+    const transact_monthly = dataLoaded?.monthlyTransacts.monthlyTransacts;
+    const filtered_TransactMonthly = transact_monthly?.filter(
+      income => console.log('year: ', moment(income.date).year(), year),
+      // Number(income.month) === Number(month) &&
+      // moment(income.date).year() === Number(year),
+    );
+
+    console.log('transact_monthly: ', transact_monthly);
+    console.log('filtered transactions: ', filtered_TransactMonthly);
+
+    totalIncome = filtered_TransactMonthly[0]?.income_monthly;
+    totalExpense = filtered_TransactMonthly[0]?.expense_monthly;
+
+    totalIncome = totalIncome === undefined ? 0 : totalIncome;
+    totalExpense = totalExpense === undefined ? 0 : totalExpense;
+
+    total = totalIncome - totalExpense;
+
+    total = total === undefined ? 0 : total;
+  }
+
+  // Custom Transaction
+  if (indicatorIndex === 3 || indicatorIndex === 0) {
+    const selectedDurationExpenseData = ExpenseData?.filter(
+      expense =>
+        moment(expense.date).format('YYYY-MM-DD') >= transactCtx.fromDate &&
+        moment(expense.date).format('YYYY-MM-DD') <= transactCtx.toDate,
+    );
+    const selectedDurationIncomeData = IncomeData?.filter(
+      income =>
+        moment(income.date).format('YYYY-MM-DD') >= transactCtx.fromDate &&
+        moment(income.date).format('YYYY-MM-DD') <= transactCtx.toDate,
+    );
+
+    // TOTAL EXPENSE
+    totalExpense = +sumTotalFunc(selectedDurationExpenseData).toFixed(0);
+    totalIncome = +sumTotalFunc(selectedDurationIncomeData).toFixed(0);
+
+    totalIncome = totalIncome === undefined ? 0 : totalIncome;
+    totalExpense = totalExpense === undefined ? 0 : totalExpense;
+
+    total = totalIncome - totalExpense;
+
+    total = total === undefined ? 0 : total;
+  }
 
   // Detect swipe screen: Left and Right
   const {onTouchStart, onTouchEnd} = useSwipe(onSwipeLeft, onSwipeRight, 4);
@@ -717,7 +753,7 @@ const TransactionsScreen = ({navigation}: Props) => {
         <HeaderSummary
           total={total}
           totalIncome={totalIncome}
-          totalExpenses={totalExpenses}
+          totalExpense={totalExpense}
         />
       </View>
 
