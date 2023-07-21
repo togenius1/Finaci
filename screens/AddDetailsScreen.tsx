@@ -123,10 +123,9 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
   );
 
   // Cash or other accounts
+  const accTitle = account?.title === undefined ? 'Cash' : account?.title;
   const selectedAccountId =
-    account?.title === 'Cash'
-      ? cashAccountCategoryById?.id
-      : accountCategoryById?.id;
+    accTitle === 'Cash' ? cashAccountCategoryById?.id : accountCategoryById?.id;
 
   // Initial account
   const initialAccountHandler = () => {
@@ -151,6 +150,8 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
 
   // Save data to Storage Func
   const saveDataToStorage = async () => {
+    console.log('account title: ', account?.title);
+    console.log('account title: ', account?.title === undefined);
     if (type === 'expense') {
       dispatch(
         expenseActions.addExpense({
@@ -246,9 +247,6 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     const month = moment(textDate).month() + 1;
     const year = moment(textDate).year();
 
-    console.log('year: ', year);
-    console.log('month: ', month);
-
     // Filtered the same year expense
     const filteredExpenses = expenses?.filter(
       exp => Number(moment(exp.date).year()) === year,
@@ -257,6 +255,9 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     const filteredIncomes = incomes?.filter(
       income => Number(moment(income.date).year()) === year,
     );
+
+    console.log('expenses ', expenses);
+    console.log('filteredExpenses ', filteredExpenses);
 
     if (type === 'expense') {
       const expenseMonthly =
@@ -269,6 +270,9 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
       )[0]?.amount;
 
       const income_monthly = incomeMonthly === undefined ? 0 : incomeMonthly;
+
+      console.log('expenseMonthly', expenseMonthly);
+      console.log('income_monthly', income_monthly);
 
       dispatchMonthlyTransactionsToStorage(
         +expenseMonthly,
@@ -412,7 +416,10 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
         Number(tr.month) === month,
     );
 
+    console.log('length: ', findMonth?.length);
+
     if (findMonth.length !== 0) {
+      console.log('update monthly');
       dispatch(
         monthlyTransactsActions.updateMonthlyTransactions({
           id: findMonth[0]?.id,
@@ -424,6 +431,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
       );
     }
     if (findMonth?.length === 0) {
+      console.log('add new monthly');
       dispatch(
         monthlyTransactsActions.addMonthlyTransactions({
           id: 'monthlyTransaction-' + uuidv4(),
