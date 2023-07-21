@@ -244,15 +244,27 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
   //Update Monthly Transaction
   const monthlyTransactionsUpdate = () => {
     const month = moment(textDate).month() + 1;
+    const year = moment(textDate).year();
+
+    console.log('year: ', year);
+    console.log('month: ', month);
+
+    // Filtered the same year expense
+    const filteredExpenses = expenses?.filter(
+      exp => Number(moment(exp.date).year()) === year,
+    );
+    // Filtered the same year income
+    const filteredIncomes = incomes?.filter(
+      income => Number(moment(income.date).year()) === year,
+    );
 
     if (type === 'expense') {
-      // Previous monthly transactions values
       const expenseMonthly =
-        sumByMonth(expenses, 'expense')?.filter(
+        sumByMonth(filteredExpenses, 'expense')?.filter(
           expense => expense?.month === month,
         )[0]?.amount + amount;
 
-      const incomeMonthly = sumByMonth(incomes, 'income')?.filter(
+      const incomeMonthly = sumByMonth(filteredIncomes, 'income')?.filter(
         income => income?.month === month,
       )[0]?.amount;
 
@@ -262,14 +274,15 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
         +expenseMonthly,
         income_monthly,
         month,
+        String(textDate),
       );
     }
     if (type === 'income') {
-      const expenseMonthly = sumByMonth(expenses, 'expense')?.filter(
+      const expenseMonthly = sumByMonth(filteredExpenses, 'expense')?.filter(
         expense => expense?.month === month,
       )[0]?.amount;
       const incomeMonthly =
-        sumByMonth(incomes, 'income')?.filter(
+        sumByMonth(filteredIncomes, 'income')?.filter(
           income => income?.month === month,
         )[0]?.amount + amount;
 
@@ -279,6 +292,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
         expense_monthly,
         +incomeMonthly,
         month,
+        String(textDate),
       );
     }
   };
@@ -388,26 +402,32 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     expenseAmount: number,
     incomeAmount: number,
     month: number,
+    date: string,
   ) => {
     const transact_monthly = dataLoaded.monthlyTransacts?.monthlyTransacts;
-    const findMonth = transact_monthly.filter(tr => Number(tr.month) === month);
 
-    if (findMonth[0]?.month !== undefined) {
+    const findMonth = transact_monthly?.filter(
+      tr =>
+        moment(tr.date).year() === moment(date).year() &&
+        Number(tr.month) === month,
+    );
+
+    if (findMonth.length !== 0) {
       dispatch(
         monthlyTransactsActions.updateMonthlyTransactions({
-          id: 'monthlyTransaction-' + month,
-          date: textDate,
-          month: month,
+          id: findMonth[0]?.id,
+          date: date,
+          month: findMonth[0]?.month,
           expense_monthly: expenseAmount,
           income_monthly: incomeAmount,
         }),
       );
     }
-    if (findMonth[0]?.month === undefined) {
+    if (findMonth?.length === 0) {
       dispatch(
         monthlyTransactsActions.addMonthlyTransactions({
-          id: 'monthlyTransaction-' + month,
-          date: textDate,
+          id: 'monthlyTransaction-' + uuidv4(),
+          date: date,
           month: month,
           expense_monthly: type === 'expense' ? amount : '',
           income_monthly: type === 'income' ? amount : '',
@@ -468,7 +488,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     if (findDay?.length !== 0) {
       dispatch(
         dailyTransactsActions.updateDailyTransacts({
-          id: uuidv4(),
+          id: 'dailyTransact-' + uuidv4(),
           date: textDate,
           day: day,
           expense_daily: expenseDaily,
@@ -479,7 +499,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     if (findDay?.length === 0) {
       dispatch(
         dailyTransactsActions.addDailyTransacts({
-          id: uuidv4(),
+          id: 'dailyTransact-' + uuidv4(),
           date: textDate,
           day: day,
           expense_daily: expenseDaily,

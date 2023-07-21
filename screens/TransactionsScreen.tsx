@@ -620,13 +620,14 @@ const TransactionsScreen = ({navigation}: Props) => {
   if (indicatorIndex === 1 || indicatorIndex === 2) {
     const transact_monthly = dataLoaded?.monthlyTransacts.monthlyTransacts;
     const filtered_TransactMonthly = transact_monthly?.filter(
-      income => console.log('year: ', moment(income.date).year(), year),
-      // Number(income.month) === Number(month) &&
-      // moment(income.date).year() === Number(year),
+      income =>
+        // console.log('year: ', moment(income.date).year(), year),
+        Number(income.month) === Number(month) &&
+        moment(income.date).year() === Number(year),
     );
 
-    console.log('transact_monthly: ', transact_monthly);
-    console.log('filtered transactions: ', filtered_TransactMonthly);
+    // console.log('transact_monthly: ', transact_monthly);
+    // console.log('filtered transactions: ', filtered_TransactMonthly);
 
     totalIncome = filtered_TransactMonthly[0]?.income_monthly;
     totalExpense = filtered_TransactMonthly[0]?.expense_monthly;
@@ -641,6 +642,7 @@ const TransactionsScreen = ({navigation}: Props) => {
 
   // Custom Transaction
   if (indicatorIndex === 3 || indicatorIndex === 0) {
+    // console.log('indicator: ', indicatorIndex);
     const selectedDurationExpenseData = ExpenseData?.filter(
       expense =>
         moment(expense.date).format('YYYY-MM-DD') >= transactCtx.fromDate &&

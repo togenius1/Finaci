@@ -229,7 +229,7 @@ const DailyItem = ({
 };
 
 // Main function
-const TransactionSummary = ({props}: Props) => {
+const TransactionSummary = ({}: Props) => {
   // Parameters
   let _renderItem: any = '';
   let _renderData: any = [];
@@ -255,10 +255,16 @@ const TransactionSummary = ({props}: Props) => {
   const date = moment(fromDate).format('YYYY-MM-DD');
 
   // Monthly Transaction
-  // const monthlyData = monthlyTransaction(fromDate, toDate, year);
-  const monthlyData = MonthlyTransactsData?.filter(
-    transact => moment(transact?.date).year() === moment(date).year(),
+  // const filteredMonthlyData = monthlyTransaction(fromDate, toDate, year);
+  const filteredMonthlyData = MonthlyTransactsData?.filter(
+    transact => moment(transact?.date).year() === moment(fromDate).year(),
+    // &&
+    // transact?.month === moment(date).month() + 1,
   );
+
+  console.log('year: ', moment(fromDate).year());
+  console.log('MonthlyTransactsData: ', MonthlyTransactsData);
+  console.log('filteredMonthlyData: ', filteredMonthlyData);
 
   //  Weekly Transaction
   // const weeklyData = weeklyTransaction(fromDate, toDate, date);
@@ -271,6 +277,8 @@ const TransactionSummary = ({props}: Props) => {
 
   // Combine data and sum by date
   // const dailyData = dailyTransaction(String(fromDate), String(toDate), date);
+  // console.log('fromDate', fromDate);
+  // console.log('toDate', toDate);
   const dailyData = DailyTransactionData?.filter(
     transact =>
       moment(transact?.date).format('YYYY-MM-DD') >= fromDate &&
@@ -280,7 +288,7 @@ const TransactionSummary = ({props}: Props) => {
   // on pressed
   if (monthlyPressed) {
     _renderItem = MonthlyRenderItem;
-    _renderData = monthlyData;
+    _renderData = filteredMonthlyData;
   }
   if (weeklyPressed) {
     _renderItem = WeeklyRenderItem;
