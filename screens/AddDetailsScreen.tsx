@@ -311,7 +311,22 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     const day = moment(textDate).date();
     const currentWeek = getWeekInMonth(year, month, day);
 
-    const weeklyTransactions = sumTransactionByWeek([incomes, expenses]);
+    const filteredExpenses = expenses?.filter(
+      expense =>
+        moment(expense.date).year() === year &&
+        moment(expense.date).month() + 1 === month,
+    );
+    const filteredIncomes = expenses?.filter(
+      income =>
+        moment(income.date).year() === year &&
+        moment(income.date).month() + 1 === month,
+    );
+
+    const weeklyTransactions = sumTransactionByWeek([
+      filteredIncomes,
+      filteredExpenses,
+    ]);
+    // const weeklyTransactions = sumTransactionByWeek([incomes, expenses]);
 
     const filteredWeeklyTransactions = weeklyTransactions?.filter(
       wt =>
@@ -320,9 +335,6 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
         +moment(wt.date).month() + 1 === month &&
         Number(wt.week) === currentWeek,
     );
-
-    // console.log('filteredWeeklyTransactions: ', filteredWeeklyTransactions);
-    console.log('currentWeek: ', currentWeek);
 
     if (type === 'expense') {
       // Previous monthly transactions values

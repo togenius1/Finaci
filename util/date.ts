@@ -44,7 +44,7 @@ export function getWeekInMonth(year: number, month: number, day: number) {
     day = +`0${day}`;
   }
 
-  return day === 31 ? 5 : weekNum; //we return it
+  return weekNum > 5 ? 5 : weekNum; //we return it
 }
 
 // GET Days in week of current date
