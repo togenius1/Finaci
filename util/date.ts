@@ -21,21 +21,30 @@ export function dateDiffInDays(endDate: Date, startDate: Date) {
 }
 
 // WEEK of Month
-export function getWeekInMonth(year, month, day) {
+export function getWeekInMonth(year: number, month: number, day: number) {
   let weekNum = 1; // we start at week 1
 
   let weekDay = new Date(year, month - 1, 1).getDay(); // we get the weekDay of day 1
-  weekDay = weekDay === 0 ? 6 : weekDay - 1; // we recalculate the weekDay (Mon:0, Tue:1, Wed:2, Thu:3, Fri:4, Sat:5, Sun:6)
 
+  // we recalculate the weekDay
+  // (Mon:0, Tue:1, Wed:2, Thu:3, Fri:4, Sat:5, Sun:6)
+  weekDay = weekDay === 0 ? 6 : weekDay - 1;
   let monday = 1 + (7 - weekDay); // we get the first monday of the month
 
+  //we calculate in witch week is our day
   while (monday <= day) {
-    //we calculate in wich week is our day
     weekNum++;
     monday += 7;
   }
 
-  return weekNum; //we return it
+  if (month < 10) {
+    month = +`0${month}`;
+  }
+  if (day < 10) {
+    day = +`0${day}`;
+  }
+
+  return day === 31 ? 5 : weekNum; //we return it
 }
 
 // GET Days in week of current date

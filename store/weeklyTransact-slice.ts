@@ -18,10 +18,10 @@ const weeklyTransactsSlice = createSlice({
     addWeeklyTransacts(state, action) {
       const newTransact = action.payload;
       const existingItem = state.weeklyTransacts.find(
-        expense =>
-          expense.week === newTransact.week &&
-          expense.year === newTransact.year &&
-          expense.month === newTransact.month,
+        expense => expense.id === newTransact.id,
+        // expense.week === newTransact.week &&
+        // expense.year === newTransact.year &&
+        // expense.month === newTransact.month,
       );
       if (!existingItem) {
         state.weeklyTransacts.push({
@@ -48,7 +48,7 @@ const weeklyTransactsSlice = createSlice({
     },
     updateWeeklyTransacts(state, action) {
       const updatedTransactIndex = state.weeklyTransacts.findIndex(
-        transact => transact.week === action.payload.week,
+        transact => transact.id === action.payload.id,
       );
       state.weeklyTransacts[updatedTransactIndex] = action.payload;
     },

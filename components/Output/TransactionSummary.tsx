@@ -262,9 +262,6 @@ const TransactionSummary = ({}: Props) => {
     // transact?.month === moment(date).month() + 1,
   );
 
-  // console.log('MonthlyTransactsData:', MonthlyTransactsData);
-  // console.log('WeeklyTransactsData:', WeeklyTransactsData);
-
   //  Weekly Transaction
   // const weeklyData = weeklyTransaction(fromDate, toDate, date);
   const weeklyData = WeeklyTransactsData?.filter(
@@ -280,9 +277,14 @@ const TransactionSummary = ({}: Props) => {
   // console.log('toDate', toDate);
   const dailyData = DailyTransactionData?.filter(
     transact =>
-      moment(transact?.date).format('YYYY-MM-DD') >= fromDate &&
-      moment(transact?.date).format('YYYY-MM-DD') <= toDate,
+      moment(transact?.date).format('YYYY-MM-DD') >=
+        moment(fromDate).format('YYYY-MM-DD') &&
+      moment(transact?.date).format('YYYY-MM-DD') <=
+        moment(toDate).format('YYYY-MM-DD'),
   );
+
+  // console.log('dailyData:', dailyData);
+  // console.log('fromDate:', fromDate);
 
   // on pressed
   if (monthlyPressed) {
