@@ -1,6 +1,7 @@
 import {
   Dimensions,
   Modal,
+  Platform,
   Pressable,
   StyleSheet,
   Text,
@@ -45,12 +46,7 @@ yearObj.sort((a: any, b: any) => {
   return 1; // return 1 here for DESC Order
 });
 
-function MonthList({
-  item,
-  onYearSelectedHandler,
-  selectedMY,
-  monthlyPressed,
-}: Pros) {
+function MonthList({item, onYearSelectedHandler, selectedMY, monthlyPressed}) {
   // const currentYear = moment().year();
   let MY = item.MY;
   if (!monthlyPressed) {
@@ -187,7 +183,7 @@ const styles = StyleSheet.create({
   listMenu: {
     flexDirection: 'column',
     justifyContent: 'space-around',
-    width: width * 0.8,
+    width: Platform.OS === 'ios' ? width * 0.90 : width * 0.8,
     height: height * 0.3,
     borderWidth: 0.8,
     backgroundColor: '#ffffff',
@@ -200,7 +196,7 @@ const styles = StyleSheet.create({
     elevation: 2,
     position: 'absolute',
     top: height * 0.06,
-    right: 0,
+    right: Platform.OS === 'ios' ? 10 : 0,
   },
   outSide: {
     flex: 1,

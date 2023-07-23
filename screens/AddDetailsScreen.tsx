@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {v4 as uuidv4} from 'uuid';
 import moment from 'moment';
 // import {isEmpty} from '@aws-amplify/core';
-import {Auth} from 'aws-amplify';
+// import {Auth} from 'aws-amplify';
 // import {TestIds, useInterstitialAd} from 'react-native-google-mobile-ads';
 
 import {AddDetailsNavigationType, AddDetailsRouteProp} from '../types';
@@ -17,16 +17,16 @@ import Category from '../components/Form/Category';
 import {
   sumByDate,
   sumByMonth,
-  sumTotalFunc,
+  // sumTotalFunc,
   sumTransactionByWeek,
 } from '../util/math';
 import {monthlyTransactsActions} from '../store/monthlyTransact-slice';
-import {getWeekInMonth} from '../util/date';
 import {weeklyTransactsActions} from '../store/weeklyTransact-slice';
 import {dailyTransactsActions} from '../store/dailyTransact-slice';
+import {getWeekInMonth} from '../util/date';
 import {accountActions} from '../store/account-slice';
 import {cashAccountsActions} from '../store/cash-slice';
-import {totalIncomeActions} from '../store/yearlyTransact-slice';
+// import {totalIncomeActions} from '../store/yearlyTransact-slice';
 
 const {width, height} = Dimensions.get('window');
 
@@ -39,7 +39,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
   const dispatch = useAppDispatch();
   const dataLoaded = useAppSelector(store => store);
 
-  const customerInfosData = dataLoaded?.customerInfos?.customerInfos;
+  // const customerInfosData = dataLoaded?.customerInfos?.customerInfos;
 
   const expenses = dataLoaded?.expenses?.expenses;
   const incomes = dataLoaded?.incomes?.incomes;
@@ -123,9 +123,14 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
   );
 
   // Cash or other accounts
-  const accTitle = account?.title === undefined ? 'Cash' : account?.title;
-  const selectedAccountId =
-    accTitle === 'Cash' ? cashAccountCategoryById?.id : accountCategoryById?.id;
+
+  const selectedAccId =
+    account?.title === 'Cash'
+      ? cashAccountCategoryById?.id
+      : accountCategoryById?.id;
+
+  const selectedAccountId: string =
+    String(selectedAccId) === 'undefined' ? 'Cash' : String(selectedAccId);
 
   // Initial account
   const initialAccountHandler = () => {
@@ -150,8 +155,6 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
 
   // Save data to Storage Func
   const saveDataToStorage = async () => {
-    console.log('account title: ', account?.title);
-    console.log('account title: ', account?.title === undefined);
     if (type === 'expense') {
       dispatch(
         expenseActions.addExpense({
@@ -249,15 +252,19 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
 
     // Filtered the same year expense
     const filteredExpenses = expenses?.filter(
-      exp => Number(moment(exp.date).year()) === year,
+      exp =>
+        Number(moment(exp.date).year()) === year &&
+        Number(moment(exp.date).month() + 1) === month,
     );
     // Filtered the same year income
     const filteredIncomes = incomes?.filter(
-      income => Number(moment(income.date).year()) === year,
+      income =>
+        Number(moment(income.date).year()) === year &&
+        Number(moment(income.date).month() + 1) === month,
     );
 
-    console.log('expenses ', expenses);
-    console.log('filteredExpenses ', filteredExpenses);
+    // console.log('expenses ', expenses);
+    // console.log('filteredExpenses ', filteredExpenses);
 
     if (type === 'expense') {
       const expenseMonthly =
@@ -271,12 +278,10 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
 
       const income_monthly = incomeMonthly === undefined ? 0 : incomeMonthly;
 
-      console.log('expenseMonthly', expenseMonthly);
-      console.log('income_monthly', income_monthly);
-
       dispatchMonthlyTransactionsToStorage(
         +expenseMonthly,
         income_monthly,
+        year,
         month,
         String(textDate),
       );
@@ -295,6 +300,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
       dispatchMonthlyTransactionsToStorage(
         expense_monthly,
         +incomeMonthly,
+        year,
         month,
         String(textDate),
       );
@@ -308,6 +314,8 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     const day = moment(textDate).date();
     const currentWeek = getWeekInMonth(year, month, day);
 
+    // console.log('currentWeek: ', currentWeek);
+
     const weeklyTransactions = sumTransactionByWeek([incomes, expenses]);
 
     const filteredWeeklyTransactions = weeklyTransactions?.filter(
@@ -315,8 +323,11 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
         (+wt.expense_weekly !== 0 || +wt.income_weekly !== 0) &&
         moment(wt.date).year() === year &&
         +moment(wt.date).month() + 1 === month &&
-        +wt.week === +currentWeek,
+        Number(wt.week) === currentWeek,
     );
+
+    // console.log('weeklyTransactions: ', weeklyTransactions);
+    // console.log('filteredWeeklyTransactions: ', filteredWeeklyTransactions);
 
     if (type === 'expense') {
       // Previous monthly transactions values
@@ -333,6 +344,8 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
       dispatchWeeklyTransactionsToStorage(
         +expenseWeekly,
         +incomeWeekly,
+        year,
+        month,
         currentWeek,
       );
     }
@@ -350,6 +363,8 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
       dispatchWeeklyTransactionsToStorage(
         +expenseWeekly,
         +incomeWeekly,
+        year,
+        month,
         currentWeek,
       );
     }
@@ -357,18 +372,34 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
 
   // Update Daily Transaction
   const dailyTransactionsUpdate = () => {
+    const year = moment(textDate).year();
+    const month = moment(textDate).month() + 1;
     const date = moment(textDate).format('YYYY-MM-DD HH:mm:ss');
     const day = moment(textDate).date();
 
+    const filteredExpenses = expenses?.filter(
+      expense =>
+        moment(expense.date).year() === year &&
+        moment(expense.date).month() + 1 == month,
+    );
+
+    const filteredIncomes = incomes?.filter(
+      income =>
+        moment(income.date).year() === year &&
+        moment(income.date).month() + 1 === month,
+    );
+
     if (type === 'expense') {
       const expenseDaily =
-        sumByDate(expenses, 'expense', textDate).filter(
+        sumByDate(filteredExpenses, 'expense', textDate).filter(
           expense => expense.day === day,
         )[0]?.amount + +amount;
 
-      const incomeDaily = sumByDate(incomes, 'income', textDate)?.filter(
-        income => income.day === day,
-      )[0]?.amount;
+      const incomeDaily = sumByDate(
+        filteredIncomes,
+        'income',
+        textDate,
+      )?.filter(income => income.day === day)[0]?.amount;
 
       const income_daily = incomeDaily === undefined ? 0 : incomeDaily;
 
@@ -405,25 +436,22 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
   const dispatchMonthlyTransactionsToStorage = (
     expenseAmount: number,
     incomeAmount: number,
+    year: number,
     month: number,
     date: string,
   ) => {
     const transact_monthly = dataLoaded.monthlyTransacts?.monthlyTransacts;
 
     const findMonth = transact_monthly?.filter(
-      tr =>
-        moment(tr.date).year() === moment(date).year() &&
-        Number(tr.month) === month,
+      tr => Number(tr.year) === year && Number(tr.month) === month,
     );
 
-    console.log('length: ', findMonth?.length);
-
-    if (findMonth.length !== 0) {
-      console.log('update monthly');
+    if (findMonth.length > 0) {
       dispatch(
         monthlyTransactsActions.updateMonthlyTransactions({
           id: findMonth[0]?.id,
           date: date,
+          year: findMonth[0]?.year,
           month: findMonth[0]?.month,
           expense_monthly: expenseAmount,
           income_monthly: incomeAmount,
@@ -431,11 +459,11 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
       );
     }
     if (findMonth?.length === 0) {
-      console.log('add new monthly');
       dispatch(
         monthlyTransactsActions.addMonthlyTransactions({
           id: 'monthlyTransaction-' + uuidv4(),
           date: date,
+          year: year,
           month: month,
           expense_monthly: type === 'expense' ? amount : '',
           income_monthly: type === 'income' ? amount : '',
@@ -448,29 +476,38 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
   const dispatchWeeklyTransactionsToStorage = (
     expenseWeekly: number,
     incomeWeekly: number,
+    year: number,
+    month: number,
     week: number,
   ) => {
     const transact_weekly = dataLoaded?.weeklyTransacts?.weeklyTransacts;
     const findWeekT = transact_weekly?.filter(
-      transact => Number(transact?.week) === week,
+      transact =>
+        Number(transact?.year) === year &&
+        Number(transact?.month) === month &&
+        Number(transact?.week) === week,
     );
 
-    if (findWeekT[0]?.week !== undefined && findWeekT[0].week === week) {
+    if (findWeekT?.length > 0) {
       dispatch(
         weeklyTransactsActions.updateWeeklyTransacts({
-          id: 'weeklyTransaction-' + week,
+          id: findWeekT[0]?.id,
           date: textDate,
-          week: week,
+          year: findWeekT[0]?.year,
+          month: findWeekT[0]?.month,
+          week: findWeekT[0]?.week,
           expense_weekly: expenseWeekly,
           income_weekly: incomeWeekly,
         }),
       );
     }
-    if (findWeekT[0]?.week === undefined) {
+    if (findWeekT?.length === 0) {
       dispatch(
         weeklyTransactsActions.addWeeklyTransacts({
-          id: 'weeklyTransaction-' + week,
+          id: 'weeklyTransaction-' + uuidv4(),
           date: textDate,
+          year: year,
+          month: month,
           week: week,
           expense_weekly: expenseWeekly,
           income_weekly: incomeWeekly,
@@ -490,15 +527,15 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     const findDay = transact_daily?.filter(
       transact =>
         moment(transact?.date).format('YYYY-MM-DD') ===
-        moment(date).format('YYYY-MM-DD'),
+          moment(date).format('YYYY-MM-DD') && Number(transact?.day) === day,
     );
 
-    if (findDay?.length !== 0) {
+    if (findDay?.length > 0) {
       dispatch(
         dailyTransactsActions.updateDailyTransacts({
-          id: 'dailyTransact-' + uuidv4(),
-          date: textDate,
-          day: day,
+          id: findDay[0]?.id,
+          date: findDay[0]?.date,
+          day: findDay[0]?.day,
           expense_daily: expenseDaily,
           income_daily: incomeDaily,
         }),

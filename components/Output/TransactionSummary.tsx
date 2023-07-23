@@ -262,9 +262,8 @@ const TransactionSummary = ({}: Props) => {
     // transact?.month === moment(date).month() + 1,
   );
 
-  // console.log('year: ', moment(fromDate).year());
-  // console.log('MonthlyTransactsData: ', MonthlyTransactsData);
-  // console.log('filteredMonthlyData: ', filteredMonthlyData);
+  // console.log('MonthlyTransactsData:', MonthlyTransactsData);
+  // console.log('WeeklyTransactsData:', WeeklyTransactsData);
 
   //  Weekly Transaction
   // const weeklyData = weeklyTransaction(fromDate, toDate, date);
