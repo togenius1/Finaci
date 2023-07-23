@@ -252,6 +252,8 @@ const TransactionSummary = ({}: Props) => {
   const WeeklyTransactsData = dataLoaded?.weeklyTransacts?.weeklyTransacts;
   const DailyTransactionData = dataLoaded?.dailyTransacts?.dailyTransacts;
 
+  // console.log('Weekly TR: ', WeeklyTransactsData);
+
   const date = moment(fromDate).format('YYYY-MM-DD');
 
   // Monthly Transaction

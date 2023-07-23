@@ -50,6 +50,7 @@ const weeklyTransactsSlice = createSlice({
       const updatedTransactIndex = state.weeklyTransacts.findIndex(
         transact => transact.id === action.payload.id,
       );
+
       state.weeklyTransacts[updatedTransactIndex] = action.payload;
     },
   },

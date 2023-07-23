@@ -6,7 +6,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import React, {useEffect} from 'react';
+import React from 'react';
 import {useAppDispatch, useAppSelector} from '../../hooks';
 import {expenseActions} from '../../store/expense-slice';
 // import {dailyTransaction} from '../../util/transaction';
@@ -140,21 +140,29 @@ const DailyItemElement = ({
   const updateWeeklyTransactionsHandler = (itemId: string, type: string) => {
     const month = moment().month(monthLabel).format('M');
     const week = getWeekInMonth(year, month, day);
+
     let deletedObj;
+
     if (type === 'expense') {
       deletedObj = Expenses?.filter(exp => exp?.id === itemId);
     }
     if (type === 'income') {
       deletedObj = Incomes?.filter(income => income?.id === itemId);
     }
+
     const filteredWeeklyTransactions = WeeklyTransactionsData?.filter(
-      tran => +tran.week === +week,
+      tran =>
+        Number(tran.week) === Number(week) &&
+        Number(tran.year) === Number(year) &&
+        Number(tran.month) === Number(month),
     );
 
     dispatch(
       weeklyTransactsActions.updateWeeklyTransacts({
         id: filteredWeeklyTransactions[0]?.id,
         date: filteredWeeklyTransactions[0]?.date,
+        year: filteredWeeklyTransactions[0]?.year,
+        month: filteredWeeklyTransactions[0]?.month,
         week: filteredWeeklyTransactions[0]?.week,
         expense_weekly:
           type === 'expense'
@@ -188,6 +196,7 @@ const DailyItemElement = ({
       monthlyTransactsActions.updateMonthlyTransactions({
         id: filteredMonthlyTransactions[0]?.id,
         date: filteredMonthlyTransactions[0]?.date,
+        year: filteredMonthlyTransactions[0]?.year,
         month: filteredMonthlyTransactions[0]?.month,
         expense_monthly:
           type === 'expense'
