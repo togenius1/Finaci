@@ -20,7 +20,7 @@ const monthlyTransactsSlice = createSlice({
       const newTransact = action.payload;
       const existingItem = state.monthlyTransacts.find(
         transact => transact?.id === newTransact?.id,
-        // transact?.id === newTransact.month &&
+        // transact?.month === newTransact.month &&
         // transact?.year === newTransact.year,
       );
       if (!existingItem) {
