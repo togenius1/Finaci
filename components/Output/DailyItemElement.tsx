@@ -29,6 +29,7 @@ const DailyItemElement = ({
   dayLabel,
   monthLabel,
   year,
+  month,
   time,
   accountId,
   cateId,
@@ -115,7 +116,10 @@ const DailyItemElement = ({
     }
 
     const filteredDailyTransactions = DailyTransactionsData?.filter(
-      tran => +tran.day === +day,
+      tran =>
+        Number(moment(tran.date).year()) === Number(year) &&
+        Number(moment(tran.date).month()) + 1 === Number(month) &&
+        Number(tran.day) === Number(day),
     );
 
     dispatch(
@@ -138,7 +142,7 @@ const DailyItemElement = ({
   };
 
   const updateWeeklyTransactionsHandler = (itemId: string, type: string) => {
-    const month = moment().month(monthLabel).format('M');
+    // const month = moment().month(monthLabel).format('M');
     const week = getWeekInMonth(year, month, day);
 
     let deletedObj;
@@ -190,7 +194,9 @@ const DailyItemElement = ({
       deletedObj = Incomes?.filter(income => income?.id === itemId);
     }
     const filteredMonthlyTransactions = MonthlyTransactionsData?.filter(
-      tran => +tran.month === +month,
+      tran =>
+        Number(tran.year) === Number(year) &&
+        Number(tran.month) === Number(month),
     );
     dispatch(
       monthlyTransactsActions.updateMonthlyTransactions({
@@ -389,6 +395,7 @@ type Props = {
   dayLabel: string | null;
   monthLabel: string | null;
   year: number | undefined;
+  month: number | undefined;
   time: string | null;
   accountId: string | null;
   cateId: string | null;

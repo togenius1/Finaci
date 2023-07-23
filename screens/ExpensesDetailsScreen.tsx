@@ -58,6 +58,7 @@ const ExpensesDetailsScreen = ({route, navigation}: Props) => {
     const dayLabel = moment(date).format('ddd');
     const monthLabel = moment(date).format('MMM');
     const year = moment(date).year();
+    const month = moment(date).month() + 1;
 
     return (
       <DailyItemElement
@@ -66,6 +67,7 @@ const ExpensesDetailsScreen = ({route, navigation}: Props) => {
         day={day}
         dayLabel={dayLabel}
         monthLabel={monthLabel}
+        month={month}
         year={year}
         time={time}
         accountId={accountId}

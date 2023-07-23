@@ -24,14 +24,14 @@ const AccountComponents = ({
   year,
 }: Props) => {
   // const dispatch = useAppDispatch();
-  const expenseData = useAppSelector(
-    state => state.expenses.expenses,
-    // shallowEqual,
-  );
-  const cashData = useAppSelector(
-    state => state.cashAccounts.cashAccounts,
-    // shallowEqual,
-  );
+  // const expenseData = useAppSelector(
+  //   state => state.expenses.expenses,
+  //   // shallowEqual,
+  // );
+  // const cashData = useAppSelector(
+  //   state => state.cashAccounts.cashAccounts,
+  //   // shallowEqual,
+  // );
   const accountsData = useAppSelector(
     state => state.accounts.accounts,
     // shallowEqual,

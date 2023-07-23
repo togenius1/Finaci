@@ -23,7 +23,7 @@ const AccountHeader = ({totalAssets, totalExpenses, total}: Props) => {
       <View style={styles.headerBox}>
         <Text style={styles.headerText}>Liabilities</Text>
         <Text style={[styles.headerValueText, {color: 'red'}]}>
-          {currencyFormatter(+totalExpenses, {})}
+          {currencyFormatter(Number(totalExpenses), {})}
         </Text>
       </View>
 

@@ -358,12 +358,12 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     }
     if (type === 'income') {
       const expenseWeekly =
-        filteredWeeklyTransactions[0]?.expense_weekly === undefined
+        String(filteredWeeklyTransactions[0]?.expense_weekly) === 'undefined'
           ? 0
           : filteredWeeklyTransactions[0]?.expense_weekly;
 
       const incomeWeekly =
-        filteredWeeklyTransactions[0]?.income_weekly === undefined
+        String(filteredWeeklyTransactions[0]?.income_weekly) === 'undefined'
           ? amount
           : filteredWeeklyTransactions[0]?.income_weekly + amount;
 

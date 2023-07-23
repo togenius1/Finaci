@@ -56,17 +56,31 @@ const AccountElement = ({
 
   // Filtered Cash data
   const filteredCashData = cashData?.filter(
+    cash =>
+      Number(moment(cash?.date).month() + 1) === Number(month) &&
+      Number(moment(cash?.date).year()) === year,
+  );
+
+  const filteredExpensesData = expensesData?.filter(
+    expense =>
+      Number(moment(expense?.date).month()) + 1 === Number(month) &&
+      Number(moment(expense?.date).year()) === Number(year),
+  );
+
+  const filteredAccountsData = cashData?.filter(
     account =>
-      +moment(account?.date).month() + 1 === +month &&
-      +moment(account?.date).year() === year,
+      Number(moment(account?.date).month() + 1) === Number(month) &&
+      Number(moment(account?.date).year()) === Number(year),
   );
 
   const cashBudget = sumTotalBudget(filteredCashData);
-  const accountsBudget = sumTotalBudget(accountsData);
-  const totalExpenses = sumTotalFunc(expensesData);
+  const accountsBudget = sumTotalBudget(filteredAccountsData);
+  const totalExpenses = sumTotalFunc(filteredExpensesData);
 
   const totalAssets = Number(cashBudget) + Number(accountsBudget);
   const total = totalAssets - Number(totalExpenses);
+
+  // console.log(totalExpenses);
 
   const editAccountPressedHandler = (item: string) => {
     const accType = item?.id.split('-');
@@ -188,7 +202,7 @@ const AccountElement = ({
           <Text style={styles.accountTitle}>Cash</Text>
           <FlatList
             keyExtractor={item => item.id + uuidv4()}
-            data={cashData}
+            data={filteredCashData}
             renderItem={renderItem}
             bounces={false}
           />
@@ -248,7 +262,7 @@ type Props = {
   setBudget: (value: number) => void;
   setIsEditAccount: (value: boolean) => void;
   setIsEditCash: (value: boolean) => void;
-  setRemoveAccount: (value: boolean) => void;
+  // setRemoveAccount: (value: boolean) => void;
   setLastEditedDate: (value: string) => void;
   // cashData: any[];
   // accountsData: any[];
@@ -258,5 +272,5 @@ type Props = {
   // totalExpenses: number | undefined;
   month: number;
   year: number;
-  onPress: () => void;
+  // onPress: () => void;
 };

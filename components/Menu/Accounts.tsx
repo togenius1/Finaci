@@ -17,7 +17,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import {v4 as uuidv4} from 'uuid';
 import moment from 'moment';
 
-import AddAccountForm from '../Form/AddAccountForm';
+// import AddAccountForm from '../Form/AddAccountForm';
 import {useAppSelector} from '../../hooks';
 
 // import {AccountType} from '../../models/account';
@@ -64,14 +64,14 @@ const Accounts = ({setAccount, setAccountPressed, month, year}: Props) => {
       +moment(cash.date).year() === year,
   );
 
-  const [accountText, setAccountText] = useState<string | null>('');
-  const [isEditAccount, setIsEditAccount] = useState<boolean>(false);
-  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  // const [accountText, setAccountText] = useState<string | null>('');
+  // const [isEditAccount, setIsEditAccount] = useState<boolean>(false);
+  // const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [cashBudget, setCashBudget] = useState<number | undefined>();
   const [accountsBudget, setAccountsBudget] = useState<number | undefined>();
   const [totalExpenses, setTotalExpenses] = useState<number | undefined>();
-  const [addAccPressed, setAddAccPressed] = useState<boolean>(false);
-  const [budget, setBudget] = useState<number | undefined>();
+  // const [addAccPressed, setAddAccPressed] = useState<boolean>(false);
+  // const [budget, setBudget] = useState<number | undefined>();
 
   useEffect(() => {
     const cashBudget = sumTotalBudget(filteredCash);
@@ -85,7 +85,7 @@ const Accounts = ({setAccount, setAccountPressed, month, year}: Props) => {
 
   // Total expenses
   const totalAssets = Number(cashBudget) + Number(accountsBudget);
-  const total = totalAssets - +totalExpenses;
+  const total = totalAssets - Number(totalExpenses);
 
   // Sort Data
   const getSortedState = data =>

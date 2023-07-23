@@ -90,23 +90,23 @@ const AccountsScreen = ({navigation}: Props) => {
   const [fromDate, setFromDate] = useState<string | null>(initFromDate);
   const [toDate, setToDate] = useState<string | null>(initToDate);
 
-  const {isLoaded, isClosed, load, show} = useInterstitialAd(adUnitId, {
-    requestNonPersonalizedAdsOnly: true,
-  });
+  // const {isLoaded, isClosed, load, show} = useInterstitialAd(adUnitId, {
+  //   requestNonPersonalizedAdsOnly: true,
+  // });
 
   // Load ads
-  useEffect(() => {
-    // Start loading the interstitial straight away
-    load();
-  }, [load]);
+  // useEffect(() => {
+  //   // Start loading the interstitial straight away
+  //   load();
+  // }, [load]);
 
   // Load ads again
-  useEffect(() => {
-    if (isClosed) {
-      // console.log('Reloading ad...');
-      load();
-    }
-  }, [isClosed]);
+  // useEffect(() => {
+  //   if (isClosed) {
+  //     // console.log('Reloading ad...');
+  //     load();
+  //   }
+  // }, [isClosed]);
 
   useEffect(() => {
     onMonthYearSelectedHandler(moment().month());
@@ -156,20 +156,20 @@ const AccountsScreen = ({navigation}: Props) => {
     setIsMenuOpen(false);
 
     // Check Purchase user: show Ads
-    const authUser = await Auth.currentAuthenticatedUser();
-    const appUserId = authUser?.attributes?.sub;
-    const filteredCustomerInfo = customerInfosData?.filter(
-      cus => cus.appUserId === appUserId,
-    );
-    if (
-      !filteredCustomerInfo[0]?.stdActive &&
-      !filteredCustomerInfo[0]?.proActive
-    ) {
-      // show Ads
-      if (isLoaded) {
-        show();
-      }
-    }
+    // const authUser = await Auth.currentAuthenticatedUser();
+    // const appUserId = authUser?.attributes?.sub;
+    // const filteredCustomerInfo = customerInfosData?.filter(
+    //   cus => cus.appUserId === appUserId,
+    // );
+    // if (
+    //   !filteredCustomerInfo[0]?.stdActive &&
+    //   !filteredCustomerInfo[0]?.proActive
+    // ) {
+    //   // show Ads
+    //   if (isLoaded) {
+    //     show();
+    //   }
+    // }
   };
 
   return (

@@ -220,9 +220,10 @@ const AddAccountForm = ({
     }
     const findCash = cashData?.filter(
       cash =>
-        +moment(cash.date).month() === +moment(textDate).month() &&
-        +moment(cash.date).year() === +moment(textDate).year(),
+        moment(cash.date).month() === moment(textDate).month() &&
+        moment(cash.date).year() === moment(textDate).year(),
     );
+
     // Create new Cash Account
     if (findCash?.length <= 0) {
       const cashId = 'cash-' + uuidv4();
@@ -248,7 +249,7 @@ const AddAccountForm = ({
           }),
         );
         setIsEditCash(false);
-      } else {
+      } else if (findCash?.length > 0) {
         // Update Cash Account
         dispatch(
           cashAccountsActions.updateCashAccount({

@@ -612,22 +612,19 @@ const TransactionsScreen = ({navigation}: Props) => {
   }
 
   // Total
-  let total;
-  let totalExpense;
-  let totalIncome;
+  let total: number;
+  let totalExpense: number;
+  let totalIncome: number;
 
   // Monthly Transaction
   if (indicatorIndex === 1 || indicatorIndex === 2) {
     const transact_monthly = dataLoaded?.monthlyTransacts.monthlyTransacts;
     const filtered_TransactMonthly = transact_monthly?.filter(
-      income =>
+      transact =>
         // console.log('year: ', moment(income.date).year(), year),
-        Number(income.month) === Number(month) &&
-        moment(income.date).year() === Number(year),
+        Number(transact.year) === Number(year) &&
+        Number(transact.month) === Number(month),
     );
-
-    // console.log('transact_monthly: ', transact_monthly);
-    // console.log('filtered transactions: ', filtered_TransactMonthly);
 
     totalIncome = filtered_TransactMonthly[0]?.income_monthly;
     totalExpense = filtered_TransactMonthly[0]?.expense_monthly;
@@ -728,7 +725,7 @@ const TransactionsScreen = ({navigation}: Props) => {
     }
   };
 
-  // Swipe Left
+  // Swipe Left ..
   function onSwipeLeft() {
     // console.log('SWIPE_LEFT');
     setSwipeLeft(true);
