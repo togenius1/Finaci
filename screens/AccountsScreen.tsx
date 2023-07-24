@@ -10,12 +10,12 @@ import React, {useEffect, useState} from 'react';
 import moment from 'moment';
 // import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useInterstitialAd, TestIds} from 'react-native-google-mobile-ads';
+// import {useInterstitialAd, TestIds} from 'react-native-google-mobile-ads';
 
 import {AccountNavigationType} from '../types';
 import AccountComponents from '../components/Output/AccountComponents';
 import MonthYearList from '../components/Menu/MonthYearList';
-import {Auth} from 'aws-amplify';
+// import {Auth} from 'aws-amplify';
 import {useAppSelector} from '../hooks';
 
 const {width, height} = Dimensions.get('window');
@@ -28,9 +28,9 @@ const initFromDate = moment(initFromDateString).format('YYYY-MM-DD');
 const initToDate = moment().format('YYYY-MM-DD');
 
 // Ads variable
-const adUnitId = __DEV__
-  ? TestIds.INTERSTITIAL
-  : 'ca-app-pub-3212728042764573~3355076099';
+// const adUnitId = __DEV__
+//   ? TestIds.INTERSTITIAL
+//   : 'ca-app-pub-3212728042764573~3355076099';
 
 const HeaderRightComponent = ({
   setIsMenuOpen,
@@ -78,9 +78,9 @@ const HeaderRightComponent = ({
 };
 
 const AccountsScreen = ({navigation}: Props) => {
-  const rootStore = useAppSelector(store => store);
+  // const rootStore = useAppSelector(store => store);
 
-  const customerInfosData = rootStore?.customerInfos?.customerInfos;
+  // const customerInfosData = rootStore?.customerInfos?.customerInfos;
 
   const [IsAccFormVisible, setIsAccFormVisible] = useState<boolean>(false);
   const [isMYListVisible, setIsMYListVisible] = useState<boolean>(false);
