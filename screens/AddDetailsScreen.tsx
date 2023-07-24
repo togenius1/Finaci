@@ -250,57 +250,97 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     const month = moment(textDate).month() + 1;
     const year = moment(textDate).year();
 
+    const transact_monthly = dataLoaded.monthlyTransacts?.monthlyTransacts;
+
+    const findMonth = transact_monthly?.filter(
+      tr =>
+        Number(tr.year) === Number(year) && Number(tr.month) === Number(month),
+    );
+
     // Filtered the same year expense
     const filteredExpenses = expenses?.filter(
       exp =>
-        Number(moment(exp.date).year()) === year &&
-        Number(moment(exp.date).month() + 1) === month,
+        Number(moment(exp.date).year()) === Number(year) &&
+        Number(moment(exp.date).month() + 1) === Number(month),
     );
     // Filtered the same year income
     const filteredIncomes = incomes?.filter(
       income =>
-        Number(moment(income.date).year()) === year &&
-        Number(moment(income.date).month() + 1) === month,
+        Number(moment(income.date).year()) === Number(year) &&
+        Number(moment(income.date).month() + 1) === Number(month),
     );
 
     if (type === 'expense') {
-      const expenseMonthly =
-        sumByMonth(filteredExpenses, 'expense')?.filter(
-          expense => expense?.month === month,
-        )[0]?.amount + amount;
+      let expenseMonthly: number;
+      let income_monthly: number;
 
-      const incomeMonthly = sumByMonth(filteredIncomes, 'income')?.filter(
-        income => income?.month === month,
-      )[0]?.amount;
+      if (findMonth?.length === 0) {
+        expenseMonthly =
+          sumByMonth(filteredExpenses, 'expense')?.filter(
+            expense => expense?.month === month,
+          )[0]?.amount + +amount;
 
-      const income_monthly = incomeMonthly === undefined ? 0 : incomeMonthly;
-
-      dispatchMonthlyTransactionsToStorage(
-        +expenseMonthly,
-        income_monthly,
-        year,
-        month,
-        String(textDate),
-      );
-    }
-    if (type === 'income') {
-      const expenseMonthly = sumByMonth(filteredExpenses, 'expense')?.filter(
-        expense => expense?.month === month,
-      )[0]?.amount;
-      const incomeMonthly =
-        sumByMonth(filteredIncomes, 'income')?.filter(
+        const incomeMonthly = sumByMonth(filteredIncomes, 'income')?.filter(
           income => income?.month === month,
-        )[0]?.amount + amount;
+        )[0]?.amount;
+        income_monthly = incomeMonthly === undefined ? 0 : incomeMonthly;
 
-      const expense_monthly = expenseMonthly === undefined ? 0 : expenseMonthly;
+        dispatchMonthlyTransactionsToStorage(
+          +expenseMonthly,
+          income_monthly,
+          year,
+          month,
+          String(textDate),
+        );
+      } else if (findMonth?.length > 0) {
+        expenseMonthly = findMonth[0]?.expense_monthly + +amount;
+        income_monthly = findMonth[0]?.income_monthly;
 
-      dispatchMonthlyTransactionsToStorage(
-        expense_monthly,
-        +incomeMonthly,
-        year,
-        month,
-        String(textDate),
-      );
+        dispatchMonthlyTransactionsToStorage(
+          +expenseMonthly,
+          income_monthly,
+          year,
+          month,
+          String(textDate),
+        );
+      }
+    }
+    // add income
+    if (type === 'income') {
+      let incomeMonthly: number;
+      let expense_monthly: number;
+
+      if (findMonth?.length === 0) {
+        const expenseMonthly = sumByMonth(filteredExpenses, 'expense')?.filter(
+          expense => expense?.month === month,
+        )[0]?.amount;
+
+        incomeMonthly =
+          sumByMonth(filteredIncomes, 'income')?.filter(
+            income => Number(income?.month) === Number(month),
+          )[0]?.amount + +amount;
+
+        expense_monthly = expenseMonthly === undefined ? 0 : expenseMonthly;
+
+        dispatchMonthlyTransactionsToStorage(
+          expense_monthly,
+          +incomeMonthly,
+          year,
+          month,
+          String(textDate),
+        );
+      } else if (findMonth?.length > 0) {
+        expense_monthly = findMonth[0]?.expense_monthly;
+        incomeMonthly = findMonth[0]?.income_monthly + +amount;
+
+        dispatchMonthlyTransactionsToStorage(
+          expense_monthly,
+          +incomeMonthly,
+          year,
+          month,
+          String(textDate),
+        );
+      }
     }
   };
 
@@ -311,42 +351,56 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     const day = moment(textDate).date();
     const currentWeek = getWeekInMonth(year, month, day);
 
+    const transact_weekly = dataLoaded.weeklyTransacts?.weeklyTransacts;
+
+    const findWeek = transact_weekly?.filter(
+      tr =>
+        Number(tr.year) === Number(year) &&
+        Number(tr.month) === Number(month) &&
+        Number(tr.week) === Number(currentWeek),
+    );
+
     const filteredExpenses = expenses?.filter(
       expense =>
-        moment(expense.date).year() === year &&
-        moment(expense.date).month() + 1 === month,
+        Number(moment(expense.date).year()) === Number(year) &&
+        Number(moment(expense.date).month() + 1) === Number(month),
     );
     const filteredIncomes = expenses?.filter(
       income =>
-        moment(income.date).year() === year &&
-        moment(income.date).month() + 1 === month,
+        Number(moment(income.date).year()) === Number(year) &&
+        Number(moment(income.date).month() + 1) === Number(month),
     );
 
-    const weeklyTransactions = sumTransactionByWeek([
-      filteredIncomes,
-      filteredExpenses,
-    ]);
-    // const weeklyTransactions = sumTransactionByWeek([incomes, expenses]);
+    let filteredWeeklyTransactions;
 
-    const filteredWeeklyTransactions = weeklyTransactions?.filter(
-      wt =>
-        (+wt.expense_weekly !== 0 || +wt.income_weekly !== 0) &&
-        moment(wt.date).year() === year &&
-        +moment(wt.date).month() + 1 === month &&
-        Number(wt.week) === currentWeek,
-    );
+    if (findWeek?.length === 0) {
+      const weeklyTransactions = sumTransactionByWeek([
+        filteredIncomes,
+        filteredExpenses,
+      ]);
+      // const weeklyTransactions = sumTransactionByWeek([incomes, expenses]);
+      filteredWeeklyTransactions = weeklyTransactions?.filter(
+        wt =>
+          (+wt.expense_weekly !== 0 || +wt.income_weekly !== 0) &&
+          Number(moment(wt.date).year()) === Number(year) &&
+          Number(moment(wt.date).month() + 1) === Number(month) &&
+          Number(wt.week) === Number(currentWeek),
+      );
+    } else if (findWeek?.length > 0) {
+      filteredWeeklyTransactions = findWeek;
+    }
 
     if (type === 'expense') {
       // Previous monthly transactions values
       const expenseWeekly =
-        filteredWeeklyTransactions[0]?.expense_weekly === undefined
-          ? amount
-          : filteredWeeklyTransactions[0]?.expense_weekly + amount;
+        String(filteredWeeklyTransactions[0]?.expense_weekly) === 'undefined'
+          ? +amount
+          : +filteredWeeklyTransactions[0]?.expense_weekly + +amount;
 
       const incomeWeekly =
-        filteredWeeklyTransactions[0]?.income_weekly === undefined
+        String(filteredWeeklyTransactions[0]?.income_weekly) === 'undefined'
           ? 0
-          : filteredWeeklyTransactions[0]?.income_weekly;
+          : +filteredWeeklyTransactions[0]?.income_weekly;
 
       dispatchWeeklyTransactionsToStorage(
         +expenseWeekly,
@@ -356,16 +410,17 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
         currentWeek,
       );
     }
+
     if (type === 'income') {
       const expenseWeekly =
         String(filteredWeeklyTransactions[0]?.expense_weekly) === 'undefined'
           ? 0
-          : filteredWeeklyTransactions[0]?.expense_weekly;
+          : +filteredWeeklyTransactions[0]?.expense_weekly;
 
       const incomeWeekly =
         String(filteredWeeklyTransactions[0]?.income_weekly) === 'undefined'
-          ? amount
-          : filteredWeeklyTransactions[0]?.income_weekly + amount;
+          ? +amount
+          : +filteredWeeklyTransactions[0]?.income_weekly + +amount;
 
       dispatchWeeklyTransactionsToStorage(
         +expenseWeekly,
@@ -379,39 +434,67 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
 
   // Update Daily Transaction
   const dailyTransactionsUpdate = () => {
-    const year = moment(textDate).year();
-    const month = moment(textDate).month() + 1;
+    // const year = moment(textDate).year();
+    // const month = moment(textDate).month() + 1;
     const date = moment(textDate).format('YYYY-MM-DD HH:mm:ss');
     const day = moment(textDate).date();
 
-    const filteredExpenses = expenses?.filter(
-      expense =>
-        moment(expense.date).year() === year &&
-        moment(expense.date).month() + 1 == month,
+    const transact_daily = dataLoaded?.dailyTransacts?.dailyTransacts;
+    const findDailyData = transact_daily?.filter(
+      transact =>
+        moment(transact?.date).format('YYYY-MM-DD') ===
+          moment(date).format('YYYY-MM-DD') &&
+        Number(transact?.day) === Number(day),
     );
 
-    const filteredIncomes = incomes?.filter(
-      income =>
-        moment(income.date).year() === year &&
-        moment(income.date).month() + 1 === month,
-    );
+    let expense_Daily;
+    let income_Daily;
+
+    if (findDailyData?.length === 0) {
+      const filteredExpenses = expenses?.filter(
+        expense =>
+          moment(expense.date).format('YYYY-MM-DD') ===
+          moment(date).format('YYYY-MM-DD'),
+        // Number(moment(expense.date).year()) === Number(year) &&
+        // Number(moment(expense.date).month() + 1) == Number(month),
+      );
+
+      const filteredIncomes = incomes?.filter(
+        income =>
+          moment(income.date).format('YYYY-MM-DD') ===
+          moment(date).format('YYYY-MM-DD'),
+        // Number(moment(income.date).year()) === Number(year) &&
+        // Number(moment(income.date).month() + 1) === Number(month),
+      );
+
+      const expenseDaily = sumByDate(filteredExpenses, 'expense', textDate);
+      const incomeDaily = sumByDate(filteredIncomes, 'income', textDate);
+
+      expense_Daily = expenseDaily?.filter(
+        expense =>
+          moment(expense.date).format('YYYY-MM-DD') ===
+            moment(date).format('YYYY-MM-DD') &&
+          Number(expense.day) === Number(day),
+      )[0]?.amount;
+
+      income_Daily = incomeDaily?.filter(
+        income =>
+          moment(income.date).format('YYYY-MM-DD') ===
+            moment(date).format('YYYY-MM-DD') &&
+          Number(income.day) === Number(day),
+      )[0]?.amount;
+    } else if (findDailyData?.length > 0) {
+      expense_Daily = findDailyData[0]?.expense_daily;
+      income_Daily = findDailyData[0]?.income_daily;
+    }
 
     if (type === 'expense') {
-      const expenseDaily =
-        sumByDate(filteredExpenses, 'expense', textDate).filter(
-          expense => expense.day === day,
-        )[0]?.amount + +amount;
-
-      const incomeDaily = sumByDate(
-        filteredIncomes,
-        'income',
-        textDate,
-      )?.filter(income => income.day === day)[0]?.amount;
-
-      const income_daily = incomeDaily === undefined ? 0 : incomeDaily;
+      expense_Daily = +expense_Daily + +amount;
+      const income_daily =
+        String(income_Daily) === 'undefined' ? 0 : +income_Daily;
 
       dispatchDailyTransactionsToStorage(
-        +expenseDaily,
+        +expense_Daily,
         +income_daily,
         date,
         +day,
@@ -419,20 +502,14 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     }
 
     if (type === 'income') {
-      const expenseDaily = sumByDate(expenses, 'expense', textDate)?.filter(
-        expense => expense?.day === day,
-      )[0]?.amount;
+      income_Daily = Number(income_Daily) + +amount;
 
-      const incomeDaily =
-        sumByDate(incomes, 'income', textDate)?.filter(
-          income => income?.day === day,
-        )[0]?.amount + +amount;
-
-      const expense_daily = expenseDaily === undefined ? 0 : expenseDaily;
+      const expense_daily =
+        String(expense_Daily) === 'undefined' ? 0 : expense_Daily;
 
       dispatchDailyTransactionsToStorage(
         +expense_daily,
-        +incomeDaily,
+        +income_Daily,
         date,
         +day,
       );

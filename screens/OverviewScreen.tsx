@@ -218,18 +218,6 @@ const OverviewScreen = ({navigation}: Props) => {
     // showMonthYearListMenu,
   ]);
 
-  // useEffect(() => {
-  // if (focusedTabIndex === 0) {
-  //   sendParamsToSpendingTabHandler();
-  // }
-  // if (focusedTabIndex === 1) {
-  //   sendParamsToExpenseTabHandler();
-  // }
-  // if (focusedTabIndex === 2) {
-  //   sendParamsToIncomeTabHandler();
-  // }
-  // }, [focusedTabIndex, overviewCtx.fromDate, toDate]);
-
   // Set Month Year
   function onMonthYearSelectedHandler(time) {
     let fromdate;
@@ -278,15 +266,6 @@ const OverviewScreen = ({navigation}: Props) => {
     overviewCtx.toDateSetHandler({
       toDate: initToDate,
     });
-    // if (focusedTabIndex === 0) {
-    //   // sendParamsToSpendingTabHandler();
-    // }
-    // if (focusedTabIndex === 1) {
-    //   // sendParamsToExpenseTabHandler();
-    // }
-    // if (focusedTabIndex === 2) {
-    //   // sendParamsToIncomeTabHandler();
-    // }
 
     setShowCustomDate(false);
     setRightMenuClicked(false);
@@ -353,40 +332,11 @@ const OverviewScreen = ({navigation}: Props) => {
         toDate: moment(date).format('YYYY-MM-DD'),
       });
     }
-    // if (focusedTabIndex === 0) {
-    //   sendParamsToSpendingTabHandler();
-    // }
-    // if (focusedTabIndex === 1) {
-    //   sendParamsToExpenseTabHandler();
-    // }
-    // if (focusedTabIndex === 2) {
-    //   sendParamsToIncomeTabHandler();
-    // }
+
     setFromDateClicked(false);
     setToDateClicked(false);
     hideDatePicker();
   };
-
-  // const sendParamsToSpendingTabHandler = () => {
-  //   navigation.navigate('Spending', {
-  //     fromDate: fromDate,
-  //     toDate: toDate,
-  //   });
-  // };
-
-  // const sendParamsToExpenseTabHandler = () => {
-  //   navigation.navigate('Expense', {
-  //     fromDate: fromDate,
-  //     toDate: toDate,
-  //   });
-  // };
-
-  // const sendParamsToIncomeTabHandler = () => {
-  //   navigation.navigate('Income', {
-  //     fromDate: fromDate,
-  //     toDate: toDate,
-  //   });
-  // };
 
   return (
     <View style={styles.container}>
