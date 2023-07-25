@@ -30,7 +30,7 @@ const colors = {
 
 const {width, height} = Dimensions.get('window');
 
-const DrawerContent = (props: Props) => {
+const DrawerContent = ({props}: Props) => {
   const navigation = useNavigation();
 
   const [authUser, setAuthUser] = useState<any>();

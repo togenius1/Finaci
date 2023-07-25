@@ -222,7 +222,7 @@ function HeaderSummary({total, totalIncome, totalExpense}: HeaderSummaryType) {
 }
 
 // initialize tabs component
-const initTabsComponent = Array.from({length: 15}, (_, i) => ({
+const initTabsComponent = Array.from({length: 3}, (_, i) => ({
   name: `Sc ${i}`,
   props: {num: `${i}`},
 }));
@@ -273,6 +273,14 @@ const TransactionsScreen = ({navigation}: Props) => {
     const middleTabIndex = Math.floor(tabsComponentsArr?.length / 2);
     setMiddleTabIndex(middleTabIndex);
   }, []);
+
+  useEffect(() => {
+    const tabsComponent = Array.from({length: 15}, (_, i) => ({
+      name: `Sc ${i}`,
+      props: {num: `${i}`},
+    }));
+    setTabsComponentsArr(tabsComponent);
+  }, [year, month]);
 
   // Load ads
   useEffect(() => {

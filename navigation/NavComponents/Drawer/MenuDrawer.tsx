@@ -9,7 +9,7 @@ import SettingsScreen from '../../../screens/SettingsScreen';
 import DrawerContent from '../../../components/drawer/DrawerContent';
 import ReportsScreen from '../../../screens/ReportsScreen';
 import BackupScreen from '../../../screens/BackupScreen';
-import RecommendScreen from '../../../screens/RecommendScreen';
+// import RecommendScreen from '../../../screens/RecommendScreen';
 import {RootStackParamList} from '../../../types';
 import PaywallScreen from '../../../screens/PaywallScreen';
 
@@ -18,6 +18,7 @@ const Drawer = createDrawerNavigator<RootStackParamList>();
 const MenuDrawer = () => {
   return (
     <Drawer.Navigator
+      useLegacyImplementation={false}
       screenOptions={() => ({
         headerTintColor: 'black',
         drawerType: 'front',
