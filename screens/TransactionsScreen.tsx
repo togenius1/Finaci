@@ -122,16 +122,20 @@ function TopTabs({
         },
       }}
       screenOptions={() => ({
-        // tabBarIndicatorStyle: {backgroundColor: 'transparent'},
+        // tabBarIndicatorStyle: {backgroundColor: 'red'},
         // tabBarShowLabel: false,
         tabBarContentContainerStyle: {
+          width: 'auto',
           alignItems: 'center',
           justifyContent: 'center',
         },
         tabBarLabelStyle: {
           marginHorizontal: 0,
         },
-        tabBarItemStyle: {width: 'auto'},
+        tabBarItemStyle: {
+          width: 'auto',
+        },
+        tabBarScrollEnabled: false,
       })}>
       {/* <TopTab.Screen name="MONTHLY" component={TransactScreenComponent} /> */}
       <TopTab.Screen name={'Monthly'}>
