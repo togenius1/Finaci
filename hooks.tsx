@@ -5,7 +5,6 @@ import type {RootState, AppDispatch} from './store';
 export const useAppDispatch: () => AppDispatch = useDispatch;
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
-// export const getExpenseState = (state: RootState) => state.expenses.expenses;
-// export const getIncomeState = (state: RootState) => state.incomes.incomes;
-// export const getCustomerInfoState = (state: RootState) =>
-//   state.customerInfos.customerInfos;
+// export const getExpenseState = (state: RootState) => state.expenses;
+// export const getIncomeState = (state: RootState) => state.incomes;
+// export const getCustomerInfoState = (state: RootState) => state.customerInfos;

@@ -58,7 +58,7 @@ interface ScreenType {
   setInsideTabIndex: (index: number) => void;
   // currentTabIndex: number;
   // year: number;
-  // month: number;
+  middleTabIndex: number;
 }
 
 interface ScreenTabType {
@@ -68,19 +68,17 @@ interface ScreenTabType {
   currentTabIndex: number;
   year: number;
   month: number;
+  middleTabIndex: number;
 }
-
-const tabsComponent = Array.from({length: 21}, (_, i) => ({
-  name: `Sc ${i}`,
-  props: {num: `${i}`},
-}));
-
-const middleTabIndex = Math.floor(tabsComponent?.length / 2);
 
 const TopTab = createMaterialTopTabNavigator();
 
 // Tab component
-function TransactScreenComponent({tabs, setInsideTabIndex}: ScreenType) {
+function TransactScreenComponent({
+  tabs,
+  setInsideTabIndex,
+  middleTabIndex,
+}: ScreenType) {
   return (
     <TopTab.Navigator
       screenListeners={{
@@ -112,6 +110,7 @@ function TopTabs({
   setCurrentTabIndex,
   setInsideTabIndex,
   currentTabIndex,
+  middleTabIndex,
 }: ScreenTabType) {
   return (
     <TopTab.Navigator
@@ -141,6 +140,7 @@ function TopTabs({
             <TransactScreenComponent
               tabs={tabs}
               setInsideTabIndex={setInsideTabIndex}
+              middleTabIndex={middleTabIndex}
             />
           ) : null
         }
@@ -151,6 +151,7 @@ function TopTabs({
             <TransactScreenComponent
               tabs={tabs}
               setInsideTabIndex={setInsideTabIndex}
+              middleTabIndex={middleTabIndex}
             />
           ) : null
         }
@@ -161,6 +162,7 @@ function TopTabs({
             <TransactScreenComponent
               tabs={tabs}
               setInsideTabIndex={setInsideTabIndex}
+              middleTabIndex={middleTabIndex}
             />
           ) : null
         }
@@ -171,6 +173,7 @@ function TopTabs({
             <TransactScreenComponent
               tabs={tabs}
               setInsideTabIndex={setInsideTabIndex}
+              middleTabIndex={middleTabIndex}
             />
           ) : null
         }
@@ -181,6 +184,7 @@ function TopTabs({
             <TransactScreenComponent
               tabs={tabs}
               setInsideTabIndex={setInsideTabIndex}
+              middleTabIndex={middleTabIndex}
             />
           ) : null
         }
@@ -217,6 +221,12 @@ function HeaderSummary({total, totalIncome, totalExpense}: HeaderSummaryType) {
   );
 }
 
+// initialize tabs component
+const initTabsComponent = Array.from({length: 15}, (_, i) => ({
+  name: `Sc ${i}`,
+  props: {num: `${i}`},
+}));
+
 // Main
 const TransactionsScreen = ({navigation}: Props) => {
   // const dispatch = useAppDispatch();
@@ -226,11 +236,13 @@ const TransactionsScreen = ({navigation}: Props) => {
   const IncomeData = dataLoaded?.incomes?.incomes;
   const customerInfosData = dataLoaded?.customerInfos?.customerInfos;
 
+  const [tabsComponentsArr, setTabsComponentsArr] =
+    useState<any[]>(initTabsComponent);
+
   // const scrollViewRef = useRef(null);
-  const [currentTabIndex, setCurrentTabIndex] = useState<number | undefined>(
-    middleTabIndex,
-  );
+  const [currentTabIndex, setCurrentTabIndex] = useState<number | undefined>(0);
   const [insideTabIndex, setInsideTabIndex] = useState<number | undefined>(0);
+  const [middleTabIndex, setMiddleTabIndex] = useState<number | undefined>(0);
 
   const [swipeLeft, setSwipeLeft] = useState<boolean>(false);
   const [swipeRight, setSwipeRight] = useState<boolean>(false);
@@ -246,8 +258,6 @@ const TransactionsScreen = ({navigation}: Props) => {
   const [fromDateClicked, setFromDateClicked] = useState<boolean>(false);
   const [toDateClicked, setToDateClicked] = useState<boolean>(false);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-  // const [indicatorIndex, setIndicatorIndex] = useState<number | undefined>(0);
-  // const [tabs, setTabs] = useState<any>(tabsScreen);
 
   const [total, setTotal] = useState<number>(0);
   const [totalIncome, setTotalIncome] = useState<number>(0);
@@ -258,6 +268,11 @@ const TransactionsScreen = ({navigation}: Props) => {
   });
 
   const transactCtx = useContext(TransactContext);
+
+  useEffect(() => {
+    const middleTabIndex = Math.floor(tabsComponentsArr?.length / 2);
+    setMiddleTabIndex(middleTabIndex);
+  }, []);
 
   // Load ads
   useEffect(() => {
@@ -339,7 +354,7 @@ const TransactionsScreen = ({navigation}: Props) => {
               // backgroundColor: '#fed8d8',
             }}>
             {/* {!transactCtx.customPressed && !transactCtx.exportPressed && ( */}
-            {(currentTabIndex !== 3 && currentTabIndex !== 4) && (
+            {currentTabIndex !== 3 && currentTabIndex !== 4 && (
               <Pressable
                 style={({pressed}) => pressed && styles.pressed}
                 onPress={() => showMonthYearListMenuHandler()}>
@@ -360,7 +375,7 @@ const TransactionsScreen = ({navigation}: Props) => {
             )}
 
             {/* {(transactCtx.customPressed || transactCtx.exportPressed) && ( */}
-            {(currentTabIndex ===3 || currentTabIndex === 4) && (
+            {(currentTabIndex === 3 || currentTabIndex === 4) && (
               <View
                 style={{
                   flexDirection: 'row',
@@ -433,7 +448,14 @@ const TransactionsScreen = ({navigation}: Props) => {
   // total effect
   useEffect(() => {
     totalHandler();
-  }, [total]);
+  }, [
+    total,
+    currentTabIndex,
+    month,
+    year,
+    transactCtx.fromDate,
+    transactCtx.toDate,
+  ]);
 
   // Tab setup
   useEffect(() => {
@@ -713,62 +735,133 @@ const TransactionsScreen = ({navigation}: Props) => {
 
   // Total
   const totalHandler = () => {
-    // Monthly Transaction
+    // Monthly
+    if (currentTabIndex === 0) {
+      const selectedDurationExpenseData = ExpenseData?.filter(
+        expense =>
+          moment(expense.date).year() === moment(transactCtx.fromDate).year(),
+      );
+      const selectedDurationIncomeData = IncomeData?.filter(
+        income =>
+          moment(income.date).year() === moment(transactCtx.fromDate).year(),
+      );
+
+      let totalExpense;
+      let totalIncome;
+      let total;
+      // Total Expense
+      if (selectedDurationExpenseData?.length === 0) {
+        totalExpense === 0;
+      } else if (selectedDurationExpenseData?.length > 0) {
+        totalExpense = +sumTotalFunc(selectedDurationExpenseData).toFixed(0);
+      }
+
+      // Total Income
+      if (selectedDurationIncomeData?.length === 0) {
+        totalIncome === 0;
+      } else if (selectedDurationIncomeData?.length > 0) {
+        totalIncome = +sumTotalFunc(selectedDurationIncomeData).toFixed(0);
+      }
+
+      // TOTAL EXPENSE
+      totalIncome =
+        String(totalIncome) === 'undefined' ? 0 : Number(totalIncome);
+      totalExpense =
+        String(totalExpense) === 'undefined' ? 0 : Number(totalExpense);
+
+      total = +totalIncome - +totalExpense;
+
+      total = String(total) === 'undefined' ? 0 : +total;
+
+      setTotalIncome(totalIncome);
+      setTotalExpense(totalExpense);
+      setTotal(total);
+    }
+
+    // Weekly, Daily
     if (currentTabIndex === 1 || currentTabIndex === 2) {
       const transact_monthly = dataLoaded?.monthlyTransacts.monthlyTransacts;
       const filtered_TransactMonthly = transact_monthly?.filter(
         transact =>
-          // console.log('year: ', moment(income.date).year(), year),
+          // console.log(transact.month),
           Number(transact.year) === Number(year) &&
-          Number(transact.month) === Number(month),
+          Number(+transact.month) === Number(month),
       );
+      let totalIncome;
+      let totalExpense;
+      let total;
 
-      let totalIncome = +filtered_TransactMonthly[0]?.income_monthly;
-      let totalExpense = +filtered_TransactMonthly[0]?.expense_monthly;
+      if (filtered_TransactMonthly?.length === 0) {
+        setTotalIncome(0);
+        setTotalExpense(0);
+        setTotal(0);
+        return;
+      }
+      totalIncome = +filtered_TransactMonthly[0]?.income_monthly;
+      totalExpense = +filtered_TransactMonthly[0]?.expense_monthly;
 
       totalIncome = String(totalIncome) === 'undefined' ? 0 : +totalIncome;
       totalExpense = String(totalExpense) === 'undefined' ? 0 : +totalExpense;
-      setTotalIncome(totalIncome);
-      setTotalExpense(totalExpense);
 
-      let total = +totalIncome - +totalExpense;
+      total = +totalIncome - +totalExpense;
 
       total = String(total) === 'undefined' ? 0 : +total;
+
+      setTotalIncome(totalIncome);
+      setTotalExpense(totalExpense);
       setTotal(total);
     }
 
     // Custom Transaction
-    if (currentTabIndex === 3 || currentTabIndex === 0) {
+    if (currentTabIndex === 3) {
       const selectedDurationExpenseData = ExpenseData?.filter(
         expense =>
-          moment(expense.date).format('YYYY-MM-DD') >= moment(transactCtx.fromDate).format('YYYY-MM-DD')  &&
-          moment(expense.date).format('YYYY-MM-DD') <= moment(transactCtx.toDate).format('YYYY-MM-DD'),
+          moment(expense.date).format('YYYY-MM-DD') >=
+            moment(transactCtx.fromDate).format('YYYY-MM-DD') &&
+          moment(expense.date).format('YYYY-MM-DD') <=
+            moment(transactCtx.toDate).format('YYYY-MM-DD'),
       );
       const selectedDurationIncomeData = IncomeData?.filter(
         income =>
-          moment(income.date).format('YYYY-MM-DD')   >= moment(transactCtx.fromDate).format('YYYY-MM-DD')  &&
-          moment(income.date).format('YYYY-MM-DD') <= moment(transactCtx.toDate).format('YYYY-MM-DD'),
+          moment(income.date).format('YYYY-MM-DD') >=
+            moment(transactCtx.fromDate).format('YYYY-MM-DD') &&
+          moment(income.date).format('YYYY-MM-DD') <=
+            moment(transactCtx.toDate).format('YYYY-MM-DD'),
       );
 
+      let totalExpense;
+      let totalIncome;
+      let total;
+      // Total Expense
+      if (selectedDurationExpenseData?.length === 0) {
+        totalExpense === 0;
+      } else if (selectedDurationExpenseData?.length > 0) {
+        totalExpense = +sumTotalFunc(selectedDurationExpenseData).toFixed(0);
+      }
+
+      // Total Income
+      if (selectedDurationIncomeData?.length === 0) {
+        totalIncome === 0;
+      } else if (selectedDurationIncomeData?.length > 0) {
+        totalIncome = +sumTotalFunc(selectedDurationIncomeData).toFixed(0);
+      }
+
       // TOTAL EXPENSE
-      let totalExpense = +sumTotalFunc(selectedDurationExpenseData).toFixed(0);
-      let totalIncome = +sumTotalFunc(selectedDurationIncomeData).toFixed(0);
 
-      totalIncome = String(totalIncome) === 'undefined' ? 0 : +totalIncome;
-      totalExpense = String(totalExpense) === 'undefined' ? 0 : +totalExpense;
-      setTotalIncome(totalIncome);
-      setTotalExpense(totalExpense);
+      totalIncome =
+        String(totalIncome) === 'undefined' ? 0 : Number(totalIncome);
+      totalExpense =
+        String(totalExpense) === 'undefined' ? 0 : Number(totalExpense);
 
-      let total = +totalIncome - +totalExpense;
+      total = +totalIncome - +totalExpense;
 
       total = String(total) === 'undefined' ? 0 : +total;
+
+      setTotalIncome(totalIncome);
+      setTotalExpense(totalExpense);
       setTotal(total);
     }
   };
-
-  console.log('totalIncome: ', totalIncome)
-  console.log('totalExpense: ', totalExpense)
-  console.log('total: ', total)
 
   // Detect swipe screen: Left and Right
   const {onTouchStart, onTouchEnd} = useSwipe(onSwipeLeft, onSwipeRight, 4);
@@ -777,7 +870,7 @@ const TransactionsScreen = ({navigation}: Props) => {
   const changeMonthYearHandler = () => {
     if (swipeLeft) {
       if (currentTabIndex === 0) {
-        setYear(prev => +prev + 1);
+        setYear(prev => String(+prev + 1));
       }
       if (currentTabIndex === 1) {
         setMonth(prev => {
@@ -787,7 +880,7 @@ const TransactionsScreen = ({navigation}: Props) => {
             newMonth = (newMonth % 13) + 1;
           }
 
-          return newMonth;
+          return String(newMonth);
         });
       }
       if (currentTabIndex === 2) {
@@ -798,14 +891,14 @@ const TransactionsScreen = ({navigation}: Props) => {
             newMonth = (newMonth % 13) + 1;
           }
 
-          return newMonth;
+          return String(newMonth);
         });
       }
     }
 
     if (swipeRight) {
       if (currentTabIndex === 0) {
-        setYear(prev => Math.abs(+prev - 1));
+        setYear(prev => String(Math.abs(+prev - 1)));
       }
       if (currentTabIndex === 1) {
         setMonth(prev => {
@@ -815,7 +908,7 @@ const TransactionsScreen = ({navigation}: Props) => {
             newMonth = (newMonth % 13) + 1;
           }
 
-          return newMonth;
+          return String(newMonth);
         });
       }
       if (currentTabIndex === 2) {
@@ -826,7 +919,7 @@ const TransactionsScreen = ({navigation}: Props) => {
             newMonth = (newMonth % 13) + 1;
           }
 
-          return newMonth;
+          return String(newMonth);
         });
       }
     }
@@ -859,7 +952,8 @@ const TransactionsScreen = ({navigation}: Props) => {
         setCurrentTabIndex={setCurrentTabIndex}
         setInsideTabIndex={setInsideTabIndex}
         currentTabIndex={Number(currentTabIndex)}
-        tabs={tabsComponent}
+        middleTabIndex={Number(middleTabIndex)}
+        tabs={tabsComponentsArr}
         year={+year}
         month={+month}
       />
