@@ -35,12 +35,17 @@ const initFromDateString = `${moment().year()}-${MONTH}-01`;
 const initFromDate = moment(initFromDateString).format('YYYY-MM-DD');
 const initToDate = moment().format('YYYY-MM-DD');
 
+interface OverviewTabType {
+  focusedTabIndex: boolean;
+  setFocusedTabIndex: (value: boolean) => void;
+}
+
 // Top tab
 const TopTab = createMaterialTopTabNavigator();
 // const navigation = useNavigation();
 
 // Overview
-function OverviewTab({setFocusedTabIndex}) {
+function OverviewTab({setFocusedTabIndex, focusedTabIndex}: OverviewTabType) {
   return (
     <TopTab.Navigator
       screenListeners={{
@@ -54,23 +59,42 @@ function OverviewTab({setFocusedTabIndex}) {
         tabBarInactiveTintColor: '#7e7e7e',
         tabBarIndicatorStyle: {backgroundColor: 'red'},
       })}>
-      <TopTab.Screen
+      {/* <TopTab.Screen
         name="Spending"
         component={Spending}
         // initialParams={{fromDate: fromDate, toDate: toDate}}
-      />
-      <TopTab.Screen
+      /> */}
+      <TopTab.Screen name={'Spending'}>
+        {() => (focusedTabIndex === 0 ? <Spending /> : null)}
+      </TopTab.Screen>
+      {/* <TopTab.Screen
         name="Expense"
         component={Expense}
         // initialParams={{fromDate: fromDate, toDate: toDate}}
-      />
-      <TopTab.Screen
+      /> */}
+      <TopTab.Screen name={'Expense'}>
+        {() => (focusedTabIndex === 1 ? <Expense /> : null)}
+      </TopTab.Screen>
+      {/* <TopTab.Screen
         name="Income"
         component={Income}
         // initialParams={{fromDate: fromDate, toDate: toDate}}
-      />
+      /> */}
+      <TopTab.Screen name={'Income'}>
+        {() => (focusedTabIndex === 2 ? <Income /> : null)}
+      </TopTab.Screen>
     </TopTab.Navigator>
   );
+}
+
+interface HeaderRightType {
+  fromDate: string;
+  toDate: string;
+  showCustomDate: boolean;
+  fromDateClickedHandler: () => void;
+  toDateClickedHandler: () => void;
+  rightMenuClickedHandler: () => void;
+  // setIsMYListVisible: (value: boolean) => void;
 }
 
 // Header Right
@@ -83,7 +107,7 @@ function HeaderRightComponent({
   rightMenuClickedHandler,
   // showMonthYearListMenuHandler,
   setIsMYListVisible,
-}) {
+}: HeaderRightType) {
   const month = moment.monthsShort(moment(toDate).month());
   const year = moment(toDate).year();
 
@@ -340,7 +364,10 @@ const OverviewScreen = ({navigation}: Props) => {
 
   return (
     <View style={styles.container}>
-      <OverviewTab setFocusedTabIndex={setFocusedTabIndex} />
+      <OverviewTab
+        setFocusedTabIndex={setFocusedTabIndex}
+        focusedTabIndex={focusedTabIndex}
+      />
 
       <DateTimePickerModal
         isVisible={isDatePickerVisible}

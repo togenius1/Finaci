@@ -7,7 +7,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext} from 'react';
 import {v4 as uuidv4} from 'uuid';
 import moment from 'moment';
 import {useNavigation} from '@react-navigation/native';
@@ -228,34 +228,8 @@ const DailyItem = ({
   );
 };
 
-// Header
-function HeaderSummary({total, totalIncome, totalExpense}: HeaderSummaryType) {
-  return (
-    <View style={styles.assetsContainer}>
-      <View style={styles.assetBox}>
-        <Text style={{fontSize: 14}}>Income</Text>
-        <Text style={{color: 'blue', fontSize: 16, fontWeight: 'bold'}}>
-          {currencyFormatter(+totalIncome, {})}
-        </Text>
-      </View>
-      <View style={styles.assetBox}>
-        <Text style={{fontSize: 14}}>Expenses</Text>
-        <Text style={{color: 'red', fontSize: 16, fontWeight: 'bold'}}>
-          {currencyFormatter(+totalExpense, {})}
-        </Text>
-      </View>
-      <View style={styles.assetBox}>
-        <Text style={{fontSize: 14}}>Total</Text>
-        <Text style={{fontSize: 16, fontWeight: 'bold'}}>
-          {currencyFormatter(+total, {})}
-        </Text>
-      </View>
-    </View>
-  );
-}
-
 // Main function
-const TransactionSummary = ({currentTabIndex, year, month}: Props) => {
+const TransactionSummary = ({}: Props) => {
   // Parameters
   let _renderItem: any = '';
   let _renderData: any = [];
@@ -263,14 +237,6 @@ const TransactionSummary = ({currentTabIndex, year, month}: Props) => {
   const navigation = useNavigation();
 
   const dataLoaded = useAppSelector(store => store);
-
-  const [total, setTotal] = useState<number>(0);
-  const [totalIncome, setTotalIncome] = useState<number>(0);
-  const [totalExpense, setTotalExpense] = useState<number>(0);
-
-  // useEffect(() => {
-  //   totalHandler();
-  // }, [total, totalIncome, totalExpense]);
 
   // Transaction states
   const transactCtx = useContext(TransactContext);
@@ -286,59 +252,39 @@ const TransactionSummary = ({currentTabIndex, year, month}: Props) => {
   const WeeklyTransactsData = dataLoaded?.weeklyTransacts?.weeklyTransacts;
   const DailyTransactionData = dataLoaded?.dailyTransacts?.dailyTransacts;
 
-  // // Header Right
-  // useEffect(() => {
-  //   navigation.setOptions({
-  //     // title: !customPressed && !exportPressed ? 'Transactions' : '',
-  //     title: '',
-  //     headerTitleAlign: 'left',
-  //     // headerStyle: {
-  //     //   height: height * 0.06,
-  //     //   backgroundColor: '#b1fd90',
-  //     // },
-  //     headerRight: () => (
-  //       <View style={{marginTop: 0}}>
-  //         <HeaderSummary
-  //           total={total}
-  //           totalIncome={totalIncome}
-  //           totalExpense={totalExpense}
-  //         />
-  //       </View>
-  //     ),
-  //   });
-  // }, []);
-
-  // console.log('Weekly TR: ', WeeklyTransactsData);
-
   const date = moment(fromDate).format('YYYY-MM-DD');
 
   // Monthly Transaction
   // const filteredMonthlyData = monthlyTransaction(fromDate, toDate, year);
-  const filteredMonthlyData = MonthlyTransactsData?.filter(
-    transact => moment(transact?.date).year() === moment(fromDate).year(),
-    // &&
-    // transact?.month === moment(date).month() + 1,
-  );
-
+  let filteredMonthlyData;
+  if (monthlyPressed) {
+    filteredMonthlyData = MonthlyTransactsData?.filter(
+      transact => moment(transact?.date).year() === moment(fromDate).year(),
+    );
+  }
   //  Weekly Transaction
   // const weeklyData = weeklyTransaction(fromDate, toDate, date);
-  const weeklyData = WeeklyTransactsData?.filter(
-    transact =>
-      moment(transact?.date).month() === moment(date).month() &&
-      moment(transact?.date).year() === moment(date).year(),
-  );
+  let weeklyData;
+  if (weeklyPressed) {
+    weeklyData = WeeklyTransactsData?.filter(
+      transact =>
+        moment(transact?.date).month() === moment(date).month() &&
+        moment(transact?.date).year() === moment(date).year(),
+    );
+  }
 
   // Combine data and sum by date
   // const dailyData = dailyTransaction(String(fromDate), String(toDate), date);
-
-  const dailyData = DailyTransactionData?.filter(
-    transact =>
-      moment(transact?.date).format('YYYY-MM-DD') >=
-        moment(fromDate).format('YYYY-MM-DD') &&
-      moment(transact?.date).format('YYYY-MM-DD') <=
-        moment(toDate).format('YYYY-MM-DD'),
-  );
-
+  let dailyData;
+  if (dailyPressed || customPressed) {
+    dailyData = DailyTransactionData?.filter(
+      transact =>
+        moment(transact?.date).format('YYYY-MM-DD') >=
+          moment(fromDate).format('YYYY-MM-DD') &&
+        moment(transact?.date).format('YYYY-MM-DD') <=
+          moment(toDate).format('YYYY-MM-DD'),
+    );
+  }
   // on pressed
   if (monthlyPressed) {
     _renderItem = MonthlyRenderItem;
@@ -400,61 +346,25 @@ const TransactionSummary = ({currentTabIndex, year, month}: Props) => {
     );
   }
 
-  // const totalHandler = () => {
-  //   // Monthly Transaction
-  //   if (currentTabIndex === 1 || currentTabIndex === 2) {
-  //     const transact_monthly = dataLoaded?.monthlyTransacts.monthlyTransacts;
-  //     const filtered_TransactMonthly = transact_monthly?.filter(
-  //       transact =>
-  //         // console.log('year: ', moment(income.date).year(), year),
-  //         Number(transact.year) === Number(year) &&
-  //         Number(transact.month) === Number(month),
-  //     );
-
-  //     let totalIncome = filtered_TransactMonthly[0]?.income_monthly;
-  //     let totalExpense = filtered_TransactMonthly[0]?.expense_monthly;
-
-  //     totalIncome = totalIncome === undefined ? 0 : totalIncome;
-  //     totalExpense = totalExpense === undefined ? 0 : totalExpense;
-
-  //     setTotalIncome(totalIncome);
-  //     setTotalExpense(totalExpense);
-
-  //     let total = +totalIncome - +totalExpense;
-
-  //     total = String(total) === 'undefined' ? 0 : total;
-  //     setTotal(total);
-  //   }
-  // };
-
   return (
-    <>
-      {/* <View style={{marginTop: 18}}>
-        <HeaderSummary
-          total={total}
-          totalIncome={totalIncome}
-          totalExpense={totalExpense}
-        />
-      </View> */}
-      <View style={styles.container}>
-        <ImageBackground
-          style={styles.tinyLogo}
-          source={require('../../assets/images/Finner.png')}
-          resizeMode="center"
-        />
+    <View style={styles.container}>
+      <ImageBackground
+        style={styles.tinyLogo}
+        source={require('../../assets/images/Finner.png')}
+        resizeMode="center"
+      />
 
-        {!exportPressed && (
-          <FlatList
-            keyExtractor={item => item + uuidv4()}
-            data={sortedItems}
-            renderItem={_renderItem}
-            bounces={false}
-          />
-        )}
+      {!exportPressed && (
+        <FlatList
+          keyExtractor={item => item + uuidv4()}
+          data={sortedItems}
+          renderItem={_renderItem}
+          bounces={false}
+        />
+      )}
 
-        {exportPressed && <Export />}
-      </View>
-    </>
+      {exportPressed && <Export />}
+    </View>
   );
 };
 
@@ -541,9 +451,9 @@ const styles = StyleSheet.create({
 
 // ============================= TYPE and INTERFACE ====================================
 type Props = {
-  currentTabIndex: boolean;
-  year: number;
-  month: number;
+  // currentTabIndex: boolean;
+  // year: number;
+  // month: number;
 };
 
 // interface HeaderSummaryType {
@@ -561,10 +471,4 @@ export interface DailyItemType {
   year: number;
   time: string;
   navigation: TransactionSummaryNavigationProp;
-}
-
-interface HeaderSummaryType {
-  total: number;
-  totalIncome: number;
-  totalExpense: number;
 }

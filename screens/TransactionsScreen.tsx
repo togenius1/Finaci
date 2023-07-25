@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, {useContext, useEffect, useState} from 'react';
 import {
   Dimensions,
   Platform,
@@ -6,7 +8,6 @@ import {
   Text,
   View,
 } from 'react-native';
-import React, {useCallback, useContext, useEffect, useState} from 'react';
 // import {useFocusEffect} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
@@ -17,7 +18,7 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import MonthYearList from '../components/Menu/MonthYearList';
 import {TransactionNavigationProp} from '../types';
 // import {useSwipe} from '../components/UI/useSwape';
-import Tabs from '../components/UI/Tabs';
+// import Tabs from '../components/UI/Tabs';
 import {currencyFormatter} from '../util/currencyFormatter';
 import {sumTotalFunc} from '../util/math';
 import {useAppSelector} from '../hooks';
@@ -55,12 +56,12 @@ const adUnitId = __DEV__
 interface ScreenType {
   tabs: any[];
   setInsideTabIndex: (index: number) => void;
-  currentTabIndex: number;
-  year: number;
-  month: number;
+  // currentTabIndex: number;
+  // year: number;
+  // month: number;
 }
 
-interface ScreenTab {
+interface ScreenTabType {
   tabs: any[];
   setCurrentTabIndex: (index: number) => void;
   setInsideTabIndex: (index: number) => void;
@@ -69,22 +70,17 @@ interface ScreenTab {
   month: number;
 }
 
-const tabsScreen = Array.from({length: 21}, (_, i) => ({
+const tabsComponent = Array.from({length: 21}, (_, i) => ({
   name: `Sc ${i}`,
   props: {num: `${i}`},
 }));
 
-const middleTabIndex = Math.floor(tabsScreen?.length / 2);
+const middleTabIndex = Math.floor(tabsComponent?.length / 2);
 
 const TopTab = createMaterialTopTabNavigator();
 
-function TransactScreenComponent({
-  tabs,
-  setInsideTabIndex,
-  currentTabIndex,
-  year,
-  month,
-}: ScreenType) {
+// Tab component
+function TransactScreenComponent({tabs, setInsideTabIndex}: ScreenType) {
   return (
     <TopTab.Navigator
       screenListeners={{
@@ -103,14 +99,7 @@ function TransactScreenComponent({
       })}>
       {tabs?.map((tab, index) => (
         <TopTab.Screen key={index} name={tab?.name}>
-          {() => (
-            <TransactionSummary
-              {...tab.props}
-              currentTabIndex={currentTabIndex}
-              year={year}
-              month={month}
-            />
-          )}
+          {() => <TransactionSummary {...tab.props} />}
         </TopTab.Screen>
       ))}
     </TopTab.Navigator>
@@ -123,9 +112,7 @@ function TopTabs({
   setCurrentTabIndex,
   setInsideTabIndex,
   currentTabIndex,
-  year,
-  month,
-}: ScreenTab) {
+}: ScreenTabType) {
   return (
     <TopTab.Navigator
       screenListeners={{
@@ -137,66 +124,66 @@ function TopTabs({
       }}
       screenOptions={() => ({
         // tabBarIndicatorStyle: {backgroundColor: 'transparent'},
-        // tabBarShowLabel: true,
-        tabBarContentContainerStyle: {height: height * 0.065},
-        // tabBarLabelStyle: {fontSize: 12},
-        tabBarItemStyle: {flex: 1},
+        // tabBarShowLabel: false,
+        tabBarContentContainerStyle: {
+          alignItems: 'center',
+          justifyContent: 'center',
+        },
+        tabBarLabelStyle: {
+          marginHorizontal: 0,
+        },
+        tabBarItemStyle: {width: 'auto'},
       })}>
       {/* <TopTab.Screen name="MONTHLY" component={TransactScreenComponent} /> */}
       <TopTab.Screen name={'Monthly'}>
-        {() => (
-          <TransactScreenComponent
-            tabs={tabs}
-            setInsideTabIndex={setInsideTabIndex}
-            currentTabIndex={currentTabIndex}
-            year={year}
-            month={month}
-          />
-        )}
+        {() =>
+          currentTabIndex === 0 ? (
+            <TransactScreenComponent
+              tabs={tabs}
+              setInsideTabIndex={setInsideTabIndex}
+            />
+          ) : null
+        }
       </TopTab.Screen>
       <TopTab.Screen name={'Weekly'}>
-        {() => (
-          <TransactScreenComponent
-            tabs={tabs}
-            setInsideTabIndex={setInsideTabIndex}
-            currentTabIndex={currentTabIndex}
-            year={year}
-            month={month}
-          />
-        )}
+        {() =>
+          currentTabIndex === 1 ? (
+            <TransactScreenComponent
+              tabs={tabs}
+              setInsideTabIndex={setInsideTabIndex}
+            />
+          ) : null
+        }
       </TopTab.Screen>
       <TopTab.Screen name={'Daily'}>
-        {() => (
-          <TransactScreenComponent
-            tabs={tabs}
-            setInsideTabIndex={setInsideTabIndex}
-            currentTabIndex={currentTabIndex}
-            year={year}
-            month={month}
-          />
-        )}
+        {() =>
+          currentTabIndex === 2 ? (
+            <TransactScreenComponent
+              tabs={tabs}
+              setInsideTabIndex={setInsideTabIndex}
+            />
+          ) : null
+        }
       </TopTab.Screen>
       <TopTab.Screen name={'Custom'}>
-        {() => (
-          <TransactScreenComponent
-            tabs={tabs}
-            setInsideTabIndex={setInsideTabIndex}
-            currentTabIndex={currentTabIndex}
-            year={year}
-            month={month}
-          />
-        )}
+        {() =>
+          currentTabIndex === 3 ? (
+            <TransactScreenComponent
+              tabs={tabs}
+              setInsideTabIndex={setInsideTabIndex}
+            />
+          ) : null
+        }
       </TopTab.Screen>
       <TopTab.Screen name={'Export'}>
-        {() => (
-          <TransactScreenComponent
-            tabs={tabs}
-            setInsideTabIndex={setInsideTabIndex}
-            currentTabIndex={currentTabIndex}
-            year={year}
-            month={month}
-          />
-        )}
+        {() =>
+          currentTabIndex === 4 ? (
+            <TransactScreenComponent
+              tabs={tabs}
+              setInsideTabIndex={setInsideTabIndex}
+            />
+          ) : null
+        }
       </TopTab.Screen>
     </TopTab.Navigator>
   );
@@ -209,20 +196,20 @@ function HeaderSummary({total, totalIncome, totalExpense}: HeaderSummaryType) {
       <View style={styles.assetBox}>
         <Text style={{fontSize: height * 0.02}}>Income</Text>
         <Text
-          style={{color: 'blue', fontSize: height * 0.02, fontWeight: 'bold'}}>
+          style={{color: 'blue', fontSize: height * 0.018, fontWeight: 'bold'}}>
           {currencyFormatter(+totalIncome, {})}
         </Text>
       </View>
       <View style={styles.assetBox}>
         <Text style={{fontSize: 14}}>Expenses</Text>
         <Text
-          style={{color: 'red', fontSize: height * 0.02, fontWeight: 'bold'}}>
+          style={{color: 'red', fontSize: height * 0.018, fontWeight: 'bold'}}>
           {currencyFormatter(+totalExpense, {})}
         </Text>
       </View>
       <View style={styles.assetBox}>
         <Text style={{fontSize: height * 0.02}}>Total</Text>
-        <Text style={{fontSize: height * 0.02, fontWeight: 'bold'}}>
+        <Text style={{fontSize: height * 0.018, fontWeight: 'bold'}}>
           {currencyFormatter(+total, {})}
         </Text>
       </View>
@@ -260,7 +247,7 @@ const TransactionsScreen = ({navigation}: Props) => {
   const [toDateClicked, setToDateClicked] = useState<boolean>(false);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   // const [indicatorIndex, setIndicatorIndex] = useState<number | undefined>(0);
-  const [tabs, setTabs] = useState<any>(tabsScreen);
+  // const [tabs, setTabs] = useState<any>(tabsScreen);
 
   const [total, setTotal] = useState<number>(0);
   const [totalIncome, setTotalIncome] = useState<number>(0);
@@ -288,10 +275,22 @@ const TransactionsScreen = ({navigation}: Props) => {
 
   // Initial from date, to date
   useEffect(() => {
+    // Initialize Tab Pressed
+    transactCtx.tabPressedHandler({
+      monthlyPressed: true,
+      weeklyPressed: false,
+      dailyPressed: false,
+      customPressed: false,
+      exportPressed: false,
+    });
+
+    // Initialize Date Time
     let initTime = moment().year();
-    // if (indicatorIndex === 0) {
     onMonthYearSelectedHandler(initTime);
-    // }
+
+    // return () => {
+    // console.log('CLEANUP');
+    // };
   }, []);
 
   useEffect(() => {
@@ -305,9 +304,9 @@ const TransactionsScreen = ({navigation}: Props) => {
       dailyHandler(month, year);
     }
 
-    // return () => {
-    // console.log('CLEANUP');
-    // };
+    return () => {
+      // console.log('CLEANUP');
+    };
   }, [year, month]);
 
   useEffect(() => {
@@ -339,7 +338,8 @@ const TransactionsScreen = ({navigation}: Props) => {
               marginTop: height * 0.032,
               // backgroundColor: '#fed8d8',
             }}>
-            {!transactCtx.customPressed && !transactCtx.exportPressed && (
+            {/* {!transactCtx.customPressed && !transactCtx.exportPressed && ( */}
+            {(currentTabIndex !== 3 && currentTabIndex !== 4) && (
               <Pressable
                 style={({pressed}) => pressed && styles.pressed}
                 onPress={() => showMonthYearListMenuHandler()}>
@@ -353,13 +353,14 @@ const TransactionsScreen = ({navigation}: Props) => {
                     borderColor: 'grey',
                   }}>
                   <Text>{`${duration} ${
-                    !transactCtx.monthlyPressed ? year : ''
+                    currentTabIndex !== 0 ? year : ''
                   }`}</Text>
                 </View>
               </Pressable>
             )}
 
-            {(transactCtx.customPressed || transactCtx.exportPressed) && (
+            {/* {(transactCtx.customPressed || transactCtx.exportPressed) && ( */}
+            {(currentTabIndex ===3 || currentTabIndex === 4) && (
               <View
                 style={{
                   flexDirection: 'row',
@@ -419,31 +420,28 @@ const TransactionsScreen = ({navigation}: Props) => {
     year,
     // month,
     isModalVisible,
-    transactCtx.monthlyPressed,
-    transactCtx.weeklyPressed,
-    transactCtx.dailyPressed,
-    transactCtx.customPressed,
-    transactCtx.exportPressed,
+    // transactCtx.monthlyPressed,
+    // transactCtx.weeklyPressed,
+    // transactCtx.dailyPressed,
+    // transactCtx.customPressed,
+    // transactCtx.exportPressed,
+    currentTabIndex,
     transactCtx.fromDate,
     transactCtx.toDate,
   ]);
 
-  // Initialize State
+  // total effect
   useEffect(() => {
-    transactCtx.tabPressedHandler({
-      monthlyPressed: true,
-      weeklyPressed: false,
-      dailyPressed: false,
-      customPressed: false,
-      exportPressed: false,
-    });
+    totalHandler();
+  }, [total]);
 
-    () => {};
-  }, []);
-
-  //
+  // Tab setup
   useEffect(() => {
-    // setIndicatorIndex(currentTabIndex);
+    onTabSetup();
+  }, [currentTabIndex]);
+
+  // Tab setup
+  const onTabSetup = () => {
     if (currentTabIndex === 0) {
       monthlyHandler(year);
     }
@@ -463,12 +461,7 @@ const TransactionsScreen = ({navigation}: Props) => {
       exportsHandler();
       // updateState();
     }
-  }, [currentTabIndex]);
-
-  //
-  useEffect(() => {
-    totalHandler();
-  }, [total, totalIncome, totalExpense]);
+  };
 
   function onMonthYearSelectedHandler(time) {
     if (transactCtx.monthlyPressed) {
@@ -733,46 +726,49 @@ const TransactionsScreen = ({navigation}: Props) => {
       let totalIncome = +filtered_TransactMonthly[0]?.income_monthly;
       let totalExpense = +filtered_TransactMonthly[0]?.expense_monthly;
 
-      totalIncome = totalIncome === undefined ? 0 : +totalIncome;
-      totalExpense = totalExpense === undefined ? 0 : +totalExpense;
+      totalIncome = String(totalIncome) === 'undefined' ? 0 : +totalIncome;
+      totalExpense = String(totalExpense) === 'undefined' ? 0 : +totalExpense;
       setTotalIncome(totalIncome);
       setTotalExpense(totalExpense);
 
       let total = +totalIncome - +totalExpense;
 
-      total = total === undefined ? 0 : total;
+      total = String(total) === 'undefined' ? 0 : +total;
       setTotal(total);
     }
 
     // Custom Transaction
     if (currentTabIndex === 3 || currentTabIndex === 0) {
-      // console.log('indicator: ', indicatorIndex);
       const selectedDurationExpenseData = ExpenseData?.filter(
         expense =>
-          moment(expense.date).format('YYYY-MM-DD') >= transactCtx.fromDate &&
-          moment(expense.date).format('YYYY-MM-DD') <= transactCtx.toDate,
+          moment(expense.date).format('YYYY-MM-DD') >= moment(transactCtx.fromDate).format('YYYY-MM-DD')  &&
+          moment(expense.date).format('YYYY-MM-DD') <= moment(transactCtx.toDate).format('YYYY-MM-DD'),
       );
       const selectedDurationIncomeData = IncomeData?.filter(
         income =>
-          moment(income.date).format('YYYY-MM-DD') >= transactCtx.fromDate &&
-          moment(income.date).format('YYYY-MM-DD') <= transactCtx.toDate,
+          moment(income.date).format('YYYY-MM-DD')   >= moment(transactCtx.fromDate).format('YYYY-MM-DD')  &&
+          moment(income.date).format('YYYY-MM-DD') <= moment(transactCtx.toDate).format('YYYY-MM-DD'),
       );
 
       // TOTAL EXPENSE
       let totalExpense = +sumTotalFunc(selectedDurationExpenseData).toFixed(0);
       let totalIncome = +sumTotalFunc(selectedDurationIncomeData).toFixed(0);
 
-      totalIncome = totalIncome === undefined ? 0 : totalIncome;
-      totalExpense = totalExpense === undefined ? 0 : totalExpense;
+      totalIncome = String(totalIncome) === 'undefined' ? 0 : +totalIncome;
+      totalExpense = String(totalExpense) === 'undefined' ? 0 : +totalExpense;
       setTotalIncome(totalIncome);
       setTotalExpense(totalExpense);
 
       let total = +totalIncome - +totalExpense;
 
-      total = total === undefined ? 0 : total;
+      total = String(total) === 'undefined' ? 0 : +total;
       setTotal(total);
     }
   };
+
+  console.log('totalIncome: ', totalIncome)
+  console.log('totalExpense: ', totalExpense)
+  console.log('total: ', total)
 
   // Detect swipe screen: Left and Right
   const {onTouchStart, onTouchEnd} = useSwipe(onSwipeLeft, onSwipeRight, 4);
@@ -863,27 +859,16 @@ const TransactionsScreen = ({navigation}: Props) => {
         setCurrentTabIndex={setCurrentTabIndex}
         setInsideTabIndex={setInsideTabIndex}
         currentTabIndex={Number(currentTabIndex)}
-        tabs={tabs}
+        tabs={tabsComponent}
         year={+year}
         month={+month}
       />
-      {/* <TransactScreenComponent
-        setCurrentTabIndex={setCurrentTabIndex}
-        // scrollViewRef={scrollViewRef}
-        tabs={tabs}
-      /> */}
 
-      {/* <View
-        style={{
-          top: height / 4,
-          position: 'absolute',
-        }}> */}
       <HeaderSummary
         total={total}
         totalIncome={totalIncome}
         totalExpense={totalExpense}
       />
-      {/* </View> */}
 
       <MonthYearList
         monthlyPressed={transactCtx.monthlyPressed}
@@ -894,6 +879,7 @@ const TransactionsScreen = ({navigation}: Props) => {
         setIsModalVisible={setIsModalVisible}
         isModalVisible={isModalVisible}
       />
+
       <DateTimePickerModal
         isVisible={isDatePickerVisible}
         // onChange={onChange}

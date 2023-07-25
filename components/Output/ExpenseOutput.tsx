@@ -1,6 +1,6 @@
 import {Dimensions, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import {useNavigation} from '@react-navigation/native';
+// import {useNavigation} from '@react-navigation/native';
 // import {v4 as uuidv4} from 'uuid';
 // import moment from 'moment';
 
@@ -14,20 +14,25 @@ import {
 // import IconButton from '../UI/iconButton';
 import {ExpenseCategory} from '../../dummy/categoryItems';
 
-type Props = {};
+type Props = {
+  data: any;
+  fromDate: string;
+  toDate: string;
+};
 
-const { height} = Dimensions.get('window');
+const {height} = Dimensions.get('window');
 
 const ExpenseOutput = ({data, fromDate, toDate}: Props) => {
   // const navigation = useNavigation();
 
   // filter data: from date --> to date
+
+  // if (focusedTabIndex === 1) {
   const filteredData = data.filter(
     d =>
       new Date(d.date) >= new Date(fromDate) &&
       new Date(d.date) <= new Date(toDate),
   );
-
   // Summation for each category
   const sumEachCateObj = sumEachCategoryId(filteredData);
   const totalAmount = sumTotalFunc(sumEachCateObj);
@@ -36,7 +41,6 @@ const ExpenseOutput = ({data, fromDate, toDate}: Props) => {
     totalAmount,
     ExpenseCategory,
   );
-
   //sort Data
   pctEachCateObj.sort((a: any, b: any) => {
     const amountA = a.percentage.valueOf();
@@ -47,6 +51,7 @@ const ExpenseOutput = ({data, fromDate, toDate}: Props) => {
     }
     return 1; // return 1 here for DESC Order
   });
+  // }
 
   return (
     <View style={styles.container}>

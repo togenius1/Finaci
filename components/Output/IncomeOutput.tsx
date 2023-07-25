@@ -1,6 +1,6 @@
 import {Dimensions, StyleSheet, View} from 'react-native';
 import React from 'react';
-import {useNavigation} from '@react-navigation/native';
+// import {useNavigation} from '@react-navigation/native';
 // import {v4 as uuidv4} from 'uuid';
 
 import PieChart from '../Graph/PieChart';
@@ -9,18 +9,22 @@ import {
   sumTotalFunc,
   sumEachCategoryId,
 } from '../../util/math';
-import IconButton from '../UI/iconButton';
+// import IconButton from '../UI/iconButton';
 import IncomeList from './IncomeList';
 import {IncomeCategory} from '../../dummy/categoryItems';
 
-type Props = {};
+type Props = {
+  data: any;
+  fromDate: string;
+  toDate: string;
+};
 
 const {width, height} = Dimensions.get('window');
 
 const IncomeOutput = ({data, fromDate, toDate}: Props) => {
   // let slices = [];
   // const incomeData = data;
-  const navigation = useNavigation();
+  // const navigation = useNavigation();
 
   // Filtered data: from date -to- to date
   const filteredData = data.filter(

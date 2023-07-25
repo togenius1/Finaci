@@ -7,14 +7,14 @@ import {StyleSheet, View} from 'react-native';
 import BarchartTab from './BarChartTab';
 // import IconButton from '../UI/iconButton';
 // import {sumByCustomDate, sumByDate} from '../../util/math';
-import {SpendingTabRouteProp} from '../../types';
+// import {SpendingTabRouteProp} from '../../types';
 // import {ExpenseType} from '../../models/expense';
 import {useAppSelector} from '../../hooks';
 import OverviewContext from '../../store-context/overview-context';
 // import {fetchExpensesData} from '../../store/expense-action';
 
 type Props = {
-  route: SpendingTabRouteProp;
+  // focusedTabIndex: number;
 };
 
 // const {width} = Dimensions.get('window');
@@ -42,12 +42,14 @@ const SpendingTab = ({}: Props) => {
   // if (expenseData === null || expenseData === undefined) {
   //   return;
   // }
-
+  // let filteredData;
+  // if (focusedTabIndex === 0) {
   const filteredData = expenseData?.filter(
     d =>
       new Date(d.date) >= new Date(fromDate) &&
       new Date(d.date) <= new Date(toDate),
   );
+  // }
 
   // const RenderBarchartTab = () => {
   //   return (

@@ -5,11 +5,11 @@ import ExpenseOutput from '../Output/ExpenseOutput';
 import {useAppSelector} from '../../hooks';
 // import {ExpenseType} from '../../models/expense';
 // import {fetchExpensesData} from '../../store/expense-action';
-import {ExpenseTabRouteProp} from '../../types';
+// import {ExpenseTabRouteProp} from '../../types';
 import OverviewContext from '../../store-context/overview-context';
 
 type Props = {
-  route: ExpenseTabRouteProp;
+  // focusedTabIndex: number;
 };
 
 const ExpenseTab = ({}: Props) => {
@@ -36,7 +36,12 @@ const ExpenseTab = ({}: Props) => {
   // }
 
   return (
-    <ExpenseOutput data={expensesData} fromDate={fromDate} toDate={toDate} />
+    <ExpenseOutput
+      data={expensesData}
+      fromDate={fromDate}
+      toDate={toDate}
+      // focusedTabIndex={focusedTabIndex}
+    />
   );
 };
 
