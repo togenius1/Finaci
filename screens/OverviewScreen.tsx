@@ -55,7 +55,7 @@ const TopTab = createMaterialTopTabNavigator();
 function OverviewTab({setFocusedTabIndex, focusedTabIndex}: OverviewTabType) {
   return (
     <TopTab.Navigator
-      initialRouteName="Spending"
+      // initialRouteName="Spending"
       screenListeners={{
         state: e => {
           // Do something with the state
@@ -192,7 +192,7 @@ const OverviewScreen = ({navigation}: Props) => {
       // alert('Screen was focused');
       // Do something when the screen is focused
       setShowCustomDate(false);
-      setFocusedTabIndex(0);
+      // setFocusedTabIndex(0);
 
       return () => {
         // alert('Screen was unfocused');

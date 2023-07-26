@@ -127,8 +127,8 @@ PODS:
   - nanopb/encode (2.30909.0)
   - OpenSSL-Universal (1.1.1100)
   - PromisesObjC (2.3.1)
-  - PurchasesHybridCommon (5.3.0):
-    - RevenueCat (= 4.24.1)
+  - PurchasesHybridCommon (5.4.1):
+    - RevenueCat (= 4.25.1)
   - RCT-Folly (2021.07.22.00):
     - boost
     - DoubleConversion
@@ -552,7 +552,7 @@ PODS:
     - React-jsi (= 0.72.3)
     - React-logger (= 0.72.3)
     - React-perflogger (= 0.72.3)
-  - RevenueCat (4.24.1)
+  - RevenueCat (4.25.1)
   - RNAWSCognito (6.3.1):
     - React-Core
   - RNCAsyncStorage (1.19.1):
@@ -568,8 +568,8 @@ PODS:
     - GoogleUserMessagingPlatform (= 2.1.0)
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
-  - RNPurchases (6.3.0):
-    - PurchasesHybridCommon (= 5.3.0)
+  - RNPurchases (6.4.0):
+    - PurchasesHybridCommon (= 5.4.1)
     - React-Core
   - RNReanimated (3.4.0):
     - DoubleConversion
@@ -866,7 +866,7 @@ SPEC CHECKSUMS:
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
   PromisesObjC: c50d2056b5253dadbd6c2bea79b0674bd5a52fa4
-  PurchasesHybridCommon: b7e85ee8afb68789191e0d776c98e02c3439771d
+  PurchasesHybridCommon: 594ee4895ed02a7791391d2b40c0ece08103ad80
   RCT-Folly: 424b8c9a7a0b9ab2886ffe9c3b041ef628fd4fb1
   RCTRequired: a2faf4bad4e438ca37b2040cb8f7799baa065c18
   RCTTypeSafety: cb09f3e4747b6d18331a15eb05271de7441ca0b3
@@ -905,14 +905,14 @@ SPEC CHECKSUMS:
   React-runtimescheduler: 837c1bebd2f84572db17698cd702ceaf585b0d9a
   React-utils: bcb57da67eec2711f8b353f6e3d33bd8e4b2efa3
   ReactCommon: 3ccb8fb14e6b3277e38c73b0ff5e4a1b8db017a9
-  RevenueCat: 8e5da200b5a5f45688aead5d803654c19f739914
+  RevenueCat: cc588605c9852000693d8b94b7c2e79894ae9117
   RNAWSCognito: 5687577d12900389a893a9705ce31b6fa71c3805
   RNCAsyncStorage: f47fe18526970a69c34b548883e1aeceb115e3e1
   RNDateTimePicker: 9b4091348e53f540180abdc54984d839a556f593
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: dec4645026e7401a0899f2846d864403478ff6a5
   RNGoogleMobileAds: 4092b9a9a84357839c8511a3fcc3f16bafbad434
-  RNPurchases: cb62deb7d618987e9e8022ed6f705da236da0e6f
+  RNPurchases: 9f018b6ef98e38fd992004adb08cfbffc6307beb
   RNReanimated: 020859659f64be2d30849a1fe88c821a7c3e0cbf
   RNScreens: 50ffe2fa2342eabb2d0afbe19f7c1af286bc7fb3
   RNShare: da6d90b6dc332f51f86498041d6e34211f96b630
