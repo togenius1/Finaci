@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 
 import ExpenseOutput from '../Output/ExpenseOutput';
 // import {EXPENSES} from '../../dummy/dummy';
@@ -13,27 +13,15 @@ type Props = {
 };
 
 const ExpenseTab = ({}: Props) => {
+  // useEffect(() => {}, [focusedTabIndex]);
   // const dispatch = useAppDispatch();
   const dataLoaded = useAppSelector(store => store);
 
   const expensesData = dataLoaded?.expenses?.expenses;
 
-  // const [expensesData, setExpensesData] = useState<ExpenseType>();
-
-  // const fromDate = route.params?.fromDate;
-  // const toDate = route.params?.toDate;
   const overviewCtx = useContext(OverviewContext);
   const fromDate = overviewCtx?.fromDate;
   const toDate = overviewCtx?.toDate;
-
-  // useEffect(() => {
-  // setExpensesData(EXPENSES);
-  // dispatch(fetchExpensesData());
-  // }, []);
-
-  // if (expensesData === null || expensesData === undefined) {
-  //   return;
-  // }
 
   return (
     <ExpenseOutput

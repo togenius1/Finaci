@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
   listMenu: {
     flexDirection: 'column',
     justifyContent: 'space-around',
-    width: Platform.OS === 'ios' ? width * 0.90 : width * 0.8,
+    width: Platform.OS === 'ios' ? width * 0.9 : width * 0.8,
     height: height * 0.3,
     borderWidth: 0.8,
     backgroundColor: '#ffffff',
@@ -216,6 +216,6 @@ type Props = {
   setIsModalVisible: (value: boolean) => void;
   year: number;
   month: number;
-  setYear: Dispatch<SetStateAction<string>>;
+  setYear: Dispatch<SetStateAction<string | null>>;
   onMYSelectedHandler: (value: any) => void;
 };

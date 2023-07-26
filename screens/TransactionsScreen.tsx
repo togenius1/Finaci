@@ -140,57 +140,57 @@ function TopTabs({
       {/* <TopTab.Screen name="MONTHLY" component={TransactScreenComponent} /> */}
       <TopTab.Screen name={'Monthly'}>
         {() =>
-          currentTabIndex === 0 ? (
+          currentTabIndex === 0 && (
             <TransactScreenComponent
               tabs={tabs}
               setInsideTabIndex={setInsideTabIndex}
               middleTabIndex={middleTabIndex}
             />
-          ) : null
+          )
         }
       </TopTab.Screen>
       <TopTab.Screen name={'Weekly'}>
         {() =>
-          currentTabIndex === 1 ? (
+          currentTabIndex === 1 && (
             <TransactScreenComponent
               tabs={tabs}
               setInsideTabIndex={setInsideTabIndex}
               middleTabIndex={middleTabIndex}
             />
-          ) : null
+          )
         }
       </TopTab.Screen>
       <TopTab.Screen name={'Daily'}>
         {() =>
-          currentTabIndex === 2 ? (
+          currentTabIndex === 2 && (
             <TransactScreenComponent
               tabs={tabs}
               setInsideTabIndex={setInsideTabIndex}
               middleTabIndex={middleTabIndex}
             />
-          ) : null
+          )
         }
       </TopTab.Screen>
       <TopTab.Screen name={'Custom'}>
         {() =>
-          currentTabIndex === 3 ? (
+          currentTabIndex === 3 && (
             <TransactScreenComponent
               tabs={tabs}
               setInsideTabIndex={setInsideTabIndex}
               middleTabIndex={middleTabIndex}
             />
-          ) : null
+          )
         }
       </TopTab.Screen>
       <TopTab.Screen name={'Export'}>
         {() =>
-          currentTabIndex === 4 ? (
+          currentTabIndex === 4 && (
             <TransactScreenComponent
               tabs={tabs}
               setInsideTabIndex={setInsideTabIndex}
               middleTabIndex={middleTabIndex}
             />
-          ) : null
+          )
         }
       </TopTab.Screen>
     </TopTab.Navigator>
@@ -279,7 +279,7 @@ const TransactionsScreen = ({navigation}: Props) => {
   }, []);
 
   useEffect(() => {
-    const tabsComponent = Array.from({length: 15}, (_, i) => ({
+    const tabsComponent = Array.from({length: 21}, (_, i) => ({
       name: `Sc ${i}`,
       props: {num: `${i}`},
     }));
