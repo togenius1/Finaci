@@ -211,7 +211,7 @@ function HeaderSummary({total, totalIncome, totalExpense}: HeaderSummaryType) {
         </Text>
       </View>
       <View style={styles.assetBox}>
-        <Text style={{fontSize: 14}}>Expenses</Text>
+        <Text style={{fontSize: height * 0.020}}>Expense</Text>
         <Text
           style={{color: 'red', fontSize: height * 0.018, fontWeight: 'bold'}}>
           {currencyFormatter(+totalExpense, {})}

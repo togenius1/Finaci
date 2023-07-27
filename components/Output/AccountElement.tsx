@@ -58,16 +58,16 @@ const AccountElement = ({
   const filteredCashData = cashData?.filter(
     cash =>
       Number(moment(cash?.date).month() + 1) === Number(month) &&
-      Number(moment(cash?.date).year()) === year,
+      Number(moment(cash?.date).year()) === Number(year),
   );
 
   const filteredExpensesData = expensesData?.filter(
     expense =>
-      Number(moment(expense?.date).month()) + 1 === Number(month) &&
+      Number(moment(expense?.date).month() + 1) === Number(month) &&
       Number(moment(expense?.date).year()) === Number(year),
   );
 
-  const filteredAccountsData = cashData?.filter(
+  const filteredAccountsData = accountsData?.filter(
     account =>
       Number(moment(account?.date).month() + 1) === Number(month) &&
       Number(moment(account?.date).year()) === Number(year),
@@ -78,7 +78,7 @@ const AccountElement = ({
   const totalExpenses = sumTotalFunc(filteredExpensesData);
 
   const totalAssets = Number(cashBudget) + Number(accountsBudget);
-  const total = totalAssets - Number(totalExpenses);
+  const total = Number(totalAssets) - Number(totalExpenses);
 
   // console.log(totalExpenses);
 

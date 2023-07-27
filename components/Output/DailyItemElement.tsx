@@ -17,6 +17,8 @@ import {getWeekInMonth} from '../../util/date';
 import moment from 'moment';
 import {weeklyTransactsActions} from '../../store/weeklyTransact-slice';
 import {monthlyTransactsActions} from '../../store/monthlyTransact-slice';
+import {cashAccountsActions} from '../../store/cash-slice';
+import {accountActions} from '../../store/account-slice';
 
 // import {DailyItemType} from '../../components/Output/TransactionSummary';
 
@@ -81,6 +83,8 @@ const DailyItemElement = ({
     updateWeeklyTransactionsHandler(incomeId, 'income');
     // Update Monthly Transaction
     updateMonthlyTransactionsHandler(incomeId, 'income');
+    // Update Account by accountId
+    updateAccountAmountHandler(String(accountId), 'income');
 
     // Remove Income
     dispatch(
@@ -97,6 +101,8 @@ const DailyItemElement = ({
     updateWeeklyTransactionsHandler(expenseId, 'expense');
     // Update Monthly Transaction
     updateMonthlyTransactionsHandler(expenseId, 'expense');
+    // Update Account by accountId
+    updateAccountHandler(String(accountId), 'expense');
 
     // Remove Expense
     dispatch(
@@ -104,6 +110,40 @@ const DailyItemElement = ({
         expenseId: expenseId !== undefined ? expenseId : 0,
       }),
     );
+  };
+
+  const updateAccountHandler = (accountId: string, type: string) => {
+    const account = accountId?.split('-')[0];
+
+    const filteredIncomes = Incomes?.filter(
+      income => String(income?.accountId) === String(accountId),
+    );
+
+    if (account === 'cash') {
+      dispatch(
+        cashAccountsActions.updateCashAccount({
+          id: Cash[0].id,
+          title: Cash[0]?.title,
+          budget: +Cash[0]?.budget - +filteredIncomes[0]?.amount,
+          date: Cash[0]?.date,
+          editedDate: new Date(),
+        }),
+      );
+    } else if (account !== 'cash') {
+      const filteredAccounts = Accounts?.filter(
+        acc => String(acc.id) === String(accountId),
+      );
+
+      dispatch(
+        accountActions.updateAccount({
+          id: filteredAccounts[0].id,
+          title: filteredAccounts[0]?.title,
+          budget: +filteredAccounts[0]?.budget - +filteredIncomes[0]?.amount,
+          date: filteredAccounts[0]?.date,
+          editedDate: new Date(),
+        }),
+      );
+    }
   };
 
   const updateDailyTransactsHandler = (itemId: string, type: string) => {
@@ -390,7 +430,7 @@ const styles = StyleSheet.create({
 //====================================== TYPE ======================================
 type Props = {
   type: string | null;
-  amount: number | undefined;
+  amount: string;
   day: string | null;
   dayLabel: string | null;
   monthLabel: string | null;

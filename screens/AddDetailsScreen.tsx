@@ -218,11 +218,12 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
   // Update Account budget
   const accountsBudgetUpdate = () => {
     if (type === 'expense') return;
-    // if (type === 'income') {
+
     if (account?.title !== 'Cash') {
-      const prevAcc = AccountCategory.filter(
-        account => account?.id === selectedAccountId,
+      const prevAcc = AccountCategory?.filter(
+        account => String(account?.id) === String(selectedAccountId),
       );
+
       dispatch(
         accountActions.updateAccount({
           id: selectedAccountId,
@@ -231,8 +232,11 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
           date: textDate,
         }),
       );
-    } else {
-      const prevCash = cash.filter(cash => cash?.id === selectedAccountId);
+    } else if (account?.title === 'Cash') {
+      const prevCash = cash?.filter(
+        cash => String(cash?.id) === String(selectedAccountId),
+      );
+
       dispatch(
         cashAccountsActions.updateCashAccount({
           id: selectedAccountId,

@@ -87,8 +87,8 @@ const AccountsScreen = ({navigation}: Props) => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [year, setYear] = useState<number>(moment().year());
   const [month, setMonth] = useState<number>(MONTH);
-  const [fromDate, setFromDate] = useState<string | null>(initFromDate);
-  const [toDate, setToDate] = useState<string | null>(initToDate);
+  // const [fromDate, setFromDate] = useState<string | null>(initFromDate);
+  // const [toDate, setToDate] = useState<string | null>(initToDate);
 
   // const {isLoaded, isClosed, load, show} = useInterstitialAd(adUnitId, {
   //   requestNonPersonalizedAdsOnly: true,
@@ -143,8 +143,8 @@ const AccountsScreen = ({navigation}: Props) => {
     todate = moment(`${year}-${mm}-${daysInMonth}`).format('YYYY-MM-DD');
     // month = moment(fromdate).month() + 1;
 
-    setFromDate(moment(fromdate).format('YYYY-MM-DD'));
-    setToDate(moment(todate).format('YYYY-MM-DD'));
+    // setFromDate(moment(fromdate).format('YYYY-MM-DD'));
+    // setToDate(moment(todate).format('YYYY-MM-DD'));
 
     const MONTH = moment(todate).format('M');
     setMonth(MONTH);
@@ -270,7 +270,7 @@ type Props = {
 };
 
 type HeaderRightComponent = {
-  setIsMenuOpen: (value: boolean) => boolean;
+  setIsMenuOpen: (value: React.SetStateAction<boolean>) => void;
   setIsMYListVisible: (value: boolean) => boolean;
   year: number;
   month: number;
