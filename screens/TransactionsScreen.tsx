@@ -115,6 +115,7 @@ function TopTabs({
 }: ScreenTabType) {
   return (
     <TopTab.Navigator
+      initialRouteName={'Monthly'}
       screenListeners={{
         state: e => {
           // Do something with the state

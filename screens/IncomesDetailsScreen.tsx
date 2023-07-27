@@ -1,5 +1,6 @@
 import {FlatList, View} from 'react-native';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import {v4 as uuidv4} from 'uuid';
 import moment from 'moment';
 
@@ -19,6 +20,8 @@ const IncomesDetailsScreen = ({route, navigation}: Props) => {
   const date = route.params.date;
   // const time = route.params.time;
 
+  const [filteredIncomes, setFilteredIncomes] = useState<any[]>([]);
+
   useEffect(() => {
     navigation.setOptions({
       title: 'Incomes',
@@ -27,11 +30,32 @@ const IncomesDetailsScreen = ({route, navigation}: Props) => {
     });
   }, []);
 
-  const filteredExpenses = Incomes.filter(
-    income =>
-      moment(income.date).format('YYYY-MM-DD') ===
-      moment(date).format('YYYY-MM-DD'),
+  useEffect(() => {
+    setupIncomeHandler();
+  }, [Incomes]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      // alert('Screen was focused');
+      // Do something when the screen is focused
+      setupIncomeHandler();
+      return () => {
+        // alert('Screen was unfocused');
+        // Do something when the screen is unfocused
+        // Useful for cleanup functions
+      };
+    }, []),
   );
+
+  const setupIncomeHandler = () => {
+    const filteredIncomesData = Incomes.filter(
+      income =>
+        moment(income.date).format('YYYY-MM-DD') ===
+        moment(date).format('YYYY-MM-DD'),
+    );
+
+    setFilteredIncomes(filteredIncomesData);
+  };
 
   // daily renderItem
   function renderItem({item}) {
@@ -80,7 +104,7 @@ const IncomesDetailsScreen = ({route, navigation}: Props) => {
     <View>
       <FlatList
         keyExtractor={item => item + uuidv4()}
-        data={filteredExpenses}
+        data={filteredIncomes}
         renderItem={renderItem}
         bounces={false}
       />

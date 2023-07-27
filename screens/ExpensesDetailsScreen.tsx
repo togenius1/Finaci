@@ -1,5 +1,5 @@
 import {FlatList, View} from 'react-native';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {v4 as uuidv4} from 'uuid';
 import moment from 'moment';
 
@@ -10,6 +10,7 @@ import {
   ExpensesDetailsRouteProp,
 } from '../types';
 import {currencyFormatter} from '../util/currencyFormatter';
+import {useFocusEffect} from '@react-navigation/native';
 
 // const {width, height} = Dimensions.get('window');
 
@@ -21,6 +22,8 @@ const ExpensesDetailsScreen = ({route, navigation}: Props) => {
   const date = route.params.date;
   // const time = route.params.time;
 
+  const [filteredExpenses, setFilteredExpenses] = useState<any[]>([]);
+
   useEffect(() => {
     navigation.setOptions({
       title: 'Expenses',
@@ -29,11 +32,31 @@ const ExpensesDetailsScreen = ({route, navigation}: Props) => {
     });
   }, []);
 
-  const filteredExpenses = Expenses.filter(
-    exp =>
-      moment(exp.date).format('YYYY-MM-DD') ===
-      moment(date).format('YYYY-MM-DD'),
+  useEffect(() => {
+    setupExpenseHandler();
+  }, [Expenses]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      // alert('Screen was focused');
+      // Do something when the screen is focused
+      setupExpenseHandler();
+      return () => {
+        // alert('Screen was unfocused');
+        // Do something when the screen is unfocused
+        // Useful for cleanup functions
+      };
+    }, []),
   );
+
+  const setupExpenseHandler = () => {
+    const filteredExpensesData = Expenses?.filter(
+      exp =>
+        moment(exp.date).format('YYYY-MM-DD') ===
+        moment(date).format('YYYY-MM-DD'),
+    );
+    setFilteredExpenses(filteredExpensesData);
+  };
 
   // daily renderItem
   function renderItem({item}) {
@@ -64,7 +87,7 @@ const ExpensesDetailsScreen = ({route, navigation}: Props) => {
 
     return (
       <DailyItemElement
-        amount={expenseAmount}
+        amount={+expenseAmount}
         type={'expense'}
         day={String(day)}
         dayLabel={dayLabel}
