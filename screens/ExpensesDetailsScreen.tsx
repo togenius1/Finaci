@@ -30,7 +30,9 @@ const ExpensesDetailsScreen = ({route, navigation}: Props) => {
   }, []);
 
   const filteredExpenses = Expenses.filter(
-    exp => moment(exp.date).format('YYYY-MM-DD') === date,
+    exp =>
+      moment(exp.date).format('YYYY-MM-DD') ===
+      moment(date).format('YYYY-MM-DD'),
   );
 
   // daily renderItem
@@ -64,7 +66,7 @@ const ExpensesDetailsScreen = ({route, navigation}: Props) => {
       <DailyItemElement
         amount={expenseAmount}
         type={'expense'}
-        day={day}
+        day={String(day)}
         dayLabel={dayLabel}
         monthLabel={monthLabel}
         month={month}

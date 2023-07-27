@@ -12,7 +12,6 @@ import {currencyFormatter} from '../util/currencyFormatter';
 // const {width, height} = Dimensions.get('window');
 
 const IncomesDetailsScreen = ({route, navigation}: Props) => {
-  // Get Category name in Storage
   const dataLoaded = useAppSelector(store => store);
 
   const Incomes = dataLoaded?.incomes?.incomes;
@@ -29,14 +28,14 @@ const IncomesDetailsScreen = ({route, navigation}: Props) => {
   }, []);
 
   const filteredExpenses = Incomes.filter(
-    income => moment(income.date).format('YYYY-MM-DD') === date,
+    income =>
+      moment(income.date).format('YYYY-MM-DD') ===
+      moment(date).format('YYYY-MM-DD'),
   );
 
   // daily renderItem
   function renderItem({item}) {
     // const expenseAmount = currencyFormatter(item.expense_daily, {});
-    // const incomeAmount = currencyFormatter(item.income_daily, {});
-    // const expenseAmount = item.amount;
     const incomeAmount = currencyFormatter(item?.amount, {
       significantDigits: 0,
     });
@@ -58,16 +57,18 @@ const IncomesDetailsScreen = ({route, navigation}: Props) => {
     const dayLabel = moment(date).format('ddd');
     const monthLabel = moment(date).format('MMM');
     const year = moment(date).year();
+    const month = moment(date).month() + 1;
 
     return (
       <DailyItemElement
         amount={incomeAmount}
         type={'income'}
-        day={day}
+        day={String(day)}
         dayLabel={dayLabel}
         monthLabel={monthLabel}
         year={year}
         time={time}
+        month={month}
         accountId={accountId}
         cateId={cateId}
         itemId={itemId}

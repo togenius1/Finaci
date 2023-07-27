@@ -29,6 +29,7 @@ import {TestIds, useInterstitialAd} from 'react-native-google-mobile-ads';
 import TransactContext from '../store-context/transact-context';
 import TransactionSummary from '../components/Output/TransactionSummary';
 import {useSwipe} from '../components/ui-function/useSwipe';
+import {useFocusEffect} from '@react-navigation/native';
 
 const {width, height} = Dimensions.get('window');
 
@@ -273,6 +274,20 @@ const TransactionsScreen = ({navigation}: Props) => {
 
   const transactCtx = useContext(TransactContext);
 
+  // total effect
+  useEffect(() => {
+    totalHandler();
+  }, [
+    total,
+    currentTabIndex,
+    month,
+    year,
+    transactCtx.fromDate,
+    transactCtx.toDate,
+    ExpenseData,
+    IncomeData,
+  ]);
+
   useEffect(() => {
     const middleTabIndex = Math.floor(tabsComponentsArr?.length / 2);
     setMiddleTabIndex(middleTabIndex);
@@ -458,16 +473,9 @@ const TransactionsScreen = ({navigation}: Props) => {
   ]);
 
   // total effect
-  useEffect(() => {
-    totalHandler();
-  }, [
-    total,
-    currentTabIndex,
-    month,
-    year,
-    transactCtx.fromDate,
-    transactCtx.toDate,
-  ]);
+  // useEffect(() => {
+  //   totalHandler();
+  // }, []);
 
   // Tab setup
   useEffect(() => {

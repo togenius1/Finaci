@@ -262,6 +262,7 @@ const TransactionSummary = ({}: Props) => {
       transact => moment(transact?.date).year() === moment(fromDate).year(),
     );
   }
+
   //  Weekly Transaction
   // const weeklyData = weeklyTransaction(fromDate, toDate, date);
   let weeklyData;
