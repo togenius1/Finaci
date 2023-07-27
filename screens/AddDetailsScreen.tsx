@@ -212,7 +212,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     monthlyTransactionsUpdate();
     weeklyTransactionsUpdate();
     dailyTransactionsUpdate();
-    navigation.navigate('Overview');
+    navigation.navigate('Overview', {screen: 'Spending'});
   };
 
   // Update Account budget

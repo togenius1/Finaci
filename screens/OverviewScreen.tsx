@@ -55,7 +55,7 @@ const TopTab = createMaterialTopTabNavigator();
 function OverviewTab({setFocusedTabIndex, focusedTabIndex}: OverviewTabType) {
   return (
     <TopTab.Navigator
-      initialRouteName="Spending"
+      initialRouteName={'Spending'}
       screenListeners={{
         state: e => {
           // Do something with the state
