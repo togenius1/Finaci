@@ -6,7 +6,7 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 type Props = {
   tabs: any[];
   setCurrentTabIndex: (index: number) => void;
-  // setInsideTabIndex: (index: number) => void;
+  setInsideTabIndex: (index: number) => void;
   currentTabIndex: number;
   year: number;
   month: number;
@@ -16,7 +16,7 @@ type Props = {
 const TopTabs = ({
   tabs,
   setCurrentTabIndex,
-  // setInsideTabIndex,
+  setInsideTabIndex,
   currentTabIndex,
   middleTabIndex, // insideTabIndex,
 }: Props) => {
@@ -57,7 +57,7 @@ const TopTabs = ({
           currentTabIndex === 0 && (
             <TransactScreenComponent
               tabs={tabs}
-              // setInsideTabIndex={setInsideTabIndex}
+              setInsideTabIndex={setInsideTabIndex}
               middleTabIndex={middleTabIndex}
               // insideTabIndex={insideTabIndex}
             />
@@ -69,7 +69,7 @@ const TopTabs = ({
           currentTabIndex === 1 && (
             <TransactScreenComponent
               tabs={tabs}
-              // setInsideTabIndex={setInsideTabIndex}
+              setInsideTabIndex={setInsideTabIndex}
               middleTabIndex={middleTabIndex}
               // insideTabIndex={insideTabIndex}
             />
@@ -81,7 +81,7 @@ const TopTabs = ({
           currentTabIndex === 2 && (
             <TransactScreenComponent
               tabs={tabs}
-              // setInsideTabIndex={setInsideTabIndex}
+              setInsideTabIndex={setInsideTabIndex}
               middleTabIndex={middleTabIndex}
               // insideTabIndex={insideTabIndex}
             />
@@ -93,7 +93,7 @@ const TopTabs = ({
           currentTabIndex === 3 && (
             <TransactScreenComponent
               tabs={tabs}
-              // setInsideTabIndex={setInsideTabIndex}
+              setInsideTabIndex={setInsideTabIndex}
               middleTabIndex={middleTabIndex}
               // insideTabIndex={insideTabIndex}
             />
@@ -105,7 +105,7 @@ const TopTabs = ({
           currentTabIndex === 4 && (
             <TransactScreenComponent
               tabs={tabs}
-              // setInsideTabIndex={setInsideTabIndex}
+              setInsideTabIndex={setInsideTabIndex}
               middleTabIndex={middleTabIndex}
               // insideTabIndex={insideTabIndex}
             />

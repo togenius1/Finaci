@@ -5,7 +5,7 @@ import TransactionSummary from '../Output/TransactionSummary';
 
 const TransactScreenComponent = ({
   tabs,
-  // setInsideTabIndex,
+  setInsideTabIndex,
   middleTabIndex,
 }: Props) => {
   const TopTab = createMaterialTopTabNavigator();
@@ -16,7 +16,7 @@ const TransactScreenComponent = ({
         state: e => {
           // Do something with the state
           // console.log('Page Index: ', e.data?.state?.index);
-          // setInsideTabIndex(e.data?.state?.index);
+          setInsideTabIndex(e.data?.state?.index);
         },
       }}
       initialRouteName={tabs[middleTabIndex]?.name}
@@ -47,7 +47,7 @@ export default TransactScreenComponent;
 //============================ TYPE ====================================
 type Props = {
   tabs: any[];
-  // setInsideTabIndex: (index: number) => void;
+  setInsideTabIndex: (index: number) => void;
   // currentTabIndex: number;
   // year: number;
   middleTabIndex: number;

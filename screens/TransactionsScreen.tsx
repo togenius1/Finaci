@@ -32,6 +32,7 @@ import TransactContext from '../store-context/transact-context';
 import TransactHeaderSummary from '../components/Header/TransactHeaderSummary';
 import TopTabs from '../components/tab/TopTabs';
 import HeaderRight from '../components/Header/HeaderRight';
+import {isTablet} from 'react-native-device-info';
 
 const {width} = Dimensions.get('window');
 
@@ -59,7 +60,7 @@ const TransactionsScreen = ({navigation}: Props) => {
     useState<any[]>(initTabsComponent);
 
   const [currentTabIndex, setCurrentTabIndex] = useState<number>(0);
-  // const [insideTabIndex, setInsideTabIndex] = useState<number>(0);
+  const [insideTabIndex, setInsideTabIndex] = useState<number>(0);
   const [middleTabIndex, setMiddleTabIndex] = useState<number | undefined>(
     Math.floor(+initTabsComponent / 2),
   );
@@ -156,10 +157,13 @@ const TransactionsScreen = ({navigation}: Props) => {
   const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
-      onPanResponderMove: (_, gestureState) => {
-        // Detect left or right swipe based on horizontal movement
+      // onPanResponderMove: (_, gestureState) => {
+      //   // Detect left or right swipe based on horizontal movement
+      // },
+      onPanResponderRelease: (_, gestureState) => {
+        // Your function to be executed when the touch is released.
         // You can perform any additional logic here if needed
-        const SWIPE_THRESHOLD = Dimensions.get('window').width * 0.2;
+        const SWIPE_THRESHOLD = isTablet() ? width * 0.1 : width * 0.18;
         const swipeLeft = gestureState.dx < -SWIPE_THRESHOLD;
         const swipeRight = gestureState.dx > SWIPE_THRESHOLD;
 
@@ -169,6 +173,7 @@ const TransactionsScreen = ({navigation}: Props) => {
           setDirection('right');
         }
       },
+      
       onPanResponderEnd: (_, gestureState) => {
         // Reset gesture state after swipe ends
         setDirection(null); // Reset direction after swipe ends
@@ -713,7 +718,7 @@ const TransactionsScreen = ({navigation}: Props) => {
     <View {...panResponder.panHandlers} style={styles.container}>
       <TopTabs
         setCurrentTabIndex={setCurrentTabIndex}
-        // setInsideTabIndex={setInsideTabIndex}
+        setInsideTabIndex={setInsideTabIndex}
         currentTabIndex={Number(currentTabIndex)}
         middleTabIndex={Number(middleTabIndex)}
         // insideTabIndex={Number(insideTabIndex)}
