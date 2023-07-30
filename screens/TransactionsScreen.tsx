@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useContext, useEffect, useMemo, useRef, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import {
   Dimensions,
   PanResponder,
@@ -9,52 +9,28 @@ import {
   Text,
   View,
 } from 'react-native';
-// import {useFocusEffect} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import moment from 'moment';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 
-// import TransactionOutput from '../components/Output/TransactionOutput';
 import MonthYearList from '../components/Menu/MonthYearList';
 import {TransactionNavigationProp} from '../types';
-// import {useSwipe} from '../components/UI/useSwape';
-// import Tabs from '../components/UI/Tabs';
 import {currencyFormatter} from '../util/currencyFormatter';
 import {sumTotalFunc} from '../util/math';
 import {useAppSelector} from '../hooks';
-// import {transactStateActions} from '../store/transaction-state-slice';
 import {Auth} from 'aws-amplify';
 import {TestIds, useInterstitialAd} from 'react-native-google-mobile-ads';
-// import TransactProvider from '../store-context/TransactProvider';
 import TransactContext from '../store-context/transact-context';
 import TransactionSummary from '../components/Output/TransactionSummary';
-import {useSwipe} from '../components/ui-function/useSwipe';
-import {useFocusEffect} from '@react-navigation/native';
 
 const {width, height} = Dimensions.get('window');
-
-// const TabsDataObject = {
-//   monthly: 'Monthly',
-//   weekly: 'Weekly',
-//   daily: 'Daily',
-//   custom: 'Custom',
-//   export: 'Export',
-// };
 
 // Ads variable
 const adUnitId = __DEV__
   ? TestIds.INTERSTITIAL
   : 'ca-app-pub-3212728042764573~3355076099';
 
-// Swipe Screen
-// Specify initial screen to three screens.
-// Swap left/right to push a screen to an array.
-// const initialScreens = [
-//   {name: 'Screen 1', props: {num: '1'}},
-//   {name: 'Screen 2', props: {num: '2'}},
-//   {name: 'Screen 3', props: {num: '3'}},
-// ];
 interface ScreenType {
   tabs: any[];
   setInsideTabIndex: (index: number) => void;
@@ -249,13 +225,9 @@ const TransactionsScreen = ({navigation}: Props) => {
   const [tabsComponentsArr, setTabsComponentsArr] =
     useState<any[]>(initTabsComponent);
 
-  // const scrollViewRef = useRef(null);
   const [currentTabIndex, setCurrentTabIndex] = useState<number>(0);
   const [insideTabIndex, setInsideTabIndex] = useState<number>(0);
   const [middleTabIndex, setMiddleTabIndex] = useState<number | undefined>(0);
-
-  // const [swipeLeft, setSwipeLeft] = useState<boolean>(false);
-  // const [swipeRight, setSwipeRight] = useState<boolean>(false);
 
   const [direction, setDirection] = useState<string>('');
   const [duration, setDuration] = useState<string | null>(
@@ -469,11 +441,6 @@ const TransactionsScreen = ({navigation}: Props) => {
     transactCtx.fromDate,
     transactCtx.toDate,
   ]);
-
-  // total effect
-  // useEffect(() => {
-  //   totalHandler();
-  // }, []);
 
   // Tab setup
   useEffect(() => {

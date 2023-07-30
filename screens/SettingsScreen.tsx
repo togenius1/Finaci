@@ -2,7 +2,10 @@ import {
   ActivityIndicator,
   Alert,
   Dimensions,
+  Linking,
+  Pressable,
   StyleSheet,
+  Text,
   View,
 } from 'react-native';
 import React, {useState} from 'react';
@@ -72,6 +75,30 @@ const Settings = () => {
     setShowDeleteIndicator(false);
   };
 
+  const handleEmailLinkPress = () => {
+    const emailAddress = 'togenius1@gmail.com'; // Replace this with the desired email address
+    // const subject = 'Hello from Finner App'; // Replace this with the desired email subject
+
+    const mailToUrl = `mailto:${emailAddress}?subject=SendMail&body=Description`;
+
+    Linking.openURL(mailToUrl).then(supported => {
+      console.log(supported);
+      if (supported) {
+        Linking.openURL(mailToUrl);
+      } else {
+        console.log("Can't handle URL: " + mailToUrl);
+      }
+    });
+
+    // Linking.canOpenURL(mailToUrl).then(supported => {
+    //   if (supported) {
+    //     Linking.openURL(mailToUrl);
+    //   } else {
+    //     console.log("Can't handle URL: " + mailToUrl);
+    //   }
+    // });
+  };
+
   return (
     <View style={styles.container}>
       {/* <View style={[styles.currency, styles.box]}>
@@ -90,12 +117,35 @@ const Settings = () => {
       </View> */}
 
       <View style={styles.closeAccount}>
+        {/* <View>
+          <Text>
+            Please keep in mind that once the account removal process is
+            completed, there will be no way to retrieve any of your previous
+            data or information. Therefore, we recommend ensuring that you have
+            backed up any important data before proceeding with the account
+            removal. When you decide to return, you can simply sign up again
+            using your preferred credentials, and we'll be happy to have you
+            back as a valued member of our community. If you have any questions
+            or concerns regarding the account removal process or need any
+            assistance, please feel free to reach out to our support team. We
+            are here to help and ensure your experience with us is as smooth and
+            satisfactory as possible.
+          </Text>
+        </View> */}
+
         <CButton onPress={closeAccountAlertHandler}>Close account</CButton>
         <ActivityIndicator
           size="small"
           color="#0000ff"
           animating={showDeleteIndicator}
         />
+      </View>
+
+      <View style={{flexDirection: 'row', marginVertical: 10}}>
+        <Text style={{}}>Contact: </Text>
+        <Pressable onPress={handleEmailLinkPress}>
+          <Text style={{color: 'blue'}}>togenius1@gmail.com</Text>
+        </Pressable>
       </View>
     </View>
   );

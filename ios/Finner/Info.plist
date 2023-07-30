@@ -35,6 +35,12 @@
 		<string>Zocial.ttf</string>
 		<string>Fontisto.ttf</string>
 	</array>
+
+<key>LSApplicationQueriesSchemes</key>
+  <array>
+    <string>mailto</string>
+  </array>
+
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
