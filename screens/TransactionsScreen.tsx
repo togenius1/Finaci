@@ -1,7 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useMemo, useRef, useState} from 'react';
 import {
   Dimensions,
+  PanResponder,
   Platform,
   Pressable,
   StyleSheet,
@@ -129,14 +130,17 @@ function TopTabs({
         tabBarContentContainerStyle: {
           width: 'auto',
           alignItems: 'center',
-          justifyContent: 'center',
+          justifyContent: 'space-around',
         },
         tabBarLabelStyle: {
-          marginHorizontal: 0,
-        },
-        tabBarItemStyle: {
           width: 'auto',
+          marginHorizontal: 0,
+          fontSize: 11,
+          fontWeight: '400',
         },
+        // tabBarItemStyle: {
+        //   backgroundColor: 'red',
+        // },
         tabBarScrollEnabled: false,
       })}>
       {/* <TopTab.Screen name="MONTHLY" component={TransactScreenComponent} /> */}
@@ -211,7 +215,7 @@ function HeaderSummary({total, totalIncome, totalExpense}: HeaderSummaryType) {
         </Text>
       </View>
       <View style={styles.assetBox}>
-        <Text style={{fontSize: height * 0.020}}>Expense</Text>
+        <Text style={{fontSize: height * 0.02}}>Expense</Text>
         <Text
           style={{color: 'red', fontSize: height * 0.018, fontWeight: 'bold'}}>
           {currencyFormatter(+totalExpense, {})}
@@ -246,13 +250,14 @@ const TransactionsScreen = ({navigation}: Props) => {
     useState<any[]>(initTabsComponent);
 
   // const scrollViewRef = useRef(null);
-  const [currentTabIndex, setCurrentTabIndex] = useState<number | undefined>(0);
-  const [insideTabIndex, setInsideTabIndex] = useState<number | undefined>(0);
+  const [currentTabIndex, setCurrentTabIndex] = useState<number>(0);
+  const [insideTabIndex, setInsideTabIndex] = useState<number>(0);
   const [middleTabIndex, setMiddleTabIndex] = useState<number | undefined>(0);
 
-  const [swipeLeft, setSwipeLeft] = useState<boolean>(false);
-  const [swipeRight, setSwipeRight] = useState<boolean>(false);
+  // const [swipeLeft, setSwipeLeft] = useState<boolean>(false);
+  // const [swipeRight, setSwipeRight] = useState<boolean>(false);
 
+  const [direction, setDirection] = useState<string>('');
   const [duration, setDuration] = useState<string | null>(
     moment().format('MMM'),
   );
@@ -351,14 +356,6 @@ const TransactionsScreen = ({navigation}: Props) => {
       // console.log('CLEANUP');
     };
   }, [year, month]);
-
-  useEffect(() => {
-    changeMonthYearHandler();
-
-    // return () => {
-    // console.log('CLEANUP');
-    // };
-  }, [insideTabIndex]);
 
   // Header Right
   useEffect(() => {
@@ -482,6 +479,42 @@ const TransactionsScreen = ({navigation}: Props) => {
   useEffect(() => {
     onTabSetup();
   }, [currentTabIndex]);
+
+  useEffect(() => {
+    if (direction === 'left') {
+      // Logic for the first tab
+      handleSwipeLeft();
+    } else if (direction === 'right') {
+      // Logic for the second tab
+      handleSwipeRight();
+    }
+  }, [insideTabIndex]);
+
+  // Detect swipe screen: Left and Right
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onPanResponderMove: (_, gestureState) => {
+        // Detect left or right swipe based on horizontal movement
+      },
+      onPanResponderEnd: (_, gestureState) => {
+        // Reset gesture state after swipe ends
+        // You can perform any additional logic here if needed
+        const swipeLeft = gestureState.dx < -50;
+        const swipeRight = gestureState.dx > 50;
+
+        if (swipeLeft) {
+          // Swipe left, decrease the month by one
+          // handleSwipeLeft();
+          setDirection('left');
+        } else if (swipeRight) {
+          // Swipe right, increase the month by one
+          // handleSwipeRight();
+          setDirection('right');
+        }
+      },
+    }),
+  ).current;
 
   // Tab setup
   const onTabSetup = () => {
@@ -666,19 +699,19 @@ const TransactionsScreen = ({navigation}: Props) => {
       Month = `0${Month}`;
     }
 
-    const date = moment().format(`${year}-${Month}-DD`);
     const daysInMonth = moment(
       moment().format(`YYYY-${Month}`),
       'YYYY-MM',
     ).daysInMonth();
+
+    const date = moment().format(`${year}-${Month}-${daysInMonth}`);
+
     const fromdate = moment(`${year}-${Month}-01`).format('YYYY-MM-DD');
     const todate = moment(`${year}-${Month}-${daysInMonth}`).format(
       'YYYY-MM-DD',
     );
 
-    // typeof duration === 'number'
     setDuration(moment.monthsShort(moment(date).month()));
-    // : '';
 
     transactCtx.fromDateSetHandler({
       fromDate: fromdate,
@@ -884,91 +917,63 @@ const TransactionsScreen = ({navigation}: Props) => {
     }
   };
 
-  // Detect swipe screen: Left and Right
-  const {onTouchStart, onTouchEnd} = useSwipe(onSwipeLeft, onSwipeRight, 4);
+  // Swipe Left
+  const handleSwipeLeft = () => {
+    if (currentTabIndex === 0) {
+      setYear(prev => String(+prev + 1));
+    }
+    if (currentTabIndex === 1) {
+      setMonth(prev => {
+        let newMonth = +prev + 1;
+        if (newMonth > 12) {
+          newMonth = (newMonth % 13) + 1;
+        }
 
-  // Increase or Decrease Year
-  const changeMonthYearHandler = () => {
-    if (swipeLeft) {
-      if (currentTabIndex === 0) {
-        setYear(prev => String(+prev + 1));
-      }
-      if (currentTabIndex === 1) {
-        setMonth(prev => {
-          let newMonth = +prev + 1;
-
-          if (newMonth > 12) {
-            newMonth = (newMonth % 13) + 1;
-          }
-
-          return String(newMonth);
-        });
-      }
-      if (currentTabIndex === 2) {
-        setMonth(prev => {
-          let newMonth = +prev + 1;
-
-          if (newMonth > 12) {
-            newMonth = (newMonth % 13) + 1;
-          }
-
-          return String(newMonth);
-        });
-      }
+        return String(newMonth);
+      });
     }
 
-    if (swipeRight) {
-      if (currentTabIndex === 0) {
-        setYear(prev => String(Math.abs(+prev - 1)));
-      }
-      if (currentTabIndex === 1) {
-        setMonth(prev => {
-          let newMonth = Math.abs(+prev - 1);
+    if (currentTabIndex === 2) {
+      setMonth(prev => {
+        let newMonth = +prev + 1;
 
-          if (newMonth > 13) {
-            newMonth = (newMonth % 13) + 1;
-          }
+        if (newMonth > 12) {
+          newMonth = (newMonth % 13) + 1;
+        }
 
-          return String(newMonth);
-        });
-      }
-      if (currentTabIndex === 2) {
-        setMonth(prev => {
-          let newMonth = Math.abs(+prev - 1);
-
-          if (newMonth > 13) {
-            newMonth = (newMonth % 13) + 1;
-          }
-
-          return String(newMonth);
-        });
-      }
+        return String(newMonth);
+      });
     }
   };
 
-  // Swipe Left ..
-  function onSwipeLeft() {
-    // console.log('SWIPE_LEFT');
-    setSwipeLeft(true);
-    setSwipeRight(false);
-
-    // updatedLeftTabs();
-  }
-
   // Swipe Right
-  function onSwipeRight() {
-    // console.log('SWIPE_RIGHT');
-    setSwipeLeft(false);
-    setSwipeRight(true);
+  const handleSwipeRight = () => {
+    if (currentTabIndex === 0) {
+      setYear(prev => String(Math.abs(+prev - 1)));
+    }
+    if (currentTabIndex === 1) {
+      setMonth(prev => {
+        let newMonth = Math.abs(+prev - 1);
+        if (newMonth > 12) {
+          newMonth = (newMonth % 13) + 1;
+        }
+        return String(newMonth);
+      });
+    }
+    if (currentTabIndex === 2) {
+      setMonth(prev => {
+        let newMonth = Math.abs(+prev - 1);
 
-    // updatedRightTabs();
-  }
+        if (newMonth > 12) {
+          newMonth = (newMonth % 13) + 1;
+        }
+        return String(newMonth);
+      });
+    }
+  };
 
   return (
-    <View
-      onTouchStart={onTouchStart}
-      onTouchEnd={onTouchEnd}
-      style={styles.container}>
+    <View {...panResponder.panHandlers} style={styles.container}>
       <TopTabs
         setCurrentTabIndex={setCurrentTabIndex}
         setInsideTabIndex={setInsideTabIndex}
@@ -1029,8 +1034,6 @@ const styles = StyleSheet.create({
     height: height * 0.07,
     flexDirection: 'row',
     justifyContent: 'space-around',
-    // paddingVertical: 8,
-    // marginVertical: 5,
     marginTop: height * 0.07,
 
     backgroundColor: 'white',

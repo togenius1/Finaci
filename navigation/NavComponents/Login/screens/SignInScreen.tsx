@@ -10,14 +10,14 @@ import React, {useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {Auth} from 'aws-amplify';
 
-import Logo from '../../../../assets/images/Logo_1.png';
+import Logo from '../../../../assets/images/FINNER-Tab.png';
 import CustomInput from '../components/CustomInput';
 import CustomButton from '../components/CustomButton';
 // import SocialSignInButtons from '../components/SocialSignInButtons';
 
 type Props = {};
 
-const {height} = Dimensions.get('window');
+const {height, width} = Dimensions.get('window');
 
 const SignInScreen = ({navigation}: Props) => {
   const [loading, setLoading] = useState(false);
@@ -59,8 +59,15 @@ const SignInScreen = ({navigation}: Props) => {
       <View style={styles.root}>
         <Image
           source={Logo}
-          style={[styles.logo, {height: height * 0.3}]}
-          resizeMode="contain"
+          style={[
+            styles.logo,
+            {
+              height: height * 0.08,
+              marginBottom: height * 0.25,
+              marginTop: 30,
+            },
+          ]}
+          resizeMode="cover"
         />
         <CustomInput
           name="username"
@@ -110,8 +117,11 @@ export default SignInScreen;
 
 const styles = StyleSheet.create({
   root: {
+    height: height,
     alignItems: 'center',
     padding: 20,
+
+    backgroundColor: 'white',
   },
   logo: {
     width: '70%',

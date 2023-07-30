@@ -10,12 +10,10 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {setPRNG} from 'tweetnacl';
-// import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Amplify, Auth, DataStore, Hub} from 'aws-amplify';
 import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Purchases, {LOG_LEVEL} from 'react-native-purchases';
-// const AWS = require('aws-sdk');
 
 import {generateKeyPair, PRNG} from './util/crypto';
 import FinnerNavigator from './navigation/FinnerNavigator';
@@ -24,18 +22,12 @@ import {fetchCashAccountsData} from './store/cash-action';
 import {fetchAccountsData} from './store/account-action';
 import {fetchIncomeCategoriesData} from './store/income-category-action';
 import {fetchExpenseCategoriesData} from './store/expense-category-action';
-// import {fetchExpensesData} from './store/expense-action';
-// import {fetchIncomesData} from './store/income-action';
-// import {fetchDailyTransactsData} from './store/dailyTransact-action';
-// import {fetchMonthlyTransactsData} from './store/monthlyTransact-action';
-// import {fetchWeeklyTransactsData} from './store/weeklyTransact-action';
 import awsconfig from './src/aws-exports';
 import {User} from './src/models';
 import {authAccountsActions} from './store/authAccount-slice';
 import moment from 'moment';
 import {API_KEY, ENTITLEMENT_PRO, ENTITLEMENT_STD} from './constants/api';
 import {customerInfoActions} from './store/customerInfo-slice';
-// import {fetchAuthAccountsData} from './store/authAccount-action';
 import TransactProvider from './store-context/TransactProvider';
 import OverviewProvider from './store-context/OverviewProvider';
 

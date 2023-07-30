@@ -20,6 +20,7 @@ import Export from '../Menu/Export';
 import {TransactionSummaryNavigationProp} from '../../types';
 import {useAppSelector} from '../../hooks';
 import TransactContext from '../../store-context/transact-context';
+import {isTablet} from 'react-native-device-info';
 
 const {width, height} = Dimensions.get('window');
 
@@ -374,7 +375,7 @@ export default TransactionSummary;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // width: width,
+    marginTop: isTablet() ? height * 0.04 : height * 0.001,
   },
   list: {
     flexDirection: 'row',
