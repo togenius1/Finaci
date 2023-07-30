@@ -13,7 +13,7 @@ import {Auth} from 'aws-amplify';
 import DeviceInfo from 'react-native-device-info';
 
 import CButton from '../components/UI/CButton';
-import {useAppDispatch, useAppSelector} from '../hooks';
+import {useAppDispatch} from '../hooks';
 import {authAccountsActions} from '../store/authAccount-slice';
 
 // Constant

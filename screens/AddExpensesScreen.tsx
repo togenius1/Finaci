@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Dimensions, Pressable, StyleSheet, Text, View} from 'react-native';
 
 import Calculator from '../components/UI/Calculator';

@@ -32,7 +32,7 @@ type Props = {
   navigation: OverviewNavigationProp;
 };
 
-const {width, height} = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 
 let MONTH = moment().month() + 1;
 if (MONTH < 10) {

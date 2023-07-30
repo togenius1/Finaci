@@ -10,220 +10,35 @@ import {
   Dimensions,
   PanResponder,
   Platform,
-  Pressable,
+  // Pressable,
   StyleSheet,
-  Text,
+  // Text,
   View,
 } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+// import Ionicons from 'react-native-vector-icons/Ionicons';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import moment from 'moment';
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+// import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 
 import MonthYearList from '../components/Menu/MonthYearList';
 import {TransactionNavigationProp} from '../types';
-import {currencyFormatter} from '../util/currencyFormatter';
+// import {currencyFormatter} from '../util/currencyFormatter';
 import {sumTotalFunc} from '../util/math';
 import {useAppSelector} from '../hooks';
 import {Auth} from 'aws-amplify';
 import {TestIds, useInterstitialAd} from 'react-native-google-mobile-ads';
 import TransactContext from '../store-context/transact-context';
-import TransactionSummary from '../components/Output/TransactionSummary';
+// import TransactScreenComponent from '../components/tab/TransactScreenComponent';
+import TransactHeaderSummary from '../components/Header/TransactHeaderSummary';
+import TopTabs from '../components/tab/TopTabs';
+import HeaderRight from '../components/Header/HeaderRight';
 
-const {width, height} = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 
 // Ads variable
 const adUnitId = __DEV__
   ? TestIds.INTERSTITIAL
   : 'ca-app-pub-3212728042764573~3355076099';
-
-interface ScreenType {
-  tabs: any[];
-  setInsideTabIndex: (index: number) => void;
-  // currentTabIndex: number;
-  // year: number;
-  middleTabIndex: number;
-  // insideTabIndex: number;
-}
-
-interface ScreenTabType {
-  tabs: any[];
-  setCurrentTabIndex: (index: number) => void;
-  setInsideTabIndex: (index: number) => void;
-  currentTabIndex: number;
-  year: number;
-  month: number;
-  middleTabIndex: number;
-  // insideTabIndex: number;
-}
-
-const TopTab = createMaterialTopTabNavigator();
-
-// Tab component
-function TransactScreenComponent({
-  tabs,
-  setInsideTabIndex,
-  middleTabIndex, // insideTabIndex,
-}: ScreenType) {
-  return (
-    <TopTab.Navigator
-      screenListeners={{
-        state: e => {
-          // Do something with the state
-          // console.log('Page Index: ', e.data?.state?.index);
-          setInsideTabIndex(e.data?.state?.index);
-        },
-      }}
-      initialRouteName={tabs[middleTabIndex]?.name}
-      // onTabPress={({index}) => onTabChange(index)}
-      screenOptions={() => ({
-        tabBarIndicatorStyle: {backgroundColor: 'transparent'},
-        tabBarShowLabel: false,
-        // tabBarContentContainerStyle: {height: 0},
-      })}>
-      {tabs?.map((tab, index) => (
-        <TopTab.Screen key={index} name={tab?.name}>
-          {() => (
-            <TransactionSummary
-              // insideTabIndex={insideTabIndex}
-              {...tab.props}
-            />
-          )}
-        </TopTab.Screen>
-      ))}
-    </TopTab.Navigator>
-  );
-}
-
-// Tabs
-function TopTabs({
-  tabs,
-  setCurrentTabIndex,
-  setInsideTabIndex,
-  currentTabIndex,
-  middleTabIndex, // insideTabIndex,
-}: ScreenTabType) {
-  return (
-    <TopTab.Navigator
-      initialRouteName={'Monthly'}
-      screenListeners={{
-        state: e => {
-          // Do something with the state
-          // console.log('Page Index: ', e.data?.state?.index);
-          setCurrentTabIndex(e.data?.state?.index);
-        },
-      }}
-      screenOptions={() => ({
-        tabBarIndicatorStyle: {
-          backgroundColor: 'red',
-          // height: 1,
-        },
-        tabBarContentContainerStyle: {
-          width: 'auto',
-          alignItems: 'center',
-          justifyContent: 'space-around',
-        },
-        tabBarLabelStyle: {
-          width: 'auto',
-          marginHorizontal: 0,
-          fontSize: 14,
-          fontWeight: '500',
-          textTransform: 'none',
-        },
-        tabBarScrollEnabled: false,
-      })}>
-      {/* <TopTab.Screen name="MONTHLY" component={TransactScreenComponent} /> */}
-      <TopTab.Screen name={'Monthly'}>
-        {() =>
-          currentTabIndex === 0 && (
-            <TransactScreenComponent
-              tabs={tabs}
-              setInsideTabIndex={setInsideTabIndex}
-              middleTabIndex={middleTabIndex}
-              // insideTabIndex={insideTabIndex}
-            />
-          )
-        }
-      </TopTab.Screen>
-      <TopTab.Screen name={'Weekly'}>
-        {() =>
-          currentTabIndex === 1 && (
-            <TransactScreenComponent
-              tabs={tabs}
-              setInsideTabIndex={setInsideTabIndex}
-              middleTabIndex={middleTabIndex}
-              // insideTabIndex={insideTabIndex}
-            />
-          )
-        }
-      </TopTab.Screen>
-      <TopTab.Screen name={'Daily'}>
-        {() =>
-          currentTabIndex === 2 && (
-            <TransactScreenComponent
-              tabs={tabs}
-              setInsideTabIndex={setInsideTabIndex}
-              middleTabIndex={middleTabIndex}
-              // insideTabIndex={insideTabIndex}
-            />
-          )
-        }
-      </TopTab.Screen>
-      <TopTab.Screen name={'Custom'}>
-        {() =>
-          currentTabIndex === 3 && (
-            <TransactScreenComponent
-              tabs={tabs}
-              setInsideTabIndex={setInsideTabIndex}
-              middleTabIndex={middleTabIndex}
-              // insideTabIndex={insideTabIndex}
-            />
-          )
-        }
-      </TopTab.Screen>
-      <TopTab.Screen name={'Export'}>
-        {() =>
-          currentTabIndex === 4 && (
-            <TransactScreenComponent
-              tabs={tabs}
-              setInsideTabIndex={setInsideTabIndex}
-              middleTabIndex={middleTabIndex}
-              // insideTabIndex={insideTabIndex}
-            />
-          )
-        }
-      </TopTab.Screen>
-    </TopTab.Navigator>
-  );
-}
-
-// Header
-function HeaderSummary({total, totalIncome, totalExpense}: HeaderSummaryType) {
-  return (
-    <View style={styles.assetsContainer}>
-      <View style={styles.assetBox}>
-        <Text style={{fontSize: height * 0.02}}>Income</Text>
-        <Text
-          style={{color: 'blue', fontSize: height * 0.018, fontWeight: 'bold'}}>
-          {currencyFormatter(+totalIncome, {})}
-        </Text>
-      </View>
-      <View style={styles.assetBox}>
-        <Text style={{fontSize: height * 0.02}}>Expense</Text>
-        <Text
-          style={{color: 'red', fontSize: height * 0.018, fontWeight: 'bold'}}>
-          {currencyFormatter(+totalExpense, {})}
-        </Text>
-      </View>
-      <View style={styles.assetBox}>
-        <Text style={{fontSize: height * 0.02}}>Total</Text>
-        <Text style={{fontSize: height * 0.018, fontWeight: 'bold'}}>
-          {currencyFormatter(+total, {})}
-        </Text>
-      </View>
-    </View>
-  );
-}
 
 // initialize tabs component
 const initTabsComponent = Array.from({length: 3}, (_, i) => ({
@@ -244,7 +59,7 @@ const TransactionsScreen = ({navigation}: Props) => {
     useState<any[]>(initTabsComponent);
 
   const [currentTabIndex, setCurrentTabIndex] = useState<number>(0);
-  const [insideTabIndex, setInsideTabIndex] = useState<number>(0);
+  // const [insideTabIndex, setInsideTabIndex] = useState<number>(0);
   const [middleTabIndex, setMiddleTabIndex] = useState<number | undefined>(
     Math.floor(+initTabsComponent / 2),
   );
@@ -344,7 +159,7 @@ const TransactionsScreen = ({navigation}: Props) => {
       onPanResponderMove: (_, gestureState) => {
         // Detect left or right swipe based on horizontal movement
         // You can perform any additional logic here if needed
-        const SWIPE_THRESHOLD = Dimensions.get('window').width * 0.5;
+        const SWIPE_THRESHOLD = Dimensions.get('window').width * 0.2;
         const swipeLeft = gestureState.dx < -SWIPE_THRESHOLD;
         const swipeRight = gestureState.dx > SWIPE_THRESHOLD;
 
@@ -451,90 +266,16 @@ const TransactionsScreen = ({navigation}: Props) => {
       //   backgroundColor: '#b1fd90',
       // },
       headerRight: () => (
-        <>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'flex-end',
-              marginLeft: width / 2,
-              width: width * 0.5,
-              marginTop: height * 0.032,
-              // backgroundColor: '#fed8d8',
-            }}>
-            {/* {!transactCtx.customPressed && !transactCtx.exportPressed && ( */}
-            {currentTabIndex !== 3 && currentTabIndex !== 4 && (
-              <Pressable
-                style={({pressed}) => pressed && styles.pressed}
-                onPress={() => showMonthYearListMenuHandler()}>
-                <View
-                  style={{
-                    marginRight: 25,
-                    // marginTop: 20,
-                    paddingHorizontal: 5,
-                    paddingVertical: 3.5,
-                    borderWidth: 0.6,
-                    borderColor: 'grey',
-                  }}>
-                  <Text>{`${duration} ${
-                    currentTabIndex !== 0 ? year : ''
-                  }`}</Text>
-                </View>
-              </Pressable>
-            )}
-
-            {/* {(transactCtx.customPressed || transactCtx.exportPressed) && ( */}
-            {(currentTabIndex === 3 || currentTabIndex === 4) && (
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  width: width * 0.5,
-                  marginRight: width / 8,
-                  // borderWidth: 0.6,
-                  // borderColor: 'lightgrey',
-                }}>
-                <Pressable
-                  style={({pressed}) => pressed && styles.pressed}
-                  onPress={onFromDateHandler}>
-                  <View style={{borderWidth: 0.6, borderColor: 'lightgrey'}}>
-                    <Text>
-                      {moment(transactCtx.fromDate).format('YYYY-MM-DD')}
-                    </Text>
-                  </View>
-                </Pressable>
-                <Pressable
-                  style={({pressed}) => pressed && styles.pressed}
-                  onPress={onToDateHandler}>
-                  <View style={{borderWidth: 0.6, borderColor: 'lightgrey'}}>
-                    {/* <Text>2022-09-30</Text> */}
-                    <Text>
-                      {moment(transactCtx.toDate).format('YYYY-MM-DD')}
-                    </Text>
-                  </View>
-                </Pressable>
-              </View>
-            )}
-
-            <Pressable
-              style={({pressed}) => pressed && styles.pressed}
-              onPress={() => navigation.navigate('Stats')}>
-              <View style={{marginRight: 20}}>
-                <Ionicons
-                  name="stats-chart-outline"
-                  size={20}
-                  color="#0047b8"
-                />
-              </View>
-            </Pressable>
-          </View>
-
-          {/* <Tabs
-            TabsDataObject={TabsDataObject}
-            onItemPress={onItemPress}
-            indicatorIndex={indicatorIndex}
-          /> */}
-        </>
+        <HeaderRight
+          currentTabIndex={currentTabIndex}
+          // navigation={undefined}
+          duration={duration}
+          month={month}
+          year={year}
+          showMonthYearListMenuHandler={showMonthYearListMenuHandler}
+          onFromDateHandler={onFromDateHandler}
+          onToDateHandler={onToDateHandler}
+        />
       ),
     });
   }, [
@@ -543,11 +284,6 @@ const TransactionsScreen = ({navigation}: Props) => {
     year,
     // month,
     isModalVisible,
-    // transactCtx.monthlyPressed,
-    // transactCtx.weeklyPressed,
-    // transactCtx.dailyPressed,
-    // transactCtx.customPressed,
-    // transactCtx.exportPressed,
     currentTabIndex,
     transactCtx.fromDate,
     transactCtx.toDate,
@@ -977,7 +713,7 @@ const TransactionsScreen = ({navigation}: Props) => {
     <View {...panResponder.panHandlers} style={styles.container}>
       <TopTabs
         setCurrentTabIndex={setCurrentTabIndex}
-        setInsideTabIndex={setInsideTabIndex}
+        // setInsideTabIndex={setInsideTabIndex}
         currentTabIndex={Number(currentTabIndex)}
         middleTabIndex={Number(middleTabIndex)}
         // insideTabIndex={Number(insideTabIndex)}
@@ -986,7 +722,7 @@ const TransactionsScreen = ({navigation}: Props) => {
         month={+month}
       />
 
-      <HeaderSummary
+      <TransactHeaderSummary
         total={total}
         totalIncome={totalIncome}
         totalExpense={totalExpense}
@@ -1031,35 +767,13 @@ const styles = StyleSheet.create({
     flex: 1,
     width: width,
   },
-  assetsContainer: {
-    width: width,
-    height: height * 0.07,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginTop: height * 0.075,
 
-    backgroundColor: 'white',
-    borderColor: '#b8b8b8',
-    borderBottomWidth: 0.4,
-
-    position: 'absolute',
-  },
-  assetBox: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  pressed: {
-    opacity: 0.65,
-  },
+  // pressed: {
+  //   opacity: 0.65,
+  // },
 });
 
 // ============================ TYPE =====================================
 type Props = {
   navigation: TransactionNavigationProp;
 };
-
-interface HeaderSummaryType {
-  total: number;
-  totalIncome: number;
-  totalExpense: number;
-}

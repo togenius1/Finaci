@@ -24,8 +24,8 @@ if (MONTH < 10) {
   MONTH = +`0${MONTH}`;
 }
 const initFromDateString = `${moment().year()}-${MONTH}-01`;
-const initFromDate = moment(initFromDateString).format('YYYY-MM-DD');
-const initToDate = moment().format('YYYY-MM-DD');
+// const initFromDate = moment(initFromDateString).format('YYYY-MM-DD');
+// const initToDate = moment().format('YYYY-MM-DD');
 
 // Ads variable
 // const adUnitId = __DEV__
