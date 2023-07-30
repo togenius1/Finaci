@@ -1,5 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useContext, useEffect, useRef, useState} from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   Dimensions,
   PanResponder,
@@ -37,6 +44,7 @@ interface ScreenType {
   // currentTabIndex: number;
   // year: number;
   middleTabIndex: number;
+  // insideTabIndex: number;
 }
 
 interface ScreenTabType {
@@ -47,6 +55,7 @@ interface ScreenTabType {
   year: number;
   month: number;
   middleTabIndex: number;
+  // insideTabIndex: number;
 }
 
 const TopTab = createMaterialTopTabNavigator();
@@ -55,7 +64,7 @@ const TopTab = createMaterialTopTabNavigator();
 function TransactScreenComponent({
   tabs,
   setInsideTabIndex,
-  middleTabIndex,
+  middleTabIndex, // insideTabIndex,
 }: ScreenType) {
   return (
     <TopTab.Navigator
@@ -75,7 +84,12 @@ function TransactScreenComponent({
       })}>
       {tabs?.map((tab, index) => (
         <TopTab.Screen key={index} name={tab?.name}>
-          {() => <TransactionSummary {...tab.props} />}
+          {() => (
+            <TransactionSummary
+              // insideTabIndex={insideTabIndex}
+              {...tab.props}
+            />
+          )}
         </TopTab.Screen>
       ))}
     </TopTab.Navigator>
@@ -88,7 +102,7 @@ function TopTabs({
   setCurrentTabIndex,
   setInsideTabIndex,
   currentTabIndex,
-  middleTabIndex,
+  middleTabIndex, // insideTabIndex,
 }: ScreenTabType) {
   return (
     <TopTab.Navigator
@@ -127,6 +141,7 @@ function TopTabs({
               tabs={tabs}
               setInsideTabIndex={setInsideTabIndex}
               middleTabIndex={middleTabIndex}
+              // insideTabIndex={insideTabIndex}
             />
           )
         }
@@ -138,6 +153,7 @@ function TopTabs({
               tabs={tabs}
               setInsideTabIndex={setInsideTabIndex}
               middleTabIndex={middleTabIndex}
+              // insideTabIndex={insideTabIndex}
             />
           )
         }
@@ -149,6 +165,7 @@ function TopTabs({
               tabs={tabs}
               setInsideTabIndex={setInsideTabIndex}
               middleTabIndex={middleTabIndex}
+              // insideTabIndex={insideTabIndex}
             />
           )
         }
@@ -160,6 +177,7 @@ function TopTabs({
               tabs={tabs}
               setInsideTabIndex={setInsideTabIndex}
               middleTabIndex={middleTabIndex}
+              // insideTabIndex={insideTabIndex}
             />
           )
         }
@@ -171,6 +189,7 @@ function TopTabs({
               tabs={tabs}
               setInsideTabIndex={setInsideTabIndex}
               middleTabIndex={middleTabIndex}
+              // insideTabIndex={insideTabIndex}
             />
           )
         }
@@ -227,9 +246,11 @@ const TransactionsScreen = ({navigation}: Props) => {
 
   const [currentTabIndex, setCurrentTabIndex] = useState<number>(0);
   const [insideTabIndex, setInsideTabIndex] = useState<number>(0);
-  const [middleTabIndex, setMiddleTabIndex] = useState<number | undefined>(0);
+  const [middleTabIndex, setMiddleTabIndex] = useState<number | undefined>(
+    Math.floor(+initTabsComponent / 2),
+  );
 
-  const [direction, setDirection] = useState<string>('');
+  const [direction, setDirection] = useState<string | null>(null);
   const [duration, setDuration] = useState<string | null>(
     moment().format('MMM'),
   );
@@ -252,6 +273,95 @@ const TransactionsScreen = ({navigation}: Props) => {
 
   const transactCtx = useContext(TransactContext);
 
+  // Swipe Left
+  const handleSwipeLeft = useCallback((tabIndex: number) => {
+    if (tabIndex === 0) {
+      setYear(prev => String(+prev + 1));
+    }
+    if (tabIndex === 1) {
+      setMonth(prev => {
+        let newMonth = +prev + 1;
+        if (newMonth > 12) {
+          newMonth = (newMonth % 13) + 1;
+        }
+
+        return String(newMonth);
+      });
+    }
+
+    if (tabIndex === 2) {
+      setMonth(prev => {
+        let newMonth = +prev + 1;
+
+        if (newMonth > 12) {
+          newMonth = (newMonth % 13) + 1;
+        }
+
+        return String(newMonth);
+      });
+    }
+  }, []);
+
+  // Swipe Right
+  const handleSwipeRight = useCallback((tabIndex: number) => {
+    if (tabIndex === 0) {
+      setYear(prev => String(Math.abs(+prev - 1)));
+    }
+    if (tabIndex === 1) {
+      setMonth(prev => {
+        let newMonth = Math.abs(+prev - 1);
+        if (newMonth > 12) {
+          newMonth = (newMonth % 13) + 1;
+        }
+        return String(newMonth);
+      });
+    }
+    if (tabIndex === 2) {
+      setMonth(prev => {
+        let newMonth = Math.abs(+prev - 1);
+
+        if (newMonth > 12) {
+          newMonth = (newMonth % 13) + 1;
+        }
+        return String(newMonth);
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (direction === 'left') {
+      // Logic for the first tab
+      handleSwipeLeft(currentTabIndex);
+    } else if (direction === 'right') {
+      // Logic for the second tab
+      handleSwipeRight(currentTabIndex);
+    }
+  }, [direction, handleSwipeLeft, handleSwipeRight]);
+
+  // Detect swipe screen: Left and Right
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onPanResponderMove: (_, gestureState) => {
+        // Detect left or right swipe based on horizontal movement
+        // You can perform any additional logic here if needed
+        const SWIPE_THRESHOLD = Dimensions.get('window').width * 0.5;
+        const swipeLeft = gestureState.dx < -SWIPE_THRESHOLD;
+        const swipeRight = gestureState.dx > SWIPE_THRESHOLD;
+
+        if (swipeLeft) {
+          setDirection('left');
+        } else if (swipeRight) {
+          setDirection('right');
+        }
+      },
+      onPanResponderEnd: (_, gestureState) => {
+        // Reset gesture state after swipe ends
+        setDirection(null); // Reset direction after swipe ends
+      },
+    }),
+  ).current;
+
   // total effect
   useEffect(() => {
     totalHandler();
@@ -269,14 +379,16 @@ const TransactionsScreen = ({navigation}: Props) => {
   useEffect(() => {
     const middleTabIndex = Math.floor(tabsComponentsArr?.length / 2);
     setMiddleTabIndex(middleTabIndex);
-  }, []);
+  }, [year, month]);
 
   useEffect(() => {
-    const tabsComponent = Array.from({length: 21}, (_, i) => ({
-      name: `Sc ${i}`,
+    const scr_name = Math.random() * 100;
+    const tabsComponent = Array.from({length: 1}, (_, i) => ({
+      name: `Sc ${scr_name}`,
       props: {num: `${i}`},
     }));
-    setTabsComponentsArr(tabsComponent);
+
+    setTabsComponentsArr([...tabsComponentsArr, ...tabsComponent]);
   }, [year, month]);
 
   // Load ads
@@ -447,42 +559,6 @@ const TransactionsScreen = ({navigation}: Props) => {
     onTabSetup();
   }, [currentTabIndex]);
 
-  useEffect(() => {
-    if (direction === 'left') {
-      // Logic for the first tab
-      handleSwipeLeft();
-    } else if (direction === 'right') {
-      // Logic for the second tab
-      handleSwipeRight();
-    }
-  }, [insideTabIndex]);
-
-  // Detect swipe screen: Left and Right
-  const panResponder = useRef(
-    PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onPanResponderMove: (_, gestureState) => {
-        // Detect left or right swipe based on horizontal movement
-      },
-      onPanResponderEnd: (_, gestureState) => {
-        // Reset gesture state after swipe ends
-        // You can perform any additional logic here if needed
-        const swipeLeft = gestureState.dx < -50;
-        const swipeRight = gestureState.dx > 50;
-
-        if (swipeLeft) {
-          // Swipe left, decrease the month by one
-          // handleSwipeLeft();
-          setDirection('left');
-        } else if (swipeRight) {
-          // Swipe right, increase the month by one
-          // handleSwipeRight();
-          setDirection('right');
-        }
-      },
-    }),
-  ).current;
-
   // Tab setup
   const onTabSetup = () => {
     if (currentTabIndex === 0) {
@@ -624,22 +700,27 @@ const TransactionsScreen = ({navigation}: Props) => {
       Month = `0${Month}`;
     }
 
-    let currentDate = moment().date();
-    if (currentDate < 10) {
-      currentDate = +`0${currentDate}`;
-    }
-    const date = moment(`${year}-${Month}-${currentDate}`).format('YYYY-MM-DD');
+    // let currentDate = moment().date();
+    // if (currentDate < 10) {
+    //   currentDate = +`0${currentDate}`;
+    // }
 
     const daysInMonth = moment(
       moment().format(`YYYY-${Month}`),
       'YYYY-MM',
     ).daysInMonth();
+
+    const date = moment(`${year}-${Month}-${daysInMonth}`).format('YYYY-MM-DD');
+
+    console.log('date: ', date);
+
     const fromdate = moment(`${year}-${Month}-01`).format('YYYY-MM-DD');
     const todate = moment(`${year}-${Month}-${daysInMonth}`).format(
       'YYYY-MM-DD',
     );
 
     // typeof duration === 'number'
+
     setDuration(moment.monthsShort(moment(date).month()));
     // : '';
 
@@ -706,6 +787,15 @@ const TransactionsScreen = ({navigation}: Props) => {
     let today = moment().date();
     if (+today < 10) {
       today = +`0${today}`;
+    }
+
+    const daysInMonth = moment(
+      moment().format(`YYYY-${MONTH}`),
+      'YYYY-MM',
+    ).daysInMonth();
+
+    if (today > daysInMonth) {
+      today = daysInMonth;
     }
 
     const fromdate = moment(`${year}-${MONTH}-01`).format('YYYY-MM-DD');
@@ -884,61 +974,6 @@ const TransactionsScreen = ({navigation}: Props) => {
     }
   };
 
-  // Swipe Left
-  const handleSwipeLeft = () => {
-    if (currentTabIndex === 0) {
-      setYear(prev => String(+prev + 1));
-    }
-    if (currentTabIndex === 1) {
-      setMonth(prev => {
-        let newMonth = +prev + 1;
-        if (newMonth > 12) {
-          newMonth = (newMonth % 13) + 1;
-        }
-
-        return String(newMonth);
-      });
-    }
-
-    if (currentTabIndex === 2) {
-      setMonth(prev => {
-        let newMonth = +prev + 1;
-
-        if (newMonth > 12) {
-          newMonth = (newMonth % 13) + 1;
-        }
-
-        return String(newMonth);
-      });
-    }
-  };
-
-  // Swipe Right
-  const handleSwipeRight = () => {
-    if (currentTabIndex === 0) {
-      setYear(prev => String(Math.abs(+prev - 1)));
-    }
-    if (currentTabIndex === 1) {
-      setMonth(prev => {
-        let newMonth = Math.abs(+prev - 1);
-        if (newMonth > 12) {
-          newMonth = (newMonth % 13) + 1;
-        }
-        return String(newMonth);
-      });
-    }
-    if (currentTabIndex === 2) {
-      setMonth(prev => {
-        let newMonth = Math.abs(+prev - 1);
-
-        if (newMonth > 12) {
-          newMonth = (newMonth % 13) + 1;
-        }
-        return String(newMonth);
-      });
-    }
-  };
-
   return (
     <View {...panResponder.panHandlers} style={styles.container}>
       <TopTabs
@@ -946,6 +981,7 @@ const TransactionsScreen = ({navigation}: Props) => {
         setInsideTabIndex={setInsideTabIndex}
         currentTabIndex={Number(currentTabIndex)}
         middleTabIndex={Number(middleTabIndex)}
+        // insideTabIndex={Number(insideTabIndex)}
         tabs={tabsComponentsArr}
         year={+year}
         month={+month}

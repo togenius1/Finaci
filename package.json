@@ -1,6 +1,6 @@
 {
   "name": "finner",
-  "version": "1.2.4",
+  "version": "1.2.7",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -49,6 +49,7 @@
     "react-native-tab-view": "^3.5.2",
     "react-native-vector-icons": "^10.0.0",
     "react-native-version": "^4.0.0",
+    "react-native-version-check": "^3.4.7",
     "react-redux": "^8.1.1",
     "redux-persist": "^6.0.0",
     "tweetnacl": "^1.0.3",

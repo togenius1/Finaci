@@ -216,6 +216,6 @@ type Props = {
   setIsModalVisible: (value: boolean) => void;
   year: number;
   month: number;
-  setYear: Dispatch<SetStateAction<string | null>>;
+  setYear: React.Dispatch<React.SetStateAction<number>>;
   onMYSelectedHandler: (value: any) => void;
 };

@@ -1,35 +1,70 @@
 import {Pressable, StyleSheet, Text, View} from 'react-native';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import moment from 'moment';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 
-// import TimeLineComponent from '../components/Graph/TimeLineComponent';
-import Tabs from '../components/UI/Tabs';
 import LineChart from '../components/Graph/LineChart';
 import MonthYearList from '../components/Menu/MonthYearList';
 import {StatsNavigationProp} from '../types';
 import {useAppSelector} from '../hooks';
-import {useFocusEffect} from '@react-navigation/native';
 
 // const {width, height} = Dimensions.get('window');
 
-const dataTabsObject = {
-  // barchart: 'BarChart',
-  // budget: 'Budgets',
-  expense: 'Expense',
-  income: 'Income',
-};
+const TopTab = createMaterialTopTabNavigator();
 
-// const initFromDate = `${moment().year()}-${moment().month() + 1}-01`;
-// const initFromDate = moment().startOf('year').format('YYYY-MM-DD');
-const initToDate = moment().format('YYYY-MM-DD');
+function TopTabs({
+  indicatorIndex,
+  RenderExpenseTab,
+  RenderIncomeTab,
+  setIndicatorIndex,
+}: ScreenTabType) {
+  return (
+    <TopTab.Navigator
+      initialRouteName={'Monthly'}
+      screenListeners={{
+        state: e => {
+          // Do something with the state
+          // console.log('Page Index: ', e.data?.state?.index);
+          setIndicatorIndex(e.data?.state?.index);
+        },
+      }}
+      screenOptions={() => ({
+        // tabBarIndicatorStyle: {backgroundColor: 'red'},
+        // tabBarShowLabel: false,
+        tabBarContentContainerStyle: {
+          width: 'auto',
+          alignItems: 'center',
+          justifyContent: 'space-around',
+        },
+        tabBarLabelStyle: {
+          width: 'auto',
+          marginHorizontal: 0,
+          fontSize: 12,
+          fontWeight: '600',
+        },
+        // tabBarItemStyle: {
+        //   backgroundColor: 'red',
+        // },
+        tabBarScrollEnabled: false,
+      })}>
+      {/* <TopTab.Screen name="MONTHLY" component={TransactScreenComponent} /> */}
+      <TopTab.Screen name={'Expense'}>
+        {() => indicatorIndex === 0 && <RenderExpenseTab />}
+      </TopTab.Screen>
+      <TopTab.Screen name={'Income'}>
+        {() => indicatorIndex === 1 && <RenderIncomeTab />}
+      </TopTab.Screen>
+    </TopTab.Navigator>
+  );
+}
 
 const HeaderRightComponent = ({
-  indicatorIndex,
+  // indicatorIndex,
   year,
-  month,
+  // month,
   setIsModalVisible,
 }: HeaderRight) => {
-  const monthName = moment.monthsShort(+month - 1);
+  // const monthName = moment.monthsShort(+month - 1);
 
   return (
     <View>
@@ -58,54 +93,22 @@ const StatsScreen = ({navigation}: Props) => {
   const dataLoaded = useAppSelector(store => store);
   // const navigation = useNavigation();
 
-  const expenseData = dataLoaded?.expenses?.expenses;
+  // const expenseData = dataLoaded?.expenses?.expenses;
   const monthlyTransactsData = dataLoaded?.monthlyTransacts?.monthlyTransacts;
 
-  const [fromDate, setFromDate] = useState<string | null>();
-  const [toDate, setToDate] = useState<string | null>(initToDate);
+  // const [fromDate, setFromDate] = useState<string | null>();
+  // const [toDate, setToDate] = useState<string | null>(initToDate);
   const [indicatorIndex, setIndicatorIndex] = useState<number | undefined>(0);
   const [year, setYear] = useState<number>(moment().year());
   const [month, setMonth] = useState<number>(moment().month() + 1);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   // const [duration, setDuration] = useState(moment().year());
 
-  // useEffect when focus
-  useFocusEffect(
-    useCallback(() => {
-      // alert('Screen was focused');
-      // Do something when the screen is focused
-
-      return () => {
-        // alert('Screen was unfocused');
-        // Do something when the screen is unfocused
-        // Useful for cleanup functions
-        setIndicatorIndex(0);
-      };
-    }, []),
-  );
-
-  // Item Tab Index
-  const onItemPress = useCallback((itemIndex: number) => {
-    setIndicatorIndex(itemIndex);
-    if (itemIndex === 0) {
-      setFromToDateExpenseIncomeHandler();
-    }
-    if (itemIndex === 1) {
-      setFromToDateExpenseIncomeHandler();
-    }
-    if (itemIndex === 2) {
-      setFromToDateExpenseIncomeHandler();
-    }
-  }, []);
-
   useEffect(() => {
+    // setIndicatorIndex(0);
     // onMonthYearSelectedHandler(moment().month());
     onMonthYearSelectedHandler(moment().year());
   }, []);
-
-  useEffect(() => {
-    setFromToDateExpenseIncomeHandler();
-  }, [year]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -113,19 +116,13 @@ const StatsScreen = ({navigation}: Props) => {
       headerRight: () => (
         <HeaderRightComponent
           year={year}
-          month={month}
-          indicatorIndex={indicatorIndex}
+          // month={month}
+          // indicatorIndex={Number(indicatorIndex)}
           setIsModalVisible={setIsModalVisible}
         />
       ),
     });
-    // if (indicatorIndex === 1 || indicatorIndex === 2) {
-    //   setFromToDateExpenseIncomeHandler();
-    // }
-    // if (indicatorIndex === 1 || indicatorIndex === 2) {
-    setFromToDateExpenseIncomeHandler();
-    // }
-  }, [year, month, indicatorIndex]);
+  }, [year, indicatorIndex]);
 
   // Filter Expense Data
   const filteredDataExpense = monthlyTransactsData?.filter(
@@ -137,15 +134,6 @@ const StatsScreen = ({navigation}: Props) => {
     d => +moment(d?.date).year() === year,
   );
 
-  // Filter Expense Data
-  // const filteredDataTabExpense = expenseData?.filter(
-  //   expense =>
-  //     moment(expense?.date).format('YYYY-MM-DD') >=
-  //       moment(fromDate).format('YYYY-MM-DD') &&
-  //     moment(expense?.date).format('YYYY-MM-DD') <=
-  //       moment(toDate).format('YYYY-MM-DD'),
-  // );
-
   // Set Month Year
   function onMonthYearSelectedHandler(time) {
     let fromdate;
@@ -153,59 +141,16 @@ const StatsScreen = ({navigation}: Props) => {
     let month;
 
     const mm = +moment().month(time).format('MM');
-    const daysInMonth = moment(moment().format(`${year}-${mm}`)).daysInMonth();
+    // const daysInMonth = moment(moment().format(`${year}-${mm}`)).daysInMonth();
 
     // if (indicatorIndex === 1 || indicatorIndex === 2) {
     fromdate = moment(`${year}-01-01`).format('YYYY-MM-DD');
     todate = moment(`${year}-12-31`).format('YYYY-MM-DD');
     month = moment().month() + 1;
     setYear(time);
-    // }
-    // if (indicatorIndex === 0) {
-    //   fromdate = moment(`${year}-${mm}-01`).format('YYYY-MM-DD');
-    //   todate = moment(`${year}-${mm}-${daysInMonth}`).format('YYYY-MM-DD');
-    //   month = moment(fromdate).month() + 1;
-    // }
 
-    // setFromDate(fromdate);
-    // setToDate(todate);
-    setMonth(mm);
     setIsModalVisible(false);
   }
-
-  function setFromToDateExpenseIncomeHandler() {
-    if (year === moment().year()) {
-      // setFromDate(moment(`${year}-01-01`).format('YYYY-MM-DD'));
-      // setToDate(moment(`${year}-MM-DD`).format('YYYY-MM-DD'));
-    } else {
-      //   setFromDate(moment(`${year}-01-01`).format('YYYY-MM-DD'));
-      //   setToDate(moment(`${year}-12-31`).format('YYYY-MM-DD'));
-    }
-  }
-
-  const RenderTabs = () => {
-    return (
-      <View>
-        <Tabs
-          TabsDataObject={dataTabsObject}
-          onItemPress={onItemPress}
-          indicatorIndex={indicatorIndex}
-        />
-      </View>
-    );
-  };
-
-  // const RenderBudgetsTab = () => {
-  //   return (
-  //     <View style={{flex: 1}}>
-  //       <TimeLineComponent
-  //         data={filteredDataTabExpense}
-  //         fromDate={fromDate}
-  //         toDate={toDate}
-  //       />
-  //     </View>
-  //   );
-  // };
 
   const RenderExpenseTab = () => {
     return (
@@ -252,10 +197,12 @@ const StatsScreen = ({navigation}: Props) => {
 
   return (
     <View style={styles.container}>
-      <RenderTabs />
-      {/* {indicatorIndex === 0 && <RenderBudgetsTab />} */}
-      {indicatorIndex === 0 && <RenderExpenseTab />}
-      {indicatorIndex === 1 && <RenderIncomeTab />}
+      <TopTabs
+        indicatorIndex={Number(indicatorIndex)}
+        RenderExpenseTab={RenderExpenseTab}
+        RenderIncomeTab={RenderIncomeTab}
+        setIndicatorIndex={setIndicatorIndex}
+      />
 
       <MonthYearList
         // monthlyPressed={indicatorIndex !== 0 ? true : false}
@@ -290,8 +237,17 @@ type Props = {
 };
 
 type HeaderRight = {
-  indicatorIndex: number;
+  // indicatorIndex: number;
   year: number;
-  month: number;
-  setIsModalVisible: (value: boolean) => boolean;
+  // month: number;
+  setIsModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
 };
+
+// Top tap interface
+interface ScreenTabType {
+  // tabs: any[];
+  RenderExpenseTab: () => React.JSX.Element;
+  RenderIncomeTab: () => React.JSX.Element;
+  setIndicatorIndex: React.Dispatch<React.SetStateAction<number | undefined>>;
+  indicatorIndex: number;
+}

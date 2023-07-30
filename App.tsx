@@ -1,6 +1,8 @@
 import {
   ActivityIndicator,
+  Alert,
   Appearance,
+  Linking,
   LogBox,
   Platform,
   Pressable,
@@ -14,6 +16,8 @@ import {Amplify, Auth, DataStore, Hub} from 'aws-amplify';
 import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Purchases, {LOG_LEVEL} from 'react-native-purchases';
+import VersionCheck from 'react-native-version-check';
+import DeviceInfo from 'react-native-device-info';
 
 import {generateKeyPair, PRNG} from './util/crypto';
 import FinnerNavigator from './navigation/FinnerNavigator';
@@ -75,23 +79,45 @@ const App = () => {
   // const [localPrivateKey, setLocalPrivateKey] = useState<string | null>();
   const [showIndicator, setShowIndicator] = useState<boolean>(false);
 
-  // Global sign out
-  // useEffect(() => {
-  //   const cognitoidentityserviceprovider =
-  //     new AWS.CognitoIdentityServiceProvider();
-  //   const params = {
-  //     UserPoolId: 'ap-southeast-1_4aEG5mryg' /* required */,
-  //     Username: 'genius' /* required */,
-  //   };
+  const [latestVersion, setLatestVersion] = useState(null);
 
-  //   cognitoidentityserviceprovider.adminUserGlobalSignOut(
-  //     params,
-  //     function (err, data) {
-  //       if (err) console.log(err, err.stack); // an error occurred
-  //       else console.log(data); // successful response
-  //     },
-  //   );
-  // }, []);
+  useEffect(() => {
+    // Fetch the latest version from the Google Play Store
+    VersionCheck.getLatestVersion()
+      .then(version => {
+        setLatestVersion(version);
+      })
+      .catch(error => {
+        console.log('Error fetching latest version:', error);
+      });
+  }, []);
+
+  const currentVersion = DeviceInfo.getVersion();
+
+  useEffect(() => {
+    // Compare the current version with the latest version
+    if (latestVersion && currentVersion !== latestVersion) {
+      // Show a notification to update the app
+      Alert.alert(
+        'Update Available',
+        'A new version of the app is available. Please update to the latest version for the best experience.',
+        [
+          {
+            text: 'Update Now',
+            onPress: () => {
+              // Redirect the user to the Google Play Store
+              VersionCheck.getStoreUrl().then(url => {
+                // Open the store URL to the app's page in the Play Store
+                Linking.openURL(url);
+              });
+            },
+          },
+          {text: 'Later', style: 'cancel'},
+        ],
+        {cancelable: false},
+      );
+    }
+  }, [latestVersion, currentVersion]);
 
   // Check if authenticated user, Stay logged in.
   useEffect(() => {
@@ -361,40 +387,46 @@ const App = () => {
   const colorScheme = Appearance.getColorScheme();
 
   return (
-    <OverviewProvider>
-      <TransactProvider>
-        <StatusBar barStyle="light-content" />
-        <ActivityIndicator
-          size="large"
-          color="#0000ff"
-          animating={showIndicator}
-        />
-        <FinnerNavigator
-          isAuthenticated={isAuthenticated}
-          colorScheme={colorScheme}
-        />
+    <>
+      <OverviewProvider>
+        <TransactProvider>
+          <StatusBar barStyle="light-content" />
+          <ActivityIndicator
+            size="large"
+            color="#0000ff"
+            animating={showIndicator}
+          />
+          <FinnerNavigator
+            isAuthenticated={isAuthenticated}
+            colorScheme={colorScheme}
+          />
 
-        {isAuthenticated && !closedAds && (
-          <>
-            <Pressable
-              style={({pressed}) => pressed && styles.pressed}
-              onPress={() => closeAdsHandler()}>
-              <View style={styles.close}>
-                <MaterialCommunityIcons name="close" size={20} color={'grey'} />
-              </View>
-            </Pressable>
+          {isAuthenticated && !closedAds && (
+            <>
+              <Pressable
+                style={({pressed}) => pressed && styles.pressed}
+                onPress={() => closeAdsHandler()}>
+                <View style={styles.close}>
+                  <MaterialCommunityIcons
+                    name="close"
+                    size={20}
+                    color={'grey'}
+                  />
+                </View>
+              </Pressable>
 
-            <BannerAd
-              unitId={adUnitId}
-              size={BannerAdSize.BANNER}
-              requestOptions={{
-                requestNonPersonalizedAdsOnly: true,
-              }}
-            />
-          </>
-        )}
-      </TransactProvider>
-    </OverviewProvider>
+              <BannerAd
+                unitId={adUnitId}
+                size={BannerAdSize.BANNER}
+                requestOptions={{
+                  requestNonPersonalizedAdsOnly: true,
+                }}
+              />
+            </>
+          )}
+        </TransactProvider>
+      </OverviewProvider>
+    </>
   );
 };
 

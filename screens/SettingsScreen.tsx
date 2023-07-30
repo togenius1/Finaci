@@ -9,7 +9,8 @@ import {
   View,
 } from 'react-native';
 import React, {useState} from 'react';
-import {Auth, DataStore} from 'aws-amplify';
+import {Auth} from 'aws-amplify';
+import DeviceInfo from 'react-native-device-info';
 
 import CButton from '../components/UI/CButton';
 import {useAppDispatch, useAppSelector} from '../hooks';
@@ -99,6 +100,8 @@ const Settings = () => {
     // });
   };
 
+  const currentVersion = DeviceInfo.getVersion();
+
   return (
     <View style={styles.container}>
       {/* <View style={[styles.currency, styles.box]}>
@@ -147,6 +150,7 @@ const Settings = () => {
           <Text style={{color: 'blue'}}>togenius1@gmail.com</Text>
         </Pressable>
       </View>
+      <Text style={{fontSize: 11}}>{`Version: ${currentVersion}`}</Text>
     </View>
   );
 };
