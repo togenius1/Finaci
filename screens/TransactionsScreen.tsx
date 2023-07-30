@@ -3,7 +3,6 @@ import React, {
   useCallback,
   useContext,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -115,8 +114,10 @@ function TopTabs({
         },
       }}
       screenOptions={() => ({
-        // tabBarIndicatorStyle: {backgroundColor: 'red'},
-        // tabBarShowLabel: false,
+        tabBarIndicatorStyle: {
+          backgroundColor: 'red',
+          // height: 1,
+        },
         tabBarContentContainerStyle: {
           width: 'auto',
           alignItems: 'center',
@@ -125,12 +126,10 @@ function TopTabs({
         tabBarLabelStyle: {
           width: 'auto',
           marginHorizontal: 0,
-          fontSize: 11,
-          fontWeight: '400',
+          fontSize: 14,
+          fontWeight: '500',
+          textTransform: 'none',
         },
-        // tabBarItemStyle: {
-        //   backgroundColor: 'red',
-        // },
         tabBarScrollEnabled: false,
       })}>
       {/* <TopTab.Screen name="MONTHLY" component={TransactScreenComponent} /> */}
@@ -1037,7 +1036,7 @@ const styles = StyleSheet.create({
     height: height * 0.07,
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginTop: height * 0.07,
+    marginTop: height * 0.075,
 
     backgroundColor: 'white',
     borderColor: '#b8b8b8',
