@@ -45,8 +45,8 @@ const adUnitId = __DEV__
 
 const App = () => {
   // // Disable warnings for release app.
-  // LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message:
-  // LogBox.ignoreAllLogs(); // Ignore all log notifications: add
+  LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message:
+  LogBox.ignoreAllLogs(); // Ignore all log notifications: add
 
   const dispatch = useAppDispatch();
   const dataLoaded = useAppSelector(store => store);
@@ -108,7 +108,7 @@ const App = () => {
               // Redirect the user to the Google Play Store
               VersionCheck.getStoreUrl().then(url => {
                 // Open the store URL to the app's page in the Play Store
-                Linking.openURL(url);
+                handleSignOut(url);
               });
             },
           },
@@ -183,6 +183,17 @@ const App = () => {
   useEffect(() => {
     onCloseBannerAds();
   }, []);
+
+  // Update the latest version
+  const handleSignOut = async (url: string) => {
+    try {
+      await Auth.signOut(); // Sign out the user
+      Linking.openURL(url);
+      // Additional cleanup or navigation logic can be performed here
+    } catch (error) {
+      console.log('Error signing out: ', error);
+    }
+  };
 
   // Load Purchases
   const configPurchase = async () => {

@@ -1,5 +1,5 @@
 import {Pressable, StyleSheet, Text, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import moment from 'moment';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 
@@ -129,10 +129,30 @@ const StatsScreen = ({navigation}: Props) => {
     d => +moment(d?.date).year() === year,
   );
 
+  // Sort Expense Data
+  const getSortedState = data =>
+    [...data]?.sort((a, b) => moment(a.date).month() - moment(b.date).month());
+  const sortedFilteredExpense = useMemo(() => {
+    if (filteredDataExpense) {
+      return getSortedState(filteredDataExpense);
+    }
+    return filteredDataExpense;
+  }, [filteredDataExpense]);
+
   // data for expense line chart
   const filteredDataIncome = monthlyTransactsData?.filter(
     d => +moment(d?.date).year() === year,
   );
+
+    // Sort Income Data
+    const getSortedState2 = data =>
+    [...data]?.sort((a, b) => moment(a.date).month() - moment(b.date).month());
+  const sortedFilteredIncome = useMemo(() => {
+    if (filteredDataIncome) {
+      return getSortedState2(filteredDataIncome);
+    }
+    return filteredDataIncome;
+  }, [filteredDataIncome]);
 
   // Set Month Year
   function onMonthYearSelectedHandler(time) {
@@ -140,7 +160,7 @@ const StatsScreen = ({navigation}: Props) => {
     let todate;
     let month;
 
-    const mm = +moment().month(time).format('MM');
+    // const mm = +moment().month(time).format('MM');
     // const daysInMonth = moment(moment().format(`${year}-${mm}`)).daysInMonth();
 
     // if (indicatorIndex === 1 || indicatorIndex === 2) {
@@ -166,7 +186,7 @@ const StatsScreen = ({navigation}: Props) => {
 
         <LineChart
           type="expense"
-          lineChartData={filteredDataExpense}
+          lineChartData={sortedFilteredExpense}
           lineChartColor="red"
           circleColor="red"
         />
@@ -187,7 +207,7 @@ const StatsScreen = ({navigation}: Props) => {
         </View>
         <LineChart
           type="income"
-          lineChartData={filteredDataIncome}
+          lineChartData={sortedFilteredIncome}
           lineChartColor="#006057"
           circleColor="#006057"
         />

@@ -151,19 +151,17 @@ const TransactionsScreen = ({navigation}: Props) => {
       // Logic for the second tab
       handleSwipeRight(currentTabIndex);
     }
-  }, [direction, handleSwipeLeft, handleSwipeRight]);
+  }, [insideTabIndex, handleSwipeLeft, handleSwipeRight]);
 
   // Detect swipe screen: Left and Right
   const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
-      // onPanResponderMove: (_, gestureState) => {
-      //   // Detect left or right swipe based on horizontal movement
-      // },
-      onPanResponderRelease: (_, gestureState) => {
-        // Your function to be executed when the touch is released.
+      onPanResponderMove: (_, gestureState) => {
+        // Detect left or right swipe based on horizontal movement
         // You can perform any additional logic here if needed
-        const SWIPE_THRESHOLD = isTablet() ? width * 0.1 : width * 0.18;
+        // const SWIPE_THRESHOLD = isTablet() ? width * 0.1 : width * 0.1;
+        const SWIPE_THRESHOLD = width * 0.05;
         const swipeLeft = gestureState.dx < -SWIPE_THRESHOLD;
         const swipeRight = gestureState.dx > SWIPE_THRESHOLD;
 
@@ -171,13 +169,18 @@ const TransactionsScreen = ({navigation}: Props) => {
           setDirection('left');
         } else if (swipeRight) {
           setDirection('right');
+        } else {
+          setDirection(null);
         }
       },
-      
-      onPanResponderEnd: (_, gestureState) => {
-        // Reset gesture state after swipe ends
-        setDirection(null); // Reset direction after swipe ends
-      },
+      // onPanResponderRelease: (_, gestureState) => {
+      //   // Your function to be executed when the touch is released.
+      // },
+
+      // onPanResponderEnd: (_, gestureState) => {
+      // Reset gesture state after swipe ends
+      // setDirection(null); // Reset direction after swipe ends
+      // },
     }),
   ).current;
 

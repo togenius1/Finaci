@@ -1,5 +1,6 @@
 import {Dimensions, StyleSheet, View} from 'react-native';
 import React from 'react';
+import moment from 'moment';
 // import {useNavigation} from '@react-navigation/native';
 // import {v4 as uuidv4} from 'uuid';
 
@@ -12,16 +13,19 @@ import {
 // import IconButton from '../UI/iconButton';
 import IncomeList from './IncomeList';
 import {IncomeCategory} from '../../dummy/categoryItems';
+import {useAppSelector} from '../../hooks';
 
 type Props = {
-  data: any;
+  // data: any;
   fromDate: string;
   toDate: string;
 };
 
-const {width, height} = Dimensions.get('window');
+const {height} = Dimensions.get('window');
 
-const IncomeOutput = ({data, fromDate, toDate}: Props) => {
+const IncomeOutput = ({fromDate, toDate}: Props) => {
+  const dataLoaded = useAppSelector(store => store);
+  const data = dataLoaded?.incomes?.incomes;
   // let slices = [];
   // const incomeData = data;
   // const navigation = useNavigation();
@@ -29,8 +33,10 @@ const IncomeOutput = ({data, fromDate, toDate}: Props) => {
   // Filtered data: from date -to- to date
   const filteredData = data.filter(
     d =>
-      new Date(d.date) >= new Date(fromDate) &&
-      new Date(d.date) <= new Date(toDate),
+      moment(d.date).format('YYYY-MM-DD') >=
+        moment(fromDate).format('YYYY-MM-DD') &&
+      moment(d.date).format('YYYY-MM-DD') <=
+        moment(toDate).format('YYYY-MM-DD'),
   );
 
   // Summation for each category

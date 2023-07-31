@@ -12,7 +12,7 @@ import AddDetailsScreen from '../screens/AddDetailsScreen';
 
 import {GlobalStyles} from '../constants/styles';
 import {RootStackParamList} from '../types';
-import AccountsItem from '../components/Output/AccountsItem';
+// import AccountsItem from '../components/Output/AccountsItem';
 import RootNavigator from './RootNavigator';
 import MenuDrawer from './NavComponents/Drawer/MenuDrawer';
 import ExpensesDetailsScreen from '../screens/ExpensesDetailsScreen';
@@ -64,7 +64,7 @@ const FinnerNavigator = ({isAuthenticated, colorScheme}: Props) => {
               }}
             />
             <Stack.Screen name="AddDetails" component={AddDetailsScreen} />
-            <Stack.Screen name="AccountsItem" component={AccountsItem} />
+            {/* <Stack.Screen name="AccountsItem" component={AccountsItem} /> */}
             <Stack.Screen
               name="ExpensesDetails"
               component={ExpensesDetailsScreen}

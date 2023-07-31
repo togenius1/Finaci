@@ -8,10 +8,12 @@ import {max, min} from 'd3-array';
 
 // import {ExpenseCategory} from '../../../dummy/categoryItems';
 
-type Props = {};
+type Props = {
+  data: any[];
+};
 
 const {width, height} = Dimensions.get('window');
-const radius = width * 0.15;
+const radius = width * 0.11;
 
 const makePie = (data, type) => {
   const filteredData = data.map(data => data.percentage);
@@ -93,7 +95,7 @@ const PieChart = ({data, type}: Props) => {
               if (arc.value[i].percentage > 0.1) {
                 posB[0] = arc.radius * 0.45 * (midAngle < Math.PI ? 1 : -1);
               }
-              const cx = posC[0] * 2;
+              const cx = posC[0] * 3.1;
               const cy = posC[1] * 2;
 
               return (
@@ -125,18 +127,19 @@ const PieChart = ({data, type}: Props) => {
           const label = arc.value[i].title;
           const pct = arc.value[i].percentage * 100;
           const posC = arc.outerArcForLabelsPosition.centroid(arc);
-          const cx = posC[0] * 2.25;
+          const cx = posC[0] * 3.5;
           const cy = posC[1] * 2.25;
 
           return (
             <View
               key={`labelBox-${i}`}
               style={{
-                width: 80,
+                width: 100,
                 height: 35,
                 alignItems: 'center',
                 justifyContent: 'center',
                 position: 'absolute',
+                // backgroundColor: '#ecbebe',
                 transform: [
                   {
                     translateX: cx,
@@ -146,8 +149,8 @@ const PieChart = ({data, type}: Props) => {
                   },
                 ],
               }}>
-              <Text style={{fontSize: 12, color: '#000000'}}>{label}</Text>
-              <Text style={{fontSize: 12, color: '#000000'}}>
+              <Text style={{fontSize: 10, color: '#000000'}}>{label}</Text>
+              <Text style={{fontSize: 10, color: '#000000'}}>
                 {pct.toFixed(0)}%
               </Text>
             </View>
@@ -168,5 +171,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    // marginTop: 10,
   },
 });

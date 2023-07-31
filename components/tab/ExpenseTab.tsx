@@ -1,23 +1,23 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useContext} from 'react';
 
 import ExpenseOutput from '../Output/ExpenseOutput';
 // import {EXPENSES} from '../../dummy/dummy';
-import {useAppSelector} from '../../hooks';
+// import {useAppSelector} from '../../hooks';
 // import {ExpenseType} from '../../models/expense';
 // import {fetchExpensesData} from '../../store/expense-action';
 // import {ExpenseTabRouteProp} from '../../types';
 import OverviewContext from '../../store-context/overview-context';
 
-type Props = {
+// type Props = {
   // focusedTabIndex: number;
-};
+// };
 
-const ExpenseTab = ({}: Props) => {
+const ExpenseTab = ({}) => {
   // useEffect(() => {}, [focusedTabIndex]);
   // const dispatch = useAppDispatch();
-  const dataLoaded = useAppSelector(store => store);
+  // const dataLoaded = useAppSelector(store => store);
 
-  const expensesData = dataLoaded?.expenses?.expenses;
+  // const expensesData = dataLoaded?.expenses?.expenses;
 
   const overviewCtx = useContext(OverviewContext);
   const fromDate = overviewCtx?.fromDate;
@@ -25,7 +25,7 @@ const ExpenseTab = ({}: Props) => {
 
   return (
     <ExpenseOutput
-      data={expensesData}
+      // data={expensesData}
       fromDate={fromDate}
       toDate={toDate}
       // focusedTabIndex={focusedTabIndex}

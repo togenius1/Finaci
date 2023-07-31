@@ -94,7 +94,7 @@ interface HeaderRightType {
 }
 
 // Header Right
-function HeaderRightComponent({
+function OverviewHeader({
   fromDate,
   toDate,
   showCustomDate,
@@ -218,7 +218,7 @@ const OverviewScreen = ({navigation}: Props) => {
       headerTitleAlign: 'left',
       // headerTitleContainerStyle: {marginLeft: 0},
       headerRight: () => (
-        <HeaderRightComponent
+        <OverviewHeader
           fromDate={overviewCtx.fromDate}
           toDate={overviewCtx.toDate}
           showCustomDate={showCustomDate}

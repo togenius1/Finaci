@@ -1,577 +1,579 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  Dimensions,
-  FlatList,
-  Pressable,
-  Platform,
-} from 'react-native';
-import React, {useEffect, useState} from 'react';
-import moment from 'moment';
-import {v4 as uuidv4} from 'uuid';
+// import {
+//   View,
+//   Text,
+//   StyleSheet,
+//   Dimensions,
+//   FlatList,
+//   Pressable,
+//   Platform,
+// } from 'react-native';
+// import React, {useEffect, useState} from 'react';
+// import moment from 'moment';
+// import {v4 as uuidv4} from 'uuid';
 
-import {sumByCustomDate, sumTotalFunc} from '../../util/math';
-import MonthYearList from '../Menu/MonthYearList';
-import {AccountsItemNavigationType, AccountsItemRouteProp} from '../../types';
-import {currencyFormatter} from '../../util/currencyFormatter';
-import {AccountCategory, CashCategory} from '../../dummy/account';
-import {useAppSelector} from '../../hooks';
-import Menu from '../Menu/Menu';
-import DateTimePicker from 'react-native-modal-datetime-picker';
+// import {sumByCustomDate, sumTotalFunc} from '../../util/math';
+// import MonthYearList from '../Menu/MonthYearList';
+// import {AccountsItemNavigationType, AccountsItemRouteProp} from '../../types';
+// import {currencyFormatter} from '../../util/currencyFormatter';
+// import {AccountCategory, CashCategory} from '../../dummy/account';
+// import {useAppSelector} from '../../hooks';
+// import Menu from '../Menu/Menu';
+// import DateTimePicker from 'react-native-modal-datetime-picker';
 
-// CONSTANT
-const {width, height} = Dimensions.get('window');
+// // CONSTANT
+// const {width, height} = Dimensions.get('window');
 
-const HeaderRightComponent = ({
-  fromDate,
-  toDate,
-  showCustomDate,
-  fromDateClickedHandler,
-  toDateClickedHandler,
-  rightMenuClickedHandler,
-  showMonthYearListMenuHandler,
-}: HeaderRightComponentType) => {
-  const m = moment(fromDate).month();
-  const month = moment.monthsShort(m);
-  const year = moment(fromDate).year();
+// const HeaderRightComponent = ({
+//   fromDate,
+//   toDate,
+//   showCustomDate,
+//   fromDateClickedHandler,
+//   toDateClickedHandler,
+//   rightMenuClickedHandler,
+//   showMonthYearListMenuHandler,
+// }: HeaderRightComponentType) => {
+//   const m = moment(fromDate).month();
+//   const month = moment.monthsShort(m);
+//   const year = moment(fromDate).year();
 
-  return (
-    <View style={styles.headerRightContainer}>
-      <Pressable
-        style={({pressed}) => pressed && styles.pressed}
-        onPress={() => showMonthYearListMenuHandler()}>
-        {!showCustomDate ? (
-          <View
-            style={{
-              justifyContent: 'center',
-              alignItems: 'center',
-              // backgroundColor: '#ffd3d3',
-              marginRight: 25,
-            }}>
-            <Text style={{fontSize: 16, color: '#2a8aff'}}>
-              {month} {year}
-            </Text>
-          </View>
-        ) : (
-          ''
-        )}
-      </Pressable>
+//   return (
+//     <View style={styles.headerRightContainer}>
+//       <Pressable
+//         style={({pressed}) => pressed && styles.pressed}
+//         onPress={() => showMonthYearListMenuHandler()}>
+//         {!showCustomDate ? (
+//           <View
+//             style={{
+//               justifyContent: 'center',
+//               alignItems: 'center',
+//               // backgroundColor: '#ffd3d3',
+//               marginRight: 25,
+//             }}>
+//             <Text style={{fontSize: 16, color: '#2a8aff'}}>
+//               {month} {year}
+//             </Text>
+//           </View>
+//         ) : (
+//           ''
+//         )}
+//       </Pressable>
 
-      {showCustomDate && (
-        <>
-          <Pressable
-            style={({pressed}) => pressed && styles.pressed}
-            onPress={() => {
-              fromDateClickedHandler();
-            }}>
-            <View style={styles.customDate}>
-              <Text style={styles.customDateText}>{fromDate}</Text>
-            </View>
-          </Pressable>
-          <Pressable
-            style={({pressed}) => pressed && styles.pressed}
-            onPress={() => {
-              toDateClickedHandler();
-            }}>
-            <View style={styles.customDate}>
-              <Text style={styles.customDateText}>{toDate}</Text>
-            </View>
-          </Pressable>
-        </>
-      )}
+//       {showCustomDate && (
+//         <>
+//           <Pressable
+//             style={({pressed}) => pressed && styles.pressed}
+//             onPress={() => {
+//               fromDateClickedHandler();
+//             }}>
+//             <View style={styles.customDate}>
+//               <Text style={styles.customDateText}>{fromDate}</Text>
+//             </View>
+//           </Pressable>
+//           <Pressable
+//             style={({pressed}) => pressed && styles.pressed}
+//             onPress={() => {
+//               toDateClickedHandler();
+//             }}>
+//             <View style={styles.customDate}>
+//               <Text style={styles.customDateText}>{toDate}</Text>
+//             </View>
+//           </Pressable>
+//         </>
+//       )}
 
-      <Pressable
-        style={({pressed}) => pressed && styles.pressed}
-        onPress={() => rightMenuClickedHandler()}>
-        <View style={styles.headerRightMenu}>
-          <Text style={styles.headerMenuText}>
-            {showCustomDate ? 'Custom' : 'Monthly'}
-          </Text>
-        </View>
-      </Pressable>
-    </View>
-  );
-};
+//       <Pressable
+//         style={({pressed}) => pressed && styles.pressed}
+//         onPress={() => rightMenuClickedHandler()}>
+//         <View style={styles.headerRightMenu}>
+//           <Text style={styles.headerMenuText}>
+//             {showCustomDate ? 'Custom' : 'Monthly'}
+//           </Text>
+//         </View>
+//       </Pressable>
+//     </View>
+//   );
+// };
 
-function AccountsItem({navigation, route}: Props) {
-  const yyyy = `${moment(route?.params?.date).year()}`;
-  const mm = `${moment(route?.params?.date).month()}`;
-  // console.log('mm: ', mm);
+// function AccountsItem({navigation, route}: Props) {
+//   const yyyy = `${moment(route?.params?.date).year()}`;
+//   const mm = `${moment(route?.params?.date).month()}`;
+//   // console.log('mm: ', mm);
 
-  const initFromDate = `${yyyy}-0${mm + 1}-01`;
-  const initToDate = `${yyyy}-0${mm + 1}-${moment().date()}`;
+//   const initFromDate = `${yyyy}-0${mm + 1}-01`;
+//   const initToDate = `${yyyy}-0${mm + 1}-${moment().date()}`;
 
-  const [mode, setMode] = useState<string>('date');
-  const [fromDate, setFromDate] = useState<string>(initFromDate);
-  const [toDate, setToDate] = useState<string>(initToDate);
-  const [year, setYear] = useState<string>(yyyy);
-  const [month, setMonth] = useState<string>(mm);
-  const [toDateClicked, setToDateClicked] = React.useState<boolean>(false);
-  const [isDatePickerVisible, setDatePickerVisibility] =
-    React.useState<boolean>(false);
-  const [fromDateClicked, setFromDateClicked] = React.useState<boolean>(false);
-  const [showCustomDate, setShowCustomDate] = React.useState<boolean>(false);
-  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+//   const [mode, setMode] = useState<string>('date');
+//   const [fromDate, setFromDate] = useState<string>(initFromDate);
+//   const [toDate, setToDate] = useState<string>(initToDate);
+//   const [year, setYear] = useState<string>(yyyy);
+//   const [month, setMonth] = useState<string>(mm);
+//   const [toDateClicked, setToDateClicked] = React.useState<boolean>(false);
+//   const [isDatePickerVisible, setDatePickerVisibility] =
+//     React.useState<boolean>(false);
+//   const [fromDateClicked, setFromDateClicked] = React.useState<boolean>(false);
+//   const [showCustomDate, setShowCustomDate] = React.useState<boolean>(false);
+//   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+//   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
-  // DATA from storage
-  const expensesData = useAppSelector(
-    state => state.expenses.expenses,
-    // shallowEqual,
-  );
-  const incomesData = useAppSelector(
-    state => state.incomes.incomes,
-    // shallowEqual,
-  );
-  const cashData = useAppSelector(
-    state => state.cashAccounts.cashAccounts,
-    // shallowEqual,
-  );
-  const accountsData = useAppSelector(
-    state => state.accounts.accounts,
-    // shallowEqual,
-  );
+//   // DATA from storage
+//   const expensesData = useAppSelector(
+//     state => state.expenses.expenses,
+//     // shallowEqual,
+//   );
+//   const incomesData = useAppSelector(
+//     state => state.incomes.incomes,
+//     // shallowEqual,
+//   );
+//   const cashData = useAppSelector(
+//     state => state.cashAccounts.cashAccounts,
+//     // shallowEqual,
+//   );
+//   const accountsData = useAppSelector(
+//     state => state.accounts.accounts,
+//     // shallowEqual,
+//   );
 
-  useEffect(() => {
-    onMonthYearSelectedHandler(mm);
-  }, [year]);
+//   useEffect(() => {
+//     onMonthYearSelectedHandler(mm);
+//   }, [year]);
 
-  useEffect(() => {
-    navigation.setOptions({
-      title: Platform.OS === 'android' ? route?.params?.account : '',
-      headerBackTitle: route?.params?.account,
-      headerRight: () => (
-        <HeaderRightComponent
-          fromDate={fromDate}
-          toDate={toDate}
-          showCustomDate={showCustomDate}
-          fromDateClickedHandler={fromDateClickedHandler}
-          toDateClickedHandler={toDateClickedHandler}
-          rightMenuClickedHandler={rightMenuClickedHandler}
-          showMonthYearListMenuHandler={showMonthYearListMenuHandler}
-        />
-      ),
-    });
-  }, [navigation, showCustomDate, fromDate, toDate]);
+//   useEffect(() => {
+//     navigation.setOptions({
+//       title: Platform.OS === 'android' ? route?.params?.account : '',
+//       headerBackTitle: route?.params?.account,
+//       headerRight: () => (
+//         <HeaderRightComponent
+//           fromDate={fromDate}
+//           toDate={toDate}
+//           showCustomDate={showCustomDate}
+//           fromDateClickedHandler={fromDateClickedHandler}
+//           toDateClickedHandler={toDateClickedHandler}
+//           rightMenuClickedHandler={rightMenuClickedHandler}
+//           showMonthYearListMenuHandler={showMonthYearListMenuHandler}
+//         />
+//       ),
+//     });
+//   }, [navigation, showCustomDate, fromDate, toDate]);
 
-  // FILTERED DATA (From date ----> To date)
-  const selectedDurationExpenseData = expensesData?.filter(
-    expense =>
-      new Date(expense.date) >= new Date(fromDate) &&
-      new Date(expense.date) <= new Date(toDate),
-  );
-  const selectedDurationIncomeData = incomesData?.filter(
-    income =>
-      new Date(income.date) >= new Date(fromDate) &&
-      new Date(income.date) <= new Date(toDate),
-  );
+//   // FILTERED DATA (From date ----> To date)
+//   const selectedDurationExpenseData = expensesData?.filter(
+//     expense =>
+//       moment(expense.date).format('YYYY-MM-DD') >=
+//         moment(fromDate).format('YYYY-MM-DD') &&
+//       moment(expense.date).format('YYYY-MM-DD') <=
+//         moment(toDate).format('YYYY-MM-DD'),
+//   );
+//   const selectedDurationIncomeData = incomesData?.filter(
+//     income =>
+//       moment(income.date).format('YYYY-MM-DD') >=
+//         moment(fromDate).format('YYYY-MM-DD') &&
+//       moment(income.date).format('YYYY-MM-DD') <=
+//         moment(toDate).format('YYYY-MM-DD'),
+//   );
 
-  // Account
-  const accountId = route?.params?.accountId;
-  let accData = accountsData;
-  if (route?.params?.account === 'Cash') {
-    accData = cashData;
-  }
+//   // Account
+//   const accountId = route?.params?.accountId;
+//   let accData = accountsData;
+//   if (route?.params?.account === 'Cash') {
+//     accData = cashData;
+//   }
 
-  const account = accData?.filter(acc => acc?.id === accountId);
-  // Account expense
-  const expenseOfAccount = selectedDurationExpenseData?.filter(
-    expense => expense?.accountId === accountId,
-  );
-  // Account income
-  const incomeOfAccount = selectedDurationIncomeData?.filter(
-    income => income?.accountId === accountId,
-  );
+//   const account = accData?.filter(acc => acc?.id === accountId);
+//   // Account expense
+//   const expenseOfAccount = selectedDurationExpenseData?.filter(
+//     expense => expense?.accountId === accountId,
+//   );
+//   // Account income
+//   const incomeOfAccount = selectedDurationIncomeData?.filter(
+//     income => income?.accountId === accountId,
+//   );
 
-  // console.log('expenseOfAccount: ', selectedDurationExpenseData);
+//   // console.log('expenseOfAccount: ', selectedDurationExpenseData);
 
-  // sum total
-  const totalIncomeByAccount = sumTotalFunc(incomeOfAccount);
-  const totalExpenseByAccount = sumTotalFunc(expenseOfAccount);
-  const budget = +account[0]?.budget;
-  const total = totalIncomeByAccount - totalExpenseByAccount;
-  const balance = total + budget;
+//   // sum total
+//   const totalIncomeByAccount = sumTotalFunc(incomeOfAccount);
+//   const totalExpenseByAccount = sumTotalFunc(expenseOfAccount);
+//   const budget = +account[0]?.budget;
+//   const total = totalIncomeByAccount - totalExpenseByAccount;
+//   const balance = total + budget;
 
-  // Combine expense and income data sum by custom
-  const sumExpenseByCustomDate = sumByCustomDate(
-    expenseOfAccount,
-    'expense',
-    fromDate,
-    toDate,
-  );
-  const sumIncomeByCustomDate = sumByCustomDate(
-    incomeOfAccount,
-    'income',
-    fromDate,
-    toDate,
-  );
+//   // Combine expense and income data sum by custom
+//   const sumExpenseByCustomDate = sumByCustomDate(
+//     expenseOfAccount,
+//     'expense',
+//     fromDate,
+//     toDate,
+//   );
+//   const sumIncomeByCustomDate = sumByCustomDate(
+//     incomeOfAccount,
+//     'income',
+//     fromDate,
+//     toDate,
+//   );
 
-  const data4 = [...sumExpenseByCustomDate, ...sumIncomeByCustomDate];
-  let customData = Object.values(
-    data4.reduce((acc, cur) => {
-      if (!acc[cur?.day])
-        acc[cur?.day] = {Day: cur?.day, Date: cur?.date, Products: []};
-      acc[cur?.day].Products.push(cur);
-      return acc;
-    }, {}),
-  );
-  const filteredCustomData = customData?.filter(
-    data => data?.Products[0]?.amount !== 0 || data?.Products[1]?.amount !== 0,
-  );
+//   const data4 = [...sumExpenseByCustomDate, ...sumIncomeByCustomDate];
+//   let customData = Object.values(
+//     data4.reduce((acc, cur) => {
+//       if (!acc[cur?.day])
+//         acc[cur?.day] = {Day: cur?.day, Date: cur?.date, Products: []};
+//       acc[cur?.day].Products.push(cur);
+//       return acc;
+//     }, {}),
+//   );
+//   const filteredCustomData = customData?.filter(
+//     data => data?.Products[0]?.amount !== 0 || data?.Products[1]?.amount !== 0,
+//   );
 
+//   filteredCustomData?.sort((a: any, b: any) => {
+//     const dateA = moment(a.Date).format('YYYY-MM-DD');
+//     const dateB = moment(b.Date).format('YYYY-MM-DD');
+//     if (dateA < dateB) {
+//       return -1; // return -1 here for DESC order
+//     }
+//     return 1; // return 1 here for DESC Order
+//   });
 
+//   // Set Month Year
+//   function onMonthYearSelectedHandler(time: string): void {
+//     let fromdate;
+//     let todate;
+//     let month;
+//     const mm = moment().month(time).format('MM');
+//     const daysInMonth = moment(moment().format(`YYYY-${mm}`)).daysInMonth();
 
-  filteredCustomData?.sort((a: any, b: any) => {
-    const dateA = new Date(a.Date);
-    const dateB = new Date(b.Date);
-    if (dateA < dateB) {
-      return -1; // return -1 here for DESC order
-    }
-    return 1; // return 1 here for DESC Order
-  });
+//     fromdate = moment(new Date(`${year}-${mm}-01`), 'YYYY-MM-DD').format(
+//       'YYYY-MM-DD',
+//     );
+//     todate = moment(
+//       new Date(`${year}-${mm}-${daysInMonth}`),
+//       'YYYY-MM-DD',
+//     ).format('YYYY-MM-DD');
+//     month = moment(fromdate).month() + 1;
 
-  // Set Month Year
-  function onMonthYearSelectedHandler(time: string): void {
-    let fromdate;
-    let todate;
-    let month;
-    const mm = moment().month(time).format('MM');
-    const daysInMonth = moment(moment().format(`YYYY-${mm}`)).daysInMonth();
+//     setFromDate(fromdate);
+//     setToDate(todate);
+//     setMonth(month);
+//     setIsModalVisible(false);
+//   }
 
-    fromdate = moment(new Date(`${year}-${mm}-01`), 'YYYY-MM-DD').format(
-      'YYYY-MM-DD',
-    );
-    todate = moment(
-      new Date(`${year}-${mm}-${daysInMonth}`),
-      'YYYY-MM-DD',
-    ).format('YYYY-MM-DD');
-    month = moment(fromdate).month() + 1;
+//   function showMonthYearListMenuHandler(): void {
+//     setIsModalVisible(true);
+//   }
 
-    setFromDate(fromdate);
-    setToDate(todate);
-    setMonth(month);
-    setIsModalVisible(false);
-  }
+//   function customClickedHandler(): void {
+//     setShowCustomDate(true);
+//     // setRightMenuClicked(false);
+//     setIsMenuOpen(false);
+//   }
 
-  function showMonthYearListMenuHandler(): void {
-    setIsModalVisible(true);
-  }
+//   function monthlyClickedHandler(): void {
+//     setFromDate(initFromDate);
+//     setToDate(initToDate);
 
-  function customClickedHandler(): void {
-    setShowCustomDate(true);
-    // setRightMenuClicked(false);
-    setIsMenuOpen(false);
-  }
+//     setShowCustomDate(false);
+//     // setRightMenuClicked(false);
+//     setIsMenuOpen(false);
+//   }
 
-  function monthlyClickedHandler(): void {
-    setFromDate(initFromDate);
-    setToDate(initToDate);
+//   function rightMenuClickedHandler(): void {
+//     // setRightMenuClicked(clicked => !clicked);
+//     setIsMenuOpen(true);
+//   }
 
-    setShowCustomDate(false);
-    // setRightMenuClicked(false);
-    setIsMenuOpen(false);
-  }
+//   function fromDateClickedHandler(): void {
+//     showDatePicker();
+//     setFromDateClicked(true);
+//   }
 
-  function rightMenuClickedHandler(): void {
-    // setRightMenuClicked(clicked => !clicked);
-    setIsMenuOpen(true);
-  }
+//   function toDateClickedHandler(): void {
+//     showDatePicker();
+//     setToDateClicked(true);
+//   }
 
-  function fromDateClickedHandler(): void {
-    showDatePicker();
-    setFromDateClicked(true);
-  }
+//   // DatePicker Function
+//   const showDatePicker = (): void => {
+//     setDatePickerVisibility(true);
+//   };
 
-  function toDateClickedHandler(): void {
-    showDatePicker();
-    setToDateClicked(true);
-  }
+//   function hideDatePicker(): void {
+//     setDatePickerVisibility(false);
+//   }
 
-  // DatePicker Function
-  const showDatePicker = (): void => {
-    setDatePickerVisibility(true);
-  };
+//   const onConfirm = (date: string) => {
+//     const fromdate = moment(date).format('YYYY-MM-DD');
+//     const todate = moment(date).format('YYYY-MM-DD');
+//     if (fromDateClicked) {
+//       setFromDate(fromdate);
+//     }
+//     if (toDateClicked) {
+//       setToDate(todate);
+//     }
+//     setFromDateClicked(false);
+//     setToDateClicked(false);
+//     hideDatePicker();
+//   };
 
-  function hideDatePicker(): void {
-    setDatePickerVisibility(false);
-  }
+//   const renderItem = ({item}) => {
+//     const expenseAmount = +item.Products[0]?.amount;
+//     const incomeAmount = +item.Products[1]?.amount;
 
-  const onConfirm = (date: string) => {
-    const fromdate = moment(date).format('YYYY-MM-DD');
-    const todate = moment(date).format('YYYY-MM-DD');
-    if (fromDateClicked) {
-      setFromDate(fromdate);
-    }
-    if (toDateClicked) {
-      setToDate(todate);
-    }
-    setFromDateClicked(false);
-    setToDateClicked(false);
-    hideDatePicker();
-  };
+//     const expenseCash = CashCategory?.filter(
+//       cate => cate.id === item?.Products[0]?.accountId,
+//     );
+//     const expenseAccount = AccountCategory?.filter(
+//       cate => cate.id === item?.Products[0]?.accountId,
+//     );
+//     let expenseCateAcc = expenseCash;
+//     if (expenseCateAcc?.length === 0) {
+//       expenseCateAcc = expenseAccount;
+//     }
 
-  const renderItem = ({item}) => {
-    const expenseAmount = +item.Products[0]?.amount;
-    const incomeAmount = +item.Products[1]?.amount;
+//     const incomeCash = CashCategory?.filter(
+//       cate => cate.id === item?.Products[1]?.accountId,
+//     );
+//     const incomeAccount = AccountCategory?.filter(
+//       cate => cate.id === item?.Products[1]?.accountId,
+//     );
+//     let incomeCateAcc = incomeCash;
+//     if (incomeCateAcc?.length === 0) {
+//       incomeCateAcc = incomeAccount;
+//     }
 
-    const expenseCash = CashCategory?.filter(
-      cate => cate.id === item?.Products[0]?.accountId,
-    );
-    const expenseAccount = AccountCategory?.filter(
-      cate => cate.id === item?.Products[0]?.accountId,
-    );
-    let expenseCateAcc = expenseCash;
-    if (expenseCateAcc?.length === 0) {
-      expenseCateAcc = expenseAccount;
-    }
+//     const date = new Date(item?.Products[0]?.date);
+//     let day = moment(date).date();
+//     if (day < 10) {
+//       day = `0${day}`;
+//     }
+//     const dayLabel = moment(date).format('ddd');
+//     const monthLabel = moment(date).format('MMM');
+//     const year = moment(date).year();
 
-    const incomeCash = CashCategory?.filter(
-      cate => cate.id === item?.Products[1]?.accountId,
-    );
-    const incomeAccount = AccountCategory?.filter(
-      cate => cate.id === item?.Products[1]?.accountId,
-    );
-    let incomeCateAcc = incomeCash;
-    if (incomeCateAcc?.length === 0) {
-      incomeCateAcc = incomeAccount;
-    }
+//     return (
+//       <View style={styles.list}>
+//         <View
+//           style={{
+//             justifyContent: 'center',
+//             alignItems: 'flex-start',
+//             width: width / 4,
+//             marginLeft: -25,
+//             // backgroundColor: '#e1f3cd',
+//           }}>
+//           <Text style={{fontSize: 14, color: 'blue', alignSelf: 'center'}}>
+//             {currencyFormatter(+incomeAmount, {})}
+//           </Text>
+//         </View>
 
-    const date = new Date(item?.Products[0]?.date);
-    let day = moment(date).date();
-    if (day < 10) {
-      day = `0${day}`;
-    }
-    const dayLabel = moment(date).format('ddd');
-    const monthLabel = moment(date).format('MMM');
-    const year = moment(date).year();
+//         <View
+//           style={{
+//             justifyContent: 'center',
+//             alignItems: 'flex-start',
+//             width: width / 4,
+//             marginLeft: -50,
+//             // backgroundColor: '#f5bebe',
+//           }}>
+//           <Text style={{fontSize: 14, color: 'red', alignSelf: 'center'}}>
+//             {currencyFormatter(+expenseAmount, {})}
+//           </Text>
+//         </View>
 
-    return (
-      <View style={styles.list}>
-        <View
-          style={{
-            justifyContent: 'center',
-            alignItems: 'flex-start',
-            width: width / 4,
-            marginLeft: -25,
-            // backgroundColor: '#e1f3cd',
-          }}>
-          <Text style={{fontSize: 14, color: 'blue', alignSelf: 'center'}}>
-            {currencyFormatter(+incomeAmount, {})}
-          </Text>
-        </View>
+//         <View style={styles.dateContainer}>
+//           <View style={styles.dateLabel}>
+//             <Text style={{fontSize: 12, color: 'white'}}>{dayLabel}</Text>
+//           </View>
+//           <Text style={{fontSize: 16, fontWeight: '800'}}>{day} </Text>
+//           <Text style={{fontSize: 12, color: 'grey'}}>{monthLabel} </Text>
+//           <Text style={{fontSize: 12, color: 'grey'}}>{year}</Text>
+//         </View>
+//       </View>
+//     );
+//   };
 
-        <View
-          style={{
-            justifyContent: 'center',
-            alignItems: 'flex-start',
-            width: width / 4,
-            marginLeft: -50,
-            // backgroundColor: '#f5bebe',
-          }}>
-          <Text style={{fontSize: 14, color: 'red', alignSelf: 'center'}}>
-            {currencyFormatter(+expenseAmount, {})}
-          </Text>
-        </View>
+//   return (
+//     <View style={styles.container}>
+//       <View style={styles.balanceContainer}>
+//         <View style={styles.headerBox}>
+//           <Text style={styles.headerText}>Deposit</Text>
+//           <Text style={[styles.headerValueText, {color: 'blue'}]}>
+//             {currencyFormatter(+totalIncomeByAccount, {})}
+//           </Text>
+//         </View>
 
-        <View style={styles.dateContainer}>
-          <View style={styles.dateLabel}>
-            <Text style={{fontSize: 12, color: 'white'}}>{dayLabel}</Text>
-          </View>
-          <Text style={{fontSize: 16, fontWeight: '800'}}>{day} </Text>
-          <Text style={{fontSize: 12, color: 'grey'}}>{monthLabel} </Text>
-          <Text style={{fontSize: 12, color: 'grey'}}>{year}</Text>
-        </View>
-      </View>
-    );
-  };
+//         <View style={styles.headerBox}>
+//           <Text style={styles.headerText}>Withdraw</Text>
+//           <Text style={[styles.headerValueText, {color: 'red'}]}>
+//             {currencyFormatter(+totalExpenseByAccount, {})}
+//           </Text>
+//         </View>
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.balanceContainer}>
-        <View style={styles.headerBox}>
-          <Text style={styles.headerText}>Deposit</Text>
-          <Text style={[styles.headerValueText, {color: 'blue'}]}>
-            {currencyFormatter(+totalIncomeByAccount, {})}
-          </Text>
-        </View>
+//         <View style={styles.headerBox}>
+//           <Text style={styles.headerText}>Total</Text>
+//           <Text style={[styles.headerValueText, {color: 'black'}]}>
+//             {currencyFormatter(+total, {})}
+//           </Text>
+//         </View>
 
-        <View style={styles.headerBox}>
-          <Text style={styles.headerText}>Withdraw</Text>
-          <Text style={[styles.headerValueText, {color: 'red'}]}>
-            {currencyFormatter(+totalExpenseByAccount, {})}
-          </Text>
-        </View>
+//         <View style={styles.headerBox}>
+//           <Text style={styles.headerText}>Balance</Text>
+//           <Text style={[styles.headerValueText, {color: 'black'}]}>
+//             {currencyFormatter(+balance, {})}
+//           </Text>
+//         </View>
+//       </View>
 
-        <View style={styles.headerBox}>
-          <Text style={styles.headerText}>Total</Text>
-          <Text style={[styles.headerValueText, {color: 'black'}]}>
-            {currencyFormatter(+total, {})}
-          </Text>
-        </View>
+//       <View style={{marginBottom: 110}}>
+//         <FlatList
+//           keyExtractor={item => item + uuidv4()}
+//           data={filteredCustomData}
+//           renderItem={renderItem}
+//           bounces={false}
+//           navigation={navigation}
+//           inverted
+//         />
+//       </View>
 
-        <View style={styles.headerBox}>
-          <Text style={styles.headerText}>Balance</Text>
-          <Text style={[styles.headerValueText, {color: 'black'}]}>
-            {currencyFormatter(+balance, {})}
-          </Text>
-        </View>
-      </View>
+//       <Menu
+//         setIsMenuOpen={setIsMenuOpen}
+//         isMenuOpen={isMenuOpen}
+//         monthlyClickedHandler={monthlyClickedHandler}
+//         customClickedHandler={customClickedHandler}
+//         focusedTabIndex={1}
+//       />
 
-      <View style={{marginBottom: 110}}>
-        <FlatList
-          keyExtractor={item => item + uuidv4()}
-          data={filteredCustomData}
-          renderItem={renderItem}
-          bounces={false}
-          navigation={navigation}
-          inverted
-        />
-      </View>
+//       <MonthYearList
+//         monthlyPressed={false}
+//         onMYSelectedHandler={onMonthYearSelectedHandler}
+//         year={+year}
+//         setYear={setYear}
+//         month={month}
+//         setIsModalVisible={setIsModalVisible}
+//         isModalVisible={isModalVisible}
+//       />
 
-      <Menu
-        setIsMenuOpen={setIsMenuOpen}
-        isMenuOpen={isMenuOpen}
-        monthlyClickedHandler={monthlyClickedHandler}
-        customClickedHandler={customClickedHandler}
-        focusedTabIndex={1}
-      />
+//       <DateTimePicker
+//         isVisible={isDatePickerVisible}
+//         // onChange={onChange}
+//         onCancel={hideDatePicker}
+//         onConfirm={onConfirm}
+//         value={toDateClicked ? toDate : fromDateClicked ? fromDate : ''}
+//         mode={mode}
+//         // today={onTodayHandler}
+//         is24Hour={true}
+//         display={Platform.OS === 'ios' ? 'inline' : 'default'}
+//         style={styles.datePicker}
+//       />
+//     </View>
+//   );
+// }
 
-      <MonthYearList
-        monthlyPressed={false}
-        onMYSelectedHandler={onMonthYearSelectedHandler}
-        year={+year}
-        setYear={setYear}
-        month={month}
-        setIsModalVisible={setIsModalVisible}
-        isModalVisible={isModalVisible}
-      />
+// export default AccountsItem;
 
-      <DateTimePicker
-        isVisible={isDatePickerVisible}
-        // onChange={onChange}
-        onCancel={hideDatePicker}
-        onConfirm={onConfirm}
-        value={toDateClicked ? toDate : fromDateClicked ? fromDate : ''}
-        mode={mode}
-        // today={onTodayHandler}
-        is24Hour={true}
-        display={Platform.OS === 'ios' ? 'inline' : 'default'}
-        style={styles.datePicker}
-      />
-    </View>
-  );
-}
+// // Style
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//   },
+//   headerRightContainer: {
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//   },
+//   headerRightMenu: {
+//     marginRight: 10,
+//     backgroundColor: '#ffffff',
+//     borderWidth: 0.8,
+//     borderColor: '#d4d4d4',
+//     borderRadius: 2,
+//     paddingVertical: 4,
+//     paddingHorizontal: 8,
+//     shadowOffset: {width: 0.5, height: 0.5},
+//     shadowOpacity: 0.5,
+//     shadowRadius: 1,
+//     elevation: 1,
+//   },
 
-export default AccountsItem;
+//   headerMenuText: {
+//     fontSize: 14,
+//   },
+//   balanceContainer: {
+//     flexDirection: 'row',
+//     justifyContent: 'space-around',
+//     marginTop: 20,
+//     marginBottom: 20,
+//   },
+//   headerBox: {
+//     // backgroundColor: 'red',
+//     width: (width * 0.8) / 4,
+//     alignSelf: 'center',
+//   },
+//   headerText: {
+//     alignSelf: 'center',
+//     fontSize: 14,
+//   },
+//   headerValueText: {
+//     alignSelf: 'center',
+//     fontSize: 15,
+//   },
+//   list: {
+//     flexDirection: 'row',
+//     justifyContent: 'space-between',
+//     alignItems: 'center',
+//     paddingVertical: 15,
+//     paddingHorizontal: 20,
+//     marginLeft: 0,
+//     marginRight: 0,
+//     marginVertical: 5,
+//     backgroundColor: 'white',
+//   },
+//   dateContainer: {
+//     flexDirection: 'row',
+//     width: 110,
+//     marginRight: 2,
+//     marginTop: 5,
+//     // backgroundColor: '#ffeeee',
+//   },
+//   dateLabel: {
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     backgroundColor: '#6f6f6f',
+//     width: 30,
+//     height: 20,
+//     marginRight: 5,
+//     borderWidth: 0.5,
+//     borderColor: '#black',
+//   },
+//   customDate: {
+//     marginRight: 20,
+//     marginTop: 5,
+//     paddingHorizontal: 5,
+//     paddingVertical: 3,
+//     borderWidth: 1,
+//     backgroundColor: '#ffffff',
+//     borderColor: '#d4d4d4',
+//     shadowOffset: {width: 0, height: 0.5},
+//     shadowOpacity: 0.35,
+//     shadowRadius: 0.5,
+//     elevation: 1,
+//   },
+//   customDateText: {
+//     fontSize: 14,
+//     fontWeight: 'bold',
+//   },
+//   pressed: {
+//     opacity: 0.75,
+//   },
+// });
 
-// Style
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  headerRightContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  headerRightMenu: {
-    marginRight: 10,
-    backgroundColor: '#ffffff',
-    borderWidth: 0.8,
-    borderColor: '#d4d4d4',
-    borderRadius: 2,
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-    shadowOffset: {width: 0.5, height: 0.5},
-    shadowOpacity: 0.5,
-    shadowRadius: 1,
-    elevation: 1,
-  },
+// // ========================== TYPE =======================================
+// type Props = {
+//   navigation: AccountsItemNavigationType;
+//   route: AccountsItemRouteProp;
+// };
 
-  headerMenuText: {
-    fontSize: 14,
-  },
-  balanceContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginTop: 20,
-    marginBottom: 20,
-  },
-  headerBox: {
-    // backgroundColor: 'red',
-    width: (width * 0.8) / 4,
-    alignSelf: 'center',
-  },
-  headerText: {
-    alignSelf: 'center',
-    fontSize: 14,
-  },
-  headerValueText: {
-    alignSelf: 'center',
-    fontSize: 15,
-  },
-  list: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    marginLeft: 0,
-    marginRight: 0,
-    marginVertical: 5,
-    backgroundColor: 'white',
-  },
-  dateContainer: {
-    flexDirection: 'row',
-    width: 110,
-    marginRight: 2,
-    marginTop: 5,
-    // backgroundColor: '#ffeeee',
-  },
-  dateLabel: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#6f6f6f',
-    width: 30,
-    height: 20,
-    marginRight: 5,
-    borderWidth: 0.5,
-    borderColor: '#black',
-  },
-  customDate: {
-    marginRight: 20,
-    marginTop: 5,
-    paddingHorizontal: 5,
-    paddingVertical: 3,
-    borderWidth: 1,
-    backgroundColor: '#ffffff',
-    borderColor: '#d4d4d4',
-    shadowOffset: {width: 0, height: 0.5},
-    shadowOpacity: 0.35,
-    shadowRadius: 0.5,
-    elevation: 1,
-  },
-  customDateText: {
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-  pressed: {
-    opacity: 0.75,
-  },
-});
-
-// ========================== TYPE =======================================
-type Props = {
-  navigation: AccountsItemNavigationType;
-  route: AccountsItemRouteProp;
-};
-
-interface HeaderRightComponentType {
-  fromDate: string | null;
-  toDate: string | null;
-  showCustomDate: boolean;
-  fromDateClickedHandler: () => void;
-  toDateClickedHandler: () => void;
-  rightMenuClickedHandler: () => void;
-  showMonthYearListMenuHandler: () => void;
-}
+// interface HeaderRightComponentType {
+//   fromDate: string | null;
+//   toDate: string | null;
+//   showCustomDate: boolean;
+//   fromDateClickedHandler: () => void;
+//   toDateClickedHandler: () => void;
+//   rightMenuClickedHandler: () => void;
+//   showMonthYearListMenuHandler: () => void;
+// }
