@@ -10,12 +10,12 @@ import React, {useEffect, useState} from 'react';
 import moment from 'moment';
 // import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-// import {useInterstitialAd, TestIds} from 'react-native-google-mobile-ads';
+import {useInterstitialAd, TestIds} from 'react-native-google-mobile-ads';
 
 import {AccountNavigationType} from '../types';
 import AccountComponents from '../components/Output/AccountComponents';
 import MonthYearList from '../components/Menu/MonthYearList';
-// import {Auth} from 'aws-amplify';
+import {Auth} from 'aws-amplify';
 import {useAppSelector} from '../hooks';
 
 const {width, height} = Dimensions.get('window');
@@ -23,14 +23,14 @@ let MONTH = moment().month() + 1;
 if (MONTH < 10) {
   MONTH = +`0${MONTH}`;
 }
-const initFromDateString = `${moment().year()}-${MONTH}-01`;
+// const initFromDateString = `${moment().year()}-${MONTH}-01`;
 // const initFromDate = moment(initFromDateString).format('YYYY-MM-DD');
 // const initToDate = moment().format('YYYY-MM-DD');
 
 // Ads variable
-// const adUnitId = __DEV__
-//   ? TestIds.INTERSTITIAL
-//   : 'ca-app-pub-3212728042764573~3355076099';
+const adUnitId = __DEV__
+  ? TestIds.INTERSTITIAL
+  : 'ca-app-pub-3212728042764573~3355076099';
 
 const HeaderRightComponent = ({
   setIsMenuOpen,
@@ -78,9 +78,9 @@ const HeaderRightComponent = ({
 };
 
 const AccountsScreen = ({navigation}: Props) => {
-  // const rootStore = useAppSelector(store => store);
+  const rootStore = useAppSelector(store => store);
 
-  // const customerInfosData = rootStore?.customerInfos?.customerInfos;
+  const customerInfosData = rootStore?.customerInfos?.customerInfos;
 
   const [IsAccFormVisible, setIsAccFormVisible] = useState<boolean>(false);
   const [isMYListVisible, setIsMYListVisible] = useState<boolean>(false);
@@ -90,23 +90,23 @@ const AccountsScreen = ({navigation}: Props) => {
   // const [fromDate, setFromDate] = useState<string | null>(initFromDate);
   // const [toDate, setToDate] = useState<string | null>(initToDate);
 
-  // const {isLoaded, isClosed, load, show} = useInterstitialAd(adUnitId, {
-  //   requestNonPersonalizedAdsOnly: true,
-  // });
+  const {isLoaded, isClosed, load, show} = useInterstitialAd(adUnitId, {
+    requestNonPersonalizedAdsOnly: true,
+  });
 
   // Load ads
-  // useEffect(() => {
-  //   // Start loading the interstitial straight away
-  //   load();
-  // }, [load]);
+  useEffect(() => {
+    // Start loading the interstitial straight away
+    load();
+  }, [load]);
 
   // Load ads again
-  // useEffect(() => {
-  //   if (isClosed) {
-  //     // console.log('Reloading ad...');
-  //     load();
-  //   }
-  // }, [isClosed]);
+  useEffect(() => {
+    if (isClosed) {
+      // console.log('Reloading ad...');
+      load();
+    }
+  }, [isClosed]);
 
   useEffect(() => {
     onMonthYearSelectedHandler(moment().month());
@@ -147,29 +147,29 @@ const AccountsScreen = ({navigation}: Props) => {
     // setToDate(moment(todate).format('YYYY-MM-DD'));
 
     const MONTH = moment(todate).format('M');
-    setMonth(MONTH);
+    setMonth(+MONTH);
     setIsMYListVisible(false);
   }
 
   const openAddAccountForm = async () => {
+    // Check Purchase user: show Ads
+    const authUser = await Auth.currentAuthenticatedUser();
+    const appUserId = authUser?.attributes?.sub;
+    const filteredCustomerInfo = customerInfosData?.filter(
+      cus => String(cus.appUserId) === String(appUserId),
+    );
+    if (
+      !filteredCustomerInfo[0]?.stdActive &&
+      !filteredCustomerInfo[0]?.proActive
+    ) {
+      // show Ads
+      if (isLoaded) {
+        show();
+      }
+    }
+
     setIsAccFormVisible(true);
     setIsMenuOpen(false);
-
-    // Check Purchase user: show Ads
-    // const authUser = await Auth.currentAuthenticatedUser();
-    // const appUserId = authUser?.attributes?.sub;
-    // const filteredCustomerInfo = customerInfosData?.filter(
-    //   cus => cus.appUserId === appUserId,
-    // );
-    // if (
-    //   !filteredCustomerInfo[0]?.stdActive &&
-    //   !filteredCustomerInfo[0]?.proActive
-    // ) {
-    //   // show Ads
-    //   if (isLoaded) {
-    //     show();
-    //   }
-    // }
   };
 
   return (
@@ -271,7 +271,7 @@ type Props = {
 
 type HeaderRightComponent = {
   setIsMenuOpen: (value: React.SetStateAction<boolean>) => void;
-  setIsMYListVisible: (value: boolean) => boolean;
+  setIsMYListVisible: React.Dispatch<React.SetStateAction<boolean>>;
   year: number;
   month: number;
 };

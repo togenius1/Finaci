@@ -1,4 +1,4 @@
-import {Dimensions, StyleSheet, Text, View, Alert} from 'react-native';
+import {Dimensions, StyleSheet, Text, View, Alert, Platform} from 'react-native';
 import React from 'react';
 // import {PanGestureHandler, State} from 'react-native-gesture-handler';
 import Svg, {Path, G, Text as SvgText, Polyline, Line} from 'react-native-svg';
@@ -13,7 +13,7 @@ type Props = {
 };
 
 const {width, height} = Dimensions.get('window');
-const radius = width * 0.11;
+const radius = width * 0.15;
 
 const makePie = (data, type) => {
   const filteredData = data.map(data => data.percentage);
@@ -95,7 +95,7 @@ const PieChart = ({data, type}: Props) => {
               if (arc.value[i].percentage > 0.1) {
                 posB[0] = arc.radius * 0.45 * (midAngle < Math.PI ? 1 : -1);
               }
-              const cx = posC[0] * 3.1;
+              const cx = posC[0] * 2.5;
               const cy = posC[1] * 2;
 
               return (
@@ -127,8 +127,8 @@ const PieChart = ({data, type}: Props) => {
           const label = arc.value[i].title;
           const pct = arc.value[i].percentage * 100;
           const posC = arc.outerArcForLabelsPosition.centroid(arc);
-          const cx = posC[0] * 3.5;
-          const cy = posC[1] * 2.25;
+          const cx = posC[0] * 2.8;
+          const cy = Platform.OS === 'ios' ? posC[1] * 2.0 : posC[1] * 2.4;
 
           return (
             <View
