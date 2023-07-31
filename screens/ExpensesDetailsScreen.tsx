@@ -87,7 +87,7 @@ const ExpensesDetailsScreen = ({route, navigation}: Props) => {
 
     return (
       <DailyItemElement
-        amount={+expenseAmount}
+        amount={expenseAmount}
         type={'expense'}
         day={String(day)}
         dayLabel={dayLabel}
