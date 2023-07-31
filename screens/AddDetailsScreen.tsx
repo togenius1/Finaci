@@ -1,4 +1,11 @@
-import {Dimensions, Pressable, StyleSheet, Text, View} from 'react-native';
+import {
+  ActivityIndicator,
+  Dimensions,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {v4 as uuidv4} from 'uuid';
 import moment from 'moment';
@@ -67,6 +74,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
   const [note, setNote] = useState<Note>({
     note: '',
   });
+  const [showIndicator, setShowIndicator] = useState<boolean>(false);
 
   // const {isLoaded, isClosed, load, show} = useInterstitialAd(adUnitId, {
   //   requestNonPersonalizedAdsOnly: true,
@@ -94,13 +102,22 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     navigation.setOptions({
       title: type === 'expense' ? 'Expense' : 'Income',
       headerRight: () => (
-        <Pressable
-          style={({pressed}) => pressed && styles.pressed}
-          onPress={() => saveHandler()}>
-          <View style={styles.saveContainer}>
-            <Text style={styles.save}>Save</Text>
+        <View style={{flexDirection: 'row'}}>
+          <View style={{right: 55}}>
+            <ActivityIndicator
+              size="medium"
+              color="#0000ff"
+              animating={showIndicator}
+            />
           </View>
-        </Pressable>
+          <Pressable
+            style={({pressed}) => pressed && styles.pressed}
+            onPress={() => saveHandler()}>
+            <View style={styles.saveContainer}>
+              <Text style={styles.save}>Save</Text>
+            </View>
+          </Pressable>
+        </View>
       ),
     });
   }, [navigation, amount, category, note, textDate, account]);
@@ -201,7 +218,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     // const filteredCustomerInfo = customerInfosData?.filter(
     //   cus => cus.appUserId === appUserId,
     // );
-
+    setShowIndicator(true);
     //save
     await saveDataToStorage();
 
@@ -212,6 +229,9 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     monthlyTransactionsUpdate();
     weeklyTransactionsUpdate();
     dailyTransactionsUpdate();
+
+    setShowIndicator(false);
+
     navigation.navigate('Overview', {screen: 'Spending'});
   };
 
@@ -731,9 +751,11 @@ const styles = StyleSheet.create({
   save: {
     fontSize: 16,
     fontWeight: 'bold',
+    color: '#027ac4',
+    right: 5,
   },
   pressed: {
-    opacity: 0.75,
+    opacity: 0.65,
   },
 });
 
