@@ -153,20 +153,20 @@ const AccountsScreen = ({navigation}: Props) => {
 
   const openAddAccountForm = async () => {
     // Check Purchase user: show Ads
-    const authUser = await Auth.currentAuthenticatedUser();
-    const appUserId = authUser?.attributes?.sub;
-    const filteredCustomerInfo = customerInfosData?.filter(
-      cus => String(cus.appUserId) === String(appUserId),
-    );
-    if (
-      !filteredCustomerInfo[0]?.stdActive &&
-      !filteredCustomerInfo[0]?.proActive
-    ) {
-      // show Ads
-      if (isLoaded) {
-        show();
-      }
-    }
+    // const authUser = await Auth.currentAuthenticatedUser();
+    // const appUserId = authUser?.attributes?.sub;
+    // const filteredCustomerInfo = customerInfosData?.filter(
+    //   cus => String(cus.appUserId) === String(appUserId),
+    // );
+    // if (
+    //   !filteredCustomerInfo[0]?.stdActive &&
+    //   !filteredCustomerInfo[0]?.proActive
+    // ) {
+    //   // show Ads
+    //   if (isLoaded) {
+    //     show();
+    //   }
+    // }
 
     setIsAccFormVisible(true);
     setIsMenuOpen(false);

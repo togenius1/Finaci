@@ -1,5 +1,5 @@
 import {
-  ActivityIndicator,
+  // ActivityIndicator,
   Dimensions,
   Pressable,
   StyleSheet,
@@ -67,14 +67,14 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     String(moment().format('YYYY-MM-DD HH:mm:ss')),
   );
   const [categoryPressed, setCategoryPressed] = useState<boolean>(false);
-  const [category, setCategory] = useState();
+  const [category, setCategory] = useState<any[]>();
   const [accountPressed, setAccountPressed] = useState<boolean>(false);
-  const [account, setAccount] = useState();
+  const [account, setAccount] = useState<any[]>();
   const [notePressed, setNotePressed] = useState<boolean>(false);
   const [note, setNote] = useState<Note>({
     note: '',
   });
-  const [showIndicator, setShowIndicator] = useState<boolean>(false);
+  // const [showIndicator, setShowIndicator] = useState<boolean>(false);
 
   // const {isLoaded, isClosed, load, show} = useInterstitialAd(adUnitId, {
   //   requestNonPersonalizedAdsOnly: true,
@@ -103,13 +103,13 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
       title: type === 'expense' ? 'Expense' : 'Income',
       headerRight: () => (
         <View style={{flexDirection: 'row'}}>
-          <View style={{right: 55}}>
+          {/* <View style={{right: 55}}>
             <ActivityIndicator
               size="medium"
               color="#0000ff"
               animating={showIndicator}
             />
-          </View>
+          </View> */}
           <Pressable
             style={({pressed}) => pressed && styles.pressed}
             onPress={() => saveHandler()}>
@@ -218,7 +218,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     // const filteredCustomerInfo = customerInfosData?.filter(
     //   cus => cus.appUserId === appUserId,
     // );
-    setShowIndicator(true);
+    // setShowIndicator(true);
     //save
     await saveDataToStorage();
 
@@ -230,7 +230,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     weeklyTransactionsUpdate();
     dailyTransactionsUpdate();
 
-    setShowIndicator(false);
+    // setShowIndicator(false);
 
     navigation.navigate('Overview', {screen: 'Spending'});
   };
@@ -274,9 +274,9 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     const month = moment(textDate).month() + 1;
     const year = moment(textDate).year();
 
-    const transact_monthly = dataLoaded.monthlyTransacts?.monthlyTransacts;
+    const transact_monthlyData = dataLoaded.monthlyTransacts?.monthlyTransacts;
 
-    const findMonth = transact_monthly?.filter(
+    const findMonth = transact_monthlyData?.filter(
       tr =>
         Number(tr.year) === Number(year) && Number(tr.month) === Number(month),
     );
@@ -315,6 +315,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
           year,
           month,
           String(textDate),
+          transact_monthlyData,
         );
       } else if (findMonth?.length > 0) {
         expenseMonthly = findMonth[0]?.expense_monthly + +amount;
@@ -326,6 +327,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
           year,
           month,
           String(textDate),
+          transact_monthlyData,
         );
       }
     }
@@ -352,6 +354,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
           year,
           month,
           String(textDate),
+          transact_monthlyData,
         );
       } else if (findMonth?.length > 0) {
         expense_monthly = findMonth[0]?.expense_monthly;
@@ -363,6 +366,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
           year,
           month,
           String(textDate),
+          transact_monthlyData,
         );
       }
     }
@@ -375,9 +379,9 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     const day = moment(textDate).date();
     const currentWeek = getWeekInMonth(year, month, day);
 
-    const transact_weekly = dataLoaded.weeklyTransacts?.weeklyTransacts;
+    const transact_weeklyData = dataLoaded.weeklyTransacts?.weeklyTransacts;
 
-    const findWeek = transact_weekly?.filter(
+    const findWeek = transact_weeklyData?.filter(
       tr =>
         Number(tr.year) === Number(year) &&
         Number(tr.month) === Number(month) &&
@@ -432,6 +436,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
         year,
         month,
         currentWeek,
+        transact_weeklyData,
       );
     }
 
@@ -452,6 +457,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
         year,
         month,
         currentWeek,
+        transact_weeklyData,
       );
     }
   };
@@ -463,8 +469,8 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     const date = moment(textDate).format('YYYY-MM-DD HH:mm:ss');
     const day = moment(textDate).date();
 
-    const transact_daily = dataLoaded?.dailyTransacts?.dailyTransacts;
-    const findDailyData = transact_daily?.filter(
+    const transact_dailyData = dataLoaded?.dailyTransacts?.dailyTransacts;
+    const findDailyData = transact_dailyData?.filter(
       transact =>
         moment(transact?.date).format('YYYY-MM-DD') ===
           moment(date).format('YYYY-MM-DD') &&
@@ -522,6 +528,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
         +income_daily,
         date,
         +day,
+        transact_dailyData,
       );
     }
 
@@ -536,6 +543,7 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
         +income_Daily,
         date,
         +day,
+        transact_dailyData,
       );
     }
   };
@@ -547,10 +555,11 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     year: number,
     month: number,
     date: string,
+    transact_monthlyData: any[],
   ) => {
-    const transact_monthly = dataLoaded.monthlyTransacts?.monthlyTransacts;
+    // const transact_monthly = dataLoaded.monthlyTransacts?.monthlyTransacts;
 
-    const findMonth = transact_monthly?.filter(
+    const findMonth = transact_monthlyData?.filter(
       tr => Number(tr.year) === year && Number(tr.month) === month,
     );
 
@@ -587,9 +596,10 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     year: number,
     month: number,
     week: number,
+    transact_weeklyData: any[],
   ) => {
-    const transact_weekly = dataLoaded?.weeklyTransacts?.weeklyTransacts;
-    const findWeekT = transact_weekly?.filter(
+    // const transact_weekly = dataLoaded?.weeklyTransacts?.weeklyTransacts;
+    const findWeekT = transact_weeklyData?.filter(
       transact =>
         Number(transact?.year) === year &&
         Number(transact?.month) === month &&
@@ -630,9 +640,10 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
     incomeDaily: number,
     date: string,
     day: number,
+    transact_dailyData: any[],
   ) => {
-    const transact_daily = dataLoaded?.dailyTransacts?.dailyTransacts;
-    const findDay = transact_daily?.filter(
+    // const transact_daily = dataLoaded?.dailyTransacts?.dailyTransacts;
+    const findDay = transact_dailyData?.filter(
       transact =>
         moment(transact?.date).format('YYYY-MM-DD') ===
           moment(date).format('YYYY-MM-DD') && Number(transact?.day) === day,
@@ -673,12 +684,12 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
         accountTitle={accountTitle}
         // createdDate={createdDate}
         account={account}
-        textDate={textDate}
+        textDate={String(textDate)}
         setTextDate={setTextDate}
         setCategoryPressed={setCategoryPressed}
         setNotePressed={setNotePressed}
         setAccountPressed={setAccountPressed}
-        initialDate={initialDate}
+        initialDate={String(initialDate)}
       />
 
       {categoryPressed && (

@@ -2,10 +2,11 @@ import {Alert, ScrollView, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {useForm} from 'react-hook-form';
 import {Auth} from 'aws-amplify';
+import {isValidPhoneNumber} from 'react-phone-number-input';
 
 import CustomInput from '../components/CustomInput';
 import CustomButton from '../components/CustomButton';
-import SocialSignInButtons from '../components/SocialSignInButtons';
+// import SocialSignInButtons from '../components/SocialSignInButtons';
 
 type Props = {};
 
@@ -89,6 +90,14 @@ export default function SignUpScreen({navigation}: Props) {
           rules={{pattern: EMAIL_REGEX, message: 'Email is invalid'}}
         />
         <CustomInput
+          name="phone-input"
+          control={control}
+          placeholder="Phone number begin with: +(country code)"
+          rules={{
+            validate: value => isValidPhoneNumber(value),
+          }}
+        />
+        <CustomInput
           name="password"
           control={control}
           placeholder="Password"
@@ -120,10 +129,9 @@ export default function SignUpScreen({navigation}: Props) {
           By registering, you confirm that you accept our{' '}
           <Text style={styles.link} onPress={onTermsOfUsePressed}>
             of Use
-          </Text>{' '}
+          </Text>
           and
           <Text style={styles.link} onPress={onPrivacyPressed}>
-            {' '}
             Privacy Policy.
           </Text>
         </Text>

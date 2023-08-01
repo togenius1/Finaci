@@ -29,6 +29,7 @@ type Dispatcher<S> = Dispatch<SetStateAction<S>>;
 
 type Props = {
   // navigation: AccountNavigationType;
+  setAccount: React.Dispatch<React.SetStateAction<any[] | undefined>>;
   setAccountPressed: Dispatcher<boolean>;
   month: number;
   year: number;

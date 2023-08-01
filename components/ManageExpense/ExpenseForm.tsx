@@ -228,9 +228,9 @@ type Props = {
   type: string;
   amount: string;
   note: string;
-  category: string;
+  category: any[] | undefined;
   date: string;
-  account: string;
+  account: any[] | undefined;
   categoryTitle: string;
   accountTitle: string;
   textDate: string;

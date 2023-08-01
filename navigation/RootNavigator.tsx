@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View} from 'react-native';
+// import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -9,6 +9,7 @@ import ConfirmEmailScreen from './NavComponents/Login/screens/ConfirmEmailScreen
 import NewPasswordScreen from './NavComponents/Login/screens/NewPasswordScreen';
 import ForgotPasswordScreen from './NavComponents/Login/screens/ForgotPasswordScreen';
 import {RootStackParamListLogin} from './NavComponents/Login/LoginTypes';
+// import ConfirmPhoneScreen from './NavComponents/Login/screens/ConfirmPhoneScreen';
 
 type Props = {};
 
