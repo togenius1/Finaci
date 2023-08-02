@@ -12,7 +12,7 @@ import {useNavigation} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 // import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {Auth} from 'aws-amplify';
+import {Auth, Hub} from 'aws-amplify';
 
 type Props = {};
 
@@ -34,15 +34,42 @@ const DrawerContent = ({props}: Props) => {
   const navigation = useNavigation();
 
   const [authUser, setAuthUser] = useState<any>();
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
+  // Listening for Login events.
+  useEffect(() => {
+    const listenerAuth = async data => {
+      if (data.payload.event === 'signIn') {
+        setIsAuthenticated(true);
+      }
+      if (data.payload.event === 'signOut') {
+        setIsAuthenticated(false);
+      }
+    };
+
+    Hub.listen('auth', listenerAuth);
+  }, []);
+
+  // Check if authenticated user, Stay logged in.
   useEffect(() => {
     const onAuthUser = async () => {
       const authUser = await Auth.currentAuthenticatedUser();
       setAuthUser(authUser);
+      setIsAuthenticated(true);
     };
 
     onAuthUser();
   }, []);
+
+  const accountAuthHandler = () => {
+    navigation.navigate('User');
+  };
+
+  const signHandler = async () => {
+    await Auth.signOut();
+    setIsAuthenticated(false);
+    navigation.navigate('User');
+  };
 
   return (
     <View style={styles.container}>
@@ -153,16 +180,14 @@ const DrawerContent = ({props}: Props) => {
         <View style={styles.packageContainer}>
           <Pressable
             style={({pressed}) => pressed && styles.pressed}
-            onPress={() => {
-              navigation.navigate('Paywall');
-            }}>
+            onPress={() => accountAuthHandler()}>
             <View style={{flexDirection: 'row', marginBottom: height / 50}}>
               <MaterialCommunityIcons
-                name="cart-outline"
-                size={22}
+                name="account-outline"
+                size={24}
                 color={colors.paywall}
               />
-              <Text style={styles.settingText}>Paywall</Text>
+              <Text style={styles.settingText}>User account</Text>
             </View>
           </Pressable>
         </View>
@@ -198,11 +223,15 @@ const DrawerContent = ({props}: Props) => {
         <View style={styles.logoutContainer}>
           <Pressable
             style={({pressed}) => pressed && styles.pressed}
-            onPress={() => Auth.signOut()}>
+            onPress={() => signHandler()}>
             <View style={{flexDirection: 'row'}}>
               <Ionicons name="log-out" size={22} color={colors.user} />
-              <Text style={styles.logoutText}>Log out</Text>
-              <Text style={styles.username}>{authUser?.username}</Text>
+              <Text style={styles.logoutText}>
+                {isAuthenticated ? 'Sign out' : 'Sign in'}
+              </Text>
+              <Text style={styles.username}>
+                {isAuthenticated ? authUser?.username : ''}
+              </Text>
             </View>
           </Pressable>
         </View>

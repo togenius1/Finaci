@@ -1,10 +1,6 @@
 import React from 'react';
 import {ColorSchemeName} from 'react-native';
-import {
-  DarkTheme,
-  DefaultTheme,
-  NavigationContainer,
-} from '@react-navigation/native';
+import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import AddExpensesScreen from '../screens/AddExpensesScreen';
@@ -17,15 +13,20 @@ import RootNavigator from './RootNavigator';
 import MenuDrawer from './NavComponents/Drawer/MenuDrawer';
 import ExpensesDetailsScreen from '../screens/ExpensesDetailsScreen';
 import IncomesDetailsScreen from '../screens/IncomesDetailsScreen';
+import SignInScreen from './NavComponents/Login/screens/SignInScreen';
+import SignUpScreen from './NavComponents/Login/screens/SignUpScreen';
+import ConfirmEmailScreen from './NavComponents/Login/screens/ConfirmEmailScreen';
+import NewPasswordScreen from './NavComponents/Login/screens/NewPasswordScreen';
+import ForgotPasswordScreen from './NavComponents/Login/screens/ForgotPasswordScreen';
 
 type Props = {
-  isAuthenticated: boolean | undefined;
-  colorScheme: ColorSchemeName;
+  // isAuthenticated: boolean | undefined;
+  // colorScheme: ColorSchemeName;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-const FinnerNavigator = ({isAuthenticated, colorScheme}: Props) => {
+const FinnerNavigator = ({}: Props) => {
   // const MyTheme = {
   //   dark: false,
   //   colors: {
@@ -40,44 +41,45 @@ const FinnerNavigator = ({isAuthenticated, colorScheme}: Props) => {
 
   return (
     <>
-      {isAuthenticated ? (
-        <NavigationContainer
-        // theme={colorScheme === 'dark' ? MyTheme : DefaultTheme}
-        >
-          <Stack.Navigator
-            screenOptions={{
-              headerStyle: {backgroundColor: GlobalStyles.colors.primary500},
-              headerTintColor: 'black',
-            }}>
-            <Stack.Screen
-              name="Menu"
-              component={MenuDrawer}
-              options={{
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen
-              name="AddExpenses"
-              component={AddExpensesScreen}
-              options={{
-                title: 'Amount',
-              }}
-            />
-            <Stack.Screen name="AddDetails" component={AddDetailsScreen} />
-            {/* <Stack.Screen name="AccountsItem" component={AccountsItem} /> */}
-            <Stack.Screen
-              name="ExpensesDetails"
-              component={ExpensesDetailsScreen}
-            />
-            <Stack.Screen
-              name="IncomesDetails"
-              component={IncomesDetailsScreen}
-            />
-          </Stack.Navigator>
-        </NavigationContainer>
-      ) : (
+      {/* {isAuthenticated ? ( */}
+      <NavigationContainer
+      // theme={colorScheme === 'dark' ? MyTheme : DefaultTheme}
+      >
+        <Stack.Navigator
+          screenOptions={{
+            headerStyle: {backgroundColor: GlobalStyles.colors.primary500},
+            headerTintColor: 'black',
+          }}>
+          <Stack.Screen
+            name="Menu"
+            component={MenuDrawer}
+            options={{
+              headerShown: false,
+            }}
+          />
+
+          <Stack.Screen
+            name="AddExpenses"
+            component={AddExpensesScreen}
+            options={{
+              title: 'Amount',
+            }}
+          />
+          <Stack.Screen name="AddDetails" component={AddDetailsScreen} />
+          {/* <Stack.Screen name="AccountsItem" component={AccountsItem} /> */}
+          <Stack.Screen
+            name="ExpensesDetails"
+            component={ExpensesDetailsScreen}
+          />
+          <Stack.Screen
+            name="IncomesDetails"
+            component={IncomesDetailsScreen}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+      {/* ) : (
         <RootNavigator />
-      )}
+      )} */}
     </>
   );
 };

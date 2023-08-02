@@ -1,7 +1,6 @@
 import {
   ActivityIndicator,
   Alert,
-  Appearance,
   Linking,
   LogBox,
   Platform,
@@ -9,6 +8,7 @@ import {
   StatusBar,
   StyleSheet,
   View,
+  // DevSettings,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {setPRNG} from 'tweetnacl';
@@ -131,23 +131,27 @@ const App = () => {
     isAuthenticated();
   }, []);
 
+  // Fetch category
+  useEffect(() => {
+    if (expenseCateData.length === 0) {
+      dispatch(fetchExpenseCategoriesData());
+    }
+    if (incomesCateData.length === 0) {
+      dispatch(fetchIncomeCategoriesData());
+    }
+    if (cashData.length === 0) {
+      dispatch(fetchCashAccountsData());
+    }
+    if (accountsData.length === 0) {
+      dispatch(fetchAccountsData());
+    }
+  }, []);
+
   // Listening for Login events.
   useEffect(() => {
     const listenerAuth = async data => {
       if (data.payload.event === 'signIn') {
-        // Load Existing Category
-        if (expenseCateData.length === 0) {
-          dispatch(fetchExpenseCategoriesData());
-        }
-        if (incomesCateData.length === 0) {
-          dispatch(fetchIncomeCategoriesData());
-        }
-        if (cashData.length === 0) {
-          dispatch(fetchCashAccountsData());
-        }
-        if (accountsData.length === 0) {
-          dispatch(fetchAccountsData());
-        }
+        // DevSettings.reload();
 
         await checkUserAndGenerateNewKey();
         await configPurchase();
@@ -163,6 +167,14 @@ const App = () => {
     };
 
     Hub.listen('auth', listenerAuth);
+  }, []);
+
+  // Configure purchase
+  useEffect(() => {
+    const config = async () => {
+      await configPurchase();
+    };
+    config();
   }, []);
 
   // Purchase Listener
@@ -395,7 +407,7 @@ const App = () => {
   };
 
   // Color scheme
-  const colorScheme = Appearance.getColorScheme();
+  // const colorScheme = Appearance.getColorScheme();
 
   return (
     <>
@@ -407,12 +419,10 @@ const App = () => {
             color="#0000ff"
             animating={showIndicator}
           />
-          <FinnerNavigator
-            isAuthenticated={isAuthenticated}
-            colorScheme={colorScheme}
-          />
+          <FinnerNavigator />
 
-          {isAuthenticated && !closedAds && (
+          {/* {isAuthenticated && !closedAds && ( */}
+          {!closedAds && (
             <>
               <Pressable
                 style={({pressed}) => pressed && styles.pressed}

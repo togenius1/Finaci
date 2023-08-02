@@ -1,16 +1,17 @@
 import {
   Alert,
   Dimensions,
-  Image,
+  // Image,
   ScrollView,
   StyleSheet,
   View,
+  DevSettings,
 } from 'react-native';
 import React, {useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {Auth} from 'aws-amplify';
 
-import Logo from '../../../../assets/images/FINNER-Tab.png';
+// import Logo from '../../../../assets/images/FINNER-Tab.png';
 import CustomInput from '../components/CustomInput';
 import CustomButton from '../components/CustomButton';
 // import SocialSignInButtons from '../components/SocialSignInButtons';
@@ -36,8 +37,6 @@ const SignInScreen = ({navigation}: Props) => {
     setLoading(true);
     try {
       await Auth.signIn(data.username, data.password);
-
-      // console.log(response);
     } catch (e) {
       Alert.alert('Oops', e.message);
     }
@@ -57,7 +56,7 @@ const SignInScreen = ({navigation}: Props) => {
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       <View style={styles.root}>
-        <Image
+        {/* <Image
           source={Logo}
           style={[
             styles.logo,
@@ -68,7 +67,7 @@ const SignInScreen = ({navigation}: Props) => {
             },
           ]}
           resizeMode="cover"
-        />
+        /> */}
         <CustomInput
           name="username"
           placeholder="Username"
@@ -119,13 +118,14 @@ const styles = StyleSheet.create({
   root: {
     height: height,
     alignItems: 'center',
+    justifyContent: 'center',
     padding: 20,
 
     backgroundColor: 'white',
   },
-  logo: {
-    width: '70%',
-    maxWidth: 300,
-    maxHeight: 200,
-  },
+  // logo: {
+  //   width: '70%',
+  //   maxWidth: 300,
+  //   maxHeight: 200,
+  // },
 });

@@ -85,6 +85,20 @@ const BackupScreen = () => {
   // [0] ==> incomesData, [1] ==> expensesData
   // const incomeAndExpenseObj = [incomesData, expensesData];
 
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [authUser, setAuthUser] = useState<any>();
+
+  // Check if authenticated user, Stay logged in.
+  useEffect(() => {
+    const onAuthUser = async () => {
+      const authUser = await Auth.currentAuthenticatedUser();
+      setAuthUser(authUser);
+      setIsAuthenticated(true);
+    };
+
+    onAuthUser();
+  }, []);
+
   const {isLoaded, isClosed, load, show} = useInterstitialAd(adUnitId, {
     requestNonPersonalizedAdsOnly: true,
   });
@@ -187,29 +201,32 @@ const BackupScreen = () => {
 
   // Backup Alert
   const backupAlert = async obj => {
-    const authUser = await Auth.currentAuthenticatedUser();
-    const appUserId = authUser?.attributes?.sub;
-    const filteredCustomerInfo = customerInfosData?.filter(
-      cus => cus.appUserId === appUserId,
-    );
-
-    if (
-      !filteredCustomerInfo[0]?.stdActive &&
-      !filteredCustomerInfo[0]?.proActive
-    ) {
-      // show Ads
-      if (isLoaded) {
-        show();
+    if (isAuthenticated) {
+      const appUserId = authUser?.attributes?.sub;
+      const filteredCustomerInfo = customerInfosData?.filter(
+        cus => cus.appUserId === appUserId,
+      );
+      if (
+        !filteredCustomerInfo[0]?.stdActive &&
+        !filteredCustomerInfo[0]?.proActive
+      ) {
+        // show Ads
+        if (isLoaded) {
+          show();
+        }
       }
     }
 
     Alert.alert(
-      'Backup data!',
-      'Do you want to backup your data now?',
+      isAuthenticated ? 'Backup data!' : 'You do not login!',
+      isAuthenticated ? 'Do you want to backup your data now?' : 'Please login',
       [
         {
           text: 'Yes',
-          onPress: () => backupHandler(obj),
+          onPress: () =>
+            isAuthenticated
+              ? backupHandler(obj)
+              : navigation.navigate('SignIn'),
           // style: 'cancel',
         },
         {
@@ -262,20 +279,14 @@ const BackupScreen = () => {
 
   // Check Pro user
   const checkPro = async () => {
-    const authUser = await Auth.currentAuthenticatedUser();
-    const appUserId = authUser?.attributes?.sub;
-    const filteredCustomerInfo = customerInfosData?.filter(
-      cus => cus.appUserId === appUserId,
-    );
-
-    if (filteredCustomerInfo[0]?.proActive === false) {
+    if (!isAuthenticated) {
       Alert.alert(
-        'This function is for Pro users.',
-        'Would you like to purchase Pro(Premium)?',
+        'You do not login now!',
+        'Please login',
         [
           {
             text: 'Yes',
-            onPress: () => navigation.navigate('Paywall'),
+            onPress: () => navigation.navigate('SignIn'),
             style: 'destructive',
           },
           {
@@ -291,8 +302,40 @@ const BackupScreen = () => {
           //   ),
         },
       );
-    } else {
-      askToRestoreData();
+      // return;
+    } else if (isAuthenticated) {
+      const authUser = await Auth.currentAuthenticatedUser();
+      const appUserId = authUser?.attributes?.sub;
+      const filteredCustomerInfo = customerInfosData?.filter(
+        cus => cus.appUserId === appUserId,
+      );
+
+      if (filteredCustomerInfo[0]?.proActive === false) {
+        Alert.alert(
+          'This function is for Pro users.',
+          'Would you like to purchase Pro(Premium)?',
+          [
+            {
+              text: 'Yes',
+              onPress: () => navigation.navigate('User'),
+              style: 'destructive',
+            },
+            {
+              text: 'No',
+              style: 'cancel',
+            },
+          ],
+          {
+            cancelable: true,
+            // onDismiss: () =>
+            //   Alert.alert(
+            //     'This alert was dismissed by tapping outside of the alert dialog.',
+            //   ),
+          },
+        );
+      } else {
+        askToRestoreData();
+      }
     }
   };
 
@@ -300,8 +343,10 @@ const BackupScreen = () => {
   const askToRestoreData = () => {
     // Ask to replace the old?
     Alert.alert(
-      'Your old data on your phone will be replaced with the new data.',
-      'Do you want to restore data?',
+      isAuthenticated
+        ? 'Your old data on your phone will be replaced with the new data.'
+        : 'You do not login now!',
+      isAuthenticated ? 'Do you want to restore data?' : 'Please login now.',
       [
         {
           text: 'Yes',
@@ -467,9 +512,8 @@ const BackupScreen = () => {
     folderId = await AsyncStorage.getItem('@folderbackup_key');
     const folderInDrive = await FindFolderInGoogleDrive();
 
-    const foundFolderId = folderInDrive.files?.find(
-      fd => fd.id === folderId,
-    )?.id;
+    const foundFolderId = folderInDrive.files?.find(fd => fd.id === folderId)
+      ?.id;
 
     if (!folderId || !foundFolderId) {
       const folderObj = await createFolder(fileName);

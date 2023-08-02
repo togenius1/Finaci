@@ -11,7 +11,13 @@ import ReportsScreen from '../../../screens/ReportsScreen';
 import BackupScreen from '../../../screens/BackupScreen';
 // import RecommendScreen from '../../../screens/RecommendScreen';
 import {RootStackParamList} from '../../../types';
-import PaywallScreen from '../../../screens/PaywallScreen';
+// import PaywallScreen from '../../../screens/PaywallScreen';
+import UserScreen from '../../../screens/UserScreen';
+import SignInScreen from '../Login/screens/SignInScreen';
+import SignUpScreen from '../Login/screens/SignUpScreen';
+import ConfirmEmailScreen from '../Login/screens/ConfirmEmailScreen';
+import ForgotPasswordScreen from '../Login/screens/ForgotPasswordScreen';
+import NewPasswordScreen from '../Login/screens/NewPasswordScreen';
 
 const Drawer = createDrawerNavigator<RootStackParamList>();
 
@@ -79,12 +85,54 @@ const MenuDrawer = () => {
         })}
       />
       <Drawer.Screen
+        name="User"
+        component={UserScreen}
+        options={() => ({
+          title: 'User',
+        })}
+      />
+      <Drawer.Screen
+        name="SignIn"
+        component={SignInScreen}
+        options={() => ({
+          title: 'SignIn',
+        })}
+      />
+      <Drawer.Screen
+        name="SignUp"
+        component={SignUpScreen}
+        options={() => ({
+          title: 'SignUp',
+        })}
+      />
+      <Drawer.Screen
+        name="ConfirmEmail"
+        component={ConfirmEmailScreen}
+        options={() => ({
+          title: 'ConfirmEmail',
+        })}
+      />
+      <Drawer.Screen
+        name="ForgotPassword"
+        component={ForgotPasswordScreen}
+        options={() => ({
+          title: 'SignIn',
+        })}
+      />
+      <Drawer.Screen
+        name="NewPassword"
+        component={NewPasswordScreen}
+        options={() => ({
+          title: 'SignIn',
+        })}
+      />
+      {/* <Drawer.Screen
         name="Paywall"
         component={PaywallScreen}
         options={() => ({
           title: 'Paywall',
         })}
-      />
+      /> */}
       {/* <Drawer.Screen
         name="Recommend"
         component={RecommendScreen}

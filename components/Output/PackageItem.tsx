@@ -16,6 +16,7 @@ import {Auth} from 'aws-amplify';
 type Props = {
   stdActive: boolean;
   proActive: boolean;
+  purchasePackage: any[];
 };
 
 const PackageItemsScreen = ({purchasePackage, stdActive, proActive}: Props) => {

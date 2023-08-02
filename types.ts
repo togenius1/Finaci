@@ -5,6 +5,13 @@ import type {
 } from '@react-navigation/native-stack';
 
 export type RootStackParamList = {
+  User: undefined;
+  SignIn: undefined;
+  SignUp: undefined;
+  ConfirmEmail: undefined;
+  ForgotPassword: undefined;
+  NewPassword: undefined;
+
   Overview: undefined;
   Transactions: undefined;
   Stats: undefined;
