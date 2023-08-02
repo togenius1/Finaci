@@ -216,6 +216,7 @@ const BackupScreen = () => {
 
   // Backup Alert
   const backupAlert = async obj => {
+    console.log(isAuthenticated)
     if (isAuthenticated) {
       const appUserId = authUser?.attributes?.sub;
       const filteredCustomerInfo = customerInfosData?.filter(

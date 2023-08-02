@@ -89,6 +89,7 @@ const DrawerContent = ({props}: Props) => {
               <Text style={styles.overviewText}>Overview</Text>
             </View>
           </Pressable>
+
           <Pressable
             style={({pressed}) => pressed && styles.pressed}
             onPress={() => {
@@ -181,21 +182,6 @@ const DrawerContent = ({props}: Props) => {
           </Pressable>
         </View>
 
-        <View style={styles.packageContainer}>
-          <Pressable
-            style={({pressed}) => pressed && styles.pressed}
-            onPress={() => accountAuthHandler()}>
-            <View style={styles.user}>
-              <MaterialCommunityIcons
-                name="account-outline"
-                size={width * 0.07}
-                color={colors.paywall}
-              />
-              <Text style={styles.settingText}>User account</Text>
-            </View>
-          </Pressable>
-        </View>
-
         {/* <Pressable
             style={({pressed}) => pressed && styles.pressed}
             onPress={() => {
@@ -224,6 +210,21 @@ const DrawerContent = ({props}: Props) => {
                 color={colors.setting}
               />
               <Text style={styles.settingText}>Settings</Text>
+            </View>
+          </Pressable>
+        </View>
+
+        <View style={styles.userContainer}>
+          <Pressable
+            style={({pressed}) => pressed && styles.pressed}
+            onPress={() => accountAuthHandler()}>
+            <View style={styles.user}>
+              <MaterialCommunityIcons
+                name="account-outline"
+                size={width * 0.07}
+                color={colors.paywall}
+              />
+              <Text style={styles.settingText}>User account</Text>
             </View>
           </Pressable>
         </View>
@@ -309,35 +310,38 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginLeft: 20,
   },
-
-  packageContainer: {
-    marginLeft: 20,
-    marginTop: height / 15,
-  },
-  user: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    marginBottom: height / 50,
-  },
   settingContainer: {
     marginLeft: 20,
     marginTop: height / 5.5,
     // marginBottom: 10,
     // backgroundColor: '#86b0dd',
   },
-
   settingText: {
     fontSize: 14,
     marginLeft: 20,
   },
-  RecommendText: {
-    fontSize: 14,
-    fontWeight: 'bold',
+  userContainer: {
     marginLeft: 20,
+    marginTop: height * 0.01,
+    paddingVertical: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#c2c2c2',
+
+    // backgroundColor: '#f7cbcb',
   },
+  user: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    // marginBottom: height * 0.05,
+  },
+  // RecommendText: {
+  //   fontSize: 14,
+  //   fontWeight: 'bold',
+  //   marginLeft: 20,
+  // },
   logoutContainer: {
     marginLeft: 20,
-    marginTop: Platform.OS === 'ios' ? 10 : height * 0.09,
+    marginTop: Platform.OS === 'ios' ? height * 0.04 : height * 0.1,
     // bottom: Platform.OS === 'ios' ? 10 : 0,
   },
   logoutText: {

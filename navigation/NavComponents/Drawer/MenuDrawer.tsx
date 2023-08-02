@@ -84,6 +84,7 @@ const MenuDrawer = () => {
           title: 'Settings',
         })}
       />
+
       <Drawer.Screen
         name="User"
         component={UserScreen}
@@ -91,6 +92,7 @@ const MenuDrawer = () => {
           title: 'User',
         })}
       />
+
       <Drawer.Screen
         name="SignIn"
         component={SignInScreen}
