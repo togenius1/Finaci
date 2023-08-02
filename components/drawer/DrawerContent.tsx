@@ -59,7 +59,7 @@ const DrawerContent = ({props}: Props) => {
     };
 
     onAuthUser();
-  }, []);
+  }, [isAuthenticated]);
 
   const accountAuthHandler = () => {
     navigation.navigate('User');

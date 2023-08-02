@@ -22,7 +22,7 @@ const Export = () => {
 
   const customerInfosData = dataLoaded?.customerInfos?.customerInfos;
 
-  const [jsonData, setJsonData] = useState();
+  // const [jsonData, setJsonData] = useState();
   const [newJson, setNewJson] = useState();
 
   const navigation = useNavigation();
@@ -56,7 +56,7 @@ const Export = () => {
 
   useEffect(() => {
     createNewObject();
-  }, [jsonData]);
+  }, []);
 
   // Export format.
   const createNewObject = () => {
