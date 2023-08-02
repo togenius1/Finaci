@@ -83,7 +83,7 @@ const DrawerContent = ({props}: Props) => {
             <View style={{flexDirection: 'row'}}>
               <MaterialCommunityIcons
                 name="chart-donut-variant"
-                size={24}
+                size={width * 0.065}
                 color={colors.overview}
               />
               <Text style={styles.overviewText}>Overview</Text>
@@ -102,7 +102,7 @@ const DrawerContent = ({props}: Props) => {
               }}>
               <Ionicons
                 name="remove-outline"
-                size={22}
+                size={width * 0.065}
                 color={colors.expense}
               />
               <Text style={styles.expenseText}>Transactions</Text>
@@ -119,7 +119,7 @@ const DrawerContent = ({props}: Props) => {
             <View style={{flexDirection: 'row', marginBottom: height / 50}}>
               <Ionicons
                 name="bar-chart-outline"
-                size={24}
+                size={width * 0.065}
                 color={colors.stats}
               />
               <Text style={styles.overviewText}>Stats</Text>
@@ -137,7 +137,11 @@ const DrawerContent = ({props}: Props) => {
                 marginTop: height / 50,
                 marginBottom: 20,
               }}>
-              <Ionicons name="wallet-outline" size={22} color={colors.budget} />
+              <Ionicons
+                name="wallet-outline"
+                size={width * 0.065}
+                color={colors.budget}
+              />
               <Text style={styles.budgetText}>Accounts</Text>
             </View>
           </Pressable>
@@ -152,7 +156,7 @@ const DrawerContent = ({props}: Props) => {
             <View style={{flexDirection: 'row'}}>
               <Ionicons
                 name="newspaper-outline"
-                size={22}
+                size={width * 0.065}
                 color={colors.budget}
               />
               <Text style={styles.reportText}>Export</Text>
@@ -169,7 +173,7 @@ const DrawerContent = ({props}: Props) => {
             <View style={{flexDirection: 'row'}}>
               <Ionicons
                 name="cloud-upload-outline"
-                size={22}
+                size={width * 0.065}
                 color={colors.budget}
               />
               <Text style={styles.reportText}>Backup/Restore</Text>
@@ -181,10 +185,10 @@ const DrawerContent = ({props}: Props) => {
           <Pressable
             style={({pressed}) => pressed && styles.pressed}
             onPress={() => accountAuthHandler()}>
-            <View style={{flexDirection: 'row', marginBottom: height / 50}}>
+            <View style={styles.user}>
               <MaterialCommunityIcons
                 name="account-outline"
-                size={24}
+                size={width * 0.07}
                 color={colors.paywall}
               />
               <Text style={styles.settingText}>User account</Text>
@@ -214,7 +218,11 @@ const DrawerContent = ({props}: Props) => {
               navigation.navigate('Settings');
             }}>
             <View style={{flexDirection: 'row'}}>
-              <Ionicons name="cog-outline" size={22} color={colors.setting} />
+              <Ionicons
+                name="cog-outline"
+                size={width * 0.065}
+                color={colors.setting}
+              />
               <Text style={styles.settingText}>Settings</Text>
             </View>
           </Pressable>
@@ -225,7 +233,11 @@ const DrawerContent = ({props}: Props) => {
             style={({pressed}) => pressed && styles.pressed}
             onPress={() => signHandler()}>
             <View style={{flexDirection: 'row'}}>
-              <Ionicons name="log-out" size={22} color={colors.user} />
+              <Ionicons
+                name="log-out"
+                size={width * 0.065}
+                color={colors.user}
+              />
               <Text style={styles.logoutText}>
                 {isAuthenticated ? 'Sign out' : 'Sign in'}
               </Text>
@@ -302,7 +314,11 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginTop: height / 15,
   },
-
+  user: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    marginBottom: height / 50,
+  },
   settingContainer: {
     marginLeft: 20,
     marginTop: height / 5.5,

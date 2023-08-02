@@ -5,7 +5,7 @@ import {
   ScrollView,
   StyleSheet,
   View,
-  DevSettings,
+  // DevSettings,
 } from 'react-native';
 import React, {useState} from 'react';
 import {useForm} from 'react-hook-form';
@@ -55,8 +55,7 @@ const SignInScreen = ({navigation}: Props) => {
 
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
-      <View style={styles.root}>
-        {/* <Image
+      {/* <Image
           source={Logo}
           style={[
             styles.logo,
@@ -68,6 +67,7 @@ const SignInScreen = ({navigation}: Props) => {
           ]}
           resizeMode="cover"
         /> */}
+      <View style={styles.root}>
         <CustomInput
           name="username"
           placeholder="Username"
@@ -117,6 +117,7 @@ export default SignInScreen;
 const styles = StyleSheet.create({
   root: {
     height: height,
+    // marginTop: height * 0.2,
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
