@@ -35,8 +35,6 @@ const UserScreen = () => {
   const [authUser, setAuthUser] = useState<any>();
   const [loading, setLoading] = useState<boolean>(true);
 
-
-
   useEffect(() => {
     const onAuthUser = async () => {
       const authUser = await Auth.currentAuthenticatedUser();

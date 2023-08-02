@@ -73,7 +73,7 @@ const App = () => {
   );
 
   // const [currentUser, setCurrentUser] = useState<LazyUser[]>([]);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>();
+  // const [isAuthenticated, setIsAuthenticated] = useState<boolean>();
   // const [cloudPrivateKey, setCloudPrivateKey] = useState<string | null>('');
   const [closedAds, setClosedAds] = useState<boolean>(false);
   // const [localPrivateKey, setLocalPrivateKey] = useState<string | null>();
@@ -119,17 +119,17 @@ const App = () => {
     }
   }, [latestVersion, currentVersion]);
 
-  // Check if authenticated user, Stay logged in.
-  useEffect(() => {
-    const isAuthenticated = async () => {
-      // const authUser = await Auth.currentAuthenticatedUser({bypassCache: true});
-      const authUser = await Auth.currentAuthenticatedUser();
+  // // Check if authenticated user, Stay logged in.
+  // useEffect(() => {
+  //   const isAuthenticated = async () => {
+  //     // const authUser = await Auth.currentAuthenticatedUser({bypassCache: true});
+  //     const authUser = await Auth.currentAuthenticatedUser();
 
-      setIsAuthenticated(true);
-    };
+  //     // setIsAuthenticated(true);
+  //   };
 
-    isAuthenticated();
-  }, []);
+  //   isAuthenticated();
+  // }, []);
 
   // Fetch category
   useEffect(() => {
@@ -158,10 +158,10 @@ const App = () => {
         await getUserData();
         onCloseBannerAds();
 
-        setIsAuthenticated(true);
+        // setIsAuthenticated(true);
       }
       if (data.payload.event === 'signOut') {
-        setIsAuthenticated(false);
+        // setIsAuthenticated(false);
         await getUserData();
       }
     };

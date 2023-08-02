@@ -8,7 +8,7 @@ import {
   View,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {Auth} from 'aws-amplify';
+import {Auth, Hub} from 'aws-amplify';
 import moment from 'moment';
 
 import {xport} from '../../util/xport';
@@ -26,6 +26,33 @@ const Export = () => {
   const [newJson, setNewJson] = useState();
 
   const navigation = useNavigation();
+
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  // const [authUser, setAuthUser] = useState<any>();
+
+  useEffect(() => {
+    const listenerAuth = async data => {
+      if (data.payload.event === 'signIn') {
+        setIsAuthenticated(true);
+      }
+      if (data.payload.event === 'signOut') {
+        setIsAuthenticated(false);
+      }
+    };
+
+    Hub.listen('auth', listenerAuth);
+  }, []);
+
+  // Check if authenticated user, Stay logged in.
+  useEffect(() => {
+    const onAuthUser = async () => {
+      const authUser = await Auth.currentAuthenticatedUser();
+      // setAuthUser(authUser);
+      setIsAuthenticated(true);
+    };
+
+    onAuthUser();
+  }, []);
 
   useEffect(() => {
     createNewObject();
@@ -92,20 +119,47 @@ const Export = () => {
 
   // Check Pro or standard
   const checkPro = async (data: {}) => {
-    const authUser = await Auth.currentAuthenticatedUser();
-    const appUserId = authUser?.attributes?.sub;
-    const filteredCustomerInfo = customerInfosData?.filter(
-      cus => cus.appUserId === appUserId,
-    );
+    if (isAuthenticated) {
+      const authUser = await Auth.currentAuthenticatedUser();
+      const appUserId = authUser?.attributes?.sub;
+      const filteredCustomerInfo = customerInfosData?.filter(
+        cus => cus.appUserId === appUserId,
+      );
 
-    if (filteredCustomerInfo[0]?.proActive === false) {
+      if (filteredCustomerInfo[0]?.proActive === false) {
+        Alert.alert(
+          'This function is for Pro users.',
+          'Would you like to purchase Pro(Premium)?',
+          [
+            {
+              text: 'Yes',
+              onPress: () => navigation.navigate('User'),
+              style: 'destructive',
+            },
+            {
+              text: 'No',
+              style: 'cancel',
+            },
+          ],
+          {
+            cancelable: true,
+            // onDismiss: () =>
+            //   Alert.alert(
+            //     'This alert was dismissed by tapping outside of the alert dialog.',
+            //   ),
+          },
+        );
+      } else {
+        await exportHandler(data);
+      }
+    } else if (!isAuthenticated) {
       Alert.alert(
-        'This function is for Pro users.',
-        'Would you like to purchase Pro(Premium)?',
+        'You do not signed in!',
+        'Please sign in now.',
         [
           {
             text: 'Yes',
-            onPress: () => navigation.navigate('Paywall'),
+            onPress: () => navigation.navigate('User'),
             style: 'destructive',
           },
           {
@@ -121,8 +175,6 @@ const Export = () => {
           //   ),
         },
       );
-    } else {
-      await exportHandler(data);
     }
   };
 

@@ -24,7 +24,7 @@ import {
   fetchFindFolder,
 } from '../util/fetchData';
 import {authorization, refreshAuthorize} from '../util/auth';
-import {Auth, DataStore} from 'aws-amplify';
+import {Auth, Hub} from 'aws-amplify';
 // import {
 //   generatePublicKeyFromSecretKey,
 //   PRIVATE_KEY,
@@ -88,6 +88,10 @@ const BackupScreen = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [authUser, setAuthUser] = useState<any>();
 
+  const {isLoaded, isClosed, load, show} = useInterstitialAd(adUnitId, {
+    requestNonPersonalizedAdsOnly: true,
+  });
+
   // Check if authenticated user, Stay logged in.
   useEffect(() => {
     const onAuthUser = async () => {
@@ -99,9 +103,20 @@ const BackupScreen = () => {
     onAuthUser();
   }, []);
 
-  const {isLoaded, isClosed, load, show} = useInterstitialAd(adUnitId, {
-    requestNonPersonalizedAdsOnly: true,
-  });
+  // Listening for Login events.
+  useEffect(() => {
+    const listenerAuth = async data => {
+      if (data.payload.event === 'signIn') {
+        // DevSettings.reload();
+        setIsAuthenticated(true);
+      }
+      if (data.payload.event === 'signOut') {
+        setIsAuthenticated(false);
+      }
+    };
+
+    Hub.listen('auth', listenerAuth);
+  }, []);
 
   // Load ads
   useEffect(() => {
