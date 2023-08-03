@@ -78,8 +78,8 @@ android {
         applicationId "com.togenius1.finner"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 47
-        versionName "1.4.6"
+        versionCode 48
+        versionName "1.4.7"
 
         manifestPlaceholders = [
          appAuthRedirectScheme: 'com.togenius1.finner'

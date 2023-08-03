@@ -322,7 +322,7 @@ const styles = StyleSheet.create({
   },
   userContainer: {
     marginLeft: 20,
-    marginTop: height * 0.015,
+    marginTop: height * 0.030,
     paddingVertical: 15,
     borderTopWidth: 1,
     borderTopColor: '#c2c2c2',
@@ -341,7 +341,7 @@ const styles = StyleSheet.create({
   // },
   logoutContainer: {
     marginLeft: 20,
-    marginTop: Platform.OS === 'ios' ? height * 0.04 : height * 0.1,
+    marginTop: Platform.OS === 'ios' ? height * 0.025 : height * 0.08,
     // bottom: Platform.OS === 'ios' ? 10 : 0,
   },
   logoutText: {
