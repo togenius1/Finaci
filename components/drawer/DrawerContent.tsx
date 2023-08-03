@@ -322,10 +322,10 @@ const styles = StyleSheet.create({
   },
   userContainer: {
     marginLeft: 20,
-    marginTop: height * 0.01,
+    marginTop: height * 0.015,
     paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#c2c2c2',
+    borderTopWidth: 1,
+    borderTopColor: '#c2c2c2',
 
     // backgroundColor: '#f7cbcb',
   },
