@@ -13,6 +13,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 // import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {Auth, Hub} from 'aws-amplify';
+import {isTablet} from 'react-native-device-info';
 
 type Props = {};
 
@@ -83,7 +84,7 @@ const DrawerContent = ({props}: Props) => {
             <View style={{flexDirection: 'row'}}>
               <MaterialCommunityIcons
                 name="chart-donut-variant"
-                size={width * 0.065}
+                size={width * 0.060}
                 color={colors.overview}
               />
               <Text style={styles.overviewText}>Overview</Text>
@@ -103,7 +104,7 @@ const DrawerContent = ({props}: Props) => {
               }}>
               <Ionicons
                 name="remove-outline"
-                size={width * 0.065}
+                size={width * 0.060}
                 color={colors.expense}
               />
               <Text style={styles.expenseText}>Transactions</Text>
@@ -120,7 +121,7 @@ const DrawerContent = ({props}: Props) => {
             <View style={{flexDirection: 'row', marginBottom: height / 50}}>
               <Ionicons
                 name="bar-chart-outline"
-                size={width * 0.065}
+                size={width * 0.06}
                 color={colors.stats}
               />
               <Text style={styles.overviewText}>Stats</Text>
@@ -140,7 +141,7 @@ const DrawerContent = ({props}: Props) => {
               }}>
               <Ionicons
                 name="wallet-outline"
-                size={width * 0.065}
+                size={width * 0.060}
                 color={colors.budget}
               />
               <Text style={styles.budgetText}>Accounts</Text>
@@ -157,7 +158,7 @@ const DrawerContent = ({props}: Props) => {
             <View style={{flexDirection: 'row'}}>
               <Ionicons
                 name="newspaper-outline"
-                size={width * 0.065}
+                size={width * 0.060}
                 color={colors.budget}
               />
               <Text style={styles.reportText}>Export</Text>
@@ -174,7 +175,7 @@ const DrawerContent = ({props}: Props) => {
             <View style={{flexDirection: 'row'}}>
               <Ionicons
                 name="cloud-upload-outline"
-                size={width * 0.065}
+                size={width * 0.060}
                 color={colors.budget}
               />
               <Text style={styles.reportText}>Backup/Restore</Text>
@@ -206,7 +207,7 @@ const DrawerContent = ({props}: Props) => {
             <View style={{flexDirection: 'row'}}>
               <Ionicons
                 name="cog-outline"
-                size={width * 0.065}
+                size={width * 0.060}
                 color={colors.setting}
               />
               <Text style={styles.settingText}>Settings</Text>
@@ -221,7 +222,7 @@ const DrawerContent = ({props}: Props) => {
             <View style={styles.user}>
               <MaterialCommunityIcons
                 name="account-outline"
-                size={width * 0.07}
+                size={width * 0.065}
                 color={colors.paywall}
               />
               <Text style={styles.settingText}>User account</Text>
@@ -236,7 +237,7 @@ const DrawerContent = ({props}: Props) => {
             <View style={{flexDirection: 'row'}}>
               <Ionicons
                 name="log-out"
-                size={width * 0.065}
+                size={width * 0.060}
                 color={colors.user}
               />
               <Text style={styles.logoutText}>
@@ -322,7 +323,7 @@ const styles = StyleSheet.create({
   },
   userContainer: {
     marginLeft: 20,
-    marginTop: height * 0.030,
+    marginTop: height * 0.03,
     paddingVertical: 15,
     borderTopWidth: 1,
     borderTopColor: '#c2c2c2',
@@ -342,7 +343,7 @@ const styles = StyleSheet.create({
   logoutContainer: {
     marginLeft: 20,
     marginTop: Platform.OS === 'ios' ? height * 0.025 : height * 0.08,
-    // bottom: Platform.OS === 'ios' ? 10 : 0,
+    bottom: isTablet() ? 50 : 0,
   },
   logoutText: {
     fontSize: 14,
