@@ -13,6 +13,12 @@ import moment from 'moment';
 
 import {xport} from '../../util/xport';
 import {useAppSelector} from '../../hooks';
+import {TestIds, useInterstitialAd} from 'react-native-google-mobile-ads';
+
+// Ads variable
+const adUnitId = __DEV__
+  ? TestIds.INTERSTITIAL
+  : 'ca-app-pub-3212728042764573~3355076099';
 
 const {width} = Dimensions.get('window');
 
@@ -29,6 +35,24 @@ const Export = () => {
 
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   // const [authUser, setAuthUser] = useState<any>();
+
+  const {isLoaded, isClosed, load, show} = useInterstitialAd(adUnitId, {
+    requestNonPersonalizedAdsOnly: true,
+  });
+
+  // Load ads
+  useEffect(() => {
+    // Start loading the interstitial straight away
+    load();
+  }, [load]);
+
+  // Load ads again
+  useEffect(() => {
+    if (isClosed) {
+      // console.log('Reloading ad...');
+      load();
+    }
+  }, [isClosed]);
 
   useEffect(() => {
     const listenerAuth = async data => {
@@ -117,8 +141,14 @@ const Export = () => {
     setNewJson(obj);
   };
 
+  useEffect(() => {
+    if (isClosed) {
+      exportHandler();
+    }
+  }, [isClosed]);
+
   // Check Pro or standard
-  const checkPro = async (data: {}) => {
+  const checkPro = async () => {
     if (isAuthenticated) {
       const authUser = await Auth.currentAuthenticatedUser();
       const appUserId = authUser?.attributes?.sub;
@@ -126,31 +156,24 @@ const Export = () => {
         cus => cus.appUserId === appUserId,
       );
 
-      if (filteredCustomerInfo[0]?.proActive === false) {
-        Alert.alert(
-          'This function is for Pro users.',
-          'Would you like to purchase Pro(Premium)?',
-          [
-            {
-              text: 'Yes',
-              onPress: () => navigation.navigate('User'),
-              style: 'destructive',
-            },
-            {
-              text: 'No',
-              style: 'cancel',
-            },
-          ],
-          {
-            cancelable: true,
-            // onDismiss: () =>
-            //   Alert.alert(
-            //     'This alert was dismissed by tapping outside of the alert dialog.',
-            //   ),
-          },
-        );
-      } else {
-        await exportHandler(data);
+      if (
+        filteredCustomerInfo[0]?.stdActive === false &&
+        filteredCustomerInfo[0]?.proActive === false
+      ) {
+        // show Ads
+        if (isLoaded) {
+          show();
+        }
+
+        // Action after the ad is closed
+        if (isClosed) {
+          await exportHandler();
+        }
+      } else if (
+        filteredCustomerInfo[0]?.stdActive === true ||
+        filteredCustomerInfo[0]?.proActive === true 
+      ) {
+        await exportHandler();
       }
     } else if (!isAuthenticated) {
       Alert.alert(
@@ -179,8 +202,8 @@ const Export = () => {
   };
 
   // Export
-  const exportHandler = async (data: {}) => {
-    await xport(data);
+  const exportHandler = async () => {
+    await xport(newJson);
   };
 
   return (
@@ -194,7 +217,7 @@ const Export = () => {
 
         <Pressable
           style={({pressed}) => pressed && styles.pressed}
-          onPress={() => checkPro(newJson)}>
+          onPress={() => checkPro()}>
           <View style={{marginTop: 20}}>
             <Text style={{fontSize: 18}}>Excel (.xls)</Text>
             <Text style={{fontSize: 14}}>
