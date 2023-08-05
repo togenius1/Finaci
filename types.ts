@@ -12,6 +12,7 @@ export type RootStackParamList = {
   ForgotPassword: undefined;
   NewPassword: undefined;
 
+  OverviewStack: undefined;
   Overview: undefined;
   Transactions: undefined;
   Stats: undefined;

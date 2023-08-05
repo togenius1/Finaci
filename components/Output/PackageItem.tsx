@@ -1,25 +1,28 @@
-import {
-  Alert,
-  DevSettings,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import {Alert, Pressable, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-// import {useNavigation} from '@react-navigation/native';
-import Purchases from 'react-native-purchases';
+import {useNavigation} from '@react-navigation/native';
+import Purchases, {PurchasesPackage} from 'react-native-purchases';
 
 import {ENTITLEMENT_PRO, ENTITLEMENT_STD} from '../../constants/api';
-import {Auth} from 'aws-amplify';
+// import {Auth} from 'aws-amplify';
 
 type Props = {
   stdActive: boolean;
   proActive: boolean;
-  purchasePackage: any[];
+  purchasePackage: PurchasesPackage;
+  setPurchased: React.Dispatch<React.SetStateAction<boolean>>;
+  reloadScreen: () => Promise<void>;
 };
 
-const PackageItemsScreen = ({purchasePackage, stdActive, proActive}: Props) => {
+const PackageItem = ({
+  purchasePackage,
+  stdActive,
+  proActive,
+  setPurchased,
+  reloadScreen,
+}: Props) => {
+  // const navigation = useNavigation<any>();
+
   const {
     product: {identifier, title, description, priceString},
   } = purchasePackage;
@@ -41,10 +44,11 @@ const PackageItemsScreen = ({purchasePackage, stdActive, proActive}: Props) => {
         typeof customerInfo.entitlements.active[ENTITLEMENT_STD] !== 'undefined'
       ) {
         // Unlock that great "pro" content
-        Auth.signOut();
+        // Auth.signOut();
         // ios:  NativeModules.DevSettings.reload();??
-        DevSettings.reload();
-        // navigation.goBack();
+        // DevSettings.reload();
+        await reloadScreen();
+        setPurchased(true);
       }
     } catch (e) {
       if (!e.userCancelled) {
@@ -76,7 +80,7 @@ const PackageItemsScreen = ({purchasePackage, stdActive, proActive}: Props) => {
   );
 };
 
-export default PackageItemsScreen;
+export default PackageItem;
 
 const styles = StyleSheet.create({
   container: {

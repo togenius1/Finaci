@@ -5,36 +5,45 @@ import {
   FlatList,
   StyleSheet,
   Linking,
-  // DevSettings,
+  Platform,
   ActivityIndicator,
 } from 'react-native';
-import Purchases from 'react-native-purchases';
+import Purchases, {LOG_LEVEL, PurchasesPackage} from 'react-native-purchases';
 import PackageItem from '../components/Output/PackageItem';
 import RestorePurchasesButton from '../components/UI/RestorePurchasesButton';
+import moment from 'moment';
 
 import Credits from '../components/Credits';
-import {useAppSelector} from '../hooks';
+import {useAppDispatch, useAppSelector} from '../hooks';
 import {Auth, Hub} from 'aws-amplify';
 // import SignInScreen from '../navigation/NavComponents/Login/screens/SignInScreen';
 import RootStackScreen from '../navigation/RootStack';
+import {API_KEY, ENTITLEMENT_PRO, ENTITLEMENT_STD} from '../constants/api';
+import {customerInfoActions} from '../store/customerInfo-slice';
+import {useFocusEffect, useIsFocused} from '@react-navigation/native';
+// import {API_KEY} from '../constants/api';
 
 /*
  An example paywall that uses the current offering.
  */
 const UserScreen = () => {
   // - Data Store (Redux)
+  const dispatch = useAppDispatch();
   const dataLoaded = useAppSelector(store => store);
 
   const customerInfo = dataLoaded?.customerInfos?.customerInfos;
 
+  const customerInfosData = dataLoaded?.customerInfos?.customerInfos;
+
   // - State for all available package
-  const [packages, setPackages] = useState<any[]>([]);
+  const [packages, setPackages] = useState<PurchasesPackage[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
   const [subSTDActive, setSubSTDActive] = useState<boolean>(false);
   const [subPROActive, setSubPROActive] = useState<boolean>(false);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [authUser, setAuthUser] = useState<any>();
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [purchased, setPurchased] = useState<boolean>(false);
 
   useEffect(() => {
     const onAuthUser = async () => {
@@ -44,14 +53,12 @@ const UserScreen = () => {
     };
 
     onAuthUser();
-  }, [isAuthenticated]);
+  }, []);
 
   useEffect(() => {
     const listenerAuth = async data => {
       if (data.payload.event === 'signIn') {
         setIsAuthenticated(true);
-
-        await packageHandler();
       }
       if (data.payload.event === 'signOut') {
         setIsAuthenticated(false);
@@ -59,35 +66,121 @@ const UserScreen = () => {
     };
 
     Hub.listen('auth', listenerAuth);
+    return () => {
+      Purchases.removeCustomerInfoUpdateListener(listenerAuth); // Clean up the listener
+    };
   }, []);
 
-  // // TODO Fetch all packages from RevenueCat
+  // Purchase Listener
   useEffect(() => {
-    const packages = async () => {
-      await packageHandler();
+    if (isAuthenticated) {
+      Purchases.addCustomerInfoUpdateListener(getUserData);
+    }
+
+    return () => {
+      Purchases.removeCustomerInfoUpdateListener(getUserData);
     };
-    packages();
   }, [isAuthenticated]);
 
-  // Get Customer data
-  useEffect(() => {
-    getCustomerData();
-  }, []);
+  // TODO Fetch all packages from RevenueCat
+  useFocusEffect(
+    React.useCallback(() => {
+      if (isAuthenticated) {
+        configurePurchasesAndFetchPackages();
+        setPurchased(false);
+      }
+    }, [isAuthenticated, purchased]),
+  );
+
+  // Config purchase -- then fetch packages
+  const configurePurchasesAndFetchPackages = async () => {
+    try {
+      await configurePurchases();
+      await fetchPackages();
+      await getUserData();
+      await getCustomerData();
+      // await listenPurchases();
+    } catch (error) {
+      console.error('Error configuring or fetching packages:', error);
+    }
+  };
+
+  // Configuring Purchases
+  const configurePurchases = async () => {
+    try {
+      Purchases.setLogLevel(LOG_LEVEL.VERBOSE);
+      const authUser = await Auth.currentAuthenticatedUser();
+
+      if (Platform.OS === 'ios') {
+        Purchases.configure({apiKey: ''});
+      } else if (Platform.OS === 'android') {
+        // Purchases.configure({apiKey: API_KEY});
+        Purchases.configure({
+          apiKey: API_KEY,
+          appUserID: authUser?.attributes?.sub,
+        });
+
+        // OR: if building for Amazon, be sure to follow the installation instructions then:
+        //  Purchases.configure({ apiKey: <public_amazon_sdk_key>, useAmazon: true });
+      }
+    } catch (error) {
+      console.error('Error configuring Purchases:', error);
+    }
+  };
 
   // get package
-  const packageHandler = async () => {
+  const fetchPackages = async () => {
     try {
+      setLoading(true);
       const offerings = await Purchases?.getOfferings();
 
-      if (offerings.current !== null) {
-        // Display current offering with offerings.current
+      if (offerings && offerings.current !== null) {
         setPackages(offerings.current.availablePackages);
       }
 
       setLoading(false); // Set loading to false once packages are fetched
-    } catch (e) {
-      console.log('error: ', e);
+    } catch (error) {
+      console.log('Error fetching packages:', error);
       setLoading(false); // Set loading to false in case of an error
+    }
+  };
+
+  const getUserData = async () => {
+    // Delete data in Storage
+    // fetchCustomerInfoData();
+    const customerInfo = await Purchases.getCustomerInfo();
+    const appUserId = await Purchases.getAppUserID();
+    const stdActive =
+      typeof customerInfo?.entitlements?.active[ENTITLEMENT_STD] !==
+      'undefined';
+    const proActive =
+      typeof customerInfo?.entitlements?.active[ENTITLEMENT_PRO] !==
+      'undefined';
+
+    const customerInfoInStorage = customerInfosData?.filter(
+      cus => cus.appUserId === appUserId,
+    );
+
+    if (customerInfoInStorage?.length === 0) {
+      dispatch(
+        customerInfoActions.addCustomerInfo({
+          id: 'accountInfo-' + appUserId,
+          appUserId: appUserId,
+          stdActive: stdActive,
+          proActive: proActive,
+          date: moment(),
+        }),
+      );
+    } else {
+      dispatch(
+        customerInfoActions.updateCustomerInfo({
+          id: customerInfoInStorage[0]?.id,
+          appUserId: appUserId,
+          stdActive: stdActive,
+          proActive: proActive,
+          date: moment(),
+        }),
+      );
     }
   };
 
@@ -101,6 +194,15 @@ const UserScreen = () => {
     setUserId(filteredCustomerInfo[0]?.appUserId);
     setSubSTDActive(filteredCustomerInfo[0]?.stdActive);
     setSubPROActive(filteredCustomerInfo[0]?.proActive);
+  };
+
+  const reloadScreen = async () => {
+    try {
+      await configurePurchasesAndFetchPackages();
+      // You might need to update other state variables here
+    } catch (error) {
+      console.error('Error reconfiguring or fetching packages:', error);
+    }
   };
 
   // Header
@@ -134,6 +236,8 @@ const UserScreen = () => {
         purchasePackage={item}
         stdActive={subSTDActive}
         proActive={subPROActive}
+        setPurchased={setPurchased}
+        reloadScreen={reloadScreen}
       />
     );
   };

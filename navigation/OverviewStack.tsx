@@ -24,8 +24,8 @@ const OverviewStack = ({}: Props) => {
             <View style={styles.headerLeft}>
               <Ionicons
                 name="menu-outline"
-                size={Platform.OS === 'ios' ? width * 0.07 : width * 0.08}
-                color="grey"
+                size={27}
+                color="#000000"
                 style={{marginBottom: 1}}
                 // onPress={() => navigation.toggleDrawer()}
               />

@@ -32,7 +32,7 @@ const DrawerNavigator = () => {
       })}
       drawerContent={props => <DrawerContent {...props} />}>
       <Drawer.Screen
-        name="Overview"
+        name="OverviewStack"
         component={OverviewStack}
         options={() => ({
           // title: 'Overview',

@@ -3,7 +3,7 @@ import {
   Alert,
   Linking,
   LogBox,
-  Platform,
+  // Platform,
   Pressable,
   StatusBar,
   StyleSheet,
@@ -15,7 +15,7 @@ import {setPRNG} from 'tweetnacl';
 import {Amplify, Auth, DataStore, Hub} from 'aws-amplify';
 import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import Purchases, {LOG_LEVEL} from 'react-native-purchases';
+// import Purchases, {LOG_LEVEL} from 'react-native-purchases';
 import VersionCheck from 'react-native-version-check';
 import DeviceInfo from 'react-native-device-info';
 
@@ -30,8 +30,8 @@ import awsconfig from './src/aws-exports';
 import {User} from './src/models';
 import {authAccountsActions} from './store/authAccount-slice';
 import moment from 'moment';
-import {API_KEY, ENTITLEMENT_PRO, ENTITLEMENT_STD} from './constants/api';
-import {customerInfoActions} from './store/customerInfo-slice';
+// import {API_KEY, ENTITLEMENT_PRO, ENTITLEMENT_STD} from './constants/api';
+// import {customerInfoActions} from './store/customerInfo-slice';
 import TransactProvider from './store-context/TransactProvider';
 import OverviewProvider from './store-context/OverviewProvider';
 
@@ -45,8 +45,8 @@ const adUnitId = __DEV__
 
 const App = () => {
   // // Disable warnings for release app.
-  // LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message:
-  // LogBox.ignoreAllLogs(); // Ignore all log notifications: add
+  LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message:
+  LogBox.ignoreAllLogs(); // Ignore all log notifications: add
 
   const dispatch = useAppDispatch();
   const dataLoaded = useAppSelector(store => store);
@@ -73,12 +73,11 @@ const App = () => {
   );
 
   // const [currentUser, setCurrentUser] = useState<LazyUser[]>([]);
-  // const [isAuthenticated, setIsAuthenticated] = useState<boolean>();
+  // const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   // const [cloudPrivateKey, setCloudPrivateKey] = useState<string | null>('');
   const [closedAds, setClosedAds] = useState<boolean>(false);
   // const [localPrivateKey, setLocalPrivateKey] = useState<string | null>();
   const [showIndicator, setShowIndicator] = useState<boolean>(false);
-
   const [latestVersion, setLatestVersion] = useState(null);
 
   useEffect(() => {
@@ -119,18 +118,6 @@ const App = () => {
     }
   }, [latestVersion, currentVersion]);
 
-  // // Check if authenticated user, Stay logged in.
-  // useEffect(() => {
-  //   const isAuthenticated = async () => {
-  //     // const authUser = await Auth.currentAuthenticatedUser({bypassCache: true});
-  //     const authUser = await Auth.currentAuthenticatedUser();
-
-  //     // setIsAuthenticated(true);
-  //   };
-
-  //   isAuthenticated();
-  // }, []);
-
   // Fetch category
   useEffect(() => {
     if (expenseCateData.length === 0) {
@@ -151,45 +138,21 @@ const App = () => {
   useEffect(() => {
     const listenerAuth = async data => {
       if (data.payload.event === 'signIn') {
-        // DevSettings.reload();
-
-        await checkUserAndGenerateNewKey();
-        await configPurchase();
-        await getUserData();
-        onCloseBannerAds();
-
         // setIsAuthenticated(true);
+
+        // await configurePurchases();
+        await checkUserAndGenerateNewKey();
+        // await getUserData();
+        onCloseBannerAds();
       }
       if (data.payload.event === 'signOut') {
         // setIsAuthenticated(false);
-        await getUserData();
+        // await getUserData();
       }
     };
 
     Hub.listen('auth', listenerAuth);
   }, []);
-
-  // Configure purchase
-  useEffect(() => {
-    const config = async () => {
-      await configPurchase();
-    };
-    config();
-  }, []);
-
-  // Purchase Listener
-  useEffect(() => {
-    Purchases.addCustomerInfoUpdateListener(getUserData);
-
-    return () => {
-      Purchases.removeCustomerInfoUpdateListener;
-    };
-  }, []);
-
-  // Generate backup key
-  // useEffect(() => {
-  //   checkUserAndGenerateNewKey();
-  // }, []);
 
   // Close Ads
   useEffect(() => {
@@ -204,65 +167,6 @@ const App = () => {
       // Additional cleanup or navigation logic can be performed here
     } catch (error) {
       console.log('Error signing out: ', error);
-    }
-  };
-
-  // Load Purchases
-  const configPurchase = async () => {
-    Purchases.setLogLevel(LOG_LEVEL.VERBOSE);
-    const authUser = await Auth.currentAuthenticatedUser();
-
-    if (Platform.OS === 'ios') {
-      Purchases.configure({apiKey: ''});
-    } else if (Platform.OS === 'android') {
-      // Purchases.configure({apiKey: API_KEY});
-      Purchases.configure({
-        apiKey: API_KEY,
-        appUserID: authUser?.attributes?.sub,
-      });
-
-      // OR: if building for Amazon, be sure to follow the installation instructions then:
-      //  Purchases.configure({ apiKey: <public_amazon_sdk_key>, useAmazon: true });
-    }
-  };
-
-  // Get User Data
-  const getUserData = async () => {
-    // Delete data in Storage
-    // fetchCustomerInfoData();
-    const customerInfo = await Purchases.getCustomerInfo();
-    const appUserId = await Purchases.getAppUserID();
-    const stdActive =
-      typeof customerInfo?.entitlements?.active[ENTITLEMENT_STD] !==
-      'undefined';
-    const proActive =
-      typeof customerInfo?.entitlements?.active[ENTITLEMENT_PRO] !==
-      'undefined';
-
-    const customerInfoInStorage = customerInfosData?.filter(
-      cus => cus.appUserId === appUserId,
-    );
-
-    if (customerInfoInStorage?.length === 0) {
-      dispatch(
-        customerInfoActions.addCustomerInfo({
-          id: 'accountInfo-' + appUserId,
-          appUserId: appUserId,
-          stdActive: stdActive,
-          proActive: proActive,
-          date: moment(),
-        }),
-      );
-    } else {
-      dispatch(
-        customerInfoActions.updateCustomerInfo({
-          id: customerInfoInStorage[0]?.id,
-          appUserId: appUserId,
-          stdActive: stdActive,
-          proActive: proActive,
-          date: moment(),
-        }),
-      );
     }
   };
 
