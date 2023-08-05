@@ -3,19 +3,16 @@ import {
   Alert,
   Linking,
   LogBox,
-  // Platform,
   Pressable,
   StatusBar,
   StyleSheet,
   View,
-  // DevSettings,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {setPRNG} from 'tweetnacl';
 import {Amplify, Auth, DataStore, Hub} from 'aws-amplify';
 import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-// import Purchases, {LOG_LEVEL} from 'react-native-purchases';
 import VersionCheck from 'react-native-version-check';
 import DeviceInfo from 'react-native-device-info';
 
