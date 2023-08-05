@@ -163,8 +163,8 @@ const BackupScreen = () => {
   useEffect(() => {
     timerRef.current = setInterval(() => {
       Alert.alert(
-        'Backup data.',
-        'Do you want to backup your data now?',
+        'Back up data.',
+        'Do you want to back up your data now?',
         [
           {
             text: 'Yes',
@@ -216,7 +216,7 @@ const BackupScreen = () => {
 
   // Backup Alert
   const backupAlert = async obj => {
-    console.log(isAuthenticated)
+    console.log(isAuthenticated);
     if (isAuthenticated) {
       const appUserId = authUser?.attributes?.sub;
       const filteredCustomerInfo = customerInfosData?.filter(
@@ -234,8 +234,10 @@ const BackupScreen = () => {
     }
 
     Alert.alert(
-      isAuthenticated ? 'Backup data!' : 'You do not login!',
-      isAuthenticated ? 'Do you want to backup your data now?' : 'Please login',
+      isAuthenticated ? 'Back up data!' : 'You have not yet signed in!',
+      isAuthenticated
+        ? 'Do you want to back up your data now?'
+        : 'Please sign in now.',
       [
         {
           text: 'Yes',
@@ -329,7 +331,7 @@ const BackupScreen = () => {
       if (filteredCustomerInfo[0]?.proActive === false) {
         Alert.alert(
           'This function is for Pro users.',
-          'Would you like to purchase Pro(Premium)?',
+          'Would you like to purchase Pro (Premium)?',
           [
             {
               text: 'Yes',
@@ -360,9 +362,11 @@ const BackupScreen = () => {
     // Ask to replace the old?
     Alert.alert(
       isAuthenticated
-        ? 'Your old data on your phone will be replaced with the new data.'
-        : 'You do not login now!',
-      isAuthenticated ? 'Do you want to restore data?' : 'Please login now.',
+        ? 'Your old data on the phone will be replaced with new data.'
+        : 'You are not logged in right now!',
+      isAuthenticated
+        ? 'Do you want to restore data?'
+        : 'Please log in to proceed.',
       [
         {
           text: 'Yes',
@@ -410,7 +414,7 @@ const BackupScreen = () => {
 
     if (decrypted === undefined) {
       setShowRestoreIndicator(false);
-      Alert.alert('Your data is empty, nothing to restore');
+      Alert.alert('No data to restore.');
       return;
     }
 

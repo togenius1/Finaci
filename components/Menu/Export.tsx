@@ -171,13 +171,13 @@ const Export = () => {
         }
       } else if (
         filteredCustomerInfo[0]?.stdActive === true ||
-        filteredCustomerInfo[0]?.proActive === true 
+        filteredCustomerInfo[0]?.proActive === true
       ) {
         await exportHandler();
       }
     } else if (!isAuthenticated) {
       Alert.alert(
-        'You do not signed in!',
+        'You have not signed in yet!',
         'Please sign in now.',
         [
           {
