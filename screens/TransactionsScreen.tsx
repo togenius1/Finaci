@@ -10,19 +10,19 @@ import {
   Dimensions,
   PanResponder,
   Platform,
-  // Pressable,
+  Pressable,
   StyleSheet,
-  // Text,
+  Text,
   View,
 } from 'react-native';
 // import Ionicons from 'react-native-vector-icons/Ionicons';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import moment from 'moment';
+import {useNavigation} from '@react-navigation/native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 // import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 
 import MonthYearList from '../components/Menu/MonthYearList';
-import {TransactionNavigationProp} from '../types';
-// import {currencyFormatter} from '../util/currencyFormatter';
 import {sumTotalFunc} from '../util/math';
 import {useAppSelector} from '../hooks';
 import {Auth} from 'aws-amplify';
@@ -32,9 +32,8 @@ import TransactContext from '../store-context/transact-context';
 import TransactHeaderSummary from '../components/Header/TransactHeaderSummary';
 import TopTabs from '../components/tab/TopTabs';
 import HeaderRight from '../components/Header/HeaderRight';
-import {isTablet} from 'react-native-device-info';
 
-const {width} = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
 // Ads variable
 const adUnitId = __DEV__
@@ -48,7 +47,9 @@ const initTabsComponent = Array.from({length: 3}, (_, i) => ({
 }));
 
 // Main
-const TransactionsScreen = ({navigation}: Props) => {
+const TransactionsScreen = ({}: Props) => {
+  const navigation = useNavigation<any>();
+
   // const dispatch = useAppDispatch();
   const dataLoaded = useAppSelector(store => store);
 
@@ -263,31 +264,56 @@ const TransactionsScreen = ({navigation}: Props) => {
     };
   }, [year, month]);
 
+  const openDrawerHandler = () => {
+    navigation.openDrawer();
+  };
+
   // Header Right
   useEffect(() => {
     navigation.setOptions({
       // title: !customPressed && !exportPressed ? 'Transactions' : '',
-      title: '',
-      headerTitleAlign: 'left',
-      // headerStyle: {
-      //   height: height * 0.06,
-      //   backgroundColor: '#b1fd90',
-      // },
       headerRight: () => (
-        <HeaderRight
-          currentTabIndex={currentTabIndex}
-          // navigation={undefined}
-          duration={duration}
-          month={month}
-          year={year}
-          showMonthYearListMenuHandler={showMonthYearListMenuHandler}
-          onFromDateHandler={onFromDateHandler}
-          onToDateHandler={onToDateHandler}
-        />
+        <View
+          style={{
+            width: '100%',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexDirection: 'row',
+          }}>
+          <Pressable
+            style={({pressed}) => pressed && styles.pressed}
+            onPress={() => openDrawerHandler()}>
+            <View
+              style={{
+                justifyContent: 'flex-start',
+                marginLeft: Platform.OS === 'ios' ? 0 : 26,
+                width: width * 0.07,
+                marginTop: height * 0.025,
+                // backgroundColor: '#fed8d8',
+              }}>
+              <Ionicons
+                name="menu-outline"
+                size={Platform.OS === 'ios' ? width * 0.07 : width * 0.08}
+                color="grey"
+                style={{marginBottom: 1}}
+                // onPress={() => navigation.toggleDrawer()}
+              />
+            </View>
+          </Pressable>
+          <HeaderRight
+            currentTabIndex={currentTabIndex}
+            // navigation={undefined}
+            duration={duration}
+            month={month}
+            year={year}
+            showMonthYearListMenuHandler={showMonthYearListMenuHandler}
+            onFromDateHandler={onFromDateHandler}
+            onToDateHandler={onToDateHandler}
+          />
+        </View>
       ),
     });
   }, [
-    navigation,
     duration,
     year,
     // month,
@@ -776,12 +802,12 @@ const styles = StyleSheet.create({
     width: width,
   },
 
-  // pressed: {
-  //   opacity: 0.65,
-  // },
+  pressed: {
+    opacity: 0.65,
+  },
 });
 
 // ============================ TYPE =====================================
 type Props = {
-  navigation: TransactionNavigationProp;
+  // navigation: TransactionNavigationProp;
 };

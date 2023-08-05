@@ -1,9 +1,7 @@
 import React from 'react';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 
-import OverviewScreen from '../../../screens/OverviewScreen';
 import StatsScreen from '../../../screens/StatsScreen';
-import TransactionsScreen from '../../../screens/TransactionsScreen';
 import AccountsScreen from '../../../screens/AccountsScreen';
 import SettingsScreen from '../../../screens/SettingsScreen';
 import DrawerContent from '../../../components/drawer/DrawerContent';
@@ -13,15 +11,12 @@ import BackupScreen from '../../../screens/BackupScreen';
 import {RootStackParamList} from '../../../types';
 // import PaywallScreen from '../../../screens/PaywallScreen';
 import UserScreen from '../../../screens/UserScreen';
-import SignInScreen from '../Login/screens/SignInScreen';
-import SignUpScreen from '../Login/screens/SignUpScreen';
-import ConfirmEmailScreen from '../Login/screens/ConfirmEmailScreen';
-import ForgotPasswordScreen from '../Login/screens/ForgotPasswordScreen';
-import NewPasswordScreen from '../Login/screens/NewPasswordScreen';
+import TransactionStack from '../../TransactionStack';
+import OverviewStack from '../../OverviewStack';
 
 const Drawer = createDrawerNavigator<RootStackParamList>();
 
-const MenuDrawer = () => {
+const DrawerNavigator = () => {
   return (
     <Drawer.Navigator
       useLegacyImplementation={false}
@@ -32,21 +27,24 @@ const MenuDrawer = () => {
           backgroundColor: 'lightgrey',
           width: 240,
         },
+
+        headerShown: false,
       })}
       drawerContent={props => <DrawerContent {...props} />}>
       <Drawer.Screen
         name="Overview"
-        component={OverviewScreen}
+        component={OverviewStack}
         options={() => ({
           // title: 'Overview',
           // headerStyle: {height: 20},
         })}
       />
+
       <Drawer.Screen
         name="Transactions"
-        component={TransactionsScreen}
+        component={TransactionStack}
         options={() => ({
-          title: 'Expenses',
+          title: 'Transactions',
         })}
       />
       <Drawer.Screen
@@ -54,6 +52,7 @@ const MenuDrawer = () => {
         component={StatsScreen}
         options={() => ({
           title: 'Stats',
+          headerShown: true,
         })}
       />
       <Drawer.Screen
@@ -61,6 +60,7 @@ const MenuDrawer = () => {
         component={AccountsScreen}
         options={() => ({
           title: 'Accounts',
+          headerShown: true,
         })}
       />
       <Drawer.Screen
@@ -68,6 +68,7 @@ const MenuDrawer = () => {
         component={ReportsScreen}
         options={() => ({
           title: 'Reports',
+          headerShown: true,
         })}
       />
       <Drawer.Screen
@@ -75,6 +76,7 @@ const MenuDrawer = () => {
         component={BackupScreen}
         options={() => ({
           title: 'Backup',
+          headerShown: true,
         })}
       />
       <Drawer.Screen
@@ -82,6 +84,7 @@ const MenuDrawer = () => {
         component={SettingsScreen}
         options={() => ({
           title: 'Settings',
+          headerShown: true,
         })}
       />
 
@@ -90,51 +93,10 @@ const MenuDrawer = () => {
         component={UserScreen}
         options={() => ({
           title: 'User',
+          headerShown: true,
         })}
       />
 
-      <Drawer.Screen
-        name="SignIn"
-        component={SignInScreen}
-        options={() => ({
-          title: 'SignIn',
-        })}
-      />
-      <Drawer.Screen
-        name="SignUp"
-        component={SignUpScreen}
-        options={() => ({
-          title: 'SignUp',
-        })}
-      />
-      <Drawer.Screen
-        name="ConfirmEmail"
-        component={ConfirmEmailScreen}
-        options={() => ({
-          title: 'ConfirmEmail',
-        })}
-      />
-      <Drawer.Screen
-        name="ForgotPassword"
-        component={ForgotPasswordScreen}
-        options={() => ({
-          title: 'SignIn',
-        })}
-      />
-      <Drawer.Screen
-        name="NewPassword"
-        component={NewPasswordScreen}
-        options={() => ({
-          title: 'SignIn',
-        })}
-      />
-      {/* <Drawer.Screen
-        name="Paywall"
-        component={PaywallScreen}
-        options={() => ({
-          title: 'Paywall',
-        })}
-      /> */}
       {/* <Drawer.Screen
         name="Recommend"
         component={RecommendScreen}
@@ -146,4 +108,4 @@ const MenuDrawer = () => {
   );
 };
 
-export default MenuDrawer;
+export default DrawerNavigator;

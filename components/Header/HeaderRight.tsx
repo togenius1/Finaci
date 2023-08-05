@@ -1,6 +1,14 @@
-import {Dimensions, Pressable, StyleSheet, Text, View} from 'react-native';
+import {
+  Dimensions,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import React, {useContext} from 'react';
 import moment from 'moment';
+import {useNavigation} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import TransactContext from '../../store-context/transact-context';
@@ -10,7 +18,6 @@ import {TransactionNavigationProp} from '../../types';
 const {width, height} = Dimensions.get('window');
 
 const HeaderRight = ({
-  navigation,
   currentTabIndex,
   duration,
   year,
@@ -20,12 +27,15 @@ const HeaderRight = ({
 }: Props) => {
   const transactCtx = useContext(TransactContext);
 
+  const navigation = useNavigation();
+
   return (
     <View
       style={{
         flexDirection: 'row',
         justifyContent: 'flex-end',
-        marginLeft: width / 2,
+        // marginLeft: 10,
+        // marginRight: 180,
         width: width * 0.5,
         marginTop: height * 0.032,
         // backgroundColor: '#fed8d8',
@@ -82,8 +92,12 @@ const HeaderRight = ({
       <Pressable
         style={({pressed}) => pressed && styles.pressed}
         onPress={() => navigation.navigate('Stats')}>
-        <View style={{marginRight: 20}}>
-          <Ionicons name="stats-chart-outline" size={20} color="#0047b8" />
+        <View style={{marginRight: Platform.OS === 'ios' ? 35 : 10}}>
+          <Ionicons
+            name="stats-chart-outline"
+            size={width * 0.055}
+            color="#0047b8"
+          />
         </View>
       </Pressable>
     </View>

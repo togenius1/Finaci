@@ -15,7 +15,8 @@ import RestorePurchasesButton from '../components/UI/RestorePurchasesButton';
 import Credits from '../components/Credits';
 import {useAppSelector} from '../hooks';
 import {Auth, Hub} from 'aws-amplify';
-import SignInScreen from '../navigation/NavComponents/Login/screens/SignInScreen';
+// import SignInScreen from '../navigation/NavComponents/Login/screens/SignInScreen';
+import RootStackScreen from '../navigation/RootStack';
 
 /*
  An example paywall that uses the current offering.
@@ -185,7 +186,7 @@ const UserScreen = () => {
       </View>
     </>
   ) : (
-    <SignInScreen />
+    <RootStackScreen />
   );
 };
 

@@ -214,7 +214,7 @@ const OverviewScreen = ({navigation}: Props) => {
 
   useEffect(() => {
     navigation.setOptions({
-      title: showCustomDate ? '' : 'Overview',
+      title: showCustomDate ? '' : '',
       headerTitleAlign: 'left',
       // headerTitleContainerStyle: {marginLeft: 0},
       headerRight: () => (

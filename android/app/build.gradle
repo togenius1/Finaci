@@ -78,8 +78,8 @@ android {
         applicationId "com.togenius1.finner"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 49
-        versionName "1.4.8"
+        versionCode 52
+        versionName "1.5.1"
 
         manifestPlaceholders = [
          appAuthRedirectScheme: 'com.togenius1.finner'
@@ -139,7 +139,7 @@ dependencies {
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
 
 project.ext.vectoricons = [
-    iconFontNames: [ 'Ionicons.ttf', 'MaterialCommunityIcons.ttf','FontAwesome.ttf' ] // Name of the font files you want to copy
+    iconFontNames: [ 'Ionicons.ttf', 'MaterialCommunityIcons.ttf','FontAwesome.ttf','Feather.ttf' ] // Name of the font files you want to copy
 ]
 
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
