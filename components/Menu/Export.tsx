@@ -141,6 +141,7 @@ const Export = () => {
     setNewJson(obj);
   };
 
+  // Action after the ad is closed
   useEffect(() => {
     if (isClosed) {
       exportHandler();
@@ -166,9 +167,9 @@ const Export = () => {
         }
 
         // Action after the ad is closed
-        if (isClosed) {
-          await exportHandler();
-        }
+        // if (isClosed) {
+        //   await exportHandler();
+        // }
       } else if (
         filteredCustomerInfo[0]?.stdActive === true ||
         filteredCustomerInfo[0]?.proActive === true
