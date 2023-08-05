@@ -142,40 +142,40 @@ const Export = () => {
   };
 
   // Action after the ad is closed
-  useEffect(() => {
-    if (isClosed) {
-      exportHandler();
-    }
-  }, [isClosed]);
+  // useEffect(() => {
+  //   if (isClosed) {
+  //     exportHandler();
+  //   }
+  // }, [isClosed]);
 
   // Check Pro or standard
   const checkPro = async () => {
     if (isAuthenticated) {
-      const authUser = await Auth.currentAuthenticatedUser();
-      const appUserId = authUser?.attributes?.sub;
-      const filteredCustomerInfo = customerInfosData?.filter(
-        cus => cus.appUserId === appUserId,
-      );
+      // const authUser = await Auth.currentAuthenticatedUser();
+      // const appUserId = authUser?.attributes?.sub;
+      // const filteredCustomerInfo = customerInfosData?.filter(
+      //   cus => cus.appUserId === appUserId,
+      // );
 
-      if (
-        filteredCustomerInfo[0]?.stdActive === false &&
-        filteredCustomerInfo[0]?.proActive === false
-      ) {
-        // show Ads
-        if (isLoaded) {
-          show();
-        }
+      // if (
+      //   filteredCustomerInfo[0]?.stdActive === false &&
+      //   filteredCustomerInfo[0]?.proActive === false
+      // ) {
+      //   // show Ads
+      //   if (isLoaded) {
+      //     show();
+      //   }
 
-        // Action after the ad is closed
-        // if (isClosed) {
-        //   await exportHandler();
-        // }
-      } else if (
-        filteredCustomerInfo[0]?.stdActive === true ||
-        filteredCustomerInfo[0]?.proActive === true
-      ) {
-        await exportHandler();
-      }
+      //   // Action after the ad is closed
+      //   // if (isClosed) {
+      //   //   await exportHandler();
+      //   // }
+      // } else if (
+      //   filteredCustomerInfo[0]?.stdActive === true ||
+      //   filteredCustomerInfo[0]?.proActive === true
+      // ) {
+      await exportHandler();
+      // }
     } else if (!isAuthenticated) {
       Alert.alert(
         'You have not signed in yet!',
