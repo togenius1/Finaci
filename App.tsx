@@ -2,6 +2,7 @@ import {
   ActivityIndicator,
   Alert,
   AppState,
+  AppStateStatus,
   Linking,
   LogBox,
   Pressable,
@@ -16,9 +17,9 @@ import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import VersionCheck from 'react-native-version-check';
 import DeviceInfo from 'react-native-device-info';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useAppState} from '@react-native-community/hooks';
+// import {useAppState} from '@react-native-community/hooks';
 
+import awsconfig from './src/aws-exports';
 import {generateKeyPair, PRNG} from './util/crypto';
 import FinnerNavigator from './navigation/FinnerNavigator';
 import {useAppDispatch, useAppSelector} from './hooks';
@@ -26,14 +27,13 @@ import {fetchCashAccountsData} from './store/cash-action';
 import {fetchAccountsData} from './store/account-action';
 import {fetchIncomeCategoriesData} from './store/income-category-action';
 import {fetchExpenseCategoriesData} from './store/expense-category-action';
-import awsconfig from './src/aws-exports';
 import {User} from './src/models';
 import {authAccountsActions} from './store/authAccount-slice';
 import moment from 'moment';
-// import {API_KEY, ENTITLEMENT_PRO, ENTITLEMENT_STD} from './constants/api';
-// import {customerInfoActions} from './store/customerInfo-slice';
 import TransactProvider from './store-context/TransactProvider';
 import OverviewProvider from './store-context/OverviewProvider';
+import {store} from './store';
+import {clearStorageCache} from './store/cacheActions';
 
 Amplify.configure(awsconfig);
 
@@ -72,11 +72,7 @@ const App = () => {
     // shallowEqual,
   );
 
-  // const [currentUser, setCurrentUser] = useState<LazyUser[]>([]);
-  // const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  // const [cloudPrivateKey, setCloudPrivateKey] = useState<string | null>('');
   const [closedAds, setClosedAds] = useState<boolean>(false);
-  // const [localPrivateKey, setLocalPrivateKey] = useState<string | null>();
   const [showIndicator, setShowIndicator] = useState<boolean>(false);
   const [latestVersion, setLatestVersion] = useState(null);
 
@@ -93,6 +89,7 @@ const App = () => {
 
   const currentVersion = DeviceInfo.getVersion();
 
+  // Checking app version for updating
   useEffect(() => {
     // Compare the current version with the latest version
     if (latestVersion && currentVersion !== latestVersion) {
@@ -160,22 +157,20 @@ const App = () => {
   }, []);
 
   // Clear cache
-  const appState = useAppState();
   useEffect(() => {
-    if (appState === 'background' || appState === 'inactive') {
-      clearCache();
-    }
-  }, [appState]);
+    const handleAppStateChange = (newAppState: AppStateStatus) => {
+      if (newAppState === 'inactive' || newAppState === 'background') {
+        console.log('Cleared storage cache successfully!');
+        store.dispatch(clearStorageCache());
+      }
+    };
 
-  // Clear cache function
-  const clearCache = async () => {
-    try {
-      await AsyncStorage.clear();
-      console.log('Storage cache cleared.');
-    } catch (error) {
-      console.error('Error clearing storage cache:', error);
-    }
-  };
+    AppState.addEventListener('change', handleAppStateChange);
+
+    return () => {
+      // No need to remove the listener here, it will be automatically removed
+    };
+  }, []);
 
   // Update the latest version
   const handleSignOut = async (url: string) => {
@@ -287,12 +282,14 @@ const App = () => {
     try {
       // const cloudAccount = await DataStore.query(User, id);
 
-      const existingAccount = authAccounts?.filter(auth => auth?.id === id);
+      const existingAccount = authAccounts?.filter(
+        auth => String(auth?.id) === id,
+      );
       // const pubKey = generatePublicKeyFromSecretKey(
       //   stringToUint8Array(backupKey),
       // );
 
-      if (existingAccount?.length === 0) {
+      if (Number(existingAccount?.length) === 0) {
         dispatch(
           authAccountsActions.addAuthAccount({
             id: id,
@@ -302,10 +299,10 @@ const App = () => {
             keyCreatedDate: moment(),
           }),
         );
-        console.log('Push new key to local storage successfully.');
+        console.log('Push the key from cloud to local storage successfully.');
       }
       // Update Auth User Account
-      if (existingAccount?.length !== 0) {
+      if (Number(existingAccount?.length) !== 0) {
         dispatch(
           authAccountsActions.updateAuthAccount({
             id: id,
@@ -315,6 +312,7 @@ const App = () => {
             keyCreatedDate: moment(),
           }),
         );
+        console.log('Update the key from cloud in local storage successfully.');
       }
     } catch (error) {
       console.error('Failed to push new key to local storage:', error);
