@@ -1,6 +1,7 @@
 import {
   ActivityIndicator,
   Alert,
+  AppState,
   Linking,
   LogBox,
   Pressable,
@@ -15,6 +16,8 @@ import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import VersionCheck from 'react-native-version-check';
 import DeviceInfo from 'react-native-device-info';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useAppState} from '@react-native-community/hooks';
 
 import {generateKeyPair, PRNG} from './util/crypto';
 import FinnerNavigator from './navigation/FinnerNavigator';
@@ -155,6 +158,24 @@ const App = () => {
   useEffect(() => {
     onCloseBannerAds();
   }, []);
+
+  // Clear cache
+  const appState = useAppState();
+  useEffect(() => {
+    if (appState === 'background' || appState === 'inactive') {
+      clearCache();
+    }
+  }, [appState]);
+
+  // Clear cache function
+  const clearCache = async () => {
+    try {
+      await AsyncStorage.clear();
+      console.log('Storage cache cleared.');
+    } catch (error) {
+      console.error('Error clearing storage cache:', error);
+    }
+  };
 
   // Update the latest version
   const handleSignOut = async (url: string) => {

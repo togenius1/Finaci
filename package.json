@@ -1,6 +1,6 @@
 {
   "name": "finner",
-  "version": "1.5.7",
+  "version": "1.5.8",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -13,6 +13,7 @@
     "@azure/core-asynciterator-polyfill": "^1.0.2",
     "@react-native-async-storage/async-storage": "^1.19.1",
     "@react-native-community/datetimepicker": "^7.4.1",
+    "@react-native-community/hooks": "^3.0.0",
     "@react-native-community/netinfo": "^9.4.1",
     "@react-navigation/drawer": "^6.6.3",
     "@react-navigation/material-top-tabs": "^6.6.3",
