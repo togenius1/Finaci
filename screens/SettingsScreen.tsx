@@ -6,15 +6,18 @@ import {
   Pressable,
   StyleSheet,
   Text,
+  // TextInput,
   View,
 } from 'react-native';
 import React, {useState} from 'react';
 import {Auth} from 'aws-amplify';
 import DeviceInfo from 'react-native-device-info';
+import {useNavigation} from '@react-navigation/native';
 
 import CButton from '../components/UI/CButton';
-import {useAppDispatch} from '../hooks';
+import {useAppDispatch, useAppSelector} from '../hooks';
 import {authAccountsActions} from '../store/authAccount-slice';
+// import {setPasscode, updatePasscode} from '../store/passcode-slice';
 
 // Constant
 const {width, height} = Dimensions.get('window');
@@ -22,9 +25,68 @@ const {width, height} = Dimensions.get('window');
 const Settings = () => {
   const dispatch = useAppDispatch();
   // const dataLoaded = useAppSelector(store => store);
+  const passcodeState = useAppSelector(state => state.passcode);
+
+  const navigation = useNavigation();
+
+  const currentVersion = DeviceInfo.getVersion();
 
   const [showDeleteIndicator, setShowDeleteIndicator] =
     useState<boolean>(false);
+  // const [newPasscode, setNewPasscode] = useState('');
+  // const inputRefs = Array.from({length: 4}, () => React.createRef());
+
+  // const setPasscodeHandler = () => {
+  //   if (newPasscode.trim() === '') {
+  //     // Handle empty passcode input
+  //     return;
+  //   }
+  //   dispatch(setPasscode(newPasscode));
+  //   setPasscode('');
+  // };
+
+  // const updatePasscodeHandler = () => {
+  //   if (newPasscode.trim() === '') {
+  //     // Handle empty passcode input
+  //     return;
+  //   }
+  //   dispatch(updatePasscode(newPasscode));
+  //   setPasscode('');
+  // };
+
+  // const renderPasscodeInputs = () => {
+  //   const passcodeLength = 4;
+
+  //   return Array.from({length: passcodeLength}, (_, index) => (
+  //     <TextInput
+  //       key={index}
+  //       style={styles.passcodeInput}
+  //       maxLength={1}
+  //       secureTextEntry
+  //       keyboardType="numeric"
+  //       onChangeText={text => handlePasscodeInput(text, index)}
+  //       value={newPasscode[index] || ''}
+  //     />
+  //   ));
+  // };
+
+  // const handlePasscodeInput = (text, index) => {
+  //   if (index < 3 && text) {
+  //     const updatedPasscode = newPasscode.split('');
+  //     updatedPasscode[index] = text;
+  //     setNewPasscode(updatedPasscode.join(''));
+
+  //     // Move focus to the next input box
+  //     inputRefs[index + 1].focus();
+  //   } else if (index === 3 && text) {
+  //     const updatedPasscode = newPasscode.split('');
+  //     updatedPasscode[index] = text;
+  //     setNewPasscode(updatedPasscode.join(''));
+  //     // Here, you can trigger the action to set/update passcode
+  //   } else {
+  //     // Handle deleting a digit or other cases
+  //   }
+  // };
 
   // Alert closing account request
   const closeAccountAlertHandler = () => {
@@ -59,6 +121,7 @@ const Settings = () => {
     try {
       const authUser = await Auth.currentAuthenticatedUser();
       const subId = String(authUser?.attributes?.sub);
+
       // Delete account from local storage
       dispatch(
         authAccountsActions.deleteAuthAccount({
@@ -68,7 +131,17 @@ const Settings = () => {
 
       // Delete account from cloud storage
       const result = await Auth.deleteUser();
-      // console.log(result);
+      console.log(result); // Uncomment this line to see the result object
+
+      // Check if the account deletion was successful
+      if (result === 'SUCCESS') {
+        // console.log('User account deleted successfully');
+        // You can perform further actions here, such as redirecting or showing a success message
+        navigation.navigate('User');
+      } else {
+        console.log('User account deletion failed');
+        // Handle the failure scenario here, like displaying an error message
+      }
     } catch (error) {
       console.log('Error deleting user', error);
     }
@@ -83,40 +156,39 @@ const Settings = () => {
     const mailToUrl = `mailto:${emailAddress}?subject=SendMail&body=Description`;
 
     Linking.openURL(mailToUrl).then(supported => {
-      console.log(supported);
       if (supported) {
         Linking.openURL(mailToUrl);
       } else {
         console.log("Can't handle URL: " + mailToUrl);
       }
     });
-
-    // Linking.canOpenURL(mailToUrl).then(supported => {
-    //   if (supported) {
-    //     Linking.openURL(mailToUrl);
-    //   } else {
-    //     console.log("Can't handle URL: " + mailToUrl);
-    //   }
-    // });
   };
-
-  const currentVersion = DeviceInfo.getVersion();
 
   return (
     <View style={styles.container}>
       {/* <View style={[styles.currency, styles.box]}>
         <Text style={styles.text}>Currency</Text>
-      </View>
+      </View> */}
 
-      <View style={[styles.passcode, styles.box]}>
-        <Text style={styles.text}>Passcode / fingerprint / Face ID lock</Text>
-      </View>
-      <View style={[styles.notification, styles.box]}>
+      {/* <View style={[styles.passcode, styles.box]}>
+        <Text style={styles.text}>Passcode Setting</Text>
+        <View style={styles.passcodeContainer}>{renderPasscodeInputs()}</View>
+        <Pressable
+          style={({pressed}) => [
+            styles.passcodeButton,
+            pressed && styles.pressed,
+          ]}
+          onPress={
+            passcodeState?.isSet ? updatePasscodeHandler : setPasscodeHandler
+          }>
+          <Text style={styles.buttonText}>
+            {passcodeState?.isSet ? 'Update Passcode' : 'Set Passcode'}
+          </Text>
+        </Pressable>
+      </View> */}
+      {/* <View style={[styles.notification, styles.box]}>
         <Text style={styles.text}>Notifications</Text>
         <Text style={[styles.text, {marginTop: 20}]}>Appearance</Text>
-      </View>
-      <View>
-        <Text>Finner version 1.0.5</Text>
       </View> */}
 
       <View style={styles.closeAccount}>
@@ -188,6 +260,64 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
     marginLeft: 15,
+  },
+  // passcode
+  input: {
+    borderColor: 'gray',
+    borderWidth: 1,
+    padding: 10,
+    marginVertical: 10,
+    width: '80%',
+  },
+  passcodeButton: {
+    backgroundColor: 'blue',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  passcodeInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '80%',
+  },
+  passcodeContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '80%',
+    alignSelf: 'center',
+  },
+  passcodeInput: {
+    borderColor: 'gray',
+    borderWidth: 1,
+    padding: 10,
+    width: '20%',
+    textAlign: 'center',
+  },
+  passcodeDisplayContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '40%',
+  },
+  passcodeDisplayDigit: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    borderWidth: 1,
+    borderColor: 'gray',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 5,
+    textAlign: 'center',
+  },
+  passcodeDisplayFilled: {
+    backgroundColor: 'gray',
+    color: 'white',
   },
   pressed: {
     opacity: 0.65,

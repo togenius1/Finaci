@@ -16,7 +16,8 @@ import weeklyTransactsSlice from './weeklyTransact-slice';
 import monthlyTransactsSlice from './monthlyTransact-slice';
 import authAccountsSlice from './authAccount-slice';
 import customerInfoSlice from './customerInfo-slice';
-// import yearlyTransactSlice from './yearlyTransact-slice';
+import passcodeSlice from './passcode-slice';
+
 
 const rootReducer = combineReducers({
   expenses: expenseSlice.reducer,
@@ -33,7 +34,7 @@ const rootReducer = combineReducers({
   dailyTransacts: dailyTransactsSlice.reducer,
   weeklyTransacts: weeklyTransactsSlice.reducer,
   monthlyTransacts: monthlyTransactsSlice.reducer,
-  // yearlyTransacts: yearlyTransactSlice.reducer,
+  passcode: passcodeSlice.reducer,
 });
 
 const persistConfig = {

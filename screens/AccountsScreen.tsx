@@ -38,7 +38,7 @@ const HeaderRightComponent = ({
   setIsMYListVisible,
   year,
   month,
-}: HeaderRightComponent) => {
+}: HeaderRightComponentType) => {
   const monthLabel = moment.monthsShort(+month - 1);
 
   return (
@@ -278,7 +278,7 @@ type Props = {
   navigation: AccountNavigationType;
 };
 
-type HeaderRightComponent = {
+type HeaderRightComponentType = {
   setIsMenuOpen: (value: React.SetStateAction<boolean>) => void;
   setIsMYListVisible: React.Dispatch<React.SetStateAction<boolean>>;
   year: number;

@@ -7,11 +7,16 @@ import {
   Linking,
   Platform,
   ActivityIndicator,
+  Pressable,
+  Dimensions,
+  Modal,
 } from 'react-native';
 import Purchases, {LOG_LEVEL, PurchasesPackage} from 'react-native-purchases';
 import PackageItem from '../components/Output/PackageItem';
 import RestorePurchasesButton from '../components/UI/RestorePurchasesButton';
+import {useFocusEffect} from '@react-navigation/native';
 import moment from 'moment';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import Credits from '../components/Credits';
 import {useAppDispatch, useAppSelector} from '../hooks';
@@ -20,13 +25,53 @@ import {Auth, Hub} from 'aws-amplify';
 import RootStackScreen from '../navigation/RootStack';
 import {API_KEY, ENTITLEMENT_PRO, ENTITLEMENT_STD} from '../constants/api';
 import {customerInfoActions} from '../store/customerInfo-slice';
-import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 // import {API_KEY} from '../constants/api';
 
-/*
- An example paywall that uses the current offering.
- */
-const UserScreen = () => {
+const {width, height} = Dimensions.get('window');
+
+// const HeaderRightComponent = ({
+//   setIsMenuOpen, // setIsMYListVisible,
+//   // year,
+// } // month,
+// : HeaderRightComponentType) => {
+//   return (
+//     <View style={styles.headerRight}>
+//       <Pressable
+//         style={({pressed}) => pressed && styles.pressed}
+//         onPress={() => {}}>
+//         <View
+//           style={{
+//             // backgroundColor: '#ffd3d3',
+//             marginRight: 25,
+//           }}>
+//           <Text style={{fontSize: 16, color: '#2a8aff'}}>
+//             {/* {monthLabel} {year} */}
+//           </Text>
+//         </View>
+//       </Pressable>
+
+//       <Pressable
+//         style={({pressed}) => pressed && styles.pressed}
+//         onPress={setIsMenuOpen}>
+//         <View
+//           style={{
+//             justifyContent: 'center',
+//             alignItems: 'center',
+//             // backgroundColor: '#ffd3d3',
+//             marginRight: 15,
+//           }}>
+//           <MaterialCommunityIcons
+//             name={'dots-vertical'}
+//             size={width * 0.06}
+//             color={'black'}
+//           />
+//         </View>
+//       </Pressable>
+//     </View>
+//   );
+// };
+
+const UserScreen = ({navigation}) => {
   // - Data Store (Redux)
   const dispatch = useAppDispatch();
   const dataLoaded = useAppSelector(store => store);
@@ -44,6 +89,22 @@ const UserScreen = () => {
   const [authUser, setAuthUser] = useState<any>();
   const [loading, setLoading] = useState<boolean>(false);
   const [purchased, setPurchased] = useState<boolean>(false);
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+
+  // useEffect(() => {
+  //   navigation.setOptions({
+  //     title: '',
+  //     headerTitleAlign: 'right',
+  //     headerRight: () => (
+  //       <HeaderRightComponent
+  //         setIsMenuOpen={() => setIsMenuOpen(true)}
+  //         // setIsMYListVisible={setIsMYListVisible}
+  //         // year={year}
+  //         // month={month}
+  //       />
+  //     ),
+  //   });
+  // }, []);
 
   useEffect(() => {
     const onAuthUser = async () => {
@@ -288,6 +349,27 @@ const UserScreen = () => {
 
         <Credits />
       </View>
+
+      {/* <Modal
+        animationType="fade"
+        transparent={true}
+        visible={isMenuOpen}
+        onDismiss={() => setIsMenuOpen(false)}
+        onRequestClose={() => setIsMenuOpen(false)}>
+        <Pressable style={styles.outSide} onPress={() => setIsMenuOpen(false)}>
+          <Pressable onPress={() => setIsMenuOpen(true)}>
+            <View style={styles.menu}>
+              <Pressable
+                // onPress={openAddAccountForm}
+                style={({pressed}) => pressed && styles.pressed}>
+                <View style={styles.addContainer}>
+                  <Text style={styles.addText}>Add</Text>
+                </View>
+              </Pressable>
+            </View>
+          </Pressable>
+        </Pressable>
+      </Modal> */}
     </>
   ) : (
     <RootStackScreen />
@@ -345,4 +427,48 @@ const styles = StyleSheet.create({
   userIdentifier: {
     color: '#000000',
   },
+  menu: {
+    width: width * 0.45,
+    height: height * 0.2,
+    backgroundColor: 'white',
+    borderRadius: 4,
+    borderColor: 'black',
+
+    shadowOffset: {width: 1, height: 1},
+    shadowOpacity: 0.5,
+    shadowRadius: 2,
+    elevation: 4,
+
+    position: 'absolute',
+    right: 0,
+    top: height / 16,
+  },
+  headerRight: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  addContainer: {
+    marginTop: 25,
+    marginLeft: 15,
+    // borderWidth: 0.25,
+    // borderColor: 'grey',
+  },
+  addText: {
+    fontSize: width * 0.045,
+    fontWeight: '500',
+    color: '#0362de',
+  },
+  outSide: {
+    flex: 1,
+    backgroundColor: 'transparent',
+  },
+  pressed: {
+    opacity: 0.65,
+  },
 });
+
+//========================= TYPE =======================================
+// type HeaderRightComponentType = {
+//   setIsMenuOpen: (value: React.SetStateAction<boolean>) => void;
+// };
