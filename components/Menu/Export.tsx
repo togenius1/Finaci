@@ -8,12 +8,12 @@ import {
   View,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import {TestIds, useInterstitialAd} from 'react-native-google-mobile-ads';
 import {Auth, Hub} from 'aws-amplify';
 import moment from 'moment';
 
 import {xport} from '../../util/xport';
 import {useAppSelector} from '../../hooks';
-import {TestIds, useInterstitialAd} from 'react-native-google-mobile-ads';
 
 // Ads variable
 const adUnitId = __DEV__
@@ -82,6 +82,78 @@ const Export = () => {
     createNewObject();
   }, []);
 
+  // Action after the ad is closed
+  useEffect(() => {
+    if (isClosed) {
+      exportHandler();
+    }
+  }, [isClosed]);
+
+  // Check Pro or standard
+  const checkPro = async () => {
+    if (isAuthenticated) {
+      const authUser = await Auth.currentAuthenticatedUser();
+      const appUserId = authUser?.attributes?.sub;
+      const filteredCustomerInfo = customerInfosData?.filter(
+        cus => cus.appUserId === appUserId,
+      );
+
+      if (
+        String(filteredCustomerInfo[0]?.stdActive) === 'false' &&
+        String(filteredCustomerInfo[0]?.proActive) === 'false'
+      ) {
+        // show Ads
+        if (isLoaded) {
+          show();
+        } else {
+          await exportHandler();
+        }
+
+        // Action after the ad is closed
+        // if (isClosed) {
+        //   await exportHandler();
+        // }
+      } else if (
+        String(filteredCustomerInfo[0]?.stdActive) === 'true' ||
+        String(filteredCustomerInfo[0]?.proActive) === 'true'
+      ) {
+        await exportHandler();
+      }
+    } else if (!isAuthenticated) {
+      signInAlert();
+    }
+  };
+
+  const signInAlert = () => {
+    Alert.alert(
+      'You have not signed in yet!',
+      'Please sign in now.',
+      [
+        {
+          text: 'Yes',
+          onPress: () => navigation.navigate('User'),
+          style: 'destructive',
+        },
+        {
+          text: 'No',
+          style: 'cancel',
+        },
+      ],
+      {
+        cancelable: true,
+        // onDismiss: () =>
+        //   Alert.alert(
+        //     'This alert was dismissed by tapping outside of the alert dialog.',
+        //   ),
+      },
+    );
+  };
+
+  // Export
+  const exportHandler = async () => {
+    await xport(newJson);
+  };
+
   // Export format.
   const createNewObject = () => {
     const obj = dataLoaded?.expenses?.expenses?.map((expense, index) => {
@@ -139,72 +211,6 @@ const Export = () => {
       };
     });
     setNewJson(obj);
-  };
-
-  // Action after the ad is closed
-  // useEffect(() => {
-  //   if (isClosed) {
-  //     exportHandler();
-  //   }
-  // }, [isClosed]);
-
-  // Check Pro or standard
-  const checkPro = async () => {
-    if (isAuthenticated) {
-      // const authUser = await Auth.currentAuthenticatedUser();
-      // const appUserId = authUser?.attributes?.sub;
-      // const filteredCustomerInfo = customerInfosData?.filter(
-      //   cus => cus.appUserId === appUserId,
-      // );
-
-      // if (
-      //   filteredCustomerInfo[0]?.stdActive === false &&
-      //   filteredCustomerInfo[0]?.proActive === false
-      // ) {
-      //   // show Ads
-      //   if (isLoaded) {
-      //     show();
-      //   }
-
-      //   // Action after the ad is closed
-      //   // if (isClosed) {
-      //   //   await exportHandler();
-      //   // }
-      // } else if (
-      //   filteredCustomerInfo[0]?.stdActive === true ||
-      //   filteredCustomerInfo[0]?.proActive === true
-      // ) {
-      await exportHandler();
-      // }
-    } else if (!isAuthenticated) {
-      Alert.alert(
-        'You have not signed in yet!',
-        'Please sign in now.',
-        [
-          {
-            text: 'Yes',
-            onPress: () => navigation.navigate('User'),
-            style: 'destructive',
-          },
-          {
-            text: 'No',
-            style: 'cancel',
-          },
-        ],
-        {
-          cancelable: true,
-          // onDismiss: () =>
-          //   Alert.alert(
-          //     'This alert was dismissed by tapping outside of the alert dialog.',
-          //   ),
-        },
-      );
-    }
-  };
-
-  // Export
-  const exportHandler = async () => {
-    await xport(newJson);
   };
 
   return (

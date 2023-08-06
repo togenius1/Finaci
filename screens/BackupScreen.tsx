@@ -14,6 +14,7 @@ import DocumentPicker from 'react-native-document-picker';
 import RNFS from 'react-native-fs';
 // import {v4 as uuidv4} from 'uuid';
 import {useInterstitialAd, TestIds} from 'react-native-google-mobile-ads';
+import {Auth, Hub} from 'aws-amplify';
 
 import {defaultAuthState} from '../constants/authConfig';
 import {decryption} from '../util/decrypt';
@@ -24,14 +25,6 @@ import {
   fetchFindFolder,
 } from '../util/fetchData';
 import {authorization, refreshAuthorize} from '../util/auth';
-import {Auth, Hub} from 'aws-amplify';
-// import {
-//   generatePublicKeyFromSecretKey,
-//   PRIVATE_KEY,
-//   PUBLIC_KEY,
-//   stringToUint8Array,
-// } from '../util/crypto';
-// import {User} from '../src/models';
 import {useAppDispatch, useAppSelector} from '../hooks';
 import {expenseActions} from '../store/expense-slice';
 import {incomeActions} from '../store/income-slice';
@@ -49,14 +42,14 @@ const adUnitId = __DEV__
 
 // Constant
 const {width, height} = Dimensions.get('window');
-const sec_1 = 1000;
-const minute_1 = sec_1 * 60;
-const minute_5 = minute_1 * 5;
-const minute_15 = minute_5 * 3;
-const hour = minute_15 * 4;
-const day = hour * 24;
-const SevenDays = day * 7;
-const month = day * 30;
+// const sec_1 = 1000;
+// const minute_1 = sec_1 * 60;
+// const minute_5 = minute_1 * 5;
+// const minute_15 = minute_5 * 3;
+// const hour = minute_15 * 4;
+// const day = hour * 24;
+// const SevenDays = day * 7;
+// const month = day * 30;
 
 // Main
 const BackupScreen = () => {
@@ -81,9 +74,6 @@ const BackupScreen = () => {
   const authAccountsData = rootStore?.authAccounts?.authAccounts;
   const expensesData = rootStore?.expenses?.expenses;
   // const incomesData = rootStore?.incomes?.incomes;
-
-  // [0] ==> incomesData, [1] ==> expensesData
-  // const incomeAndExpenseObj = [incomesData, expensesData];
 
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [authUser, setAuthUser] = useState<any>();
@@ -160,38 +150,38 @@ const BackupScreen = () => {
   // }, []);
 
   // Timer to backup. Should move to the App file?
-  useEffect(() => {
-    timerRef.current = setInterval(() => {
-      Alert.alert(
-        'Back up data.',
-        'Do you want to back up your data now?',
-        [
-          {
-            text: 'Yes',
-            onPress: () => backupHandler(rootStore),
-            // style: 'cancel',
-          },
-          // {
-          //   text: 'Delete',
-          //   // onPress: () => removeAccountHandler(item?.id),
-          // },
-          {
-            text: 'No',
-            style: 'cancel',
-          },
-        ],
-        {
-          cancelable: true,
-          // onDismiss: () =>
-          //   Alert.alert(
-          //     'This alert was dismissed by tapping outside of the alert dialog.',
-          //   ),
-        },
-      );
-      // backupHandler(expensesData);
-    }, SevenDays);
-    () => clearInterval(timerRef.current);
-  }, []);
+  // useEffect(() => {
+  //   timerRef.current = setInterval(() => {
+  //     Alert.alert(
+  //       'Back up data.',
+  //       'Do you want to back up your data now?',
+  //       [
+  //         {
+  //           text: 'Yes',
+  //           onPress: () => backupHandler(rootStore),
+  //           // style: 'cancel',
+  //         },
+  //         // {
+  //         //   text: 'Delete',
+  //         //   // onPress: () => removeAccountHandler(item?.id),
+  //         // },
+  //         {
+  //           text: 'No',
+  //           style: 'cancel',
+  //         },
+  //       ],
+  //       {
+  //         cancelable: true,
+  //         // onDismiss: () =>
+  //         //   Alert.alert(
+  //         //     'This alert was dismissed by tapping outside of the alert dialog.',
+  //         //   ),
+  //       },
+  //     );
+  //     // backupHandler(expensesData);
+  //   }, SevenDays);
+  //   () => clearInterval(timerRef.current);
+  // }, []);
 
   useEffect(() => {
     authHandler();
@@ -214,37 +204,77 @@ const BackupScreen = () => {
     await refreshAuthorize(authState, setAuthState);
   }, [authState]);
 
-  // Backup Alert
-  const backupAlert = async obj => {
-    console.log(isAuthenticated);
+  // Action after the ad is closed
+  useEffect(() => {
+    if (isClosed) {
+      backupAlert(rootStore);
+    }
+  }, [isClosed]);
+
+  // Sign in Alert
+  const signInAlert = () => {
+    Alert.alert(
+      'You have not yet signed in!',
+      'Please sign in now.',
+      [
+        {
+          text: 'Yes',
+          onPress: () => navigation.navigate('User'),
+          // style: 'cancel',
+        },
+        {
+          text: 'No',
+          style: 'cancel',
+        },
+      ],
+      {
+        cancelable: true,
+        // onDismiss: () =>
+        //   Alert.alert(
+        //     'This alert was dismissed by tapping outside of the alert dialog.',
+        //   ),
+      },
+    );
+  };
+
+  // check pro user
+  const checkProUserBackHandler = async () => {
     if (isAuthenticated) {
       const appUserId = authUser?.attributes?.sub;
       const filteredCustomerInfo = customerInfosData?.filter(
         cus => cus.appUserId === appUserId,
       );
+
       if (
-        !filteredCustomerInfo[0]?.stdActive &&
-        !filteredCustomerInfo[0]?.proActive
+        String(filteredCustomerInfo[0]?.stdActive) === 'false' &&
+        String(filteredCustomerInfo[0]?.proActive) === 'false'
       ) {
         // show Ads
         if (isLoaded) {
           show();
+        } else {
+          await backupAlert();
         }
+      } else if (
+        String(filteredCustomerInfo[0]?.stdActive) === 'true' ||
+        String(filteredCustomerInfo[0]?.proActive) === 'true'
+      ) {
+        await backupAlert();
       }
+    } else if (!isAuthenticated) {
+      signInAlert();
     }
+  };
 
+  // Backup Alert
+  const backupAlert = async () => {
     Alert.alert(
-      isAuthenticated ? 'Back up data!' : 'You have not yet signed in!',
-      isAuthenticated
-        ? 'Do you want to back up your data now?'
-        : 'Please sign in now.',
+      'Back up data!',
+      'Do you want to back up your data now?',
       [
         {
           text: 'Yes',
-          onPress: () =>
-            isAuthenticated
-              ? backupHandler(obj)
-              : navigation.navigate('SignIn'),
+          onPress: () => backupHandler(rootStore),
           // style: 'cancel',
         },
         {
@@ -296,30 +326,9 @@ const BackupScreen = () => {
   };
 
   // Check Pro user
-  const checkPro = async () => {
+  const checkProUserRestoreHandler = async () => {
     if (!isAuthenticated) {
-      Alert.alert(
-        'You do not login now!',
-        'Please login',
-        [
-          {
-            text: 'Yes',
-            onPress: () => navigation.navigate('SignIn'),
-            style: 'destructive',
-          },
-          {
-            text: 'No',
-            style: 'cancel',
-          },
-        ],
-        {
-          cancelable: true,
-          // onDismiss: () =>
-          //   Alert.alert(
-          //     'This alert was dismissed by tapping outside of the alert dialog.',
-          //   ),
-        },
-      );
+      signInAlert();
       // return;
     } else if (isAuthenticated) {
       const authUser = await Auth.currentAuthenticatedUser();
@@ -328,10 +337,10 @@ const BackupScreen = () => {
         cus => cus.appUserId === appUserId,
       );
 
-      if (filteredCustomerInfo[0]?.proActive === false) {
+      if (String(filteredCustomerInfo[0]?.proActive) === 'false') {
         Alert.alert(
-          'This function is for Pro users.',
-          'Would you like to purchase Pro (Premium)?',
+          'This function is available for Pro users."',
+          'Would you like to upgrade to Pro (Premium)?',
           [
             {
               text: 'Yes',
@@ -361,12 +370,8 @@ const BackupScreen = () => {
   const askToRestoreData = () => {
     // Ask to replace the old?
     Alert.alert(
-      isAuthenticated
-        ? 'Your old data on the phone will be replaced with new data.'
-        : 'You are not logged in right now!',
-      isAuthenticated
-        ? 'Do you want to restore data?'
-        : 'Please log in to proceed.',
+      'Your existing data will be replaced with new data.',
+      'Would you like to restore the data?',
       [
         {
           text: 'Yes',
@@ -563,30 +568,6 @@ const BackupScreen = () => {
     }
   };
 
-  // const setUpKey = async () => {
-  //   try {
-  //     // const authUser = await Auth.currentAuthenticatedUser({bypassCache: true});
-  //     const authUser = await Auth.currentAuthenticatedUser();
-  //     const dbUser = await DataStore.query(User, authUser.attributes.sub);
-  //     // setCurrentUser(dbUser);
-
-  //     // Remove Old Key
-  //     await AsyncStorage.removeItem(PRIVATE_KEY);
-  //     await AsyncStorage.removeItem(PUBLIC_KEY);
-
-  //     const cloudPrivateKey = String(dbUser?.backupKey);
-  //     await AsyncStorage.setItem(PRIVATE_KEY, cloudPrivateKey);
-
-  //     const publicKey = generatePublicKeyFromSecretKey(
-  //       stringToUint8Array(cloudPrivateKey),
-  //     );
-
-  //     await AsyncStorage.setItem(PUBLIC_KEY, String(publicKey?.publicKey));
-  //   } catch (error) {
-  //     console.error('Error:', error);
-  //   }
-  // };
-
   return (
     <View style={styles.container}>
       <View style={styles.inner}>
@@ -604,7 +585,7 @@ const BackupScreen = () => {
         <View style={{flexDirection: 'row', marginBottom: 20}}>
           <Pressable
             style={({pressed}) => pressed && styles.pressed}
-            onPress={() => backupAlert(rootStore)}>
+            onPress={() => checkProUserBackHandler()}>
             <View style={{marginTop: 20}}>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <Text style={{fontSize: width * 0.048, fontWeight: 'bold'}}>
@@ -627,7 +608,7 @@ const BackupScreen = () => {
         <View style={{flexDirection: 'row'}}>
           <Pressable
             style={({pressed}) => pressed && styles.pressed}
-            onPress={() => checkPro()}>
+            onPress={() => checkProUserRestoreHandler()}>
             <View style={{marginTop: 20}}>
               <Text style={{fontSize: width * 0.048, fontWeight: 'bold'}}>
                 Restore

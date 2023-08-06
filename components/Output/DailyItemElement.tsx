@@ -107,7 +107,7 @@ const DailyItemElement = ({
     // Remove Expense
     dispatch(
       expenseActions.deleteExpense({
-        expenseId: expenseId !== undefined ? expenseId : 0,
+        expenseId: expenseId !== 'undefined' ? expenseId : 0,
       }),
     );
   };
@@ -136,7 +136,7 @@ const DailyItemElement = ({
 
       dispatch(
         accountActions.updateAccount({
-          id: filteredAccounts[0].id,
+          id: filteredAccounts[0]?.id,
           title: filteredAccounts[0]?.title,
           budget: +filteredAccounts[0]?.budget - +filteredIncomes[0]?.amount,
           date: filteredAccounts[0]?.date,

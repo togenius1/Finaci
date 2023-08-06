@@ -152,6 +152,14 @@ const AccountsScreen = ({navigation}: Props) => {
     setIsMYListVisible(false);
   }
 
+  // Action after the ad is closed
+  useEffect(() => {
+    if (isClosed) {
+      setIsAccFormVisible(true);
+      setIsMenuOpen(false);
+    }
+  }, [isClosed]);
+
   const openAddAccountForm = async () => {
     // Check Purchase user: show Ads
     const authUser = await Auth.currentAuthenticatedUser();
@@ -166,11 +174,11 @@ const AccountsScreen = ({navigation}: Props) => {
       // show Ads
       if (isLoaded) {
         show();
+      } else {
+        setIsAccFormVisible(true);
+        setIsMenuOpen(false);
       }
     }
-
-    setIsAccFormVisible(true);
-    setIsMenuOpen(false);
   };
 
   return (
