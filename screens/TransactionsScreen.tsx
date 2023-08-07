@@ -286,7 +286,7 @@ const TransactionsScreen = ({}: Props) => {
             <View
               style={{
                 justifyContent: 'flex-start',
-                marginLeft: Platform.OS === 'ios' ? -10 : 28,
+                marginLeft: Platform.OS === 'ios' ? -5 : 30,
                 width: width * 0.07,
                 marginTop: height * 0.025,
                 // backgroundColor: '#fed8d8',

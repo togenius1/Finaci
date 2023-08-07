@@ -14,6 +14,7 @@ import {Auth} from 'aws-amplify';
 // import Logo from '../../../../assets/images/FINNER-Tab.png';
 import CustomInput from '../components/CustomInput';
 import CustomButton from '../components/CustomButton';
+import SocialSignInButtons from '../components/SocialSignInButtons';
 // import SocialSignInButtons from '../components/SocialSignInButtons';
 
 type Props = {};
@@ -100,7 +101,7 @@ const SignInScreen = ({navigation}: Props) => {
           type="TERTIARY"
         />
 
-        {/* <SocialSignInButtons /> */}
+        <SocialSignInButtons />
 
         <CustomButton
           text="Don't have an account? Create one"

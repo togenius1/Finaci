@@ -59,7 +59,7 @@ const BackupScreen = () => {
     useState<boolean>(false);
   const [showRestoreIndicator, setShowRestoreIndicator] =
     useState<boolean>(false);
-  const [authCurrentAccount, setAuthCurrentAccount] = useState<any>();
+  const [authCurrentAccount, setAuthCurrentAccount] = useState<any[]>([]);
   const [authState, setAuthState] = useState<AuthStateType>(defaultAuthState);
   const [isLoading, setIsLoading] = useState<boolean | undefined>(false);
   // const [isExpenseBoxChecked, setIsExpenseBoxChecked] = useState<boolean | undefined>(false);
@@ -129,6 +129,9 @@ const BackupScreen = () => {
       const filterAuthAccount = authAccountsData?.filter(
         auth => String(auth.id) === subId,
       );
+
+      const email = authedUser.attributes.email;
+      console.log('email', authedUser.attributes);
 
       setAuthCurrentAccount(filterAuthAccount);
     };
@@ -301,7 +304,7 @@ const BackupScreen = () => {
 
     const encrypted = await encryption(obj, PRIVATE_KEY, PUBLIC_KEY);
 
-    const name = authCurrentAccount[0]?.name;
+    const id = authCurrentAccount[0]?.id;
 
     const d = new Date();
     const mm = d.getMonth() + 1;
@@ -311,7 +314,7 @@ const BackupScreen = () => {
     if (dd < 10) {
       dd = `0${dd}`;
     }
-    const fileName = `Finner_backup_${name}_${dd}${mm}${yy}${time}.bak`;
+    const fileName = `Finner_backup_${id}_${dd}${mm}${yy}${time}.bak`;
 
     const today = new Date();
     const expireAccessToken = new Date(authState.accessTokenExpirationDate);
