@@ -17,6 +17,7 @@ import {useNavigation} from '@react-navigation/native';
 import CButton from '../components/UI/CButton';
 import {useAppDispatch, useAppSelector} from '../hooks';
 import {authAccountsActions} from '../store/authAccount-slice';
+import axios from 'axios';
 // import {setPasscode, updatePasscode} from '../store/passcode-slice';
 
 // Constant
@@ -25,7 +26,7 @@ const {width, height} = Dimensions.get('window');
 const Settings = () => {
   const dispatch = useAppDispatch();
   // const dataLoaded = useAppSelector(store => store);
-  const passcodeState = useAppSelector(state => state.passcode);
+  // const passcodeState = useAppSelector(state => state.passcode);
 
   const navigation = useNavigation();
 
@@ -119,29 +120,21 @@ const Settings = () => {
     setShowDeleteIndicator(true);
 
     try {
-      const authUser = await Auth.currentAuthenticatedUser();
-      const subId = String(authUser?.attributes?.sub);
+      const user = await Auth.currentAuthenticatedUser();
+      const sub = String(user?.attributes?.sub);
 
       // Delete account from local storage
       dispatch(
         authAccountsActions.deleteAuthAccount({
-          id: subId,
+          id: sub,
         }),
       );
 
       // Delete account from cloud storage
       const result = await Auth.deleteUser();
-      console.log(result); // Uncomment this line to see the result object
 
-      // Check if the account deletion was successful
-      if (result === 'SUCCESS') {
-        // console.log('User account deleted successfully');
-        // You can perform further actions here, such as redirecting or showing a success message
-        navigation.navigate('User');
-      } else {
-        console.log('User account deletion failed');
-        // Handle the failure scenario here, like displaying an error message
-      }
+      await Auth.signOut({global: true});
+      navigation.navigate('User');
     } catch (error) {
       console.log('Error deleting user', error);
     }

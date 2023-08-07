@@ -130,9 +130,6 @@ const BackupScreen = () => {
         auth => String(auth.id) === subId,
       );
 
-      const email = authedUser.attributes.email;
-      console.log('email', authedUser.attributes);
-
       setAuthCurrentAccount(filterAuthAccount);
     };
 

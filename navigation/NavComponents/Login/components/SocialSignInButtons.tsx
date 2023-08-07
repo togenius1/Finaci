@@ -16,7 +16,7 @@ export default function SocialSignInButtons(props) {
         ? user?.attributes?.email
         : 'Email not available';
 
-      console.log('User email:', userEmail);
+      console.log('User email:---------', userEmail);
     } catch (error) {
       console.error('Error signing in with Google', error);
     }
@@ -34,7 +34,7 @@ export default function SocialSignInButtons(props) {
         ? user?.attributes?.email
         : 'Email not available';
 
-      console.log('User email:', userEmail);
+      console.log('User email-------:', user);
     } catch (error) {
       console.error('Error signing in with Google', error);
     }
