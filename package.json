@@ -1,6 +1,6 @@
 {
   "name": "finner",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -40,7 +40,7 @@
     "react-native-google-mobile-ads": "^11.6.1",
     "react-native-modal-datetime-picker": "^17.0.0",
     "react-native-pager-view": "^6.2.0",
-    "react-native-purchases": "^6.4.0",
+    "react-native-purchases": "^6.6.0",
     "react-native-reanimated": "^3.4.1",
     "react-native-rename": "^3.2.13",
     "react-native-safe-area-context": "^4.7.1",

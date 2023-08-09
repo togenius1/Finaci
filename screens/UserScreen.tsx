@@ -16,14 +16,19 @@ import PackageItem from '../components/Output/PackageItem';
 import RestorePurchasesButton from '../components/UI/RestorePurchasesButton';
 import {useFocusEffect} from '@react-navigation/native';
 import moment from 'moment';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+// import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import Credits from '../components/Credits';
 import {useAppDispatch, useAppSelector} from '../hooks';
 import {Auth, Hub} from 'aws-amplify';
 // import SignInScreen from '../navigation/NavComponents/Login/screens/SignInScreen';
 import RootStackScreen from '../navigation/RootStack';
-import {API_KEY, ENTITLEMENT_PRO, ENTITLEMENT_STD} from '../constants/api';
+import {
+  API_KEY_ANDROID,
+  API_KEY_IOS,
+  ENTITLEMENT_PRO,
+  ENTITLEMENT_STD,
+} from '../constants/api';
 import {customerInfoActions} from '../store/customerInfo-slice';
 // import {API_KEY} from '../constants/api';
 
@@ -173,11 +178,14 @@ const UserScreen = ({navigation}) => {
       const authUser = await Auth.currentAuthenticatedUser();
 
       if (Platform.OS === 'ios') {
-        Purchases.configure({apiKey: ''});
+        Purchases.configure({
+          apiKey: API_KEY_IOS,
+          appUserID: authUser?.attributes?.sub,
+        });
       } else if (Platform.OS === 'android') {
         // Purchases.configure({apiKey: API_KEY});
         Purchases.configure({
-          apiKey: API_KEY,
+          apiKey: API_KEY_ANDROID,
           appUserID: authUser?.attributes?.sub,
         });
 

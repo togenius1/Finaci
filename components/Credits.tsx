@@ -6,7 +6,7 @@ type Props = {};
 const Credits = (props: Props) => {
   return (
     <Text style={{position: 'absolute', bottom: 10, color: '#999999'}}>
-      Created by toGenius1 Company.
+      Created by zuperx Company.
     </Text>
   );
 };
