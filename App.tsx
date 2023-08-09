@@ -76,8 +76,8 @@ const App = () => {
   const [showIndicator, setShowIndicator] = useState<boolean>(false);
   const [latestVersion, setLatestVersion] = useState(null);
 
+  // Fetch the latest version from the Google Play Store
   useEffect(() => {
-    // Fetch the latest version from the Google Play Store
     VersionCheck.getLatestVersion()
       .then(version => {
         setLatestVersion(version);
