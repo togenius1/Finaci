@@ -1,11 +1,12 @@
 import {Alert, ScrollView, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import {useForm} from 'react-hook-form';
-import {Auth} from 'aws-amplify';
+import {Auth, DataStore} from 'aws-amplify';
 import {isValidPhoneNumber} from 'react-phone-number-input';
 
 import CustomInput from '../components/CustomInput';
 import CustomButton from '../components/CustomButton';
+import {User} from '../../../../src/models';
 // import SocialSignInButtons from '../components/SocialSignInButtons';
 
 type Props = {};
@@ -17,19 +18,41 @@ export default function SignUpScreen({navigation}: Props) {
   const {control, handleSubmit, watch} = useForm();
   const pwd = watch('password');
 
+  const [isEmailDuplicate, setIsEmailDuplicate] = useState(false);
+
   const onRegisterPressed = async data => {
     const {username, password, email, name} = data;
     try {
-      await Auth.signUp({
-        username,
-        password,
-        attributes: {email, name, preferred_username: username},
-      });
-      navigation.navigate('ConfirmEmail', {
-        username,
-      });
+      // Check if the email is already registered (duplicate)
+      const isDuplicate = await checkEmailDuplicate(email);
+
+      if (isDuplicate) {
+        setIsEmailDuplicate(true); // Set state to indicate duplicate email
+      } else {
+        const response = await Auth.signUp({
+          username,
+          password,
+          attributes: {email, name, preferred_username: username},
+        });
+
+        navigation.navigate('ConfirmEmail', {
+          username,
+        });
+      }
     } catch (e) {
       Alert.alert('Oops', e.message);
+    }
+  };
+
+  // Function to check for duplicate email
+  const checkEmailDuplicate = async (email: string) => {
+    try {
+      const users = await DataStore.query(User, u => u?.email?.eq(email));
+
+      return users.length > 0; // Email is already registered if users array has any items
+    } catch (error) {
+      console.error(error);
+      throw error;
     }
   };
 
@@ -87,12 +110,16 @@ export default function SignUpScreen({navigation}: Props) {
           name="email"
           control={control}
           placeholder="Email"
-          rules={{pattern: EMAIL_REGEX, message: 'Email is invalid'}}
+          rules={{
+            required: 'Email is required',
+            pattern: EMAIL_REGEX,
+            message: 'Email is invalid',
+          }}
         />
         <CustomInput
           name="phone-input"
           control={control}
-          placeholder="Phone number begin with: +(country code)"
+          placeholder="+(country code) - Phone number. "
           rules={{
             validate: value => isValidPhoneNumber(value),
           }}
@@ -124,6 +151,10 @@ export default function SignUpScreen({navigation}: Props) {
           text="Register"
           onPress={handleSubmit(onRegisterPressed)}
         />
+
+        {isEmailDuplicate && (
+          <Text style={{color: 'red'}}>Email is already registered</Text>
+        )}
 
         <Text style={styles.text}>
           By registering, you confirm that you accept our{' '}

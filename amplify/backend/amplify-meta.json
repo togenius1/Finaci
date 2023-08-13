@@ -24,11 +24,11 @@
             }
           ],
           "defaultAuthentication": {
+            "authenticationType": "API_KEY",
             "apiKeyConfig": {
               "apiKeyExpirationDays": 30,
               "description": "api key description"
-            },
-            "authenticationType": "API_KEY"
+            }
           }
         },
         "GraphQLAPIIdOutput": "oqdwov32frbxpkgvbibnrg2hha",
@@ -37,11 +37,12 @@
       },
       "providerPlugin": "awscloudformation",
       "service": "AppSync",
-      "lastPushTimeStamp": "2023-08-09T11:55:44.269Z",
+      "lastPushTimeStamp": "2023-08-13T10:46:56.578Z",
       "providerMetadata": {
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-finner1-staging-10445-deployment/amplify-cfn-templates/api/cloudformation-template.json",
         "logicalId": "apiFinner1"
-      }
+      },
+      "lastPushDirHash": "3Sf3xsef0ujrLmEnEwkY8IgLG4U="
     }
   },
   "auth": {
@@ -68,10 +69,7 @@
           "passwordPolicyCharacters": []
         },
         "signupAttributes": [],
-        "socialProviders": [
-          "FACEBOOK",
-          "GOOGLE"
-        ],
+        "socialProviders": [],
         "usernameAttributes": [],
         "verificationMechanisms": [
           "EMAIL"
@@ -83,14 +81,12 @@
         "UserPoolId": "ap-southeast-1_4aEG5mryg",
         "AppClientIDWeb": "7vg6prta1gdutfmc166h78oi46",
         "AppClientID": "3olal4oboj346g4m372n5qjs0",
-        "HostedUIDomain": "ksxo6m7rnj6d-staging",
         "IdentityPoolId": "ap-southeast-1:9e6a71d0-4a72-4b59-b6f1-915ab130d61b",
         "UserPoolArn": "arn:aws:cognito-idp:ap-southeast-1:106155996924:userpool/ap-southeast-1_4aEG5mryg",
         "IdentityPoolName": "testAuthIdentityPool__staging",
-        "OAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"finner://\"],\"LogoutURLs\":[\"finner://\"]}",
         "UserPoolName": "Finner1"
       },
-      "lastPushTimeStamp": "2023-08-09T11:55:44.274Z",
+      "lastPushTimeStamp": "2023-08-13T10:46:56.586Z",
       "providerMetadata": {
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-finner1-staging-10445-deployment/amplify-cfn-templates/auth/Finner1-cloudformation-template.json",
         "logicalId": "authFinner1"
@@ -109,14 +105,14 @@
         "Name": "Finner1PostConfirmation-staging",
         "LambdaExecutionRole": "Finner1PostConfirmation-staging"
       },
-      "lastPushTimeStamp": "2023-08-09T11:55:44.275Z",
+      "lastPushTimeStamp": "2023-08-13T10:46:56.587Z",
       "providerMetadata": {
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-finner1-staging-10445-deployment/amplify-cfn-templates/function/Finner1PostConfirmation-cloudformation-template.json",
         "logicalId": "functionFinner1PostConfirmation"
       },
       "s3Bucket": {
         "deploymentBucketName": "amplify-finner1-staging-10445-deployment",
-        "s3Key": "amplify-builds/Finner1PostConfirmation-5671316b764468664e75-build.zip"
+        "s3Key": "amplify-builds/Finner1PostConfirmation-45626636375a38697469-build.zip"
       }
     }
   }

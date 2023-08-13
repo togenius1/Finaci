@@ -46,10 +46,7 @@
           "passwordPolicyMinLength": 7
         },
         "signupAttributes": [],
-        "socialProviders": [
-          "FACEBOOK",
-          "GOOGLE"
-        ],
+        "socialProviders": [],
         "usernameAttributes": [],
         "verificationMechanisms": [
           "EMAIL"

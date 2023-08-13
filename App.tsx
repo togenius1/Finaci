@@ -137,6 +137,8 @@ const App = () => {
       if (data.payload.event === 'signIn') {
         // setIsAuthenticated(true);
 
+        // Auth.currentAuthenticatedUser().then(console.log);
+
         // await configurePurchases();
         await checkUserAndGenerateNewKey();
         // await getUserData();

@@ -19,8 +19,11 @@
       "function": {
         "Finner1PostConfirmation": {
           "deploymentBucketName": "amplify-finner1-staging-10445-deployment",
-          "s3Key": "amplify-builds/Finner1PostConfirmation-5671316b764468664e75-build.zip"
+          "s3Key": "amplify-builds/Finner1PostConfirmation-45626636375a38697469-build.zip"
         }
+      },
+      "api": {
+        "Finner1": {}
       }
     }
   }
