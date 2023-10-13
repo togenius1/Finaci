@@ -135,6 +135,8 @@ const App = () => {
   useEffect(() => {
     const listenerAuth = async data => {
       if (data.payload.event === 'signIn') {
+        // Fetch customer info from RevCat
+
         // setIsAuthenticated(true);
 
         // Auth.currentAuthenticatedUser().then(console.log);
