@@ -1,6 +1,6 @@
 {
   "name": "finaci",
-  "version": "1.6.5",
+  "version": "1.6.6",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -30,7 +30,7 @@
     "moment": "^2.29.4",
     "react": "18.2.0",
     "react-hook-form": "^7.45.2",
-    "react-native": "0.72.3",
+    "react-native": "0.72.6",
     "react-native-app-auth": "^6.4.3",
     "react-native-device-info": "^10.8.0",
     "react-native-document-picker": "^9.0.1",

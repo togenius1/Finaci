@@ -202,7 +202,6 @@ const UserScreen = ({navigation}) => {
     try {
       setLoading(true);
       const offerings = await Purchases?.getOfferings();
-      console.log('Fetch packages: ', offerings);
 
       if (offerings !== null && offerings.current !== null) {
         setPackages(offerings?.current?.availablePackages);
@@ -319,9 +318,6 @@ const UserScreen = ({navigation}) => {
       </View>
     );
   }
-
-  // console.log('subSTDActive', subSTDActive);
-  // console.log('subPROActive', subPROActive);
 
   return isAuthenticated ? (
     <>
