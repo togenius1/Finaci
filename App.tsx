@@ -13,11 +13,11 @@ import {fetchCashAccountsData} from './store/cash-action';
 import {fetchAccountsData} from './store/account-action';
 import {fetchIncomeCategoriesData} from './store/income-category-action';
 import {fetchExpenseCategoriesData} from './store/expense-category-action';
-import {fetchExpensesData} from './store/expense-action';
-import {fetchIncomesData} from './store/income-action';
-import {fetchDailyTransactsData} from './store/dailyTransact-action';
-import {fetchMonthlyTransactsData} from './store/monthlyTransact-action';
-import {fetchWeeklyTransactsData} from './store/weeklyTransact-action';
+// import {fetchExpensesData} from './store/expense-action';
+// import {fetchIncomesData} from './store/income-action';
+// import {fetchDailyTransactsData} from './store/dailyTransact-action';
+// import {fetchMonthlyTransactsData} from './store/monthlyTransact-action';
+// import {fetchWeeklyTransactsData} from './store/weeklyTransact-action';
 import awsconfig from './src/aws-exports';
 import {LazyUser, User} from './src/models';
 

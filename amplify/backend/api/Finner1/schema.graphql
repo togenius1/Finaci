@@ -1,5 +1,8 @@
 type User @model @auth(rules: [{allow: public}]) {
   id: ID!
-  name: String
+  name: String!
   backupKey: String
+  publicKey: String
+  email: String!
 }
+ 
