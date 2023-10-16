@@ -37,7 +37,7 @@
       },
       "providerPlugin": "awscloudformation",
       "service": "AppSync",
-      "lastPushTimeStamp": "2023-08-13T10:46:56.578Z",
+      "lastPushTimeStamp": "2023-10-16T03:45:35.900Z",
       "providerMetadata": {
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-finner1-staging-10445-deployment/amplify-cfn-templates/api/cloudformation-template.json",
         "logicalId": "apiFinner1"
@@ -86,7 +86,7 @@
         "IdentityPoolName": "testAuthIdentityPool__staging",
         "UserPoolName": "Finner1"
       },
-      "lastPushTimeStamp": "2023-08-13T10:46:56.586Z",
+      "lastPushTimeStamp": "2023-10-16T03:45:35.909Z",
       "providerMetadata": {
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-finner1-staging-10445-deployment/amplify-cfn-templates/auth/Finner1-cloudformation-template.json",
         "logicalId": "authFinner1"
@@ -105,7 +105,7 @@
         "Name": "Finner1PostConfirmation-staging",
         "LambdaExecutionRole": "Finner1PostConfirmation-staging"
       },
-      "lastPushTimeStamp": "2023-08-13T10:46:56.587Z",
+      "lastPushTimeStamp": "2023-10-16T03:45:35.910Z",
       "providerMetadata": {
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-finner1-staging-10445-deployment/amplify-cfn-templates/function/Finner1PostConfirmation-cloudformation-template.json",
         "logicalId": "functionFinner1PostConfirmation"
