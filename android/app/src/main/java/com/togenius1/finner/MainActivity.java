@@ -1,4 +1,4 @@
-package com.finner;
+package com.togenius1.finner;
 
 import android.os.Bundle;
 
@@ -10,9 +10,9 @@ import com.facebook.react.defaults.DefaultReactActivityDelegate;
 public class MainActivity extends ReactActivity {
 
   @Override
-protected void onCreate(Bundle savedInstanceState) {
-  super.onCreate(null);
-}
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(null);
+  }
 
   /**
    * Returns the name of the main component registered from JavaScript. This is used to schedule
@@ -34,9 +34,6 @@ protected void onCreate(Bundle savedInstanceState) {
         this,
         getMainComponentName(),
         // If you opted-in for the New Architecture, we enable the Fabric Renderer.
-        DefaultNewArchitectureEntryPoint.getFabricEnabled(), // fabricEnabled
-        // If you opted-in for the New Architecture, we enable Concurrent React (i.e. React 18).
-        DefaultNewArchitectureEntryPoint.getConcurrentReactEnabled() // concurrentRootEnabled
-        );
+        DefaultNewArchitectureEntryPoint.getFabricEnabled());
   }
 }

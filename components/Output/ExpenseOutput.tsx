@@ -1,6 +1,7 @@
 import {Dimensions, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import {useNavigation} from '@react-navigation/native';
+import moment from 'moment';
+// import {useNavigation} from '@react-navigation/native';
 // import {v4 as uuidv4} from 'uuid';
 // import moment from 'moment';
 
@@ -13,21 +14,31 @@ import {
 } from '../../util/math';
 // import IconButton from '../UI/iconButton';
 import {ExpenseCategory} from '../../dummy/categoryItems';
+import {useAppSelector} from '../../hooks';
 
-type Props = {};
+type Props = {
+  // data: any;
+  fromDate: string;
+  toDate: string;
+};
 
-const {width, height} = Dimensions.get('window');
+const {height} = Dimensions.get('window');
 
-const ExpenseOutput = ({data, fromDate, toDate}: Props) => {
-  const navigation = useNavigation();
+const ExpenseOutput = ({fromDate, toDate}: Props) => {
+  // const navigation = useNavigation();
 
-  // filter data: from date --> to date
+  const dataLoaded = useAppSelector(store => store);
+
+  const data = dataLoaded?.expenses?.expenses;
+
+  // if (focusedTabIndex === 1) {
   const filteredData = data.filter(
     d =>
-      new Date(d.date) >= new Date(fromDate) &&
-      new Date(d.date) <= new Date(toDate),
+      moment(d.date).format('YYYY-MM-DD') >=
+        moment(fromDate).format('YYYY-MM-DD') &&
+      moment(d.date).format('YYYY-MM-DD') <=
+        moment(toDate).format('YYYY-MM-DD'),
   );
-
   // Summation for each category
   const sumEachCateObj = sumEachCategoryId(filteredData);
   const totalAmount = sumTotalFunc(sumEachCateObj);
@@ -36,7 +47,6 @@ const ExpenseOutput = ({data, fromDate, toDate}: Props) => {
     totalAmount,
     ExpenseCategory,
   );
-
   //sort Data
   pctEachCateObj.sort((a: any, b: any) => {
     const amountA = a.percentage.valueOf();
@@ -47,6 +57,7 @@ const ExpenseOutput = ({data, fromDate, toDate}: Props) => {
     }
     return 1; // return 1 here for DESC Order
   });
+  // }
 
   return (
     <View style={styles.container}>
@@ -58,8 +69,6 @@ const ExpenseOutput = ({data, fromDate, toDate}: Props) => {
       <View style={styles.transactContainer}>
         <OverviewList data={pctEachCateObj} />
       </View>
-
-     
     </View>
   );
 };
@@ -71,9 +80,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   transactContainer: {
-    height: 250,
-    marginTop: 10,
-    marginBottom: 100,
+    height: height / 2.5,
+    marginTop: 5,
+    marginBottom: 5,
     backgroundColor: '#ffffff',
   },
   pieChart: {
@@ -82,22 +91,4 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 5,
   },
-  // addButtonContainer: {
-  //   backgroundColor: '#5ca3f6',
-  //   width: width * 0.15,
-  //   height: width * 0.15,
-  //   borderRadius: (width * 0.2) / 2,
-  //   borderWidth: 0.5,
-  //   borderColor: '#fff',
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  //   shadowOffset: {width: 0, height: 0},
-  //   shadowOpacity: 0.7,
-  //   shadowRadius: 3,
-  //   elevation: 3,
-
-  //   position: 'absolute',
-  //   right: 20,
-  //   bottom: 30,
-  // },
 });

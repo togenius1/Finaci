@@ -1,23 +1,25 @@
 import {
   Alert,
   Dimensions,
-  Image,
+  // Image,
   ScrollView,
   StyleSheet,
   View,
+  // DevSettings,
 } from 'react-native';
 import React, {useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {Auth} from 'aws-amplify';
 
-import Logo from '../../../../assets/images/Logo_1.png';
+// import Logo from '../../../../assets/images/FINNER-Tab.png';
 import CustomInput from '../components/CustomInput';
 import CustomButton from '../components/CustomButton';
 import SocialSignInButtons from '../components/SocialSignInButtons';
+// import SocialSignInButtons from '../components/SocialSignInButtons';
 
 type Props = {};
 
-const {height} = Dimensions.get('window');
+const {height, width} = Dimensions.get('window');
 
 const SignInScreen = ({navigation}: Props) => {
   const [loading, setLoading] = useState(false);
@@ -36,7 +38,6 @@ const SignInScreen = ({navigation}: Props) => {
     setLoading(true);
     try {
       await Auth.signIn(data.username, data.password);
-      // console.log(response);
     } catch (e) {
       Alert.alert('Oops', e.message);
     }
@@ -55,12 +56,19 @@ const SignInScreen = ({navigation}: Props) => {
 
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
-      <View style={styles.root}>
-        <Image
+      {/* <Image
           source={Logo}
-          style={[styles.logo, {height: height * 0.3}]}
-          resizeMode="contain"
-        />
+          style={[
+            styles.logo,
+            {
+              height: height * 0.08,
+              marginBottom: height * 0.25,
+              marginTop: 30,
+            },
+          ]}
+          resizeMode="cover"
+        /> */}
+      <View style={styles.root}>
         <CustomInput
           name="username"
           placeholder="Username"
@@ -93,7 +101,7 @@ const SignInScreen = ({navigation}: Props) => {
           type="TERTIARY"
         />
 
-        <SocialSignInButtons />
+        {/* <SocialSignInButtons /> */}
 
         <CustomButton
           text="Don't have an account? Create one"
@@ -109,12 +117,17 @@ export default SignInScreen;
 
 const styles = StyleSheet.create({
   root: {
+    height: height,
+    // marginTop: height * 0.2,
     alignItems: 'center',
+    justifyContent: 'center',
     padding: 20,
+
+    backgroundColor: 'white',
   },
-  logo: {
-    width: '70%',
-    maxWidth: 300,
-    maxHeight: 200,
-  },
+  // logo: {
+  //   width: '70%',
+  //   maxWidth: 300,
+  //   maxHeight: 200,
+  // },
 });

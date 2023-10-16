@@ -16,21 +16,21 @@ const AccountHeader = ({totalAssets, totalExpenses, total}: Props) => {
       <View style={styles.headerBox}>
         <Text style={styles.headerText}>Assets</Text>
         <Text style={[styles.headerValueText, {color: 'blue'}]}>
-          {currencyFormatter(+totalAssets, {})}
+          {currencyFormatter(Number(totalAssets), {})}
         </Text>
       </View>
 
       <View style={styles.headerBox}>
         <Text style={styles.headerText}>Liabilities</Text>
         <Text style={[styles.headerValueText, {color: 'red'}]}>
-          {currencyFormatter(+totalExpenses, {})}
+          {currencyFormatter(Number(totalExpenses), {})}
         </Text>
       </View>
 
       <View style={styles.headerBox}>
         <Text style={styles.headerText}>Total</Text>
         <Text style={styles.headerValueText}>
-          {currencyFormatter(+total, {})}
+          {currencyFormatter(Number(total), {})}
         </Text>
       </View>
     </View>

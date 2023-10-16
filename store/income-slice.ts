@@ -8,6 +8,7 @@ const incomeSlice = createSlice({
   reducers: {
     // Load data from DB to Mobile
     replaceIncome(state, action) {
+      // console.log('income payload.income:', action.payload.incomes);
       state.incomes = action.payload.incomes;
     },
 

@@ -1,6 +1,7 @@
 import {Dimensions, StyleSheet, View} from 'react-native';
 import React from 'react';
-import {useNavigation} from '@react-navigation/native';
+import moment from 'moment';
+// import {useNavigation} from '@react-navigation/native';
 // import {v4 as uuidv4} from 'uuid';
 
 import PieChart from '../Graph/PieChart';
@@ -9,25 +10,33 @@ import {
   sumTotalFunc,
   sumEachCategoryId,
 } from '../../util/math';
-import IconButton from '../UI/iconButton';
+// import IconButton from '../UI/iconButton';
 import IncomeList from './IncomeList';
 import {IncomeCategory} from '../../dummy/categoryItems';
+import {useAppSelector} from '../../hooks';
 
+type Props = {
+  // data: any;
+  fromDate: string;
+  toDate: string;
+};
 
-type Props = {};
+const {height} = Dimensions.get('window');
 
-const {width} = Dimensions.get('window');
-
-const IncomeOutput = ({data, fromDate, toDate}: Props) => {
+const IncomeOutput = ({fromDate, toDate}: Props) => {
+  const dataLoaded = useAppSelector(store => store);
+  const data = dataLoaded?.incomes?.incomes;
   // let slices = [];
   // const incomeData = data;
-  const navigation = useNavigation();
+  // const navigation = useNavigation();
 
   // Filtered data: from date -to- to date
   const filteredData = data.filter(
     d =>
-      new Date(d.date) >= new Date(fromDate) &&
-      new Date(d.date) <= new Date(toDate),
+      moment(d.date).format('YYYY-MM-DD') >=
+        moment(fromDate).format('YYYY-MM-DD') &&
+      moment(d.date).format('YYYY-MM-DD') <=
+        moment(toDate).format('YYYY-MM-DD'),
   );
 
   // Summation for each category
@@ -65,14 +74,15 @@ const IncomeOutput = ({data, fromDate, toDate}: Props) => {
 
 export default IncomeOutput;
 
+// Style
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
   transactContainer: {
-    height: 250,
-    marginTop: 10,
-    marginBottom: 100,
+    height: height / 2.5,
+    marginTop: 5,
+    marginBottom: 5,
     backgroundColor: '#ffffff',
   },
   pieChart: {

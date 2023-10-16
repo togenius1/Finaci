@@ -13,7 +13,7 @@ import moment from 'moment';
 import {GlobalStyles} from '../../constants/styles';
 import DateTimePick from '../UI/DateTimePick';
 
-const {width} = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
 function ExpenseForm({
   type,
@@ -83,7 +83,7 @@ function ExpenseForm({
     setAccountPressed(true);
   }
 
-  console.log('acc title: ', account?.title);
+  // console.log('acc title: ', account?.title);
 
   return (
     <View style={styles.form}>
@@ -228,9 +228,9 @@ type Props = {
   type: string;
   amount: string;
   note: string;
-  category: string;
+  category: any[] | undefined;
   date: string;
-  account: string;
+  account: any[] | undefined;
   categoryTitle: string;
   accountTitle: string;
   textDate: string;

@@ -4952,6 +4952,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@revenuecat/purchases-typescript-internal@npm:7.0.0":
+  version: 7.0.0
+  resolution: "@revenuecat/purchases-typescript-internal@npm:7.0.0"
+  checksum: 6803e2acad8700c289f0a1ba02261689ed3b2b119a843b27cb1f3636cf7e4b210ac44adda09dce2d9d9a8cdd4ddb199cbead9a044b1ba7e12da1335afe8ebc4b
+  languageName: node
+  linkType: hard
+
 "@sideway/address@npm:^4.1.3":
   version: 4.1.4
   resolution: "@sideway/address@npm:4.1.4"
@@ -5476,6 +5483,7 @@ __metadata:
     react-hook-form: ^7.47.0
     react-native: 0.72.6
     react-native-app-auth: ^7.1.0
+    react-native-device-info: ^10.11.0
     react-native-document-picker: ^9.0.1
     react-native-fs: ^2.20.0
     react-native-gesture-handler: ^2.13.2
@@ -5483,6 +5491,7 @@ __metadata:
     react-native-google-mobile-ads: ^12.3.0
     react-native-modal-datetime-picker: ^17.1.0
     react-native-pager-view: ^6.2.2
+    react-native-purchases: ^7.0.0
     react-native-reanimated: ^3.5.4
     react-native-safe-area-context: ^4.7.2
     react-native-screens: ^3.25.0
@@ -5490,6 +5499,8 @@ __metadata:
     react-native-svg: ^13.14.0
     react-native-tab-view: ^3.5.2
     react-native-vector-icons: ^10.0.0
+    react-native-version-check: ^3.4.7
+    react-phone-number-input: ^3.3.6
     react-redux: ^8.1.3
     react-test-renderer: 18.2.0
     redux-persist: ^6.0.0
@@ -6418,6 +6429,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"classnames@npm:^2.3.1":
+  version: 2.3.2
+  resolution: "classnames@npm:2.3.2"
+  checksum: 2c62199789618d95545c872787137262e741f9db13328e216b093eea91c85ef2bfb152c1f9e63027204e2559a006a92eb74147d46c800a9f96297ae1d9f96f4e
+  languageName: node
+  linkType: hard
+
 "clean-stack@npm:^2.0.0":
   version: 2.2.0
   resolution: "clean-stack@npm:2.2.0"
@@ -6714,6 +6732,13 @@ __metadata:
     js-yaml: ^3.13.1
     parse-json: ^4.0.0
   checksum: 8b6f1d3c8a5ffdf663a952f17af0761adf210b7a5933d0fe8988f3ca3a1f0e1e5cbbb74d5b419c15933dd2fdcaec31dbc5cc85cb8259a822342b93b529eff89c
+  languageName: node
+  linkType: hard
+
+"country-flag-icons@npm:^1.5.4":
+  version: 1.5.7
+  resolution: "country-flag-icons@npm:1.5.7"
+  checksum: b2512623ec7fa5a7b3d875b173469637f8782bb160d6054cd281223847b434316b22a736488a441168fc278fc9ee4b0b5e84a0b6164ab0a371a7afb1c2d50ca5
   languageName: node
   linkType: hard
 
@@ -8647,6 +8672,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"input-format@npm:^0.3.8":
+  version: 0.3.8
+  resolution: "input-format@npm:0.3.8"
+  dependencies:
+    prop-types: ^15.8.1
+  checksum: 22a0266504536c4c18cee1e44f45d995a7c3f8599e63f52e0cf1805eea16997508dc6182736caf8676d5e279695997ef8edc4f4e091a9f17fa365ffe6e19710e
+  languageName: node
+  linkType: hard
+
 "internal-slot@npm:^1.0.5":
   version: 1.0.5
   resolution: "internal-slot@npm:1.0.5"
@@ -9857,6 +9891,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"libphonenumber-js@npm:^1.10.44":
+  version: 1.10.47
+  resolution: "libphonenumber-js@npm:1.10.47"
+  checksum: 04fd0a4e57fdcb5c3a566fb26ded46c36e17953559c4a34d2f2b42299228e424109a56aa9588f4d7020bf3dd500cf5010e622734eeeda45e478e5d36d31b113d
+  languageName: node
+  linkType: hard
+
 "lines-and-columns@npm:^1.1.6":
   version: 1.2.4
   resolution: "lines-and-columns@npm:1.2.4"
@@ -9911,10 +9952,31 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lodash.isfunction@npm:^3.0.9":
+  version: 3.0.9
+  resolution: "lodash.isfunction@npm:3.0.9"
+  checksum: 99e54c34b1e8a9ba75c034deb39cedbd2aca7af685815e67a2a8ec4f73ec9748cda6ebee5a07d7de4b938e90d421fd280e9c385cc190f903ac217ac8aff30314
+  languageName: node
+  linkType: hard
+
+"lodash.isnil@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "lodash.isnil@npm:4.0.0"
+  checksum: ebf8df69879badd6ad99c4f64c54c470248df5cf92b208ca730861b1d8ac058da7b632ac811d18b0929d93cbac8d8fc866e781ee816b0142c56952e85edc682f
+  languageName: node
+  linkType: hard
+
 "lodash.merge@npm:^4.6.2":
   version: 4.6.2
   resolution: "lodash.merge@npm:4.6.2"
   checksum: ad580b4bdbb7ca1f7abf7e1bce63a9a0b98e370cf40194b03380a46b4ed799c9573029599caebc1b14e3f24b111aef72b96674a56cfa105e0f5ac70546cdc005
+  languageName: node
+  linkType: hard
+
+"lodash.pick@npm:^4.4.0":
+  version: 4.4.0
+  resolution: "lodash.pick@npm:4.4.0"
+  checksum: 2c36cab7da6b999a20bd3373b40e31a3ef81fa264f34a6979c852c5bc8ac039379686b27380f0cb8e3781610844fafec6949c6fbbebc059c98f8fa8570e3675f
   languageName: node
   linkType: hard
 
@@ -11577,6 +11639,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-device-info@npm:^10.11.0":
+  version: 10.11.0
+  resolution: "react-native-device-info@npm:10.11.0"
+  peerDependencies:
+    react-native: "*"
+  checksum: 3f2de34df4e95e87291673fe69b09d3b96f9088177a8dadd92eccec86549cea63ca08ab82f120d4150eb0302ac721ad8a5e4b3a8136c9f54f0212e4c055762b0
+  languageName: node
+  linkType: hard
+
 "react-native-document-picker@npm:^9.0.1":
   version: 9.0.1
   resolution: "react-native-document-picker@npm:9.0.1"
@@ -11665,6 +11736,18 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: ac563431c10e96ff28367e57310ebd6901e1ddd532430802cab03ed9a216f85cf9567e05aaf7fd58bb1a328ffac11e1f0f19907cf55103a487c103e2f6d2e390
+  languageName: node
+  linkType: hard
+
+"react-native-purchases@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "react-native-purchases@npm:7.0.0"
+  dependencies:
+    "@revenuecat/purchases-typescript-internal": 7.0.0
+  peerDependencies:
+    react: ">= 16.6.3"
+    react-native: ">= 0.58.2"
+  checksum: 2d36500b9ec4fab931d0aafe1171597ad5c6148913d709bf24a5c03d965c921383aab3eb0865235d5ceeb9dc71a24edb169116b9ac79f9a50a14ce74bef8c3c3
   languageName: node
   linkType: hard
 
@@ -11771,6 +11854,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-version-check@npm:^3.4.7":
+  version: 3.4.7
+  resolution: "react-native-version-check@npm:3.4.7"
+  dependencies:
+    lodash.isfunction: ^3.0.9
+    lodash.isnil: ^4.0.0
+    lodash.pick: ^4.4.0
+    semver: ^6.1.1
+  peerDependencies:
+    react-native: ">=0.48.0"
+  checksum: 96bfb203ff9326001b563fd1a6e6f77f3a5f3b898f417c301a7055e0cfd6aa5edbbc77300bba798feb677d2cb8cb0f7e56871b951a4840762c19fe4c7bfc829e
+  languageName: node
+  linkType: hard
+
 "react-native@npm:0.72.6":
   version: 0.72.6
   resolution: "react-native@npm:0.72.6"
@@ -11816,6 +11913,22 @@ __metadata:
   bin:
     react-native: cli.js
   checksum: 3cf0af092c0d6b9b6e67795664e324136f6d1a41c6a889737fb612e5ddb93d0537c890fe733e751fe3bbc139cbb4f9f6d9eff4467e8d8dc67194ac8b382fa168
+  languageName: node
+  linkType: hard
+
+"react-phone-number-input@npm:^3.3.6":
+  version: 3.3.6
+  resolution: "react-phone-number-input@npm:3.3.6"
+  dependencies:
+    classnames: ^2.3.1
+    country-flag-icons: ^1.5.4
+    input-format: ^0.3.8
+    libphonenumber-js: ^1.10.44
+    prop-types: ^15.8.1
+  peerDependencies:
+    react: ">=16.8"
+    react-dom: ">=16.8"
+  checksum: 2fe54ad001c37b127b10d6dee2e141ca86e37d751fdd818183ade5630841a6bad185ecd128b5aa78342c09165b47b83bb1a37d6a0c360b4f017ae550faa295b7
   languageName: node
   linkType: hard
 
@@ -12334,7 +12447,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:^6.3.0, semver@npm:^6.3.1":
+"semver@npm:^6.1.1, semver@npm:^6.3.0, semver@npm:^6.3.1":
   version: 6.3.1
   resolution: "semver@npm:6.3.1"
   bin:

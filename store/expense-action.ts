@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {expenseActions} from './expense-slice';
-import {EXPENSES} from '../dummy/dummy';
+// import {EXPENSES} from '../dummy/dummy';
 
 export const fetchExpensesData = () => {
   return async dispatch => {
@@ -25,6 +25,26 @@ export const fetchExpensesData = () => {
     } catch (error) {}
   };
 };
+
+// export const replaceExpensesData = obj => {
+//   // console.log('expense: ', obj);
+//   return async dispatch => {
+//     const fetchData = async () => {
+//       const response = obj;
+//       // return response !== null ? JSON.stringify(response) : null;
+//       return response !== null ? response : null;
+//     };
+
+//     try {
+//       const ExpensesData = await fetchData();
+//       dispatch(
+//         expenseActions.replaceExpenses({
+//           expenses: ExpensesData,
+//         }),
+//       );
+//     } catch (error) {}
+//   };
+// };
 
 /* 
 Don't have to fetch data from AsyncStorage.

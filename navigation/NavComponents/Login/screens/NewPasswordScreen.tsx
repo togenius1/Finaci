@@ -1,11 +1,4 @@
-import {
-  Alert,
-  Dimensions,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import {Alert, ScrollView, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {useForm} from 'react-hook-form';
 import {Auth} from 'aws-amplify';
@@ -20,7 +13,7 @@ export default function NewPasswordScreen({navigation}: Props) {
 
   const onSubmitPressed = async data => {
     try {
-      await Auth.forgotPasswordSubmit(data.username, data.password, data.code);
+      await Auth.forgotPasswordSubmit(data.username, data.code, data.password);
       navigation.navigate('SignIn');
     } catch (e) {
       Alert.alert('Oops', e.message);

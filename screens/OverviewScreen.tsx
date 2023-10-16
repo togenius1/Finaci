@@ -6,7 +6,15 @@ import {
   Text,
   View,
 } from 'react-native';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
+import {useFocusEffect} from '@react-navigation/native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import moment from 'moment';
@@ -18,13 +26,13 @@ import MonthYearList from '../components/Menu/MonthYearList';
 import {OverviewNavigationProp} from '../types';
 import AddBtn from '../components/UI/AddBtn';
 import Menu from '../components/Menu/Menu';
-import {useFocusEffect} from '@react-navigation/native';
+import OverviewContext from '../store-context/overview-context';
 
 type Props = {
   navigation: OverviewNavigationProp;
 };
 
-const {width, height} = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 
 let MONTH = moment().month() + 1;
 if (MONTH < 10) {
@@ -34,16 +42,24 @@ const initFromDateString = `${moment().year()}-${MONTH}-01`;
 const initFromDate = moment(initFromDateString).format('YYYY-MM-DD');
 const initToDate = moment().format('YYYY-MM-DD');
 
+interface OverviewTabType {
+  focusedTabIndex: number;
+  setFocusedTabIndex: Dispatch<SetStateAction<number>>;
+}
+
+// Top tab
 const TopTab = createMaterialTopTabNavigator();
 // const navigation = useNavigation();
 
-function OverviewTab({setFocusedTabIndex, fromDate, toDate}) {
+// Overview
+function OverviewTab({setFocusedTabIndex, focusedTabIndex}: OverviewTabType) {
   return (
     <TopTab.Navigator
+      // initialRouteName="Spending"
       screenListeners={{
         state: e => {
           // Do something with the state
-          setFocusedTabIndex(e.data?.state?.index);
+          setFocusedTabIndex(+e.data?.state?.index);
         },
       }}
       screenOptions={() => ({
@@ -51,26 +67,34 @@ function OverviewTab({setFocusedTabIndex, fromDate, toDate}) {
         tabBarInactiveTintColor: '#7e7e7e',
         tabBarIndicatorStyle: {backgroundColor: 'red'},
       })}>
-      <TopTab.Screen
-        name="Spending"
-        component={Spending}
-        initialParams={{fromDate: fromDate, toDate: toDate}}
-      />
-      <TopTab.Screen
-        name="Expense"
-        component={Expense}
-        initialParams={{fromDate: fromDate, toDate: toDate}}
-      />
-      <TopTab.Screen
-        name="Income"
-        component={Income}
-        initialParams={{fromDate: fromDate, toDate: toDate}}
-      />
+      <TopTab.Screen name={'Spending'}>
+        {() => focusedTabIndex === 0 && <Spending />}
+      </TopTab.Screen>
+
+      <TopTab.Screen name={'Expense'}>
+        {() => focusedTabIndex === 1 && <Expense />}
+      </TopTab.Screen>
+
+      <TopTab.Screen name={'Income'}>
+        {() => focusedTabIndex === 2 && <Income />}
+      </TopTab.Screen>
     </TopTab.Navigator>
   );
 }
 
-function HeaderRightComponent({
+interface HeaderRightType {
+  fromDate: string;
+  toDate: string;
+  showCustomDate: boolean;
+  fromDateClickedHandler: () => void;
+  toDateClickedHandler: () => void;
+  rightMenuClickedHandler: () => void;
+  // setIsMYListVisible: (value: boolean) => void;
+  setIsMYListVisible: (value: boolean) => void;
+}
+
+// Header Right
+function OverviewHeader({
   fromDate,
   toDate,
   showCustomDate,
@@ -79,7 +103,7 @@ function HeaderRightComponent({
   rightMenuClickedHandler,
   // showMonthYearListMenuHandler,
   setIsMYListVisible,
-}) {
+}: HeaderRightType) {
   const month = moment.monthsShort(moment(toDate).month());
   const year = moment(toDate).year();
 
@@ -140,17 +164,18 @@ function HeaderRightComponent({
   );
 }
 
+// Main
 const OverviewScreen = ({navigation}: Props) => {
   const [isDatePickerVisible, setDatePickerVisibility] =
     useState<boolean>(false);
   const [mode, setMode] = useState<string | null>('date');
-  const [fromDate, setFromDate] = useState<string | null>(initFromDate);
-  const [toDate, setToDate] = useState<string | null>(initToDate);
+  // const [fromDate, setFromDate] = useState<string | null>(initFromDate);
+  // const [toDate, setToDate] = useState<string | null>(initToDate);
   const [fromDateClicked, setFromDateClicked] = useState<boolean>(false);
   const [toDateClicked, setToDateClicked] = useState<boolean>(false);
   const [rightMenuClicked, setRightMenuClicked] = useState<boolean>(false);
   const [showCustomDate, setShowCustomDate] = useState<boolean>(false);
-  const [focusedTabIndex, setFocusedTabIndex] = useState<number | undefined>(0);
+  const [focusedTabIndex, setFocusedTabIndex] = useState<number>(0);
   // const [showMonthYearListMenu, setShowMonthYearListMenu] =
   //   useState<boolean>(false);
   const [year, setYear] = useState<string | null>(String(moment().year()));
@@ -159,13 +184,15 @@ const OverviewScreen = ({navigation}: Props) => {
   // const [duration, setDuration] = useState(moment().year());
   const [month, setMonth] = useState<string | null>(String(MONTH));
 
+  const overviewCtx = useContext(OverviewContext);
+
   // useEffect when focus
   useFocusEffect(
     useCallback(() => {
       // alert('Screen was focused');
       // Do something when the screen is focused
       setShowCustomDate(false);
-      setFocusedTabIndex(0);
+      // setFocusedTabIndex(0);
 
       return () => {
         // alert('Screen was unfocused');
@@ -187,13 +214,13 @@ const OverviewScreen = ({navigation}: Props) => {
 
   useEffect(() => {
     navigation.setOptions({
-      title: showCustomDate ? '' : 'Overview',
+      title: showCustomDate ? '' : '',
       headerTitleAlign: 'left',
       // headerTitleContainerStyle: {marginLeft: 0},
       headerRight: () => (
-        <HeaderRightComponent
-          fromDate={fromDate}
-          toDate={toDate}
+        <OverviewHeader
+          fromDate={overviewCtx.fromDate}
+          toDate={overviewCtx.toDate}
           showCustomDate={showCustomDate}
           fromDateClickedHandler={fromDateClickedHandler}
           toDateClickedHandler={toDateClickedHandler}
@@ -204,24 +231,12 @@ const OverviewScreen = ({navigation}: Props) => {
     });
   }, [
     rightMenuClicked,
-    fromDate,
-    toDate,
+    overviewCtx.fromDate,
+    overviewCtx.toDate,
     showCustomDate,
     navigation,
     // showMonthYearListMenu,
   ]);
-
-  useEffect(() => {
-    if (focusedTabIndex === 0) {
-      sendParamsToSpendingTabHandler();
-    }
-    if (focusedTabIndex === 1) {
-      sendParamsToExpenseTabHandler();
-    }
-    if (focusedTabIndex === 2) {
-      sendParamsToIncomeTabHandler();
-    }
-  }, [focusedTabIndex, fromDate, toDate]);
 
   // Set Month Year
   function onMonthYearSelectedHandler(time) {
@@ -239,8 +254,14 @@ const OverviewScreen = ({navigation}: Props) => {
     todate = moment(`${year}-${mm}-${daysInMonth}`).format('YYYY-MM-DD');
     // month = moment(fromdate).month() + 1;
 
-    setFromDate(moment(fromdate).format('YYYY-MM-DD'));
-    setToDate(moment(todate).format('YYYY-MM-DD'));
+    // setFromDate(moment(fromdate).format('YYYY-MM-DD'));
+    // setToDate(moment(todate).format('YYYY-MM-DD'));
+    overviewCtx.fromDateSetHandler({
+      fromDate: fromdate,
+    });
+    overviewCtx.toDateSetHandler({
+      toDate: todate,
+    });
 
     const MONTH = moment(todate).format('M');
     setMonth(MONTH);
@@ -257,17 +278,14 @@ const OverviewScreen = ({navigation}: Props) => {
   }
 
   function monthlyClickedHandler() {
-    setFromDate(initFromDate);
-    setToDate(initToDate);
-    if (focusedTabIndex === 0) {
-      sendParamsToSpendingTabHandler();
-    }
-    if (focusedTabIndex === 1) {
-      sendParamsToExpenseTabHandler();
-    }
-    if (focusedTabIndex === 2) {
-      sendParamsToIncomeTabHandler();
-    }
+    // setFromDate(initFromDate);
+    // setToDate(initToDate);
+    overviewCtx.fromDateSetHandler({
+      fromDate: initFromDate,
+    });
+    overviewCtx.toDateSetHandler({
+      toDate: initToDate,
+    });
 
     setShowCustomDate(false);
     setRightMenuClicked(false);
@@ -300,10 +318,16 @@ const OverviewScreen = ({navigation}: Props) => {
     }
     let date = moment(event).format('YYYY-MM-DD');
     if (fromDateClicked) {
-      setFromDate(date);
+      // setFromDate(date);
+      overviewCtx.fromDateSetHandler({
+        fromDate: date,
+      });
     }
     if (toDateClicked) {
-      setToDate(date);
+      // setToDate(date);
+      overviewCtx.toDateSetHandler({
+        toDate: date,
+      });
     }
   }
 
@@ -317,44 +341,21 @@ const OverviewScreen = ({navigation}: Props) => {
 
   const onConfirm = date => {
     if (fromDateClicked) {
-      setFromDate(moment(date).format('YYYY-MM-DD'));
+      // setFromDate(moment(date).format('YYYY-MM-DD'));
+      overviewCtx.fromDateSetHandler({
+        fromDate: moment(date).format('YYYY-MM-DD'),
+      });
     }
     if (toDateClicked) {
-      setToDate(moment(date).format('YYYY-MM-DD'));
+      // setToDate(moment(date).format('YYYY-MM-DD'));
+      overviewCtx.toDateSetHandler({
+        toDate: moment(date).format('YYYY-MM-DD'),
+      });
     }
-    if (focusedTabIndex === 0) {
-      sendParamsToSpendingTabHandler();
-    }
-    if (focusedTabIndex === 1) {
-      sendParamsToExpenseTabHandler();
-    }
-    if (focusedTabIndex === 2) {
-      sendParamsToIncomeTabHandler();
-    }
+
     setFromDateClicked(false);
     setToDateClicked(false);
     hideDatePicker();
-  };
-
-  const sendParamsToSpendingTabHandler = () => {
-    navigation.navigate('Spending', {
-      fromDate: fromDate,
-      toDate: toDate,
-    });
-  };
-
-  const sendParamsToExpenseTabHandler = () => {
-    navigation.navigate('Expense', {
-      fromDate: fromDate,
-      toDate: toDate,
-    });
-  };
-
-  const sendParamsToIncomeTabHandler = () => {
-    navigation.navigate('Income', {
-      fromDate: fromDate,
-      toDate: toDate,
-    });
   };
 
   return (
@@ -362,8 +363,6 @@ const OverviewScreen = ({navigation}: Props) => {
       <OverviewTab
         setFocusedTabIndex={setFocusedTabIndex}
         focusedTabIndex={focusedTabIndex}
-        fromDate={fromDate}
-        toDate={toDate}
       />
 
       <DateTimePickerModal
@@ -371,7 +370,13 @@ const OverviewScreen = ({navigation}: Props) => {
         onChange={onChange}
         onCancel={hideDatePicker}
         onConfirm={onConfirm}
-        value={toDateClicked ? toDate : fromDateClicked ? fromDate : ''}
+        value={
+          toDateClicked
+            ? overviewCtx.toDate
+            : fromDateClicked
+            ? overviewCtx.fromDate
+            : ''
+        }
         mode={mode}
         // today={onTodayHandler}
         is24Hour={true}
@@ -384,7 +389,7 @@ const OverviewScreen = ({navigation}: Props) => {
         isMenuOpen={isMenuOpen}
         monthlyClickedHandler={monthlyClickedHandler}
         customClickedHandler={customClickedHandler}
-        focusedTabIndex={focusedTabIndex}
+        focusedTabIndex={Number(focusedTabIndex)}
       />
 
       <MonthYearList
@@ -392,16 +397,16 @@ const OverviewScreen = ({navigation}: Props) => {
         onMYSelectedHandler={onMonthYearSelectedHandler}
         year={Number(year)}
         setYear={setYear}
-        month={month}
+        month={Number(month)}
         setIsModalVisible={setIsMYListVisible}
         isModalVisible={isMYListVisible}
       />
 
       <AddBtn
         onPress={() => navigation.navigate('AddExpenses')}
-        icon={'plus-circle'}
-        size={width * 0.25}
         color={'#b6482a'}
+        // icon="plus"
+        // size={20}
       />
     </View>
   );
@@ -409,6 +414,7 @@ const OverviewScreen = ({navigation}: Props) => {
 
 export default OverviewScreen;
 
+// Style
 const styles = StyleSheet.create({
   container: {
     flex: 1,

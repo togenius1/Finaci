@@ -3,25 +3,27 @@ import React from 'react';
 import {currencyFormatter} from '../../util/currencyFormatter';
 // import OverviewItem from './OverviewItem';
 
-type Props = {};
+type Props = {
+  data: any[];
+};
 
 function renderExpenseItem(itemData) {
   return (
-    <Pressable
-      style={({pressed}) => pressed && styles.pressed}
-      onPress={() => {}}>
-      <View style={styles.transactBox}>
-        <View style={styles.textLeftBox}>
-          <View style={styles.pctBox}>
-            <Text>{(itemData.item.percentage * 100).toFixed(0)} %</Text>
-          </View>
-          <View style={styles.cateBox}>
-            <Text style={styles.cateText}>{itemData.item.title}</Text>
-          </View>
+    // <Pressable
+    //   style={({pressed}) => pressed && styles.pressed}
+    //   onPress={() => {}}>
+    <View style={styles.transactBox}>
+      <View style={styles.textLeftBox}>
+        <View style={styles.pctBox}>
+          <Text>{(itemData.item.percentage * 100).toFixed(0)} %</Text>
         </View>
-        <Text> {currencyFormatter(itemData.item.amount, {})}</Text>
+        <View style={styles.cateBox}>
+          <Text style={styles.cateText}>{itemData.item.title}</Text>
+        </View>
       </View>
-    </Pressable>
+      <Text> {currencyFormatter(itemData.item.amount, {})}</Text>
+    </View>
+    // </Pressable>
   );
 }
 

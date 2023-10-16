@@ -1,4 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit';
+// import moment from 'moment';
 
 // import {Expenses} from '../types';
 
@@ -18,7 +19,7 @@ const dailyTransactsSlice = createSlice({
     addDailyTransacts(state, action) {
       const newTransact = action.payload;
       const existingItem = state.dailyTransacts.find(
-        transact => transact?.date === newTransact.date,
+        transact => transact.id === newTransact.id,
       );
 
       if (!existingItem) {
@@ -44,7 +45,7 @@ const dailyTransactsSlice = createSlice({
     },
     updateDailyTransacts(state, action) {
       const updatedTransactIndex = state.dailyTransacts.findIndex(
-        transact => transact.day === action.payload.day,
+        transact => transact.id === action.payload.id,
       );
 
       state.dailyTransacts[updatedTransactIndex] = action.payload;

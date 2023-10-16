@@ -9,16 +9,23 @@ import {
 } from './crypto';
 
 // Decryption
-export const decryption = async (obj: string) => {
-  const ourSecretKey = await getMySecretKey();
-  const ourPublicKey = await AsyncStorage.getItem(PUBLIC_KEY);
+export const decryption = async (
+  obj: any,
+  privateKey: string,
+  publicKey: string,
+) => {
+  const ourSecretKey = privateKey;
+  const ourPublicKey = publicKey;
   if (!ourSecretKey || !ourPublicKey) {
     return;
   }
 
   const encrypted = String(Object.values(JSON.parse(obj))[0]);
 
-  const sharedKey = box.before(stringToUint8Array(ourPublicKey), ourSecretKey);
+  const sharedKey = box.before(
+    stringToUint8Array(ourPublicKey),
+    stringToUint8Array(ourSecretKey),
+  );
   const decrypted = decrypt(sharedKey, encrypted);
 
   return decrypted;

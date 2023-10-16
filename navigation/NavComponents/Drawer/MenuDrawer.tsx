@@ -1,22 +1,23 @@
 import React from 'react';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 
-import OverviewScreen from '../../../screens/OverviewScreen';
 import StatsScreen from '../../../screens/StatsScreen';
-import TransactionsScreen from '../../../screens/TransactionsScreen';
 import AccountsScreen from '../../../screens/AccountsScreen';
 import SettingsScreen from '../../../screens/SettingsScreen';
 import DrawerContent from '../../../components/drawer/DrawerContent';
 import ReportsScreen from '../../../screens/ReportsScreen';
 import BackupScreen from '../../../screens/BackupScreen';
-import RecommendScreen from '../../../screens/RecommendScreen';
 import {RootStackParamList} from '../../../types';
+import UserScreen from '../../../screens/UserScreen';
+import TransactionStack from '../../TransactionStack';
+import OverviewStack from '../../OverviewStack';
 
 const Drawer = createDrawerNavigator<RootStackParamList>();
 
-const MenuDrawer = () => {
+const DrawerNavigator = () => {
   return (
     <Drawer.Navigator
+      useLegacyImplementation={false}
       screenOptions={() => ({
         headerTintColor: 'black',
         drawerType: 'front',
@@ -24,20 +25,24 @@ const MenuDrawer = () => {
           backgroundColor: 'lightgrey',
           width: 240,
         },
+
+        headerShown: false,
       })}
       drawerContent={props => <DrawerContent {...props} />}>
       <Drawer.Screen
-        name="Overview"
-        component={OverviewScreen}
+        name="OverviewStack"
+        component={OverviewStack}
         options={() => ({
           // title: 'Overview',
+          // headerStyle: {height: 20},
         })}
       />
+
       <Drawer.Screen
         name="Transactions"
-        component={TransactionsScreen}
+        component={TransactionStack}
         options={() => ({
-          title: 'Expenses',
+          title: 'Transactions',
         })}
       />
       <Drawer.Screen
@@ -45,6 +50,7 @@ const MenuDrawer = () => {
         component={StatsScreen}
         options={() => ({
           title: 'Stats',
+          headerShown: true,
         })}
       />
       <Drawer.Screen
@@ -52,6 +58,7 @@ const MenuDrawer = () => {
         component={AccountsScreen}
         options={() => ({
           title: 'Accounts',
+          headerShown: true,
         })}
       />
       <Drawer.Screen
@@ -59,6 +66,7 @@ const MenuDrawer = () => {
         component={ReportsScreen}
         options={() => ({
           title: 'Reports',
+          headerShown: true,
         })}
       />
       <Drawer.Screen
@@ -66,6 +74,7 @@ const MenuDrawer = () => {
         component={BackupScreen}
         options={() => ({
           title: 'Backup',
+          headerShown: true,
         })}
       />
       <Drawer.Screen
@@ -73,17 +82,28 @@ const MenuDrawer = () => {
         component={SettingsScreen}
         options={() => ({
           title: 'Settings',
+          headerShown: true,
         })}
       />
+
       <Drawer.Screen
+        name="User"
+        component={UserScreen}
+        options={() => ({
+          title: 'User',
+          headerShown: true,
+        })}
+      />
+
+      {/* <Drawer.Screen
         name="Recommend"
         component={RecommendScreen}
         options={() => ({
           title: 'Recommend Program',
         })}
-      />
+      /> */}
     </Drawer.Navigator>
   );
 };
 
-export default MenuDrawer;
+export default DrawerNavigator;

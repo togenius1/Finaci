@@ -1,21 +1,15 @@
 import {
   Dimensions,
   Modal,
+  Platform,
   Pressable,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {Dispatch, SetStateAction} from 'react';
 import moment from 'moment';
 // import {v4 as uuidv4} from 'uuid';
-
-type Props = {
-  isModalVisible: boolean;
-  setIsModalVisible: (value: boolean) => void;
-  year: number;
-  setYear: React.Dispatch<React.SetStateAction<string | null>>;
-};
 
 const {width, height} = Dimensions.get('window');
 
@@ -41,6 +35,7 @@ let nextYear = Array.from({length: 4}, (_, i) =>
   eval('(' + `{id:${i + 6},MY:${moment().year() + i}}` + ')'),
 );
 let yearObj = [...prevYear, ...nextYear];
+
 //sort Data
 yearObj.sort((a: any, b: any) => {
   const amountA = a.id;
@@ -75,17 +70,17 @@ function MonthList({item, onYearSelectedHandler, selectedMY, monthlyPressed}) {
   );
 }
 
-export default function MonthYearList({
-  monthlyPressed,
-  onMYSelectedHandler,
+const MonthYearList = ({
   year,
   setYear,
+  monthlyPressed,
+  onMYSelectedHandler,
   month,
-  decrementYearHandle,
-  incrementYearHandle,
+  // decrementYearHandle,
+  // incrementYearHandle,
   isModalVisible,
   setIsModalVisible,
-}: Props) {
+}: Props) => {
   //
   const selectedMY = monthlyPressed ? year : month;
   let obj;
@@ -180,13 +175,15 @@ export default function MonthYearList({
       </Pressable>
     </Modal>
   );
-}
+};
+
+export default MonthYearList;
 
 const styles = StyleSheet.create({
   listMenu: {
     flexDirection: 'column',
     justifyContent: 'space-around',
-    width: width * 0.8,
+    width: Platform.OS === 'ios' ? width * 0.9 : width * 0.8,
     height: height * 0.3,
     borderWidth: 0.8,
     backgroundColor: '#ffffff',
@@ -199,7 +196,7 @@ const styles = StyleSheet.create({
     elevation: 2,
     position: 'absolute',
     top: height * 0.06,
-    right: 0,
+    right: Platform.OS === 'ios' ? 10 : 0,
   },
   outSide: {
     flex: 1,
@@ -209,3 +206,16 @@ const styles = StyleSheet.create({
     opacity: 0.65,
   },
 });
+
+// onMYSelectedHandler,
+
+// ============================== TYPE ===================================
+type Props = {
+  monthlyPressed: boolean;
+  isModalVisible: boolean;
+  setIsModalVisible: (value: boolean) => void;
+  year: number;
+  month: number;
+  setYear: React.Dispatch<React.SetStateAction<string>>;
+  onMYSelectedHandler: (value: any) => void;
+};

@@ -1,10 +1,19 @@
-import {Pressable, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import {
+  Dimensions,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import {DrawerContentScrollView} from '@react-navigation/drawer';
 import {useNavigation} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Auth} from 'aws-amplify';
+// import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {Auth, Hub} from 'aws-amplify';
+import {isTablet} from 'react-native-device-info';
 
 type Props = {};
 
@@ -15,14 +24,53 @@ const colors = {
   income: '#03991e',
   budget: '#072ac7',
   setting: '#424242',
+  paywall: '#eb9d3d',
   user: '#075aff',
   recommendation: '#00c4da',
 };
 
-// const {width, height} = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
-const DrawerContent = (props: Props) => {
+const DrawerContent = ({props}: Props) => {
   const navigation = useNavigation();
+
+  const [authUser, setAuthUser] = useState<any>();
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+
+  // Listening for Login events.
+  useEffect(() => {
+    const listenerAuth = async data => {
+      if (data.payload.event === 'signIn') {
+        setIsAuthenticated(true);
+      }
+      if (data.payload.event === 'signOut') {
+        setIsAuthenticated(false);
+      }
+    };
+
+    Hub.listen('auth', listenerAuth);
+  }, []);
+
+  // Check if authenticated user, Stay logged in.
+  useEffect(() => {
+    const onAuthUser = async () => {
+      const authUser = await Auth.currentAuthenticatedUser();
+      setAuthUser(authUser);
+      setIsAuthenticated(true);
+    };
+
+    onAuthUser();
+  }, [isAuthenticated]);
+
+  const accountAuthHandler = () => {
+    navigation.navigate('User');
+  };
+
+  const signHandler = async () => {
+    await Auth.signOut();
+    setIsAuthenticated(false);
+    navigation.navigate('User');
+  };
 
   return (
     <View style={styles.container}>
@@ -33,24 +81,30 @@ const DrawerContent = (props: Props) => {
             onPress={() => {
               navigation.navigate('Overview');
             }}>
-            <View style={{flexDirection: 'row', marginBottom: 25}}>
+            <View style={{flexDirection: 'row'}}>
               <MaterialCommunityIcons
                 name="chart-donut-variant"
-                size={24}
+                size={width * 0.060}
                 color={colors.overview}
               />
               <Text style={styles.overviewText}>Overview</Text>
             </View>
           </Pressable>
+
           <Pressable
             style={({pressed}) => pressed && styles.pressed}
             onPress={() => {
               navigation.navigate('Transactions');
             }}>
-            <View style={{flexDirection: 'row', marginBottom: 25}}>
+            <View
+              style={{
+                flexDirection: 'row',
+                marginTop: height / 20,
+                marginBottom: 20,
+              }}>
               <Ionicons
                 name="remove-outline"
-                size={22}
+                size={width * 0.060}
                 color={colors.expense}
               />
               <Text style={styles.expenseText}>Transactions</Text>
@@ -64,10 +118,10 @@ const DrawerContent = (props: Props) => {
             onPress={() => {
               navigation.navigate('Stats');
             }}>
-            <View style={{flexDirection: 'row', marginBottom: 25}}>
+            <View style={{flexDirection: 'row', marginBottom: height / 50}}>
               <Ionicons
                 name="bar-chart-outline"
-                size={24}
+                size={width * 0.06}
                 color={colors.stats}
               />
               <Text style={styles.overviewText}>Stats</Text>
@@ -79,8 +133,17 @@ const DrawerContent = (props: Props) => {
             onPress={() => {
               navigation.navigate('Accounts');
             }}>
-            <View style={{flexDirection: 'row', marginBottom: 25}}>
-              <Ionicons name="wallet-outline" size={22} color={colors.budget} />
+            <View
+              style={{
+                flexDirection: 'row',
+                marginTop: height / 50,
+                marginBottom: 20,
+              }}>
+              <Ionicons
+                name="wallet-outline"
+                size={width * 0.060}
+                color={colors.budget}
+              />
               <Text style={styles.budgetText}>Accounts</Text>
             </View>
           </Pressable>
@@ -95,10 +158,10 @@ const DrawerContent = (props: Props) => {
             <View style={{flexDirection: 'row'}}>
               <Ionicons
                 name="newspaper-outline"
-                size={22}
+                size={width * 0.060}
                 color={colors.budget}
               />
-              <Text style={styles.reportText}>Report & Export</Text>
+              <Text style={styles.reportText}>Export</Text>
             </View>
           </Pressable>
         </View>
@@ -112,27 +175,15 @@ const DrawerContent = (props: Props) => {
             <View style={{flexDirection: 'row'}}>
               <Ionicons
                 name="cloud-upload-outline"
-                size={22}
+                size={width * 0.060}
                 color={colors.budget}
               />
-              <Text style={styles.reportText}>Backup</Text>
+              <Text style={styles.reportText}>Backup/Restore</Text>
             </View>
           </Pressable>
         </View>
 
-        <View style={styles.settingContainer}>
-          <Pressable
-            style={({pressed}) => pressed && styles.pressed}
-            onPress={() => {
-              navigation.navigate('Settings');
-            }}>
-            <View style={{flexDirection: 'row', marginBottom: 25}}>
-              <Ionicons name="cog-outline" size={22} color={colors.setting} />
-              <Text style={styles.settingText}>Settings</Text>
-            </View>
-          </Pressable>
-
-          <Pressable
+        {/* <Pressable
             style={({pressed}) => pressed && styles.pressed}
             onPress={() => {
               navigation.navigate('Recommend');
@@ -145,16 +196,56 @@ const DrawerContent = (props: Props) => {
               />
               <Text style={styles.RecommendText}>Recommend</Text>
             </View>
+          </Pressable> */}
+
+        <View style={styles.settingContainer}>
+          <Pressable
+            style={({pressed}) => pressed && styles.pressed}
+            onPress={() => {
+              navigation.navigate('Settings');
+            }}>
+            <View style={{flexDirection: 'row'}}>
+              <Ionicons
+                name="cog-outline"
+                size={width * 0.060}
+                color={colors.setting}
+              />
+              <Text style={styles.settingText}>Settings</Text>
+            </View>
+          </Pressable>
+        </View>
+
+        <View style={styles.userContainer}>
+          <Pressable
+            style={({pressed}) => pressed && styles.pressed}
+            onPress={() => accountAuthHandler()}>
+            <View style={styles.user}>
+              <MaterialCommunityIcons
+                name="account-outline"
+                size={width * 0.065}
+                color={colors.paywall}
+              />
+              <Text style={styles.settingText}>User account</Text>
+            </View>
           </Pressable>
         </View>
 
         <View style={styles.logoutContainer}>
           <Pressable
             style={({pressed}) => pressed && styles.pressed}
-            onPress={() => Auth.signOut()}>
+            onPress={() => signHandler()}>
             <View style={{flexDirection: 'row'}}>
-              <Ionicons name="log-out" size={22} color={colors.user} />
-              <Text style={styles.logoutText}>Log out</Text>
+              <Ionicons
+                name="log-out"
+                size={width * 0.060}
+                color={colors.user}
+              />
+              <Text style={styles.logoutText}>
+                {isAuthenticated ? 'Sign out' : 'Sign in'}
+              </Text>
+              <Text style={styles.username}>
+                {isAuthenticated ? authUser?.username : ''}
+              </Text>
             </View>
           </Pressable>
         </View>
@@ -168,12 +259,13 @@ export default DrawerContent;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 25,
+    marginTop: 1,
+    marginBottom: 1,
     backgroundColor: 'white',
   },
   OverviewContainer: {
     // flex: 1,
-    marginTop: 40,
+    marginTop: 20,
     marginLeft: 20,
     borderBottomWidth: 1,
     borderBottomColor: '#c2c2c2',
@@ -208,7 +300,7 @@ const styles = StyleSheet.create({
   },
   reportContainer: {
     // paddingVertical: 200,
-    marginTop: 50,
+    marginTop: 30,
     marginLeft: 20,
     // marginBottom: 100,
     // borderBottomWidth: 1,
@@ -221,24 +313,45 @@ const styles = StyleSheet.create({
   },
   settingContainer: {
     marginLeft: 20,
-    marginTop: 180,
-    // marginBottom: 100,
+    marginTop: height / 5.5,
+    // marginBottom: 10,
     // backgroundColor: '#86b0dd',
   },
   settingText: {
     fontSize: 14,
     marginLeft: 20,
   },
-  RecommendText: {
+  userContainer: {
+    marginLeft: 20,
+    marginTop: height * 0.03,
+    paddingVertical: 15,
+    borderTopWidth: 1,
+    borderTopColor: '#c2c2c2',
+
+    // backgroundColor: '#f7cbcb',
+  },
+  user: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    // marginBottom: height * 0.05,
+  },
+  // RecommendText: {
+  //   fontSize: 14,
+  //   fontWeight: 'bold',
+  //   marginLeft: 20,
+  // },
+  logoutContainer: {
+    marginLeft: 20,
+    marginTop: Platform.OS === 'ios' ? height * 0.025 : height * 0.08,
+    bottom: isTablet() ? 50 : 0,
+  },
+  logoutText: {
     fontSize: 14,
     fontWeight: 'bold',
     marginLeft: 20,
   },
-  logoutContainer: {
-    marginLeft: 20,
-    marginTop: 50,
-  },
-  logoutText: {
+  username: {
+    color: 'grey',
     fontSize: 14,
     fontWeight: 'bold',
     marginLeft: 20,

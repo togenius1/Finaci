@@ -1,4 +1,4 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {createSlice} from '@reduxjs/toolkit';
 
 const expenseSlice = createSlice({
   name: 'expense',
@@ -8,6 +8,7 @@ const expenseSlice = createSlice({
   reducers: {
     // Load data from DB to Mobile
     replaceExpenses(state, action) {
+      // console.log('action.payload.expenses: ', action.payload.expenses);
       state.expenses = action.payload.expenses;
     },
 

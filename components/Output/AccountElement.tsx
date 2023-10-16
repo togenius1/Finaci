@@ -9,31 +9,34 @@ import {
 } from 'react-native';
 import React from 'react';
 import {v4 as uuidv4} from 'uuid';
+import moment from 'moment';
 
 import {currencyFormatter} from '../../util/currencyFormatter';
 import {accountActions} from '../../store/account-slice';
 import {useAppDispatch, useAppSelector} from '../../hooks';
 import AccountHeader from '../AccountHeader';
-import {sumTotalFunc} from '../../util/math';
+import {sumTotalBudget, sumTotalFunc} from '../../util/math';
 import {cashAccountsActions} from '../../store/cash-slice';
 
 const {width, height} = Dimensions.get('window');
 
 const AccountElement = ({
-  setIsModalVisible,
+  setIsAccFormVisible,
   setAccountText,
   setAddAccPressed,
   setBudget,
   setIsEditAccount,
   setIsEditCash,
-  cashData,
-  accountsData,
+  // cashData,
+  // accountsData,
   sortedItems,
-  cashBudget,
-  accountsBudget,
-  totalExpenses,
-  onPress,
+  // cashBudget,
+  // accountsBudget,
+  // totalExpenses,
+  // onPress,
   setLastEditedDate,
+  month,
+  year,
 }: Props) => {
   const dispatch = useAppDispatch();
 
@@ -42,9 +45,42 @@ const AccountElement = ({
     state => state.expenses.expenses,
     // shallowEqual,
   );
+  const cashData = useAppSelector(
+    state => state.cashAccounts.cashAccounts,
+    // shallowEqual,
+  );
+  const accountsData = useAppSelector(
+    state => state.accounts.accounts,
+    // shallowEqual,
+  );
+
+  // Filtered Cash data
+  const filteredCashData = cashData?.filter(
+    cash =>
+      Number(moment(cash?.date).month() + 1) === Number(month) &&
+      Number(moment(cash?.date).year()) === Number(year),
+  );
+
+  const filteredExpensesData = expensesData?.filter(
+    expense =>
+      Number(moment(expense?.date).month() + 1) === Number(month) &&
+      Number(moment(expense?.date).year()) === Number(year),
+  );
+
+  const filteredAccountsData = accountsData?.filter(
+    account =>
+      Number(moment(account?.date).month() + 1) === Number(month) &&
+      Number(moment(account?.date).year()) === Number(year),
+  );
+
+  const cashBudget = sumTotalBudget(filteredCashData);
+  const accountsBudget = sumTotalBudget(filteredAccountsData);
+  const totalExpenses = sumTotalFunc(filteredExpensesData);
 
   const totalAssets = Number(cashBudget) + Number(accountsBudget);
-  const total = totalAssets - Number(totalExpenses);
+  const total = Number(totalAssets) - Number(totalExpenses);
+
+  // console.log(totalExpenses);
 
   const editAccountPressedHandler = (item: string) => {
     const accType = item?.id.split('-');
@@ -55,7 +91,7 @@ const AccountElement = ({
       setAccountText('');
       setIsEditCash(true);
     }
-    if (accType[0] === 'account') {
+    if (accType[0] !== 'cash' && accType[0] !== undefined) {
       findAcc = accountsData?.filter(acc => acc?.id === item?.id);
       setAccountText(findAcc[0]?.title);
       setIsEditAccount(true);
@@ -63,7 +99,7 @@ const AccountElement = ({
 
     setBudget(findAcc[0]?.budget);
     setLastEditedDate(item?.editedDate);
-    setIsModalVisible(true);
+    setIsAccFormVisible(true);
     setAddAccPressed(true);
   };
 
@@ -106,7 +142,7 @@ const AccountElement = ({
         <Pressable
           key={item}
           style={({pressed}) => pressed && styles.pressed}
-          onPress={() => onPress(item)}
+          // onPress={() => onPress(item)}
           onLongPress={() =>
             Alert.alert(
               'Edit or Delete?',
@@ -166,7 +202,7 @@ const AccountElement = ({
           <Text style={styles.accountTitle}>Cash</Text>
           <FlatList
             keyExtractor={item => item.id + uuidv4()}
-            data={cashData}
+            data={filteredCashData}
             renderItem={renderItem}
             bounces={false}
           />
@@ -186,6 +222,7 @@ const AccountElement = ({
   );
 };
 
+// Style
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -219,18 +256,21 @@ export default AccountElement;
 
 // ========================= TYPE ========================================
 type Props = {
-  setIsModalVisible: (value: boolean) => void;
+  setIsAccFormVisible: (value: boolean) => void;
   setAccountText: (value: string) => void;
   setAddAccPressed: (value: boolean) => void;
   setBudget: (value: number) => void;
   setIsEditAccount: (value: boolean) => void;
   setIsEditCash: (value: boolean) => void;
-  setRemoveAccount: (value: boolean) => void;
-  cashData: any[];
-  accountsData: any[];
+  // setRemoveAccount: (value: boolean) => void;
+  setLastEditedDate: (value: string) => void;
+  // cashData: any[];
+  // accountsData: any[];
   sortedItems: any[];
-  cashBudget: number | undefined;
-  accountsBudget: number | undefined;
-  totalExpenses: number | undefined;
-  onPress: () => void;
+  // cashBudget: number | undefined;
+  // accountsBudget: number | undefined;
+  // totalExpenses: number | undefined;
+  month: number;
+  year: number;
+  // onPress: () => void;
 };

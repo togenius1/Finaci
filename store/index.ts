@@ -14,19 +14,27 @@ import transferCategoriesSlice from './transfer-category-slice';
 import dailyTransactsSlice from './dailyTransact-slice';
 import weeklyTransactsSlice from './weeklyTransact-slice';
 import monthlyTransactsSlice from './monthlyTransact-slice';
+import authAccountsSlice from './authAccount-slice';
+import customerInfoSlice from './customerInfo-slice';
+import passcodeSlice from './passcode-slice';
+
 
 const rootReducer = combineReducers({
   expenses: expenseSlice.reducer,
   incomes: incomeSlice.reducer,
+
   // transfers: transferSlice.reducer,
+  authAccounts: authAccountsSlice.reducer,
   cashAccounts: cashAccountsSlice.reducer,
   accounts: accountSlice.reducer,
+  customerInfos: customerInfoSlice.reducer,
   expenseCategories: expenseCategoriesSlice.reducer,
   incomeCategories: incomeCategoriesSlice.reducer,
   transferCategories: transferCategoriesSlice.reducer,
   dailyTransacts: dailyTransactsSlice.reducer,
   weeklyTransacts: weeklyTransactsSlice.reducer,
   monthlyTransacts: monthlyTransactsSlice.reducer,
+  passcode: passcodeSlice.reducer,
 });
 
 const persistConfig = {

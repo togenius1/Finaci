@@ -18,21 +18,20 @@ import moment from 'moment';
 // const {width, height} = Dimensions.get('window');
 
 const AccountComponents = ({
-  isModalVisible,
-  setIsModalVisible,
-  navigation,
+  IsAccFormVisible,
+  setIsAccFormVisible,
   month,
   year,
 }: Props) => {
   // const dispatch = useAppDispatch();
-  const expenseData = useAppSelector(
-    state => state.expenses.expenses,
-    // shallowEqual,
-  );
-  const cashData = useAppSelector(
-    state => state.cashAccounts.cashAccounts,
-    // shallowEqual,
-  );
+  // const expenseData = useAppSelector(
+  //   state => state.expenses.expenses,
+  //   // shallowEqual,
+  // );
+  // const cashData = useAppSelector(
+  //   state => state.cashAccounts.cashAccounts,
+  //   // shallowEqual,
+  // );
   const accountsData = useAppSelector(
     state => state.accounts.accounts,
     // shallowEqual,
@@ -41,22 +40,22 @@ const AccountComponents = ({
   const [accountText, setAccountText] = useState<string | null>('');
   const [isEditAccount, setIsEditAccount] = useState<boolean>(false);
   const [isEditCash, setIsEditCash] = useState<boolean>(false);
-  const [cashBudget, setCashBudget] = useState<number | undefined>();
-  const [accountsBudget, setAccountsBudget] = useState<number | undefined>();
-  const [totalExpenses, setTotalExpenses] = useState<number | undefined>();
+  // const [cashBudget, setCashBudget] = useState<number | undefined>();
+  // const [accountsBudget, setAccountsBudget] = useState<number | undefined>();
+  // const [totalExpenses, setTotalExpenses] = useState<number | undefined>();
   const [addAccPressed, setAddAccPressed] = useState<boolean>(false);
   const [budget, setBudget] = useState<number | undefined>();
   const [lastEditedDate, setLastEditedDate] = useState<string>();
 
-  useEffect(() => {
-    const cashBudget = sumTotalBudget(cashData);
-    const accountsBudget = sumTotalBudget(accountsData);
-    const totalExpenses = sumTotalFunc(expenseData);
+  // useEffect(() => {
+  // const cashBudget = sumTotalBudget(cashData);
+  // const accountsBudget = sumTotalBudget(accountsData);
+  // const totalExpenses = sumTotalFunc(expenseData);
 
-    setCashBudget(cashBudget);
-    setAccountsBudget(accountsBudget);
-    setTotalExpenses(totalExpenses);
-  }, [totalExpenses, accountsBudget, cashBudget]);
+  // setCashBudget(cashBudget);
+  // setAccountsBudget(accountsBudget);
+  // setTotalExpenses(totalExpenses);
+  // }, [totalExpenses]);
 
   // Filtered Accounts data
   const filteredAccountsData = accountsData?.filter(
@@ -65,12 +64,12 @@ const AccountComponents = ({
       +moment(account?.date).year() === year,
   );
 
-  // Filtered Cash data
-  const filteredCashData = cashData?.filter(
-    account =>
-      +moment(account?.date).month() + 1 === +month &&
-      +moment(account?.date).year() === year,
-  );
+  // // Filtered Cash data
+  // const filteredCashData = cashData?.filter(
+  //   account =>
+  //     +moment(account?.date).month() + 1 === +month &&
+  //     +moment(account?.date).year() === year,
+  // );
 
   // Sort Data
   const getSortedState = data =>
@@ -83,40 +82,42 @@ const AccountComponents = ({
   }, [filteredAccountsData]);
 
   // Navigation
-  function onNavigate(item) {
-    navigation.navigate('AccountsItem', {
-      account: item.title,
-      accountId: item.id,
-      date: item.date,
-    });
-  }
+  // function onNavigate(item) {
+  //   navigation.navigate('AccountsItem', {
+  //     account: item.title,
+  //     accountId: item.id,
+  //     date: item.date,
+  //   });
+  // }
 
   return (
     <>
       <View style={styles.container}>
         <AccountElement
-          setIsModalVisible={setIsModalVisible}
+          setIsAccFormVisible={setIsAccFormVisible}
           setAccountText={setAccountText}
           setAddAccPressed={setAddAccPressed}
-          accountText={accountText}
-          addAccPressed={addAccPressed}
+          // accountText={accountText}
+          // addAccPressed={addAccPressed}
           setBudget={setBudget}
           setIsEditAccount={setIsEditAccount}
           setIsEditCash={setIsEditCash}
-          cashData={filteredCashData}
-          accountsData={filteredAccountsData}
+          // cashData={filteredCashData}
+          // accountsData={filteredAccountsData}
           sortedItems={sortedItems}
-          cashBudget={cashBudget}
-          accountsBudget={accountsBudget}
-          totalExpenses={totalExpenses}
-          onPress={onNavigate}
+          // cashBudget={cashBudget}
+          // accountsBudget={accountsBudget}
+          // totalExpenses={totalExpenses}
+          // onPress={onNavigate}
           setLastEditedDate={setLastEditedDate}
+          month={month}
+          year={year}
         />
 
         <View style={styles.form}>
           <AddAccountForm
-            setIsModalVisible={setIsModalVisible}
-            isModalVisible={isModalVisible}
+            setIsAccFormVisible={setIsAccFormVisible}
+            IsAccFormVisible={IsAccFormVisible}
             setAccountText={setAccountText}
             accountText={accountText}
             addAccPressed={addAccPressed}
@@ -146,6 +147,7 @@ const styles = StyleSheet.create({
   form: {
     alignItems: 'center',
     justifyContent: 'center',
+    marginBottom: 50,
   },
 });
 
@@ -154,8 +156,8 @@ export default AccountComponents;
 // ============================ TYPE =====================================
 type Props = {
   navigation: AccountNavigationType;
-  isModalVisible: boolean;
+  IsAccFormVisible: boolean;
   month: number;
   year: number;
-  setIsModalVisible: (value: boolean) => void;
+  setIsAccFormVisible: (value: boolean) => void;
 };

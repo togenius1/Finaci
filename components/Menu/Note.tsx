@@ -20,7 +20,7 @@ type Note = {
 type Dispatcher<S> = Dispatch<SetStateAction<S>>;
 
 type Props = {
-  setNotePressed: (event: GestureResponderEvent) => void;
+  setNotePressed: React.Dispatch<React.SetStateAction<boolean>>;
   setNote: Dispatcher<Note>;
   note: Note;
 };

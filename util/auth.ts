@@ -1,7 +1,7 @@
 import {Alert} from 'react-native';
 import {authorize, refresh} from 'react-native-app-auth';
 
-import {configs} from './authConfig';
+import {configs} from '../constants/authConfig';
 
 // First Authorization
 export const authorization = async (provider, setAuthState) => {

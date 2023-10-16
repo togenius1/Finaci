@@ -6,7 +6,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import React, {useEffect} from 'react';
+import React from 'react';
 import {useAppDispatch, useAppSelector} from '../../hooks';
 import {expenseActions} from '../../store/expense-slice';
 // import {dailyTransaction} from '../../util/transaction';
@@ -17,6 +17,8 @@ import {getWeekInMonth} from '../../util/date';
 import moment from 'moment';
 import {weeklyTransactsActions} from '../../store/weeklyTransact-slice';
 import {monthlyTransactsActions} from '../../store/monthlyTransact-slice';
+import {cashAccountsActions} from '../../store/cash-slice';
+import {accountActions} from '../../store/account-slice';
 
 // import {DailyItemType} from '../../components/Output/TransactionSummary';
 
@@ -29,6 +31,7 @@ const DailyItemElement = ({
   dayLabel,
   monthLabel,
   year,
+  month,
   time,
   accountId,
   cateId,
@@ -54,8 +57,11 @@ const DailyItemElement = ({
   const MonthlyTransactionsData =
     dataLoaded?.monthlyTransacts?.monthlyTransacts;
 
-  const filteredExpenses = ExpensesCate.filter(exp => exp.id === cateId);
-  const filteredIncomes = IncomesCate.filter(income => income.id === cateId);
+  const filteredExpensesCat = ExpensesCate.filter(exp => exp.id === cateId);
+  const filteredIncomesCat = IncomesCate.filter(income => income.id === cateId);
+
+  const filteredExpenses = Expenses?.filter(exp => exp.id === itemId);
+  const filteredIncomes = Incomes?.filter(income => income.id === itemId);
 
   let filteredAccounts;
 
@@ -77,11 +83,13 @@ const DailyItemElement = ({
     updateWeeklyTransactionsHandler(incomeId, 'income');
     // Update Monthly Transaction
     updateMonthlyTransactionsHandler(incomeId, 'income');
+    // Update Account by accountId
+    updateAccountAmountHandler(String(accountId), 'income');
 
     // Remove Income
     dispatch(
       incomeActions.deleteIncome({
-        incomeId,
+        incomeId: incomeId !== undefined ? incomeId : 0,
       }),
     );
   };
@@ -93,13 +101,49 @@ const DailyItemElement = ({
     updateWeeklyTransactionsHandler(expenseId, 'expense');
     // Update Monthly Transaction
     updateMonthlyTransactionsHandler(expenseId, 'expense');
+    // Update Account by accountId
+    updateAccountHandler(String(accountId), 'expense');
 
     // Remove Expense
     dispatch(
       expenseActions.deleteExpense({
-        expenseId,
+        expenseId: expenseId !== 'undefined' ? expenseId : 0,
       }),
     );
+  };
+
+  const updateAccountHandler = (accountId: string, type: string) => {
+    const account = accountId?.split('-')[0];
+
+    const filteredIncomes = Incomes?.filter(
+      income => String(income?.accountId) === String(accountId),
+    );
+
+    if (account === 'cash') {
+      dispatch(
+        cashAccountsActions.updateCashAccount({
+          id: Cash[0].id,
+          title: Cash[0]?.title,
+          budget: +Cash[0]?.budget - +filteredIncomes[0]?.amount,
+          date: Cash[0]?.date,
+          editedDate: new Date(),
+        }),
+      );
+    } else if (account !== 'cash') {
+      const filteredAccounts = Accounts?.filter(
+        acc => String(acc.id) === String(accountId),
+      );
+
+      dispatch(
+        accountActions.updateAccount({
+          id: filteredAccounts[0]?.id,
+          title: filteredAccounts[0]?.title,
+          budget: +filteredAccounts[0]?.budget - +filteredIncomes[0]?.amount,
+          date: filteredAccounts[0]?.date,
+          editedDate: new Date(),
+        }),
+      );
+    }
   };
 
   const updateDailyTransactsHandler = (itemId: string, type: string) => {
@@ -112,7 +156,10 @@ const DailyItemElement = ({
     }
 
     const filteredDailyTransactions = DailyTransactionsData?.filter(
-      tran => +tran.day === +day,
+      tran =>
+        Number(moment(tran.date).year()) === Number(year) &&
+        Number(moment(tran.date).month()) + 1 === Number(month) &&
+        Number(tran.day) === Number(day),
     );
 
     dispatch(
@@ -134,23 +181,32 @@ const DailyItemElement = ({
     );
   };
 
-  const updateWeeklyTransactionsHandler = (itemId, type) => {
-    const month = moment().month(monthLabel).format('M');
+  const updateWeeklyTransactionsHandler = (itemId: string, type: string) => {
+    // const month = moment().month(monthLabel).format('M');
     const week = getWeekInMonth(year, month, day);
+
     let deletedObj;
+
     if (type === 'expense') {
       deletedObj = Expenses?.filter(exp => exp?.id === itemId);
     }
     if (type === 'income') {
       deletedObj = Incomes?.filter(income => income?.id === itemId);
     }
+
     const filteredWeeklyTransactions = WeeklyTransactionsData?.filter(
-      tran => +tran.week === +week,
+      tran =>
+        Number(tran.week) === Number(week) &&
+        Number(tran.year) === Number(year) &&
+        Number(tran.month) === Number(month),
     );
+
     dispatch(
       weeklyTransactsActions.updateWeeklyTransacts({
         id: filteredWeeklyTransactions[0]?.id,
         date: filteredWeeklyTransactions[0]?.date,
+        year: filteredWeeklyTransactions[0]?.year,
+        month: filteredWeeklyTransactions[0]?.month,
         week: filteredWeeklyTransactions[0]?.week,
         expense_weekly:
           type === 'expense'
@@ -178,12 +234,15 @@ const DailyItemElement = ({
       deletedObj = Incomes?.filter(income => income?.id === itemId);
     }
     const filteredMonthlyTransactions = MonthlyTransactionsData?.filter(
-      tran => +tran.month === +month,
+      tran =>
+        Number(tran.year) === Number(year) &&
+        Number(tran.month) === Number(month),
     );
     dispatch(
       monthlyTransactsActions.updateMonthlyTransactions({
         id: filteredMonthlyTransactions[0]?.id,
         date: filteredMonthlyTransactions[0]?.date,
+        year: filteredMonthlyTransactions[0]?.year,
         month: filteredMonthlyTransactions[0]?.month,
         expense_monthly:
           type === 'expense'
@@ -199,6 +258,41 @@ const DailyItemElement = ({
     );
   };
 
+  const deleteAlertHandler = (id, type) => {
+    Alert.alert(
+      'Edit or Delete?',
+      'Delete the transaction?',
+      [
+        // {
+        //   text: 'Edit',
+        //   // onPress: () => console.log('Edit'),
+        //   // style: 'cancel',
+        // },
+        {
+          text: 'Delete',
+          onPress: () =>
+            type === 'income'
+              ? removeIncomeHandler(id)
+              : type === 'expense'
+              ? removeExpenseHandler(id)
+              : () => {},
+        },
+        {
+          text: 'Cancel',
+          // onPress: () => editAccountPressedHandler(item?.id),
+          style: 'cancel',
+        },
+      ],
+      {
+        cancelable: true,
+        // onDismiss: () =>
+        //   Alert.alert(
+        //     'This alert was dismissed by tapping outside of the alert dialog.',
+        //   ),
+      },
+    );
+  };
+
   return (
     <View style={styles.list}>
       {type === 'income' && (
@@ -206,35 +300,7 @@ const DailyItemElement = ({
           <Pressable
             style={({pressed}) => pressed && styles.pressed}
             // onPress={() => navigation.navigate('IncomesDetails')}
-            onLongPress={() =>
-              Alert.alert(
-                'Edit or Delete?',
-                'You can Edit or remove the account.',
-                [
-                  {
-                    text: 'Edit',
-                    onPress: () => console.log('Edit'),
-                    // style: 'cancel',
-                  },
-                  {
-                    text: 'Delete',
-                    onPress: () => removeIncomeHandler(itemId),
-                  },
-                  {
-                    text: 'Cancel',
-                    // onPress: () => editAccountPressedHandler(item?.id),
-                    style: 'cancel',
-                  },
-                ],
-                {
-                  cancelable: true,
-                  // onDismiss: () =>
-                  //   Alert.alert(
-                  //     'This alert was dismissed by tapping outside of the alert dialog.',
-                  //   ),
-                },
-              )
-            }>
+            onLongPress={() => deleteAlertHandler(itemId, 'income')}>
             <View
               style={{
                 justifyContent: 'center',
@@ -248,11 +314,14 @@ const DailyItemElement = ({
           </Pressable>
           <View style={styles.amount}>
             <Text style={{fontSize: width * 0.045, color: 'black'}}>
-              {filteredIncomes[0]?.title}
+              {filteredIncomesCat[0]?.title}
             </Text>
             <Text style={{fontSize: 10, color: 'grey'}}>
               acc.{filteredAccounts[0]?.title}
             </Text>
+            <View>
+              <Text>note: {filteredIncomes[0]?.note}</Text>
+            </View>
           </View>
         </>
       )}
@@ -262,35 +331,7 @@ const DailyItemElement = ({
           <Pressable
             style={({pressed}) => pressed && styles.pressed}
             // onPress={() => navigation.navigate('ExpensesDetails')}
-            onLongPress={() =>
-              Alert.alert(
-                'Edit or Delete?',
-                'You can Edit or remove the account.',
-                [
-                  {
-                    text: 'Edit',
-                    onPress: () => console.log('Edit'),
-                    // style: 'cancel',
-                  },
-                  {
-                    text: 'Delete',
-                    onPress: () => removeExpenseHandler(itemId),
-                  },
-                  {
-                    text: 'Cancel',
-                    // onPress: () => editAccountPressedHandler(item?.id),
-                    style: 'cancel',
-                  },
-                ],
-                {
-                  cancelable: true,
-                  // onDismiss: () =>
-                  //   Alert.alert(
-                  //     'This alert was dismissed by tapping outside of the alert dialog.',
-                  //   ),
-                },
-              )
-            }>
+            onLongPress={() => deleteAlertHandler(itemId, 'expense')}>
             <View style={styles.amount}>
               <Text style={{fontSize: width * 0.045, color: 'red'}}>
                 {amount}
@@ -306,11 +347,14 @@ const DailyItemElement = ({
               // backgroundColor: '#f5bebe',
             }}>
             <Text style={{fontSize: width * 0.035, color: 'black'}}>
-              {filteredExpenses[0]?.title}
+              {filteredExpensesCat[0]?.title}
             </Text>
             <Text style={{fontSize: 10, color: 'grey'}}>
               acc.{filteredAccounts[0]?.title}
             </Text>
+            <View>
+              <Text>note: {filteredExpenses[0]?.note}</Text>
+            </View>
           </View>
         </>
       )}
@@ -334,6 +378,7 @@ const DailyItemElement = ({
 
 export default DailyItemElement;
 
+// Style
 const styles = StyleSheet.create({
   list: {
     flexDirection: 'row',
@@ -385,11 +430,12 @@ const styles = StyleSheet.create({
 //====================================== TYPE ======================================
 type Props = {
   type: string | null;
-  amount: number | undefined;
+  amount: string;
   day: string | null;
   dayLabel: string | null;
   monthLabel: string | null;
   year: number | undefined;
+  month: number | undefined;
   time: string | null;
   accountId: string | null;
   cateId: string | null;

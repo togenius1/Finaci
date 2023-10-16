@@ -1,28 +1,224 @@
-import {Dimensions, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import {
+  ActivityIndicator,
+  Alert,
+  Dimensions,
+  Linking,
+  Pressable,
+  StyleSheet,
+  Text,
+  // TextInput,
+  View,
+} from 'react-native';
+import React, {useState} from 'react';
+import {Auth} from 'aws-amplify';
+import DeviceInfo from 'react-native-device-info';
+import {useNavigation} from '@react-navigation/native';
 
-const {width} = Dimensions.get('window');
+import CButton from '../components/UI/CButton';
+import {useAppDispatch, useAppSelector} from '../hooks';
+import {authAccountsActions} from '../store/authAccount-slice';
+import axios from 'axios';
+// import {setPasscode, updatePasscode} from '../store/passcode-slice';
 
-function Settings() {
+// Constant
+const {width, height} = Dimensions.get('window');
+
+const Settings = () => {
+  const dispatch = useAppDispatch();
+  // const dataLoaded = useAppSelector(store => store);
+  // const passcodeState = useAppSelector(state => state.passcode);
+
+  const navigation = useNavigation();
+
+  const currentVersion = DeviceInfo.getVersion();
+
+  const [showDeleteIndicator, setShowDeleteIndicator] =
+    useState<boolean>(false);
+  // const [newPasscode, setNewPasscode] = useState('');
+  // const inputRefs = Array.from({length: 4}, () => React.createRef());
+
+  // const setPasscodeHandler = () => {
+  //   if (newPasscode.trim() === '') {
+  //     // Handle empty passcode input
+  //     return;
+  //   }
+  //   dispatch(setPasscode(newPasscode));
+  //   setPasscode('');
+  // };
+
+  // const updatePasscodeHandler = () => {
+  //   if (newPasscode.trim() === '') {
+  //     // Handle empty passcode input
+  //     return;
+  //   }
+  //   dispatch(updatePasscode(newPasscode));
+  //   setPasscode('');
+  // };
+
+  // const renderPasscodeInputs = () => {
+  //   const passcodeLength = 4;
+
+  //   return Array.from({length: passcodeLength}, (_, index) => (
+  //     <TextInput
+  //       key={index}
+  //       style={styles.passcodeInput}
+  //       maxLength={1}
+  //       secureTextEntry
+  //       keyboardType="numeric"
+  //       onChangeText={text => handlePasscodeInput(text, index)}
+  //       value={newPasscode[index] || ''}
+  //     />
+  //   ));
+  // };
+
+  // const handlePasscodeInput = (text, index) => {
+  //   if (index < 3 && text) {
+  //     const updatedPasscode = newPasscode.split('');
+  //     updatedPasscode[index] = text;
+  //     setNewPasscode(updatedPasscode.join(''));
+
+  //     // Move focus to the next input box
+  //     inputRefs[index + 1].focus();
+  //   } else if (index === 3 && text) {
+  //     const updatedPasscode = newPasscode.split('');
+  //     updatedPasscode[index] = text;
+  //     setNewPasscode(updatedPasscode.join(''));
+  //     // Here, you can trigger the action to set/update passcode
+  //   } else {
+  //     // Handle deleting a digit or other cases
+  //   }
+  // };
+
+  // Alert closing account request
+  const closeAccountAlertHandler = () => {
+    Alert.alert(
+      'Do you want to close your account now?',
+      'After closing your account, you can create a new account at any time.',
+      [
+        {
+          text: 'Yes',
+          onPress: () => closeAccountHandler(),
+          // style: 'cancel',
+        },
+        {
+          text: 'No',
+          style: 'cancel',
+        },
+      ],
+      {
+        cancelable: true,
+        // onDismiss: () =>
+        //   Alert.alert(
+        //     'This alert was dismissed by tapping outside of the alert dialog.',
+        //   ),
+      },
+    );
+  };
+
+  // Close account
+  const closeAccountHandler = async () => {
+    setShowDeleteIndicator(true);
+
+    try {
+      const user = await Auth.currentAuthenticatedUser();
+      const sub = String(user?.attributes?.sub);
+
+      // Delete account from local storage
+      dispatch(
+        authAccountsActions.deleteAuthAccount({
+          id: sub,
+        }),
+      );
+
+      // Delete account from cloud storage
+      const result = await Auth.deleteUser();
+
+      await Auth.signOut({global: true});
+      navigation.navigate('User');
+    } catch (error) {
+      console.log('Error deleting user', error);
+    }
+
+    setShowDeleteIndicator(false);
+  };
+
+  const handleEmailLinkPress = () => {
+    const emailAddress = 'togenius1@gmail.com'; // Replace this with the desired email address
+    // const subject = 'Hello from Finner App'; // Replace this with the desired email subject
+
+    const mailToUrl = `mailto:${emailAddress}?subject=SendMail&body=Description`;
+
+    Linking.openURL(mailToUrl).then(supported => {
+      if (supported) {
+        Linking.openURL(mailToUrl);
+      } else {
+        console.log("Can't handle URL: " + mailToUrl);
+      }
+    });
+  };
+
   return (
     <View style={styles.container}>
-      <View style={[styles.currency, styles.box]}>
+      {/* <View style={[styles.currency, styles.box]}>
         <Text style={styles.text}>Currency</Text>
-      </View>
+      </View> */}
 
-      <View style={[styles.passcode, styles.box]}>
-        <Text style={styles.text}>Passcode / fingerprint / Face ID lock</Text>
-      </View>
-      <View style={[styles.notification, styles.box]}>
+      {/* <View style={[styles.passcode, styles.box]}>
+        <Text style={styles.text}>Passcode Setting</Text>
+        <View style={styles.passcodeContainer}>{renderPasscodeInputs()}</View>
+        <Pressable
+          style={({pressed}) => [
+            styles.passcodeButton,
+            pressed && styles.pressed,
+          ]}
+          onPress={
+            passcodeState?.isSet ? updatePasscodeHandler : setPasscodeHandler
+          }>
+          <Text style={styles.buttonText}>
+            {passcodeState?.isSet ? 'Update Passcode' : 'Set Passcode'}
+          </Text>
+        </Pressable>
+      </View> */}
+      {/* <View style={[styles.notification, styles.box]}>
         <Text style={styles.text}>Notifications</Text>
         <Text style={[styles.text, {marginTop: 20}]}>Appearance</Text>
+      </View> */}
+
+      <View style={styles.closeAccount}>
+        {/* <View>
+          <Text>
+            Please keep in mind that once the account removal process is
+            completed, there will be no way to retrieve any of your previous
+            data or information. Therefore, we recommend ensuring that you have
+            backed up any important data before proceeding with the account
+            removal. When you decide to return, you can simply sign up again
+            using your preferred credentials, and we'll be happy to have you
+            back as a valued member of our community. If you have any questions
+            or concerns regarding the account removal process or need any
+            assistance, please feel free to reach out to our support team. We
+            are here to help and ensure your experience with us is as smooth and
+            satisfactory as possible.
+          </Text>
+        </View> */}
+
+        <CButton onPress={closeAccountAlertHandler}>Close account</CButton>
+        <ActivityIndicator
+          size="small"
+          color="#0000ff"
+          animating={showDeleteIndicator}
+        />
       </View>
-      <View>
-        <Text>Finner version 1.0.5</Text>
+
+      <View style={{flexDirection: 'row', marginVertical: 10}}>
+        <Text style={{}}>Contact: </Text>
+        <Pressable onPress={handleEmailLinkPress}>
+          <Text style={{color: 'blue'}}>togenius1@gmail.com</Text>
+        </Pressable>
       </View>
+      <Text style={{fontSize: 11}}>{`Version: ${currentVersion}`}</Text>
     </View>
   );
-}
+};
 
 export default Settings;
 
@@ -51,8 +247,72 @@ const styles = StyleSheet.create({
   notification: {
     paddingVertical: 20,
   },
+  closeAccount: {
+    marginTop: height / 4,
+  },
   text: {
     fontSize: 16,
     marginLeft: 15,
+  },
+  // passcode
+  input: {
+    borderColor: 'gray',
+    borderWidth: 1,
+    padding: 10,
+    marginVertical: 10,
+    width: '80%',
+  },
+  passcodeButton: {
+    backgroundColor: 'blue',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  passcodeInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '80%',
+  },
+  passcodeContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '80%',
+    alignSelf: 'center',
+  },
+  passcodeInput: {
+    borderColor: 'gray',
+    borderWidth: 1,
+    padding: 10,
+    width: '20%',
+    textAlign: 'center',
+  },
+  passcodeDisplayContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '40%',
+  },
+  passcodeDisplayDigit: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    borderWidth: 1,
+    borderColor: 'gray',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 5,
+    textAlign: 'center',
+  },
+  passcodeDisplayFilled: {
+    backgroundColor: 'gray',
+    color: 'white',
+  },
+  pressed: {
+    opacity: 0.65,
   },
 });

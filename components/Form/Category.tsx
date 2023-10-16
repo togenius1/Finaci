@@ -244,7 +244,7 @@ type Dispatcher<S> = Dispatch<SetStateAction<S>>;
 
 type Props = {
   setCategoryPressed: Dispatcher<boolean>;
-  setCategory: Dispatcher<CategoryType>;
+  setCategory: React.Dispatch<React.SetStateAction<any[] | undefined>>
   // data: any[];
   type: string;
 };
