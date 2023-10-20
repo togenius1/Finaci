@@ -19,11 +19,13 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.3</string>
+	<string>1.0.4</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
 	<array>
+
+	<!-- To make one phone one app installed -->
 		<dict>
 			<key>CFBundleURLName</key>
 			<string>com.zuperx.fi</string>
@@ -34,8 +36,9 @@
 			</array>
 		</dict>
 	</array>
+	
 	<key>CFBundleVersion</key>
-	<string>3</string>
+	<string>4</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>mailto</string>

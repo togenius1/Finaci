@@ -7,11 +7,15 @@ import {
   Linking,
   Platform,
   ActivityIndicator,
-  Pressable,
+  // Pressable,
   Dimensions,
   Modal,
 } from 'react-native';
-import Purchases, {LOG_LEVEL, PurchasesPackage} from 'react-native-purchases';
+import Purchases, {
+  LOG_LEVEL,
+  PurchasesOfferings,
+  PurchasesPackage,
+} from 'react-native-purchases';
 import PackageItem from '../components/Output/PackageItem';
 import RestorePurchasesButton from '../components/UI/RestorePurchasesButton';
 import {useFocusEffect} from '@react-navigation/native';
@@ -76,7 +80,7 @@ const {width, height} = Dimensions.get('window');
 //   );
 // };
 
-const UserScreen = ({navigation}) => {
+const UserScreen = ({}) => {
   // - Data Store (Redux)
   const dispatch = useAppDispatch();
   const dataLoaded = useAppSelector(store => store);
@@ -94,7 +98,7 @@ const UserScreen = ({navigation}) => {
   const [authUser, setAuthUser] = useState<any>();
   const [loading, setLoading] = useState<boolean>(false);
   const [purchased, setPurchased] = useState<boolean>(false);
-  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+  // const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
   // useEffect(() => {
   //   navigation.setOptions({
@@ -161,11 +165,14 @@ const UserScreen = ({navigation}) => {
   // Config purchase -- then fetch packages
   const configurePurchasesAndFetchPackages = async () => {
     try {
-      await configurePurchases();
-      await fetchPackages();
-      await getUserData();
-      await getCustomerData();
-      // await listenPurchases();
+      const res = await configurePurchases();
+
+      if (res) {
+        await fetchPackages();
+        await getUserData();
+        await getCustomerData();
+        // await listenPurchases();
+      }
     } catch (error) {
       console.error('Error configuring or fetching packages:', error);
     }
@@ -192,20 +199,18 @@ const UserScreen = ({navigation}) => {
         // OR: if building for Amazon, be sure to follow the installation instructions then:
         //  Purchases.configure({ apiKey: <public_amazon_sdk_key>, useAmazon: true });
       }
+
+      return true;
     } catch (error) {
       console.error('Error configuring Purchases:', error);
     }
   };
 
-  
-
   // get package
   const fetchPackages = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
       const offerings = await Purchases.getOfferings();
-
-      console.log('offer-----: ',offerings)
 
       if (offerings.current !== null) {
         setPackages(offerings?.current?.availablePackages);
@@ -214,8 +219,8 @@ const UserScreen = ({navigation}) => {
       setLoading(false); // Set loading to false once packages are fetched
     } catch (error) {
       console.log('Error fetching packages:', error);
-      setLoading(false); // Set loading to false in case of an error
     }
+    setLoading(false); // Set loading to false in case of an error
   };
 
   const getUserData = async () => {
@@ -231,7 +236,7 @@ const UserScreen = ({navigation}) => {
       'undefined';
 
     const customerInfoInStorage = customerInfosData?.filter(
-      cus => cus.appUserId === appUserId,
+      cus => String(cus?.appUserId) === appUserId,
     );
 
     if (customerInfoInStorage?.length === 0) {
@@ -261,7 +266,7 @@ const UserScreen = ({navigation}) => {
   const getCustomerData = async () => {
     const appUserId = await Purchases.getAppUserID();
     const filteredCustomerInfo = customerInfo?.filter(
-      cus => cus.appUserId === appUserId,
+      cus => String(cus?.appUserId) === appUserId,
     );
 
     setUserId(filteredCustomerInfo[0]?.appUserId);

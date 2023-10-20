@@ -113,9 +113,9 @@ const AddDetailsScreen = ({route, navigation}: Props) => {
           <Pressable
             style={({pressed}) => pressed && styles.pressed}
             onPress={() => saveHandler()}>
-            <View style={styles.saveContainer}>
+            {/* <View style={styles.saveContainer}> */}
               <Text style={styles.save}>Save</Text>
-            </View>
+            {/* </View> */}
           </Pressable>
         </View>
       ),
@@ -754,11 +754,11 @@ const styles = StyleSheet.create({
   currencyText: {
     fontSize: 16,
   },
-  saveContainer: {
-    position: 'absolute',
-    right: 0,
-    top: -10,
-  },
+  // saveContainer: {
+  //   position: 'absolute',
+  //   right: 0,
+  //   top: -10,
+  // },
   save: {
     fontSize: 16,
     fontWeight: 'bold',

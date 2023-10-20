@@ -1,4 +1,4 @@
-import {Dimensions, StyleSheet, Text, View} from 'react-native';
+import {Dimensions, Platform, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 
 import {currencyFormatter} from '../../util/currencyFormatter';
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     height: height * 0.07,
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginTop: height * 0.075,
+    marginTop: Platform.OS === 'android' ? height * 0.075 : height * 0.06,
 
     backgroundColor: 'white',
     borderColor: '#b8b8b8',
