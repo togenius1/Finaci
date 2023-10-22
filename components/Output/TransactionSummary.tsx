@@ -375,7 +375,7 @@ export default TransactionSummary;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: isTablet() ? height * 0.04 : height * 0.001,
+    marginTop: isTablet() ? height * 0.04 : height * 0.025,
   },
   list: {
     flexDirection: 'row',

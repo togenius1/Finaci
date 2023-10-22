@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import Purchases, {
   LOG_LEVEL,
-  PurchasesOfferings,
+  // PurchasesOfferings,
   PurchasesPackage,
 } from 'react-native-purchases';
 import PackageItem from '../components/Output/PackageItem';
@@ -187,9 +187,10 @@ const UserScreen = ({}) => {
       if (Platform.OS === 'ios') {
         Purchases.configure({
           apiKey: API_KEY_IOS,
-          appUserID: authUser?.attributes?.sub,
+          appUserID: String(authUser?.attributes?.sub),
         });
-      } else if (Platform.OS === 'android') {
+      }
+      if (Platform.OS === 'android') {
         // Purchases.configure({apiKey: API_KEY});
         Purchases.configure({
           apiKey: API_KEY_ANDROID,
@@ -209,11 +210,14 @@ const UserScreen = ({}) => {
   // get package
   const fetchPackages = async () => {
     setLoading(true);
+
     try {
       const offerings = await Purchases.getOfferings();
 
+      console.log('offerings: ', offerings);
+
       if (offerings.current !== null) {
-        setPackages(offerings?.current?.availablePackages);
+        setPackages(offerings.current.availablePackages);
       }
 
       setLoading(false); // Set loading to false once packages are fetched

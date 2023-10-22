@@ -37,7 +37,7 @@ const HeaderRight = ({
         // marginLeft: 10,
         // marginRight: 180,
         width: width * 0.5,
-        marginTop: height * 0.032,
+        // marginTop: height * 0.032,
         // backgroundColor: '#fed8d8',
       }}>
       {/* {!transactCtx.customPressed && !transactCtx.exportPressed && ( */}

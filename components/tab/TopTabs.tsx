@@ -34,7 +34,7 @@ const TopTabs = ({
       }}
       screenOptions={() => ({
         tabBarIndicatorStyle: {
-          backgroundColor: 'red',
+          backgroundColor: '#fb6363',
           // height: 1,
         },
         tabBarContentContainerStyle: {
@@ -45,7 +45,7 @@ const TopTabs = ({
         tabBarLabelStyle: {
           width: 'auto',
           marginHorizontal: 0,
-          fontSize: 14,
+          fontSize: 13.5,
           fontWeight: '500',
           textTransform: 'none',
         },
@@ -118,4 +118,4 @@ const TopTabs = ({
 
 export default TopTabs;
 
-const styles = StyleSheet.create({});
+// const styles = StyleSheet.create({});

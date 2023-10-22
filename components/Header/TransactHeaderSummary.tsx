@@ -9,21 +9,21 @@ const TransactHeaderSummary = ({total, totalIncome, totalExpense}: Props) => {
   return (
     <View style={styles.assetsContainer}>
       <View style={styles.assetBox}>
-        <Text style={{fontSize: height * 0.02}}>Income</Text>
+        <Text style={{fontSize: height * 0.015}}>Income</Text>
         <Text
           style={{color: 'blue', fontSize: height * 0.018, fontWeight: 'bold'}}>
           {currencyFormatter(+totalIncome, {})}
         </Text>
       </View>
       <View style={styles.assetBox}>
-        <Text style={{fontSize: height * 0.02}}>Expense</Text>
+        <Text style={{fontSize: height * 0.015}}>Expense</Text>
         <Text
           style={{color: 'red', fontSize: height * 0.018, fontWeight: 'bold'}}>
           {currencyFormatter(+totalExpense, {})}
         </Text>
       </View>
       <View style={styles.assetBox}>
-        <Text style={{fontSize: height * 0.02}}>Total</Text>
+        <Text style={{fontSize: height * 0.015}}>Total</Text>
         <Text style={{fontSize: height * 0.018, fontWeight: 'bold'}}>
           {currencyFormatter(+total, {})}
         </Text>
@@ -40,13 +40,14 @@ const styles = StyleSheet.create({
     height: height * 0.07,
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginTop: Platform.OS === 'android' ? height * 0.075 : height * 0.06,
+    marginTop: Platform.OS === 'android' ? height * 0.075 : height * 0.065,
 
     backgroundColor: 'white',
     borderColor: '#b8b8b8',
     borderBottomWidth: 0.4,
 
     position: 'absolute',
+    // backgroundColor: 'red',
   },
   assetBox: {
     justifyContent: 'center',
