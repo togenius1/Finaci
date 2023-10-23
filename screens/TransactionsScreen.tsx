@@ -288,12 +288,12 @@ const TransactionsScreen = ({}: Props) => {
                 justifyContent: 'flex-start',
                 marginLeft: Platform.OS === 'ios' ? -5 : 30,
                 width: width * 0.07,
-                marginTop: height * 0.025,
+                // marginTop: height * 0.025,
                 // backgroundColor: '#fed8d8',
               }}>
               <Ionicons
                 name="menu-outline"
-                size={27}
+                size={width * 0.045}
                 color="#000000"
                 style={{marginBottom: 1}}
                 // onPress={() => navigation.toggleDrawer()}

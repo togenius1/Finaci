@@ -2,6 +2,7 @@ import {
   Dimensions,
   FlatList,
   ImageBackground,
+  Platform,
   Pressable,
   StyleSheet,
   Text,
@@ -44,7 +45,9 @@ function MonthlyRenderItem({item}) {
           marginRight: 10,
           // backgroundColor: '#e1f3cd',
         }}>
-        <Text style={{color: 'blue'}}>{incomeAmount}</Text>
+        <Text style={[styles.ExpenseIncomeFontSize, {color: 'blue'}]}>
+          {incomeAmount}
+        </Text>
       </View>
       <View
         style={{
@@ -54,10 +57,12 @@ function MonthlyRenderItem({item}) {
           marginRight: 20,
           // backgroundColor: '#f5bebe',
         }}>
-        <Text style={{color: 'red'}}>{expenseAmount}</Text>
+        <Text style={[styles.ExpenseIncomeFontSize, {color: 'red'}]}>
+          {expenseAmount}
+        </Text>
       </View>
       <View style={[styles.dateContainer, styles.monthLabel]}>
-        <Text style={{fontSize: 12, color: 'white'}}>{monthLabel}</Text>
+        <Text style={{fontSize: 16, color: 'white'}}>{monthLabel}</Text>
       </View>
     </View>
   );
@@ -124,7 +129,9 @@ function WeeklyRenderItem({item}) {
           marginRight: 10,
           // backgroundColor: '#e1f3cd',
         }}>
-        <Text style={{color: 'blue'}}>{incomeAmount}</Text>
+        <Text style={[styles.ExpenseIncomeFontSize, {color: 'blue'}]}>
+          {incomeAmount}
+        </Text>
       </View>
       <View
         style={{
@@ -134,7 +141,9 @@ function WeeklyRenderItem({item}) {
           marginRight: 20,
           // backgroundColor: '#f5bebe',
         }}>
-        <Text style={{color: 'red'}}>{expenseAmount}</Text>
+        <Text style={[styles.ExpenseIncomeFontSize, {color: 'red'}]}>
+          {expenseAmount}
+        </Text>
       </View>
       <View
         style={{
@@ -191,7 +200,9 @@ const DailyItem = ({
             marginRight: 10,
             // backgroundColor: '#e1f3cd',
           }}>
-          <Text style={{fontSize: 14, color: 'blue'}}>{incomeAmount}</Text>
+          <Text style={[styles.ExpenseIncomeFontSize, {color: 'blue'}]}>
+            {incomeAmount}
+          </Text>
           {/* <Text style={{fontSize: 10, color: 'grey'}}>{incomeCategory}</Text> */}
         </View>
       </Pressable>
@@ -212,7 +223,9 @@ const DailyItem = ({
             marginRight: 20,
             // backgroundColor: '#f5bebe',
           }}>
-          <Text style={{fontSize: 14, color: 'red'}}>{expenseAmount}</Text>
+          <Text style={[styles.ExpenseIncomeFontSize, {color: 'red'}]}>
+            {expenseAmount}
+          </Text>
           {/* <Text style={{fontSize: 10, color: 'grey'}}>{expenseCategory}</Text> */}
         </View>
       </Pressable>
@@ -448,6 +461,14 @@ const styles = StyleSheet.create({
   },
   pressed: {
     opacity: 0.65,
+  },
+
+  ExpenseIncomeFontSize: {
+    fontSize: isTablet()
+      ? width * 0.025
+      : Platform.OS === 'ios'
+      ? width * 0.032
+      : width * 0.032,
   },
 });
 

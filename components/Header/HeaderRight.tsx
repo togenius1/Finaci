@@ -13,6 +13,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import TransactContext from '../../store-context/transact-context';
 import {TransactionNavigationProp} from '../../types';
+import {isTablet} from 'react-native-device-info';
 // import {TransactionNavigationProp} from '../../types';
 
 const {width, height} = Dimensions.get('window');
@@ -54,7 +55,9 @@ const HeaderRight = ({
               borderWidth: 0.6,
               borderColor: 'grey',
             }}>
-            <Text>{`${duration} ${currentTabIndex !== 0 ? year : ''}`}</Text>
+            <Text style={styles.monthYearFontSize}>{`${duration} ${
+              currentTabIndex !== 0 ? year : ''
+            }`}</Text>
           </View>
         </Pressable>
       )}
@@ -75,7 +78,9 @@ const HeaderRight = ({
             style={({pressed}) => pressed && styles.pressed}
             onPress={onFromDateHandler}>
             <View style={{borderWidth: 0.6, borderColor: 'lightgrey'}}>
-              <Text>{moment(transactCtx.fromDate).format('YYYY-MM-DD')}</Text>
+              <Text style={styles.monthYearFontSize}>
+                {moment(transactCtx.fromDate).format('YYYY-MM-DD')}
+              </Text>
             </View>
           </Pressable>
           <Pressable
@@ -83,7 +88,9 @@ const HeaderRight = ({
             onPress={onToDateHandler}>
             <View style={{borderWidth: 0.6, borderColor: 'lightgrey'}}>
               {/* <Text>2022-09-30</Text> */}
-              <Text>{moment(transactCtx.toDate).format('YYYY-MM-DD')}</Text>
+              <Text style={styles.monthYearFontSize}>
+                {moment(transactCtx.toDate).format('YYYY-MM-DD')}
+              </Text>
             </View>
           </Pressable>
         </View>
@@ -92,10 +99,23 @@ const HeaderRight = ({
       <Pressable
         style={({pressed}) => pressed && styles.pressed}
         onPress={() => navigation.navigate('Stats')}>
-        <View style={{marginRight: Platform.OS === 'ios' ? 35 : 10}}>
+        <View
+          style={{
+            marginRight: isTablet()
+              ? width * 0.055
+              : Platform.OS === 'ios'
+              ? 35
+              : -5,
+          }}>
           <Ionicons
             name="stats-chart-outline"
-            size={width * 0.055}
+            size={
+              isTablet()
+                ? width * 0.045
+                : Platform.OS === 'ios'
+                ? width * 0.05
+                : width * 0.05
+            }
             color="#0047b8"
           />
         </View>
@@ -109,6 +129,13 @@ export default HeaderRight;
 const styles = StyleSheet.create({
   pressed: {
     opacity: 0.65,
+  },
+  monthYearFontSize: {
+    fontSize: isTablet()
+      ? width * 0.025
+      : Platform.OS === 'ios'
+      ? width * 0.03
+      : width * 0.03,
   },
 });
 

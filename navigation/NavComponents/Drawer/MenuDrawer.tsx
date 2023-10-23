@@ -1,5 +1,7 @@
 import React from 'react';
 import {createDrawerNavigator} from '@react-navigation/drawer';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import {isTablet} from 'react-native-device-info';
 
 import StatsScreen from '../../../screens/StatsScreen';
 import AccountsScreen from '../../../screens/AccountsScreen';
@@ -11,10 +13,16 @@ import {RootStackParamList} from '../../../types';
 import UserScreen from '../../../screens/UserScreen';
 import TransactionStack from '../../TransactionStack';
 import OverviewStack from '../../OverviewStack';
+import {Dimensions, Platform, Pressable, StyleSheet, View} from 'react-native';
+import {DrawerActions, useNavigation} from '@react-navigation/native';
+
+const {width, height} = Dimensions.get('window');
 
 const Drawer = createDrawerNavigator<RootStackParamList>();
 
-const DrawerNavigator = () => {
+const DrawerNavigator = ({}) => {
+  const navigation = useNavigation<any>();
+
   return (
     <Drawer.Navigator
       useLegacyImplementation={false}
@@ -23,10 +31,38 @@ const DrawerNavigator = () => {
         drawerType: 'front',
         drawerStyle: {
           backgroundColor: 'lightgrey',
-          width: 240,
+          width: width / 2,
         },
-
         headerShown: false,
+
+        headerLeft: () => (
+          <Pressable
+            style={({pressed}) => pressed && styles.pressed}
+            onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
+            <View
+              style={{
+                justifyContent: 'flex-start',
+                marginLeft: isTablet() ? 20 : Platform.OS === 'ios' ? -5 : 10,
+                width: width * 0.07,
+                // marginTop: height * 0.025,
+                // backgroundColor: '#fed8d8',
+              }}>
+              <Ionicons
+                name="menu-outline"
+                size={
+                  isTablet()
+                    ? width * 0.045
+                    : Platform.OS === 'ios'
+                    ? width * 0.060
+                    : width * 0.060
+                }
+                color="#000000"
+                style={{marginBottom: 1}}
+                // onPress={() => navigation.toggleDrawer()}
+              />
+            </View>
+          </Pressable>
+        ),
       })}
       drawerContent={props => <DrawerContent {...props} />}>
       <Drawer.Screen
@@ -107,3 +143,9 @@ const DrawerNavigator = () => {
 };
 
 export default DrawerNavigator;
+
+const styles = StyleSheet.create({
+  pressed: {
+    opacity: 0.75,
+  },
+});

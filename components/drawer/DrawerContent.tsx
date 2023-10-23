@@ -72,6 +72,12 @@ const DrawerContent = ({props}: Props) => {
     navigation.navigate('User');
   };
 
+  const iconSize = isTablet()
+    ? width * 0.05
+    : Platform.OS === 'ios'
+    ? width * 0.055
+    : width * 0.055;
+
   return (
     <View style={styles.container}>
       <DrawerContentScrollView {...props} scrollEnabled={false}>
@@ -84,10 +90,10 @@ const DrawerContent = ({props}: Props) => {
             <View style={{flexDirection: 'row'}}>
               <MaterialCommunityIcons
                 name="chart-donut-variant"
-                size={width * 0.060}
+                size={iconSize}
                 color={colors.overview}
               />
-              <Text style={styles.overviewText}>Overview</Text>
+              <Text style={styles.textFont}>Overview</Text>
             </View>
           </Pressable>
 
@@ -104,10 +110,10 @@ const DrawerContent = ({props}: Props) => {
               }}>
               <Ionicons
                 name="remove-outline"
-                size={width * 0.060}
+                size={iconSize}
                 color={colors.expense}
               />
-              <Text style={styles.expenseText}>Transactions</Text>
+              <Text style={styles.textFont}>Transactions</Text>
             </View>
           </Pressable>
         </View>
@@ -121,10 +127,10 @@ const DrawerContent = ({props}: Props) => {
             <View style={{flexDirection: 'row', marginBottom: height / 50}}>
               <Ionicons
                 name="bar-chart-outline"
-                size={width * 0.06}
+                size={iconSize}
                 color={colors.stats}
               />
-              <Text style={styles.overviewText}>Stats</Text>
+              <Text style={styles.textFont}>Stats</Text>
             </View>
           </Pressable>
 
@@ -141,10 +147,10 @@ const DrawerContent = ({props}: Props) => {
               }}>
               <Ionicons
                 name="wallet-outline"
-                size={width * 0.060}
+                size={iconSize}
                 color={colors.budget}
               />
-              <Text style={styles.budgetText}>Accounts</Text>
+              <Text style={styles.textFont}>Accounts</Text>
             </View>
           </Pressable>
         </View>
@@ -158,10 +164,10 @@ const DrawerContent = ({props}: Props) => {
             <View style={{flexDirection: 'row'}}>
               <Ionicons
                 name="newspaper-outline"
-                size={width * 0.060}
+                size={iconSize}
                 color={colors.budget}
               />
-              <Text style={styles.reportText}>Export</Text>
+              <Text style={styles.textFont}>Export</Text>
             </View>
           </Pressable>
         </View>
@@ -175,10 +181,10 @@ const DrawerContent = ({props}: Props) => {
             <View style={{flexDirection: 'row'}}>
               <Ionicons
                 name="cloud-upload-outline"
-                size={width * 0.060}
+                size={iconSize}
                 color={colors.budget}
               />
-              <Text style={styles.reportText}>Backup/Restore</Text>
+              <Text style={styles.textFont}>Backup/Restore</Text>
             </View>
           </Pressable>
         </View>
@@ -194,7 +200,7 @@ const DrawerContent = ({props}: Props) => {
                 size={22}
                 color={colors.recommendation}
               />
-              <Text style={styles.RecommendText}>Recommend</Text>
+              <Text style={styles.textFont}>Recommend</Text>
             </View>
           </Pressable> */}
 
@@ -207,10 +213,10 @@ const DrawerContent = ({props}: Props) => {
             <View style={{flexDirection: 'row'}}>
               <Ionicons
                 name="cog-outline"
-                size={width * 0.060}
+                size={iconSize}
                 color={colors.setting}
               />
-              <Text style={styles.settingText}>Settings</Text>
+              <Text style={styles.textFont}>Settings</Text>
             </View>
           </Pressable>
         </View>
@@ -222,10 +228,10 @@ const DrawerContent = ({props}: Props) => {
             <View style={styles.user}>
               <MaterialCommunityIcons
                 name="account-outline"
-                size={width * 0.065}
+                size={iconSize}
                 color={colors.paywall}
               />
-              <Text style={styles.settingText}>User account</Text>
+              <Text style={styles.textFont}>User account</Text>
             </View>
           </Pressable>
         </View>
@@ -235,15 +241,11 @@ const DrawerContent = ({props}: Props) => {
             style={({pressed}) => pressed && styles.pressed}
             onPress={() => signHandler()}>
             <View style={{flexDirection: 'row'}}>
-              <Ionicons
-                name="log-out"
-                size={width * 0.060}
-                color={colors.user}
-              />
-              <Text style={styles.logoutText}>
+              <Ionicons name="log-out" size={iconSize} color={colors.user} />
+              <Text style={styles.textFont}>
                 {isAuthenticated ? 'Sign out' : 'Sign in'}
               </Text>
-              <Text style={styles.username}>
+              <Text style={styles.textFont}>
                 {isAuthenticated ? authUser?.username : ''}
               </Text>
             </View>
@@ -271,8 +273,12 @@ const styles = StyleSheet.create({
     borderBottomColor: '#c2c2c2',
     // backgroundColor: '#c8edc8',
   },
-  overviewText: {
-    fontSize: 16,
+  textFont: {
+    fontSize: isTablet()
+      ? width * 0.025
+      : Platform.OS === 'ios'
+      ? width * 0.035
+      : width * 0.035,
     marginLeft: 20,
   },
   expenseIncomeContainer: {
@@ -283,21 +289,21 @@ const styles = StyleSheet.create({
     marginTop: 20,
     // backgroundColor: '#f78888',
   },
-  expenseText: {
-    fontSize: 14,
-    marginLeft: 20,
-    color: colors.expense,
-  },
-  incomeText: {
-    fontSize: 14,
-    marginLeft: 20,
-    color: colors.income,
-  },
-  budgetText: {
-    fontSize: 14,
-    marginLeft: 20,
-    color: colors.budget,
-  },
+  // expenseText: {
+  //   fontSize: 14,
+  //   marginLeft: 20,
+  //   color: colors.expense,
+  // },
+  // incomeText: {
+  //   fontSize: 14,
+  //   marginLeft: 20,
+  //   color: colors.income,
+  // },
+  // budgetText: {
+  //   fontSize: 14,
+  //   marginLeft: 20,
+  //   color: colors.budget,
+  // },
   reportContainer: {
     // paddingVertical: 200,
     marginTop: 30,
@@ -307,20 +313,20 @@ const styles = StyleSheet.create({
     // borderBottomColor: '#c2c2c2',
     // backgroundColor: '#86dd89',
   },
-  reportText: {
-    fontSize: 14,
-    marginLeft: 20,
-  },
+  // reportText: {
+  //   fontSize: 14,
+  //   marginLeft: 20,
+  // },
   settingContainer: {
     marginLeft: 20,
     marginTop: height / 5.5,
     // marginBottom: 10,
     // backgroundColor: '#86b0dd',
   },
-  settingText: {
-    fontSize: 14,
-    marginLeft: 20,
-  },
+  // settingText: {
+  //   fontSize: 14,
+  //   marginLeft: 20,
+  // },
   userContainer: {
     marginLeft: 20,
     marginTop: height * 0.03,
@@ -342,14 +348,18 @@ const styles = StyleSheet.create({
   // },
   logoutContainer: {
     marginLeft: 20,
-    marginTop: Platform.OS === 'ios' ? height * 0.025 : height * 0.08,
+    marginTop: isTablet()
+      ? height * 0.21
+      : Platform.OS === 'ios'
+      ? height * 0.025
+      : height * 0.08,
     bottom: isTablet() ? 50 : 0,
   },
-  logoutText: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    marginLeft: 20,
-  },
+  // logoutText: {
+  //   fontSize: 14,
+  //   fontWeight: 'bold',
+  //   marginLeft: 20,
+  // },
   username: {
     color: 'grey',
     fontSize: 14,

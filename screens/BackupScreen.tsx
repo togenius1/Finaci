@@ -2,6 +2,7 @@ import {
   ActivityIndicator,
   Alert,
   Dimensions,
+  Platform,
   Pressable,
   StyleSheet,
   Text,
@@ -34,6 +35,7 @@ import {weeklyTransactsActions} from '../store/weeklyTransact-slice';
 import {accountActions} from '../store/account-slice';
 import {cashAccountsActions} from '../store/cash-slice';
 import {useNavigation} from '@react-navigation/native';
+import {isTablet} from 'react-native-device-info';
 
 // Ads variable
 const adUnitId = __DEV__
@@ -574,7 +576,11 @@ const BackupScreen = () => {
         <View style={{alignItems: 'center'}}>
           <Text
             style={{
-              fontSize: width * 0.058,
+              fontSize: isTablet()
+                ? width * 0.045
+                : Platform.OS === 'ios'
+                ? width * 0.05
+                : width * 0.05,
               fontWeight: 'bold',
               color: 'black',
             }}>
@@ -588,12 +594,27 @@ const BackupScreen = () => {
             onPress={() => checkProUserBackHandler()}>
             <View style={{marginTop: 20}}>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Text style={{fontSize: width * 0.048, fontWeight: 'bold'}}>
-                  Backup
+                <Text style={styles.backResFontSize}>Backup</Text>
+                <Text
+                  style={{
+                    fontSize: isTablet()
+                      ? width * 0.02
+                      : Platform.OS === 'ios'
+                      ? width * 0.03
+                      : width * 0.03,
+                  }}>
+                  {' '}
+                  (Google drive)
                 </Text>
-                <Text style={{fontSize: width * 0.03}}> (Google drive)</Text>
               </View>
-              <Text style={{fontSize: width * 0.035}}>
+              <Text
+                style={{
+                  fontSize: isTablet()
+                    ? width * 0.02
+                    : Platform.OS === 'ios'
+                    ? width * 0.03
+                    : width * 0.03,
+                }}>
                 Backup your data to cloud storage
               </Text>
             </View>
@@ -610,10 +631,15 @@ const BackupScreen = () => {
             style={({pressed}) => pressed && styles.pressed}
             onPress={() => checkProUserRestoreHandler()}>
             <View style={{marginTop: 20}}>
-              <Text style={{fontSize: width * 0.048, fontWeight: 'bold'}}>
-                Restore
-              </Text>
-              <Text style={{fontSize: width * 0.035}}>
+              <Text style={styles.backResFontSize}>Restore</Text>
+              <Text
+                style={{
+                  fontSize: isTablet()
+                    ? width * 0.02
+                    : Platform.OS === 'ios'
+                    ? width * 0.03
+                    : width * 0.035,
+                }}>
                 Restore your data from cloud storage
               </Text>
             </View>
@@ -646,6 +672,14 @@ const styles = StyleSheet.create({
   },
   inner: {
     marginLeft: width * 0.065,
+  },
+  backResFontSize: {
+    fontSize: isTablet()
+      ? width * 0.035
+      : Platform.OS === 'ios'
+      ? width * 0.045
+      : width * 0.045,
+    fontWeight: 'bold',
   },
   pressed: {
     opacity: 0.75,

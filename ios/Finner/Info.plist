@@ -24,22 +24,18 @@
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
 	<array>
-
-	<!-- To make one phone one app installed -->
 		<dict>
 			<key>CFBundleURLName</key>
 			<string>com.zuperx.fi</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<!-- <string>com.zuperx.fi.finaci</string> -->
 				<string>org.reactjs.native.zuperx.fi</string>
 				<string>Finaci</string>
 			</array>
 		</dict>
 	</array>
-	
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>2</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>mailto</string>
@@ -93,6 +89,7 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 	</array>
 	<key>UIUserInterfaceStyle</key>
 	<string>Light</string>

@@ -1,7 +1,9 @@
-import {StyleSheet} from 'react-native';
+// import {StyleSheet} from 'react-native';
 import React from 'react';
 import TransactScreenComponent from './TransactScreenComponent';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import {Dimensions} from 'react-native';
+import {isTablet} from 'react-native-device-info';
 
 type Props = {
   tabs: any[];
@@ -12,6 +14,8 @@ type Props = {
   month: number;
   middleTabIndex: number;
 };
+
+const {width, height} = Dimensions.get('window');
 
 const TopTabs = ({
   tabs,
@@ -45,7 +49,7 @@ const TopTabs = ({
         tabBarLabelStyle: {
           width: 'auto',
           marginHorizontal: 0,
-          fontSize: 13.5,
+          fontSize: isTablet() ? width * 0.025 : null, // Phone: 13.5
           fontWeight: '500',
           textTransform: 'none',
         },

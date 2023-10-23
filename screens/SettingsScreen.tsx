@@ -3,6 +3,7 @@ import {
   Alert,
   Dimensions,
   Linking,
+  Platform,
   Pressable,
   StyleSheet,
   Text,
@@ -11,7 +12,7 @@ import {
 } from 'react-native';
 import React, {useState} from 'react';
 import {Auth} from 'aws-amplify';
-import DeviceInfo from 'react-native-device-info';
+import DeviceInfo, {isTablet} from 'react-native-device-info';
 import {useNavigation} from '@react-navigation/native';
 
 import CButton from '../components/UI/CButton';
@@ -210,12 +211,21 @@ const Settings = () => {
       </View>
 
       <View style={{flexDirection: 'row', marginVertical: 10}}>
-        <Text style={{}}>Contact: </Text>
+        <Text style={[styles.contactFontSize, {color: 'black'}]}>
+          Contact:{' '}
+        </Text>
         <Pressable onPress={handleEmailLinkPress}>
-          <Text style={{color: 'blue'}}>togenius1@gmail.com</Text>
+          <Text style={styles.contactFontSize}>togenius1@gmail.com</Text>
         </Pressable>
       </View>
-      <Text style={{fontSize: 11}}>{`Version: ${currentVersion}`}</Text>
+      <Text
+        style={{
+          fontSize: isTablet()
+            ? width * 0.02
+            : Platform.OS === 'ios'
+            ? width * 0.03
+            : width * 0.03,
+        }}>{`Version: ${currentVersion}`}</Text>
     </View>
   );
 };
@@ -314,5 +324,13 @@ const styles = StyleSheet.create({
   },
   pressed: {
     opacity: 0.65,
+  },
+  contactFontSize: {
+    color: 'blue',
+    fontSize: isTablet()
+      ? width * 0.025
+      : Platform.OS === 'ios'
+      ? width * 0.03
+      : width * 0.03,
   },
 });

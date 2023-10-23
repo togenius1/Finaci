@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import React, {Dispatch, SetStateAction} from 'react';
 import moment from 'moment';
+import {isTablet} from 'react-native-device-info';
 // import {v4 as uuidv4} from 'uuid';
 
 const {width, height} = Dimensions.get('window');
@@ -62,7 +63,16 @@ function MonthList({item, onYearSelectedHandler, selectedMY, monthlyPressed}) {
       style={({pressed}) => pressed && styles.pressed}
       onPress={onYearSelectedHandler}>
       <View>
-        <Text style={{fontSize: 16, fontWeight: textWeight, color: textColor}}>
+        <Text
+          style={{
+            fontSize: isTablet()
+              ? width * 0.030
+              : Platform.OS === 'ios'
+              ? width * 0.035
+              : width * 0.035,
+            fontWeight: textWeight,
+            color: textColor,
+          }}>
           {item.MY}
         </Text>
       </View>
@@ -125,18 +135,42 @@ const MonthYearList = ({
                 onPress={decrementYearHandle}>
                 <View
                   style={{backgroundColor: '#e9a5a5', paddingHorizontal: 10}}>
-                  <Text style={{fontSize: 16}}>{`<`}</Text>
+                  <Text
+                    style={{
+                      fontSize: isTablet()
+                        ? width * 0.045
+                        : Platform.OS === 'ios'
+                        ? width * 0.035
+                        : width * 0.045,
+                    }}>{`<`}</Text>
                 </View>
               </Pressable>
               <View>
-                <Text style={{fontSize: 16, fontWeight: '800'}}>{year}</Text>
+                <Text
+                  style={{
+                    fontSize: isTablet()
+                      ? width * 0.045
+                      : Platform.OS === 'ios'
+                      ? width * 0.035
+                      : width * 0.045,
+                    fontWeight: '800',
+                  }}>
+                  {year}
+                </Text>
               </View>
               <Pressable
                 style={({pressed}) => pressed && styles.pressed}
                 onPress={incrementYearHandle}>
                 <View
                   style={{backgroundColor: '#e7a7a7', paddingHorizontal: 10}}>
-                  <Text style={{fontSize: 16}}>{`>`}</Text>
+                  <Text
+                    style={{
+                      fontSize: isTablet()
+                        ? width * 0.045
+                        : Platform.OS === 'ios'
+                        ? width * 0.035
+                        : width * 0.045,
+                    }}>{`>`}</Text>
                 </View>
               </Pressable>
             </View>

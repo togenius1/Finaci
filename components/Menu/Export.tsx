@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {
   Alert,
   Dimensions,
+  Platform,
   Pressable,
   StyleSheet,
   Text,
@@ -14,6 +15,7 @@ import moment from 'moment';
 
 import {xport} from '../../util/xport';
 import {useAppSelector} from '../../hooks';
+import {isTablet} from 'react-native-device-info';
 
 // Ads variable
 const adUnitId = __DEV__
@@ -217,8 +219,27 @@ const Export = () => {
     <View style={styles.container}>
       <View style={styles.inner}>
         <View>
-          <Text style={{fontSize: 18, fontWeight: 'bold', color: 'black'}}>
-            Export <Text style={{fontSize: 12}}>(Raw data)</Text>
+          <Text
+            style={{
+              fontSize: isTablet()
+                ? width * 0.035
+                : Platform.OS === 'ios'
+                ? width * 0.045
+                : width * 0.045,
+              fontWeight: 'bold',
+              color: 'black',
+            }}>
+            Export{' '}
+            <Text
+              style={{
+                fontSize: isTablet()
+                  ? width * 0.02
+                  : Platform.OS === 'ios'
+                  ? width * 0.025
+                  : width * 0.025,
+              }}>
+              (Raw data)
+            </Text>
           </Text>
         </View>
 
@@ -226,8 +247,24 @@ const Export = () => {
           style={({pressed}) => pressed && styles.pressed}
           onPress={() => checkPro()}>
           <View style={{marginTop: 20}}>
-            <Text style={{fontSize: 18}}>Excel (.xls)</Text>
-            <Text style={{fontSize: 14}}>
+            <Text
+              style={{
+                fontSize: isTablet()
+                  ? width * 0.035
+                  : Platform.OS === 'ios'
+                  ? width * 0.035
+                  : width * 0.045,
+              }}>
+              Excel (.xls)
+            </Text>
+            <Text
+              style={{
+                fontSize: isTablet()
+                  ? width * 0.02
+                  : Platform.OS === 'ios'
+                  ? width * 0.035
+                  : width * 0.03,
+              }}>
               Export your data via the .xls files
             </Text>
           </View>

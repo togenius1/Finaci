@@ -24,7 +24,7 @@ const OverviewStack = ({}: Props) => {
             <View style={styles.headerLeft}>
               <Ionicons
                 name="menu-outline"
-                size={27}
+                size={width * 0.045}
                 color="#000000"
                 style={{marginBottom: 1}}
                 // onPress={() => navigation.toggleDrawer()}
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     marginRight: width * 0.6,
     width: width * 0.07,
-    marginTop: height * 0.025,
+    // marginTop: height * 0.025,
     // backgroundColor: '#fed8d8',
   },
   pressed: {
