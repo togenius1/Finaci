@@ -1,4 +1,4 @@
-import {Dimensions, Pressable, StyleSheet, View} from 'react-native';
+import {Dimensions, Platform, Pressable, StyleSheet, View} from 'react-native';
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -7,6 +7,7 @@ import {RootStackParamList} from '../types';
 import AddExpensesScreen from '../screens/AddExpensesScreen';
 import AddDetailsScreen from '../screens/AddDetailsScreen';
 import OverviewScreen from '../screens/OverviewScreen';
+import {isTablet} from 'react-native-device-info';
 
 type Props = {};
 const {width, height} = Dimensions.get('window');
@@ -24,7 +25,14 @@ const OverviewStack = ({}: Props) => {
             <View style={styles.headerLeft}>
               <Ionicons
                 name="menu-outline"
-                size={width * 0.045}
+                // Phone size={width * 0.045}
+                size={
+                  isTablet()
+                    ? width * 0.045
+                    : Platform.OS === 'ios'
+                    ? width * 0.040
+                    : width * 0.040
+                }
                 color="#000000"
                 style={{marginBottom: 1}}
                 // onPress={() => navigation.toggleDrawer()}

@@ -42,8 +42,12 @@ const DrawerNavigator = ({}) => {
             <View
               style={{
                 justifyContent: 'flex-start',
-                marginLeft: isTablet() ? 20 : Platform.OS === 'ios' ? -5 : 10,
-                width: width * 0.07,
+                marginLeft: isTablet() ? 20 : Platform.OS === 'ios' ? 10 : 10,
+                width: isTablet()
+                  ? width * 0.007
+                  : Platform.OS === 'ios'
+                  ? width * 0.035
+                  : width * 0.035,
                 // marginTop: height * 0.025,
                 // backgroundColor: '#fed8d8',
               }}>
@@ -53,8 +57,8 @@ const DrawerNavigator = ({}) => {
                   isTablet()
                     ? width * 0.045
                     : Platform.OS === 'ios'
-                    ? width * 0.060
-                    : width * 0.060
+                    ? width * 0.06
+                    : width * 0.06
                 }
                 color="#000000"
                 style={{marginBottom: 1}}

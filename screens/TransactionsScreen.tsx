@@ -32,6 +32,7 @@ import TransactContext from '../store-context/transact-context';
 import TransactHeaderSummary from '../components/Header/TransactHeaderSummary';
 import TopTabs from '../components/tab/TopTabs';
 import HeaderRight from '../components/Header/HeaderRight';
+import {isTablet} from 'react-native-device-info';
 
 const {width, height} = Dimensions.get('window');
 
@@ -286,14 +287,24 @@ const TransactionsScreen = ({}: Props) => {
             <View
               style={{
                 justifyContent: 'flex-start',
-                marginLeft: Platform.OS === 'ios' ? -5 : 30,
-                width: width * 0.07,
+                marginLeft: Platform.OS === 'ios' ? -10 : 30,
+                width: isTablet()
+                  ? width * 0.07
+                  : Platform.OS === 'ios'
+                  ? width *  0.07
+                  : width *  0.07,
                 // marginTop: height * 0.025,
                 // backgroundColor: '#fed8d8',
               }}>
               <Ionicons
                 name="menu-outline"
-                size={width * 0.045}
+                size={
+                  isTablet()
+                    ? width * 0.045
+                    : Platform.OS === 'ios'
+                    ? width * 0.04
+                    : width * 0.04
+                }
                 color="#000000"
                 style={{marginBottom: 1}}
                 // onPress={() => navigation.toggleDrawer()}
