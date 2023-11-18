@@ -9,6 +9,10 @@ import App from './App';
 import {name as appName} from './app.json';
 import {store, persistor} from './store';
 
+import {Amplify} from 'aws-amplify';
+import amplifyconfig from './src/amplifyconfiguration.json';
+Amplify.configure(amplifyconfig);
+
 // Should be removed after React-Native-Reanimated to be updated.
 // LogBox.ignoreLogs(['RCTBridge required dispatch_sync to load REAModule']);
 

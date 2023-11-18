@@ -12,14 +12,17 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {setPRNG} from 'tweetnacl';
-import {Amplify, Auth, DataStore, Hub} from 'aws-amplify';
+// import {Amplify} from 'aws-amplify';
+import {DataStore} from 'aws-amplify/datastore';
+import {getCurrentUser, signOut} from 'aws-amplify/auth';
+import {Hub} from 'aws-amplify/utils';
 import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import VersionCheck from 'react-native-version-check';
 import DeviceInfo from 'react-native-device-info';
 // import {useAppState} from '@react-native-community/hooks';
+import moment = require('moment');
 
-import awsconfig from './src/aws-exports';
 import {generateKeyPair, PRNG} from './util/crypto';
 import FinnerNavigator from './navigation/FinnerNavigator';
 import {useAppDispatch, useAppSelector} from './hooks';
@@ -29,13 +32,16 @@ import {fetchIncomeCategoriesData} from './store/income-category-action';
 import {fetchExpenseCategoriesData} from './store/expense-category-action';
 import {User} from './src/models';
 import {authAccountsActions} from './store/authAccount-slice';
-import moment from 'moment';
+
 import TransactProvider from './store-context/TransactProvider';
 import OverviewProvider from './store-context/OverviewProvider';
 import {store} from './store';
 import {clearStorageCache} from './store/cacheActions';
 
-Amplify.configure(awsconfig);
+// import awsconfig from './src/aws-exports';
+// import amplifyconfig from './src/amplifyconfiguration.json';
+
+// Amplify.configure(amplifyconfig);
 
 setPRNG(PRNG);
 
@@ -134,7 +140,7 @@ const App = () => {
   // Listening for Login events.
   useEffect(() => {
     const listenerAuth = async data => {
-      if (data.payload.event === 'signIn') {
+      if (data.payload.event === 'signedIn') {
         // Fetch customer info from RevCat
 
         // setIsAuthenticated(true);
@@ -146,7 +152,7 @@ const App = () => {
         // await getUserData();
         onCloseBannerAds();
       }
-      if (data.payload.event === 'signOut') {
+      if (data.payload.event === 'signedOut') {
         // setIsAuthenticated(false);
         // await getUserData();
       }
@@ -179,7 +185,7 @@ const App = () => {
   // Update the latest version
   const handleSignOut = async (url: string) => {
     try {
-      await Auth.signOut(); // Sign out the user
+      await signOut(); // Sign out the user
       Linking.openURL(url);
       // Additional cleanup or navigation logic can be performed here
     } catch (error) {
@@ -191,8 +197,10 @@ const App = () => {
   // useEffect(() => {
   //   // Close Ads
   const onCloseBannerAds = async () => {
-    const authUser = await Auth.currentAuthenticatedUser();
-    const appUserId = authUser?.attributes?.sub;
+    const authUser = await getCurrentUser();
+
+    // const appUserId = authUser?.attributes?.sub;
+    const appUserId = authUser?.userId;
     const filteredCustomerInfo = customerInfosData?.filter(
       cus => cus.appUserId === appUserId,
     );
@@ -210,8 +218,10 @@ const App = () => {
   // Check if authenticated user.
   const checkUserAndGenerateNewKey = async () => {
     // const authUser = await Auth.currentAuthenticatedUser({bypassCache: true});
-    const authedUser = await Auth.currentAuthenticatedUser();
-    const subId: string = authedUser?.attributes?.sub;
+    // const authedUser = await Auth.currentAuthenticatedUser();
+    const authUser = await getCurrentUser();
+    // const subId: string = authedUser?.attributes?.sub;
+    const subId = authUser?.userId;
     // const dbCurrentUser = await DataStore.query(User, c => c.id.eq(subId));
 
     const sub = DataStore.observeQuery(User, c => c.id.eq(subId)).subscribe(

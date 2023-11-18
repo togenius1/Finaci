@@ -1,7 +1,8 @@
 import {Alert, ScrollView, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {useForm} from 'react-hook-form';
-import {Auth} from 'aws-amplify';
+// import {Auth} from 'aws-amplify';
+import { type ConfirmResetPasswordInput, confirmResetPassword } from 'aws-amplify/auth';
 
 import CustomInput from '../components/CustomInput';
 import CustomButton from '../components/CustomButton';
@@ -11,9 +12,12 @@ type Props = {};
 export default function NewPasswordScreen({navigation}: Props) {
   const {control, handleSubmit} = useForm();
 
-  const onSubmitPressed = async data => {
+  const onSubmitPressed = async (data) => {
+    const username = data.username
+    const confirmationCode = data.code
+    const newPassword = data.password
     try {
-      await Auth.forgotPasswordSubmit(data.username, data.code, data.password);
+      await confirmResetPassword({ username, confirmationCode, newPassword });
       navigation.navigate('SignIn');
     } catch (e) {
       Alert.alert('Oops', e.message);

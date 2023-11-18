@@ -1,10 +1,11 @@
 import {Alert, ScrollView, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {useForm} from 'react-hook-form';
-import {Auth} from 'aws-amplify';
+// import {Auth} from 'aws-amplify';
 
 import CustomInput from '../components/CustomInput';
 import CustomButton from '../components/CustomButton';
+import {confirmSignUp, resendSignUpCode} from 'aws-amplify/auth';
 
 type Props = {};
 
@@ -16,18 +17,21 @@ export default function ConfirmEmailScreen({navigation, route}: Props) {
   const username = watch('username');
 
   const onConfirmPressed = async data => {
+    const username = data.username;
+    const confirmationCode = data.code;
     try {
-      await Auth.confirmSignUp(data.username, data.code);
+      await confirmSignUp({username, confirmationCode});
 
       navigation.navigate('SignIn');
     } catch (e) {
-      Alert.alert('Oops', e.message);
+      Alert.alert('Oops', String(e));
     }
   };
 
   const onResendPressed = async () => {
     try {
-      await Auth.resendSignUp(username);
+      await resendSignUpCode(username);
+
       Alert.alert('Success', 'Code was resent to your email');
     } catch (e) {
       Alert.alert('Oops', e.message);

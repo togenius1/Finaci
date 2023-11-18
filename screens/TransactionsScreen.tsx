@@ -33,6 +33,7 @@ import TransactHeaderSummary from '../components/Header/TransactHeaderSummary';
 import TopTabs from '../components/tab/TopTabs';
 import HeaderRight from '../components/Header/HeaderRight';
 import {isTablet} from 'react-native-device-info';
+import { getCurrentUser } from 'aws-amplify/auth';
 
 const {width, height} = Dimensions.get('window');
 
@@ -607,8 +608,9 @@ const TransactionsScreen = ({}: Props) => {
       exportPressed: true,
     });
 
-    const authUser = await Auth.currentAuthenticatedUser();
-    const appUserId = authUser?.attributes?.sub;
+    // const authUser = await Auth.currentAuthenticatedUser();
+    const authUser = await getCurrentUser();
+    const appUserId = authUser?.userId;
     const filteredCustomerInfo = customerInfosData?.filter(
       cus => cus.appUserId === appUserId,
     );

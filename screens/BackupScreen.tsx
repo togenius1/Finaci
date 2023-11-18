@@ -15,7 +15,8 @@ import DocumentPicker from 'react-native-document-picker';
 import RNFS from 'react-native-fs';
 // import {v4 as uuidv4} from 'uuid';
 import {useInterstitialAd, TestIds} from 'react-native-google-mobile-ads';
-import {Auth, Hub} from 'aws-amplify';
+// import {Auth, Hub} from 'aws-amplify';
+import {getCurrentUser} from 'aws-amplify/auth';
 
 import {defaultAuthState} from '../constants/authConfig';
 import {decryption} from '../util/decrypt';
@@ -36,6 +37,7 @@ import {accountActions} from '../store/account-slice';
 import {cashAccountsActions} from '../store/cash-slice';
 import {useNavigation} from '@react-navigation/native';
 import {isTablet} from 'react-native-device-info';
+import {Hub} from 'aws-amplify/utils';
 
 // Ads variable
 const adUnitId = __DEV__
@@ -87,7 +89,8 @@ const BackupScreen = () => {
   // Check if authenticated user, Stay logged in.
   useEffect(() => {
     const onAuthUser = async () => {
-      const authUser = await Auth.currentAuthenticatedUser();
+      // const authUser = await Auth.currentAuthenticatedUser();
+      const authUser = await getCurrentUser();
       setAuthUser(authUser);
       setIsAuthenticated(true);
     };
@@ -98,11 +101,11 @@ const BackupScreen = () => {
   // Listening for Login events.
   useEffect(() => {
     const listenerAuth = async data => {
-      if (data.payload.event === 'signIn') {
+      if (data.payload.event === 'signedIn') {
         // DevSettings.reload();
         setIsAuthenticated(true);
       }
-      if (data.payload.event === 'signOut') {
+      if (data.payload.event === 'signedOut') {
         setIsAuthenticated(false);
       }
     };
@@ -125,8 +128,9 @@ const BackupScreen = () => {
 
   useEffect(() => {
     const setAccount = async () => {
-      const authedUser = await Auth.currentAuthenticatedUser();
-      const subId: string = authedUser?.attributes?.sub;
+      // const authedUser = await Auth.currentAuthenticatedUser();
+      const authedUser = await getCurrentUser();
+      const subId: string = authedUser?.userId;
 
       const filterAuthAccount = authAccountsData?.filter(
         auth => String(auth.id) === subId,
@@ -242,9 +246,10 @@ const BackupScreen = () => {
   // check pro user
   const checkProUserBackHandler = async () => {
     if (isAuthenticated) {
-      const appUserId = authUser?.attributes?.sub;
+      console.log(authUser.userId)
+      const appUserId = authUser?.userId;
       const filteredCustomerInfo = customerInfosData?.filter(
-        cus => cus.appUserId === appUserId,
+        cus => cus?.appUserId === appUserId,
       );
 
       if (
@@ -333,8 +338,9 @@ const BackupScreen = () => {
       signInAlert();
       // return;
     } else if (isAuthenticated) {
-      const authUser = await Auth.currentAuthenticatedUser();
-      const appUserId = authUser?.attributes?.sub;
+      // const authUser = await Auth.currentAuthenticatedUser();
+      const authUser = await getCurrentUser();
+      const appUserId = authUser?.userId;
       const filteredCustomerInfo = customerInfosData?.filter(
         cus => cus.appUserId === appUserId,
       );
@@ -579,8 +585,8 @@ const BackupScreen = () => {
               fontSize: isTablet()
                 ? width * 0.045
                 : Platform.OS === 'ios'
-                ? width * 0.05
-                : width * 0.05,
+                  ? width * 0.05
+                  : width * 0.05,
               fontWeight: 'bold',
               color: 'black',
             }}>
@@ -600,8 +606,8 @@ const BackupScreen = () => {
                     fontSize: isTablet()
                       ? width * 0.02
                       : Platform.OS === 'ios'
-                      ? width * 0.03
-                      : width * 0.03,
+                        ? width * 0.03
+                        : width * 0.03,
                   }}>
                   {' '}
                   (Google drive)
@@ -612,8 +618,8 @@ const BackupScreen = () => {
                   fontSize: isTablet()
                     ? width * 0.02
                     : Platform.OS === 'ios'
-                    ? width * 0.03
-                    : width * 0.03,
+                      ? width * 0.03
+                      : width * 0.03,
                 }}>
                 Backup your data to cloud storage
               </Text>
@@ -637,8 +643,8 @@ const BackupScreen = () => {
                   fontSize: isTablet()
                     ? width * 0.02
                     : Platform.OS === 'ios'
-                    ? width * 0.03
-                    : width * 0.035,
+                      ? width * 0.03
+                      : width * 0.035,
                 }}>
                 Restore your data from cloud storage
               </Text>
@@ -677,8 +683,8 @@ const styles = StyleSheet.create({
     fontSize: isTablet()
       ? width * 0.035
       : Platform.OS === 'ios'
-      ? width * 0.045
-      : width * 0.045,
+        ? width * 0.045
+        : width * 0.045,
     fontWeight: 'bold',
   },
   pressed: {

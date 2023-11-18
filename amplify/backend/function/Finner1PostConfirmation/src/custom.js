@@ -1,7 +1,7 @@
 /**
  * @type {import('@types/aws-lambda').APIGatewayProxyHandler}
  */
-const aws = require('aws-sdk');
+const aws = require('aws-sdk/dist/aws-sdk-react-native');
 const ddb = new aws.DynamoDB();
 
 const tableName = process.env.USERTABLE;
@@ -15,6 +15,8 @@ exports.handler = async event => {
     return;
   }
 
+  console.log('user attributes: ' + event.request);
+
   const now = new Date();
   const timestamp = now.getTime();
 
@@ -26,7 +28,7 @@ exports.handler = async event => {
     updatedAt: {S: now.toISOString()},
     id: {S: event.request.userAttributes.sub},
     name: {S: event.request.userAttributes.name},
-    email: { S: event.request.userAttributes.email },
+    email: {S: event.request.userAttributes.email},
   };
 
   const params = {

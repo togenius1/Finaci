@@ -12,8 +12,10 @@ import {useNavigation} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 // import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {Auth, Hub} from 'aws-amplify';
+// import {Hub} from 'aws-amplify';
+import {getCurrentUser, signOut} from 'aws-amplify/auth';
 import {isTablet} from 'react-native-device-info';
+import { Hub } from 'aws-amplify/utils';
 
 type Props = {};
 
@@ -40,10 +42,10 @@ const DrawerContent = ({props}: Props) => {
   // Listening for Login events.
   useEffect(() => {
     const listenerAuth = async data => {
-      if (data.payload.event === 'signIn') {
+      if (data.payload.event === 'signedIn') {
         setIsAuthenticated(true);
       }
-      if (data.payload.event === 'signOut') {
+      if (data.payload.event === 'signedOut') {
         setIsAuthenticated(false);
       }
     };
@@ -54,7 +56,7 @@ const DrawerContent = ({props}: Props) => {
   // Check if authenticated user, Stay logged in.
   useEffect(() => {
     const onAuthUser = async () => {
-      const authUser = await Auth.currentAuthenticatedUser();
+      const authUser = await getCurrentUser();
       setAuthUser(authUser);
       setIsAuthenticated(true);
     };
@@ -67,7 +69,7 @@ const DrawerContent = ({props}: Props) => {
   };
 
   const signHandler = async () => {
-    await Auth.signOut();
+    await signOut();
     setIsAuthenticated(false);
     navigation.navigate('User');
   };
@@ -75,8 +77,8 @@ const DrawerContent = ({props}: Props) => {
   const iconSize = isTablet()
     ? width * 0.05
     : Platform.OS === 'ios'
-    ? width * 0.055
-    : width * 0.055;
+      ? width * 0.055
+      : width * 0.055;
 
   return (
     <View style={styles.container}>
@@ -277,8 +279,8 @@ const styles = StyleSheet.create({
     fontSize: isTablet()
       ? width * 0.025
       : Platform.OS === 'ios'
-      ? width * 0.035
-      : width * 0.035,
+        ? width * 0.035
+        : width * 0.035,
     marginLeft: 20,
   },
   expenseIncomeContainer: {
@@ -351,8 +353,8 @@ const styles = StyleSheet.create({
     marginTop: isTablet()
       ? height * 0.21
       : Platform.OS === 'ios'
-      ? height * 0.025
-      : height * 0.08,
+        ? height * 0.025
+        : height * 0.08,
     bottom: isTablet() ? 50 : 0,
   },
   // logoutText: {

@@ -1,12 +1,13 @@
 import {Alert, ScrollView, StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
 import {useForm} from 'react-hook-form';
-import {Auth, DataStore} from 'aws-amplify';
+import {DataStore} from 'aws-amplify';
 import {isValidPhoneNumber} from 'react-phone-number-input';
 
 import CustomInput from '../components/CustomInput';
 import CustomButton from '../components/CustomButton';
 import {User} from '../../../../src/models';
+import {signUp} from 'aws-amplify/auth';
 // import SocialSignInButtons from '../components/SocialSignInButtons';
 
 type Props = {};
@@ -21,7 +22,8 @@ export default function SignUpScreen({navigation}: Props) {
   const [isEmailDuplicate, setIsEmailDuplicate] = useState(false);
 
   const onRegisterPressed = async data => {
-    const {username, password, email, name} = data;
+    const {username, password, email, name, phone_number} = data;
+
     try {
       // Check if the email is already registered (duplicate)
       const isDuplicate = await checkEmailDuplicate(email);
@@ -29,10 +31,19 @@ export default function SignUpScreen({navigation}: Props) {
       if (isDuplicate) {
         setIsEmailDuplicate(true); // Set state to indicate duplicate email
       } else {
-        const response = await Auth.signUp({
+        const response = await signUp({
           username,
           password,
-          attributes: {email, name, preferred_username: username},
+          // attributes: {email, name, preferred_username: username},
+          options: {
+            userAttributes: {
+              email: email,
+              phone_number: phone_number, // E.164 number convention
+              given_name: name,
+              family_name: '',
+              nickname: '',
+            },
+          },
         });
 
         navigation.navigate('ConfirmEmail', {
@@ -47,9 +58,9 @@ export default function SignUpScreen({navigation}: Props) {
   // Function to check for duplicate email
   const checkEmailDuplicate = async (email: string) => {
     try {
-      const users = await DataStore.query(User, u => u?.email?.eq(email));
+      const users = await DataStore?.query(User, u => u?.email?.eq(email));
 
-      return users.length > 0; // Email is already registered if users array has any items
+      return users?.length > 0; // Email is already registered if users array has any items
     } catch (error) {
       console.error(error);
       throw error;
@@ -117,7 +128,7 @@ export default function SignUpScreen({navigation}: Props) {
           }}
         />
         <CustomInput
-          name="phone-input"
+          name="phone_number"
           control={control}
           placeholder="+(country code) - Phone number. "
           rules={{
@@ -138,7 +149,7 @@ export default function SignUpScreen({navigation}: Props) {
           }}
         />
         <CustomInput
-          name="password-repeat"
+          name="password_repeat"
           control={control}
           placeholder="Repeat Password"
           secureTextEntry

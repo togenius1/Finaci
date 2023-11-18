@@ -9,7 +9,7 @@ import {
   ActivityIndicator,
   // Pressable,
   Dimensions,
-  Modal,
+  // Modal,
 } from 'react-native';
 import Purchases, {
   LOG_LEVEL,
@@ -19,12 +19,12 @@ import Purchases, {
 import PackageItem from '../components/Output/PackageItem';
 import RestorePurchasesButton from '../components/UI/RestorePurchasesButton';
 import {useFocusEffect} from '@react-navigation/native';
-import moment from 'moment';
+// import moment from 'moment';
 // import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import Credits from '../components/Credits';
 import {useAppDispatch, useAppSelector} from '../hooks';
-import {Auth, Hub} from 'aws-amplify';
+// import {Auth, Hub} from 'aws-amplify';
 // import SignInScreen from '../navigation/NavComponents/Login/screens/SignInScreen';
 import RootStackScreen from '../navigation/RootStack';
 import {
@@ -34,6 +34,9 @@ import {
   ENTITLEMENT_STD,
 } from '../constants/api';
 import {customerInfoActions} from '../store/customerInfo-slice';
+import {Hub} from 'aws-amplify/utils';
+import {getCurrentUser} from 'aws-amplify/auth';
+import moment = require('moment');
 // import {API_KEY} from '../constants/api';
 
 const {width, height} = Dimensions.get('window');
@@ -117,7 +120,7 @@ const UserScreen = ({}) => {
 
   useEffect(() => {
     const onAuthUser = async () => {
-      const authUser = await Auth.currentAuthenticatedUser();
+      const authUser = await getCurrentUser();
       setAuthUser(authUser);
       setIsAuthenticated(true);
     };
@@ -127,10 +130,10 @@ const UserScreen = ({}) => {
 
   useEffect(() => {
     const listenerAuth = async data => {
-      if (data.payload.event === 'signIn') {
+      if (data.payload.event === 'signedIn') {
         setIsAuthenticated(true);
       }
-      if (data.payload.event === 'signOut') {
+      if (data.payload.event === 'signedOut') {
         setIsAuthenticated(false);
       }
     };
@@ -182,19 +185,21 @@ const UserScreen = ({}) => {
   const configurePurchases = async () => {
     try {
       Purchases.setLogLevel(LOG_LEVEL.VERBOSE);
-      const authUser = await Auth.currentAuthenticatedUser();
+      const authUser = await getCurrentUser();
 
       if (Platform.OS === 'ios') {
         Purchases.configure({
           apiKey: API_KEY_IOS,
-          appUserID: String(authUser?.attributes?.sub),
+          // appUserID: String(authUser?.attributes?.sub),
+          appUserID: String(authUser?.userId),
         });
       }
       if (Platform.OS === 'android') {
         // Purchases.configure({apiKey: API_KEY});
         Purchases.configure({
           apiKey: API_KEY_ANDROID,
-          appUserID: authUser?.attributes?.sub,
+          // appUserID: authUser?.attributes?.sub,
+          appUserID: String(authUser?.userId),
         });
 
         // OR: if building for Amazon, be sure to follow the installation instructions then:
@@ -213,8 +218,6 @@ const UserScreen = ({}) => {
 
     try {
       const offerings = await Purchases.getOfferings();
-
-      console.log('offerings: ', offerings);
 
       if (offerings.current !== null) {
         setPackages(offerings.current.availablePackages);

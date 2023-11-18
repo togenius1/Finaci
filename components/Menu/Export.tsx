@@ -10,12 +10,14 @@ import {
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {TestIds, useInterstitialAd} from 'react-native-google-mobile-ads';
-import {Auth, Hub} from 'aws-amplify';
+// import {Auth, Hub} from 'aws-amplify';
+import { getCurrentUser } from 'aws-amplify/auth';
 import moment from 'moment';
 
 import {xport} from '../../util/xport';
 import {useAppSelector} from '../../hooks';
 import {isTablet} from 'react-native-device-info';
+import { Hub } from 'aws-amplify/utils';
 
 // Ads variable
 const adUnitId = __DEV__
@@ -58,10 +60,10 @@ const Export = () => {
 
   useEffect(() => {
     const listenerAuth = async data => {
-      if (data.payload.event === 'signIn') {
+      if (data.payload.event === 'signedIn') {
         setIsAuthenticated(true);
       }
-      if (data.payload.event === 'signOut') {
+      if (data.payload.event === 'signedOut') {
         setIsAuthenticated(false);
       }
     };
@@ -72,7 +74,8 @@ const Export = () => {
   // Check if authenticated user, Stay logged in.
   useEffect(() => {
     const onAuthUser = async () => {
-      const authUser = await Auth.currentAuthenticatedUser();
+      // const authUser = await Auth.currentAuthenticatedUser();
+      const authUser = await getCurrentUser();
       // setAuthUser(authUser);
       setIsAuthenticated(true);
     };
@@ -94,8 +97,9 @@ const Export = () => {
   // Check Pro or standard
   const checkPro = async () => {
     if (isAuthenticated) {
-      const authUser = await Auth.currentAuthenticatedUser();
-      const appUserId = authUser?.attributes?.sub;
+      // const authUser = await Auth.currentAuthenticatedUser();
+      const authUser = await getCurrentUser();
+      const appUserId = authUser?.userId;
       const filteredCustomerInfo = customerInfosData?.filter(
         cus => cus.appUserId === appUserId,
       );

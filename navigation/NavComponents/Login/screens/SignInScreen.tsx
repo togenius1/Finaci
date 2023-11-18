@@ -7,14 +7,16 @@ import {
   View,
   // DevSettings,
 } from 'react-native';
-import React, {useState} from 'react';
+// import React, {useState} from 'react';
+import {useState} from 'react';
 import {useForm} from 'react-hook-form';
-import {Auth} from 'aws-amplify';
+// import {Auth} from 'aws-amplify';
+import {signIn} from 'aws-amplify/auth';
 
 // import Logo from '../../../../assets/images/FINNER-Tab.png';
 import CustomInput from '../components/CustomInput';
 import CustomButton from '../components/CustomButton';
-import SocialSignInButtons from '../components/SocialSignInButtons';
+// import SocialSignInButtons from '../components/SocialSignInButtons';
 // import SocialSignInButtons from '../components/SocialSignInButtons';
 
 type Props = {};
@@ -32,12 +34,16 @@ const SignInScreen = ({navigation}: Props) => {
 
   // SIGN IN
   const onSignInPressed = async data => {
+    const username = data.username;
+    const password = data.password;
     if (loading) {
       return;
     }
     setLoading(true);
     try {
-      await Auth.signIn(data.username, data.password);
+      await signIn({username, password});
+
+      navigation.navigate('UserScreen');
     } catch (e) {
       Alert.alert('Oops', e.message);
     }

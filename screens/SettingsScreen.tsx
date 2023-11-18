@@ -11,14 +11,16 @@ import {
   View,
 } from 'react-native';
 import React, {useState} from 'react';
-import {Auth} from 'aws-amplify';
+// import {Auth} from 'aws-amplify';
+import {getCurrentUser} from 'aws-amplify/auth';
 import DeviceInfo, {isTablet} from 'react-native-device-info';
 import {useNavigation} from '@react-navigation/native';
 
 import CButton from '../components/UI/CButton';
 import {useAppDispatch, useAppSelector} from '../hooks';
 import {authAccountsActions} from '../store/authAccount-slice';
-import axios from 'axios';
+// import axios from 'axios';
+
 // import {setPasscode, updatePasscode} from '../store/passcode-slice';
 
 // Constant
@@ -121,8 +123,9 @@ const Settings = () => {
     setShowDeleteIndicator(true);
 
     try {
-      const user = await Auth.currentAuthenticatedUser();
-      const sub = String(user?.attributes?.sub);
+      // const user = await Auth.currentAuthenticatedUser();
+      const user = await getCurrentUser();
+      const sub = String(user?.userId);
 
       // Delete account from local storage
       dispatch(
@@ -223,8 +226,8 @@ const Settings = () => {
           fontSize: isTablet()
             ? width * 0.02
             : Platform.OS === 'ios'
-            ? width * 0.03
-            : width * 0.03,
+              ? width * 0.03
+              : width * 0.03,
         }}>{`Version: ${currentVersion}`}</Text>
     </View>
   );
@@ -330,7 +333,7 @@ const styles = StyleSheet.create({
     fontSize: isTablet()
       ? width * 0.025
       : Platform.OS === 'ios'
-      ? width * 0.03
-      : width * 0.03,
+        ? width * 0.03
+        : width * 0.03,
   },
 });
