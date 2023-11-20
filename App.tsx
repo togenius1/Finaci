@@ -50,7 +50,7 @@ const adUnitId = __DEV__
   : 'ca-app-pub-3212728042764573~3355076099';
 
 const App = () => {
-  // // Disable warnings for release app.
+  // Disable warnings for release app.
   LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message:
   LogBox.ignoreAllLogs(); // Ignore all log notifications: add
 
@@ -152,10 +152,10 @@ const App = () => {
         // await getUserData();
         onCloseBannerAds();
       }
-      if (data.payload.event === 'signedOut') {
+      // if (data.payload.event === 'signedOut') {
         // setIsAuthenticated(false);
         // await getUserData();
-      }
+      // }
     };
 
     Hub.listen('auth', listenerAuth);
@@ -193,17 +193,22 @@ const App = () => {
     }
   };
 
+
   // Load Packages and set close ads
-  // useEffect(() => {
   //   // Close Ads
   const onCloseBannerAds = async () => {
     const authUser = await getCurrentUser();
 
+    console.log('App authUser: ', authUser);
+
     // const appUserId = authUser?.attributes?.sub;
     const appUserId = authUser?.userId;
     const filteredCustomerInfo = customerInfosData?.filter(
-      cus => cus.appUserId === appUserId,
+      cus => String(cus.appUserId )=== appUserId,
     );
+
+    console.log('App stdActive: ',  filteredCustomerInfo[0]?.stdActive)
+    console.log('App proActive: ',  filteredCustomerInfo[0]?.proActive)
 
     if (
       filteredCustomerInfo[0]?.stdActive ||

@@ -318,7 +318,7 @@ const BackupScreen = () => {
     if (dd < 10) {
       dd = `0${dd}`;
     }
-    const fileName = `Finner_backup_${id}_${dd}${mm}${yy}${time}.bak`;
+    const fileName = `Finaci_backup_${id}_${dd}${mm}${yy}${time}.bak`;
 
     const today = new Date();
     const expireAccessToken = new Date(authState.accessTokenExpirationDate);

@@ -1,4 +1,4 @@
-package com.togenius1.finner;
+package com.zuperx.android.finaci;
 
 import android.app.Application;
 import com.facebook.react.PackageList;

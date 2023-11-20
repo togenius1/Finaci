@@ -1,4 +1,4 @@
-package com.togenius1.finner;
+package com.zuperx.android.finaci;
 
 import android.os.Bundle;
 
@@ -20,7 +20,7 @@ public class MainActivity extends ReactActivity {
    */
   @Override
   protected String getMainComponentName() {
-    return "Finner";
+    return "Finaci";
   }
 
   /**

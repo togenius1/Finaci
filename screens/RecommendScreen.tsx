@@ -35,7 +35,7 @@ const RecommendScreen = (props: Props) => {
 
       <View style={styles.explainContainer}>
         <Text style={{fontSize: 16}}>
-          Recommend your friend to download and the points to unlock Finner's
+          Recommend your friend to download and the points to unlock Finaci's
           premium features
         </Text>
       </View>
